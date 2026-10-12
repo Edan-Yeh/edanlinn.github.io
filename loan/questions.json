@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "bank_version": "20261012.3",
+  "bank_version": "20261012.4",
   "updated_at": "2026-10-12",
-  "scope_note": "通用放款知識依本次核對的法規與題設條件；中信題依指定SSR收錄版本。兩者分開標示，不把產品或契約差異混成同一規則。",
+  "scope_note": "通用放款知識依本次核對的法規與題設條件；中信題依指定SSR收錄版本。兩者分開標示，不把產品或契約差異混成同一規則。 議題判讀依使用者檔案的紀錄、狀態與題設推演；待討論內容與分析建議不能取代正式業務決議。",
   "sources": {
     "LAW-BANK-12": {
       "type": "法規",
@@ -618,6 +618,171 @@
       "verified_at": "2026-10-12",
       "scope": "僅依指定SSR收錄版本、章節及題設數據作答，不宣告最新上線規則",
       "url": "./index.html?source-document=SSR-B2-001&source-line=12#LN-DOC-SSR-B2-001"
+    },
+    "ISSUE-NEGATIVE": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "待討論議題 · 第7列 · B7,H7",
+      "sheet": "待討論議題",
+      "row": 7,
+      "excerpt": "此列提出新系統無「負積欠」，轉置前仍有負積欠帳戶是否需先清理。類別為待BU決議事項，狀態及決議內容未填。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "da811ee4bc9603fceb8e4840f7ae06cca35e00d0cc5c78ee7b0d4d80b45519fa",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-GRACE": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "待討論議題 · 第8列 · B8,F8,G8,H8",
+      "sheet": "待討論議題",
+      "row": 8,
+      "excerpt": "記錄現行有5個日曆日與2個工作日兩種繳款寬限期；未來個金有／無擔產品想統一2個工作日，須待決議。狀態進行中，決議內容空白。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "f5abfa258d049803094ddbcef6c46f10f6095b722aff60569286a2f97522a06b",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-THRESHOLD": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "未來變革 須公告 · 第13列 · B13,E13,F13",
+      "sheet": "未來變革 須公告",
+      "row": 13,
+      "excerpt": "該列記錄免責額門檻1000，計算基礎為當期未繳本金＋未繳利息，並提到分期信貸約據需調整。狀態欄未填；未列門檻等號處理及完整罰金規則。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "f4f9f1e80ad9f40c5bc1c5f00f732a1bd09f7bddf6855b092cad2b58864bfeda",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-SUSPENSE": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "未來變革 須公告 · 第22列 · B22,E22,F22",
+      "sheet": "未來變革 須公告",
+      "row": 22,
+      "excerpt": "同列記錄：個金暫收款會抵息；法金同意使用暫收款，但不抵息。repayment多繳或還款日前款項先入暫收，due day再用於還款。狀態欄未填。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "1cadc476ebb0d1fb9201cc48e562efb49999caf8d7e7c45a3f305d6767d0f54a",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-DISCONNECT": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "未來變革 須公告 · 第15列 · E15,F15",
+      "sheet": "未來變革 須公告",
+      "row": 15,
+      "excerpt": "該列記錄外幣過渡期動撥／還款斷線，涉及新舊系統沖正與重新執行；並要求至舊核心確認沖正交易。狀態欄未填。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "c58743b0d316cd3bb4bb399afb3fd2a13627500c2e70abbd64a0d0fb5650e6b7",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-REPAY-DATE": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "未來變革 須公告 · 第16列 · B16,E16,F16",
+      "sheet": "未來變革 須公告",
+      "row": 16,
+      "excerpt": "該列記錄變更還款日生效前，可模擬查詢異動前後資訊，確認客戶同意後再變更，議題為還款日變動對寬限期迄日的影響。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "f1b372e9a8982cbe0b5eae429a7bf6e49409226f44339c30b2075ca9faa27a48",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-PENALTY": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "未來變革 須公告 · 第20列 · B20,F20",
+      "sheet": "未來變革 須公告",
+      "row": 20,
+      "excerpt": "該列記錄提前還款與提前結清的階梯式罰金需分別設定，狀態欄未填。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "3458c8999dd660eea7167cce968921a64434fbb94f24903e3162ec02a7bcdc70",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-REPAY-HISTORY": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "轉置需求 · 第5列 · A5,B5,C5,D5",
+      "sheet": "轉置需求",
+      "row": 5,
+      "excerpt": "D56轉置需求記錄repayment event僅轉未還部分金額，已還資訊不轉入，並指出舊資料無對應資訊可轉置。日期2026-08-11。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "8d234b7f6fe0e3c7e298f06fea66c6ff5f575c3add3cc56234537057c307351e",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-BATCH-DELIVERY": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "問題_批次 · 第5列 · A5,D5,E5,F5",
+      "sheet": "問題_批次",
+      "row": 5,
+      "excerpt": "議題為自動扣繳失敗原因能否同步到EDL。紀錄回覆指出技術表紀錄不在業務資料同步範圍；狀態列已完成，但解法欄仍提議開缺陷單要求查詢。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "a9ea247ad4089866c18ef0bf619bf1aa2c749a720e83285bcff5d324d4a34a68",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-CLOSE-MIG": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "待討論議題 · 第3列 · B3,F3,G3,H3",
+      "sheet": "待討論議題",
+      "row": 3,
+      "excerpt": "此列詢問未領清償證明的結清戶是否轉置，以及結清多久不轉或是否一律轉；狀態進行中，決議內容空白。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "77fe1b1dfd31eb91c155842c6c05f0b736d3cab9c0711cf931e8c3b631b340b7",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
+    },
+    "ISSUE-DEFERRED": {
+      "type": "議題清單",
+      "title": "待討論議題清單 (1).xlsx",
+      "version": "使用者2026-10-12提供版本",
+      "location": "轉置需求 · 第3列 · A3,B3,C3",
+      "sheet": "轉置需求",
+      "row": 3,
+      "excerpt": "D60轉置需求記錄未攤銷寬緩息仍有案件分期攤還至2040年以後。",
+      "excerpt_is_summary": true,
+      "verified_at": "2026-10-12",
+      "file_sha256": "4596fab8316456708820bfed726d7914239d2644e33b5314dc1bb48897bbb8ad",
+      "text_sha256": "ea05d03dd85402659335cf34959ce1afdf973c16748dd85caa4521c26db37d13",
+      "scope": "議題清單屬參考與狀態紀錄，不能取代SSR/FSD、正式決議或交付驗證；摘要已去識別化",
+      "url": ""
     }
   },
   "questions": [
@@ -2899,6 +3064,466 @@
       ],
       "status": "來源已核對",
       "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-COMPLEX-001",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "帳戶有多繳款，舊系統以「負積欠」表示；議題清單尚未決定轉置前是否清理。下列哪個結論有文件支持？",
+      "options": [
+        {
+          "id": "1",
+          "label": "是否先清理仍是待決議問題"
+        },
+        {
+          "id": "2",
+          "label": "已決定全部轉成逾期本金"
+        },
+        {
+          "id": "3",
+          "label": "客戶多繳款因此自動免除"
+        },
+        {
+          "id": "0",
+          "label": "已決定把負積欠一律歸零"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "第7列只提出是否先清理，沒有填入決議。不能因新系統表示方式不同，就推定客戶權益或款項可歸零。",
+      "source_ids": [
+        "ISSUE-NEGATIVE"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-002",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "假設應繳日為週五，週末均非工作日，沒有假日；不含應繳日開始計數。若分別計2個工作日與5個日曆日，其迄日為何？",
+      "options": [
+        {
+          "id": "2",
+          "label": "工作日制下週一；日曆日制下週二"
+        },
+        {
+          "id": "3",
+          "label": "兩者皆下週三"
+        },
+        {
+          "id": "0",
+          "label": "兩者皆下週日"
+        },
+        {
+          "id": "1",
+          "label": "工作日制下週二；日曆日制下週三"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "2個工作日為週一、週二；5個日曆日為週六、週日、週一、週二、週三。這是題設日曆推演，文件尚未批准統一方案，也未提供起算與特殊假日規則。",
+      "source_ids": [
+        "ISSUE-GRACE"
+      ],
+      "status": "來源已核對",
+      "assumptions": "工作日只含週一至週五；不含應繳日；無國定假日。以上是練習假設，不是原檔已決議的起算規則。",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-003",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "僅按這列記錄的計算基礎，題設未繳本金600元、未繳利息350元、另有違約金80元。可直接算出的免責額計算基礎為何？",
+      "options": [
+        {
+          "id": "3",
+          "label": "350元"
+        },
+        {
+          "id": "0",
+          "label": "950元"
+        },
+        {
+          "id": "1",
+          "label": "1030元"
+        },
+        {
+          "id": "2",
+          "label": "680元"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "計算基礎600＋350＝950元，不把另列違約金加進去。這不直接證明該戶免收所有費用或罰金；仍須核對正式規則及約據。",
+      "source_ids": [
+        "ISSUE-THRESHOLD"
+      ],
+      "status": "來源已核對",
+      "assumptions": "金額是練習題設，不是原檔實際客戶資料。",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-004",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "若按該列記錄算出未繳本金加利息恰好1000元，能否只依此列判定已超過免責門檻而應收罰金？",
+      "options": [
+        {
+          "id": "0",
+          "label": "可以，文件明寫1000元一定收取"
+        },
+        {
+          "id": "1",
+          "label": "不能，尚缺等號邊界及完整收費規則"
+        },
+        {
+          "id": "2",
+          "label": "可以，任何未繳都必收"
+        },
+        {
+          "id": "3",
+          "label": "不能，所有本金都免收"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "列中記錄門檻與基礎，但未說明「大於」或「大於等於」及收費前提。邊界值恰1000應另確認，不能補造比較運算子。",
+      "source_ids": [
+        "ISSUE-THRESHOLD"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-005",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "multi",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "依這列記錄，若設計同一暫收款功能的測試，哪些分流由文件直接支持？（多選）",
+      "options": [
+        {
+          "id": "1",
+          "label": "法金可使用暫收但預期不抵息"
+        },
+        {
+          "id": "2",
+          "label": "個金與法金都一律抵息"
+        },
+        {
+          "id": "3",
+          "label": "先入暫收與due day還款的時點分開核對"
+        },
+        {
+          "id": "0",
+          "label": "個金與法金分別測試抵息效果"
+        }
+      ],
+      "correct": [
+        "0",
+        "1",
+        "3"
+      ],
+      "explanation": "原列明確記錄個金／法金的抵息差異及暫收時點；這是該清單版本的紀錄，正式驗收前還要追溯SSR/FSD與決議。",
+      "source_ids": [
+        "ISSUE-SUSPENSE"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-006",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "題設前端逾時、新系統有沖正紀錄，但尚未核對舊核心帳務。依這列強調的核對步驟，最有依據的下一步是什麼？",
+      "options": [
+        {
+          "id": "2",
+          "label": "只看前端逾時就認定沒入帳"
+        },
+        {
+          "id": "3",
+          "label": "把原交易紀錄刪除"
+        },
+        {
+          "id": "0",
+          "label": "立即再次動撥且不查任何帳務"
+        },
+        {
+          "id": "1",
+          "label": "先核對舊核心沖正與交易結果，再決定重做"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "清單要求舊核心的沖正確認。前端逾時不等於全鏈路未入帳；題目考核對缺口，不把重試直接等同安全完成。",
+      "source_ids": [
+        "ISSUE-DISCONNECT"
+      ],
+      "status": "來源已核對",
+      "assumptions": "前端逾時及紀錄狀態為練習題設；實際重試須依正式沖正／防重複流程。",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-007",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "multi",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "依這列記錄，變更還款日前應完成哪些動作？（多選）",
+      "options": [
+        {
+          "id": "3",
+          "label": "確認後再執行變更交易"
+        },
+        {
+          "id": "0",
+          "label": "比較異動前後的模擬資訊"
+        },
+        {
+          "id": "1",
+          "label": "確認客戶同意"
+        },
+        {
+          "id": "2",
+          "label": "只改日期不看寬限期影響"
+        }
+      ],
+      "correct": [
+        "0",
+        "1",
+        "3"
+      ],
+      "explanation": "該列把模擬前後資訊、客戶確認與實際變更分成步驟；不能把畫面可輸入日期視為業務確認已完成。",
+      "source_ids": [
+        "ISSUE-REPAY-DATE"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-008",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "同一貸款只提前還一部分本金，另一情境是全部結清。依這列記錄，測案應如何區分？",
+      "options": [
+        {
+          "id": "0",
+          "label": "兩者視為同一情境、只設一種罰金"
+        },
+        {
+          "id": "1",
+          "label": "分別核對提前還款與提前結清設定"
+        },
+        {
+          "id": "2",
+          "label": "只檢核金額相同即可"
+        },
+        {
+          "id": "3",
+          "label": "任何提前清償都不需查參數"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "文件要求兩種階梯式罰金分別設定。具體費率、日期與減免條件未在此列提供，不能由這列產生實際應收金額。",
+      "source_ids": [
+        "ISSUE-PENALTY"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-009",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "依這列D56記錄，轉置後看不到某一期的「已還資訊」，能否直接斷定客戶從未還款？",
+      "options": [
+        {
+          "id": "1",
+          "label": "不能，此列明載已還資訊不轉入"
+        },
+        {
+          "id": "2",
+          "label": "可以，D56後所有歷史都完整"
+        },
+        {
+          "id": "3",
+          "label": "不能，因全部債務自動免除"
+        },
+        {
+          "id": "0",
+          "label": "可以，沒有新系統紀錄即未還"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "新系統資料可見性與客戶實際還款是不同問題。此列已說明不轉已還資訊，應回查歷史來源及轉置範圍，不可將資料缺口當成未履約。",
+      "source_ids": [
+        "ISSUE-REPAY-HISTORY"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-010",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "這列狀態為「已完成」，但解法仍提議開缺陷單。單依此列，最精確的交付判斷是什麼？",
+      "options": [
+        {
+          "id": "2",
+          "label": "只要批次成功就有失敗原因"
+        },
+        {
+          "id": "3",
+          "label": "所有技術表都已自動同步"
+        },
+        {
+          "id": "0",
+          "label": "已證明EDL同步與查詢全部完成"
+        },
+        {
+          "id": "1",
+          "label": "議題處理狀態不等同交付驗證，還需核對實作與測試證據"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "檔內狀態與解法文字必須一起讀。關閉討論、提出缺陷與功能完成不是同一件事；此列沒有提供實作驗收結果。",
+      "source_ids": [
+        "ISSUE-BATCH-DELIVERY"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-011",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "結清戶尚未領清償證明，團隊想將所有結清戶排除轉置。依該列資訊，可以把此方案直接寫成已確認預期結果嗎？",
+      "options": [
+        {
+          "id": "3",
+          "label": "可以，只要結清超過一天"
+        },
+        {
+          "id": "0",
+          "label": "可以，結清狀態已足夠證明排除"
+        },
+        {
+          "id": "1",
+          "label": "不可以，排除範圍仍待決議，應保留證明服務與歷史查詢的確認事項"
+        },
+        {
+          "id": "2",
+          "label": "可以，只要帳戶餘額為0"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "此列正是在詢問轉置條件，決議空白；餘額、結清日與證明服務須分開考量，不能替BU決議。確認事項是分析建議，不是新業務規則。",
+      "source_ids": [
+        "ISSUE-CLOSE-MIG"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
+    },
+    {
+      "id": "LN-Q-COMPLEX-012",
+      "version": 1,
+      "topic": "複雜業務判斷",
+      "type": "single",
+      "difficulty": "進階",
+      "skill": "複雜判斷",
+      "scope": "議題判讀（參考）",
+      "prompt": "依該列，某寬緩息案件在轉置日尚未攤完，未來仍有期數。能否只保留當期應繳、不保留未攤餘額與未來期數，就宣稱完整承接？",
+      "options": [
+        {
+          "id": "0",
+          "label": "可以，只要當期金額對上"
+        },
+        {
+          "id": "1",
+          "label": "不能，該列指出長期未攤銷案件，完整性還須核對未攤餘額及未來攤還承接"
+        },
+        {
+          "id": "2",
+          "label": "可以，轉置即全部結清"
+        },
+        {
+          "id": "3",
+          "label": "可以，2040年以後金額都不存在"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "文件指出仍有長期攤還案件。核對當期金額不能證明整體未來承接完整；未攤餘額與期程是需要確認的承接事項，不在此自定轉置格式。",
+      "source_ids": [
+        "ISSUE-DEFERRED"
+      ],
+      "status": "來源已核對",
+      "assumptions": "",
+      "answer_scope": "考文件判讀與題設推演，不把待討論事項當成已確認业务規則"
     }
   ]
 }
