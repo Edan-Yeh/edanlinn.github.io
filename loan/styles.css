@@ -22,3 +22,6 @@ dialog{border:1px solid #dce8f2;border-radius:22px;width:calc(100% - 32px);max-w
 
 .metric:after{display:none}.metric-icon{position:absolute;right:18px;top:18px;width:31px;height:31px;display:grid;place-items:center;background:#edf6fd;border:1px solid #dcecf8;border-radius:9px;color:#7aa8c8}.metric-icon svg{width:17px;height:17px}@media(max-width:600px){.metric-icon{right:12px;width:24px;height:24px}.metric-icon svg{width:14px;height:14px}}
 .danger-chip{color:#b56868;border-color:#ebd4d4;background:#fff9f9}.danger-chip:hover{background:#fbeeee;border-color:#dbaaaa}.knowledge-actions #delete-knowledge{margin-left:auto}#delete-message{color:#b56868;font-size:12px}.local-state{background:#fff6df;color:#967742}
+
+
+.challenge-entry{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 20px;margin:18px 0 5px;background:linear-gradient(120deg,#e4f2fd,#f8fbff);border:1px solid #cfe5f6;border-radius:13px;text-decoration:none;color:#4781ab;font-size:12px}.challenge-entry b{display:block;font-size:14px;margin-bottom:3px}.challenge-entry small{color:#829fb3;font-size:11px}.challenge-entry:hover{border-color:#94bfdf}.document-paper .evidence-highlight{background:#fff2cc;border-radius:5px;padding:5px 8px}@media(max-width:600px){.challenge-entry{padding:14px;font-size:11px}.challenge-entry small{font-size:10px}}

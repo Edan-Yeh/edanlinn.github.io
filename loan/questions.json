@@ -1,0 +1,1467 @@
+{
+  "schema_version": 1,
+  "bank_version": "20261012.1",
+  "updated_at": "2026-10-12",
+  "scope_note": "法規題依本次查核公開條文；CTBC題依指定收錄SSR章節，並非宣告最新上線規則。排除未確認推論及已取消、衝突規則作一般標準答案。",
+  "sources": {
+    "LAW-BANK-12": {
+      "type": "法規",
+      "title": "銀行法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第12條",
+      "excerpt": "本法稱擔保授信，謂對銀行之授信，提供左列之一為擔保者：\n一、不動產或動產抵押權。\n二、動產或權利質權。\n三、借款人營業交易所發生之應收票據。\n四、各級政府公庫主管機關、銀行或經政府核准設立之信用保證機構之保證。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=G0380001&flno=12",
+      "verified_at": "2026-10-12",
+      "text_sha256": "26092d34393e1982ef5d6c7b6b57eedf7ba741ee046fe1d40d315fb86b583a2a",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "LAW-BANK-13": {
+      "type": "法規",
+      "title": "銀行法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第13條",
+      "excerpt": "本法稱無擔保授信，謂無第十二條各款擔保之授信。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=G0380001&flno=13",
+      "verified_at": "2026-10-12",
+      "text_sha256": "d1fcd556e49acfc73813a9080649ee407c2aae3478db4c81876e4eaa559b5105",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "LAW-CIVIL-474": {
+      "type": "法規",
+      "title": "民法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第474條",
+      "excerpt": "稱消費借貸者，謂當事人一方移轉金錢或其他代替物之所有權於他方，而約定他方以種類、品質、數量相同之物返還之契約。\n當事人之一方對他方負金錢或其他代替物之給付義務而約定以之作為消費借貸之標的者，亦成立消費借貸。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=474",
+      "verified_at": "2026-10-12",
+      "text_sha256": "b7503e7d13608e31fab1f8d6f42b7674ec074fc7ade160d7711fcd2e2eb5d91c",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "LAW-CIVIL-203": {
+      "type": "法規",
+      "title": "民法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第203條",
+      "excerpt": "應付利息之債務，其利率未經約定，亦無法律可據者，週年利率為百分之五。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=203",
+      "verified_at": "2026-10-12",
+      "text_sha256": "6958e1f34396aa25bc840c84c8bab4d38fef3fc88700c4e170c9452234010fb9",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "LAW-CIVIL-205": {
+      "type": "法規",
+      "title": "民法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第205條",
+      "excerpt": "約定利率，超過週年百分之十六者，超過部分之約定，無效。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=205",
+      "verified_at": "2026-10-12",
+      "text_sha256": "b02fa719246140bbee027007da080ba20de19cfca46a715a28f14519f606cd99",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "LAW-CIVIL-323": {
+      "type": "法規",
+      "title": "民法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第323條",
+      "excerpt": "清償人所提出之給付，應先抵充費用，次充利息，次充原本；其依前二條之規定抵充債務者亦同。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=323",
+      "verified_at": "2026-10-12",
+      "text_sha256": "50c2b357c5417baaae88c1c81dd377eb7835005612caf9aa640b9071e99d181d",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "LAW-CIVIL-860": {
+      "type": "法規",
+      "title": "民法",
+      "version": "2026-10-12 查核之公開條文",
+      "location": "第860條",
+      "excerpt": "稱普通抵押權者，謂債權人對於債務人或第三人不移轉占有而供其債權擔保之不動產，得就該不動產賣得價金優先受償之權。",
+      "url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=860",
+      "verified_at": "2026-10-12",
+      "text_sha256": "f90e8e1a9747f89001ccf680bb56b7b5244d9d57912f5967419b53e8c837ed9f",
+      "scope": "依本次查核條文；不涵蓋未述及之特別法或契約例外"
+    },
+    "S-LIMIT-1": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(1) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(1) 額度控管架構層次可區分成 5 層，依序為企業團層、子企業團層、客戶層、額度層、產品層。企業團層項\n下最多支援 4 層，子企業團層項下最多支援 3 層….以下類推。且各層次可運用 Global ID、Package ID、\nInternal ID 等支援橫向額度管理(含跨境)。\n(2) 如上述額度控管層次有建立上",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=7#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "1a16f852a34885d831d9f1ee4059dc3a98b5310ad9a8167e3290dd811ebb69be",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 7
+    },
+    "S-LIMIT-2": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(2)(B) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(B) 如人工鍵入限制的特定額度時(人工限縮)，系統要鎖定這個金額不能由系統自動重算(即便新增額度，除非是人\n工再次調整)，額度限額每日不能重評，也無須自動更新額度數字（1.2 額度契約之交易功能 62023），但餘額\n仍會重評。\n(C) 系統可提供辨識總授信額度是自動累加(不限制)或是人工鍵入(限制)。\n(D) 系統額度限制碼一律預先預設自動累加，若人工介入變更為不自動累加，",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=13#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "5cedbae2203a814331a126b883ce03a5c09bf745c2606a1b239fb55670b3fbfc",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 13
+    },
+    "S-LIMIT-3": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(7)(A) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(A) 上階設定非循環，下階不得設定循環。反之， 上階設定循環，下階可設定循環或非循環。循環/非循環轉換可\n用金額需重算。\n(B) 如設定為承諾額度，須以額度金額直接佔用上階額度(類似預佔)。\n\n<PARSED",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=34#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "5c504991cbd0889d910397ab92375fc2c09d9d6228303f6e8a08a8aa4253d24f",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 34
+    },
+    "S-LIMIT-4": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(2)(E) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(E) 當額度層為承諾額度時，要以額度核准金額佔用上階額度(若有多個上階額度則須多個上階額度皆佔用)，如每\n一層幣別不同時，比照額度累加到上一層所使用的匯率計算方式，每天重算亦同。\n(F) 催收後，以催收款項_本金佔用額度(非催收款項全部)。\n(3) 針對不同的上階額度 (企業團層、子企業團層、客戶層)",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=18#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "0260c3b726d224ba9fbd4a3432c62300d8e4c623d583d1f6d7a17f140897b201",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 18
+    },
+    "S-LIMIT-5": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(2)(F) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(F) 催收後，以催收款項_本金佔用額度(非催收款項全部)。\n(3) 針對不同的上階",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=20#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "8bac1f9b115abf669de1bb6a90fdef9bb10aac9a56d6eb0cfd88268506d39f1f",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 20
+    },
+    "S-LIMIT-6": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(6) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(6) 所有額度層次中除了”額度層”須提供授信條件相關設定(如借款用途，借款期間,聯貸註記…等)外，其他\n層次僅提供與額度管控相關的資訊(如:幣別、額度金額、額度餘額、已用金額、可用金額..等) 。\n(7) 額度需可區分有擔或無擔保、循環或非循環、承諾或非承諾、授信或非授信的控管，並提供轉換(如:有擔\n轉無擔, 循環轉非循環…)\n(A)",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=30#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "14ca9ec92631c3724798bd305707aa096451ef3ed3256d0f4987a9b3fd956780",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 30
+    },
+    "S-LIMIT-7": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-001(額度架構)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-001",
+      "location": "1.1.1.1 共同業務需求(4) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(4) 支援不同幣別的額度設定。每一層的額度，可個別依其幣別的約定來控管，可支援上下階額度幣別不同，\n幣別可參數設定。需保留並鎖定額度核准當下之匯率，作為重評與額度超額計算之依據。(1.4 台外幣額度控\n管)\n(5) 當日在更新額度動用的資料時，系統會根據每一層的幣別，依其前一日收盤匯率中價，將交易金額轉換成\n適當的幣別金額，並個別儲存在",
+      "url": "./index.html?source-document=SSR-B2-001&source-line=24#LN-DOC-SSR-B2-001",
+      "verified_at": "2026-10-12",
+      "text_sha256": "9c8000177113c4f336b053c48765f6f9446f5429dbede32d0ab8e7f49d6a7b75",
+      "excerpt_sha256": "ae1564011b4d64415adcb3feb1d0c8c218878937574f4ac0a3cad2e76366e6b5",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 24
+    },
+    "S-INT-1": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-023(計息)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-023",
+      "location": "1.5.1.1 共同業務需求／計息原則(3)(B) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(B) 設定台幣計息年基數 365 日計息算頭不算尾。\n(a) 包含閏年計算一致(分母仍以 365 計)\n(C) 支援依國別/幣別設定(如 360/365)，且可提供相關參數資料查詢。\n(4) 支援外",
+      "url": "./index.html?source-document=SSR-B2-023&source-line=14#LN-DOC-SSR-B2-023",
+      "verified_at": "2026-10-12",
+      "text_sha256": "672246a0aef3327c12a3321ae6d2110bcd663eeedc1e129680a2cbfdfeaf99bc",
+      "excerpt_sha256": "66d118f4b3f65c100a2807913c6366da00450ad81d1727a12059cb2a68c6e3fc",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 14
+    },
+    "S-INT-2": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-023(計息)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-023",
+      "location": "1.5.1.1 共同業務需求／計息原則(2)(A) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(A) 結息時，若計息區間本金有異動者，需按實際放款餘額分段計算利息。\n(3) 計息天數參數設定",
+      "url": "./index.html?source-document=SSR-B2-023&source-line=11#LN-DOC-SSR-B2-023",
+      "verified_at": "2026-10-12",
+      "text_sha256": "672246a0aef3327c12a3321ae6d2110bcd663eeedc1e129680a2cbfdfeaf99bc",
+      "excerpt_sha256": "2401f5b48b4b676879049632007b40af2891b960011be4deae08a95912c6c309",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 11
+    },
+    "S-INT-3": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-023(計息)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-023",
+      "location": "1.5.1.1 共同業務需求／計息原則(2) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(2) 結息時，應繳利息是於繳款日前一天執行記帳處理（billed），系統會分別記錄每一期應繳的利息。\n(A) 結息時，若計息區間本金有異動者，需按實際",
+      "url": "./index.html?source-document=SSR-B2-023&source-line=10#LN-DOC-SSR-B2-023",
+      "verified_at": "2026-10-12",
+      "text_sha256": "672246a0aef3327c12a3321ae6d2110bcd663eeedc1e129680a2cbfdfeaf99bc",
+      "excerpt_sha256": "ecc9539c5ec4a9aca7bc233e01c3f6b2d4c7c1eb6e359163621762321896517b",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 10
+    },
+    "S-INT-4": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-023(計息)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-023",
+      "location": "1.5.1.1 共同業務需求／計息原則(7)(A) Discount公式 · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "Discount(A)：預收利息 = 墊款金額 * 利率 * 天數 / BASIS DAYS\nTrue Discount(T)：預收利息 = 墊款金額 - 墊款金額",
+      "url": "./index.html?source-document=SSR-B2-023&source-line=26#LN-DOC-SSR-B2-023",
+      "verified_at": "2026-10-12",
+      "text_sha256": "672246a0aef3327c12a3321ae6d2110bcd663eeedc1e129680a2cbfdfeaf99bc",
+      "excerpt_sha256": "34d7257ded53ef0164645d61ea8d2e548ec0fbaa4c33d578082b26533ec3f115",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 26
+    },
+    "S-INT-5": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-023(計息)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-023",
+      "location": "1.5.1.1 共同業務需求／計息原則(8)(B)(a) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(a) 轉帳撥款時，貼現貸款金額扣除預收利息後再入存款帳戶。\n(b) 掛預收息的帳，系統會定期(依當月實際天數)自動啟動預收收益的攤提作業。\n(C) 滾息計算\n(a",
+      "url": "./index.html?source-document=SSR-B2-023&source-line=31#LN-DOC-SSR-B2-023",
+      "verified_at": "2026-10-12",
+      "text_sha256": "672246a0aef3327c12a3321ae6d2110bcd663eeedc1e129680a2cbfdfeaf99bc",
+      "excerpt_sha256": "9e097a3fcaff68012297ffdb012af2cbf7b63d1e243a5a4af9615a3862f43a52",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 31
+    },
+    "S-INT-6": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-023(計息)-v0.99.doc",
+      "version": "v0.99",
+      "document_key": "SSR-B2-023",
+      "location": "1.5.1.1 應收利息(5)(c) · 轉錄第3頁",
+      "page": 3,
+      "excerpt": "(c) “－“積欠表示實際交易金額> DUE AMT , 為多繳錢,則會產生抵繳，可設定積欠金額達\n特定金額時彈性選擇是否抵繳當期或次期 。\n(6) 延滯息 (1.6 遲延利息及違約金)\n(A) 系統依據”+”積欠金額來",
+      "url": "./index.html?source-document=SSR-B2-023&source-line=92#LN-DOC-SSR-B2-023",
+      "verified_at": "2026-10-12",
+      "text_sha256": "672246a0aef3327c12a3321ae6d2110bcd663eeedc1e129680a2cbfdfeaf99bc",
+      "excerpt_sha256": "b3c57b75e3548bd43189434eb421c01b7bb568e0c0337106a31c32ad9405fac4",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 92
+    },
+    "S-GUAR-1": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-031(信保基金)-v1.99.doc",
+      "version": "v1.99",
+      "document_key": "SSR-B2-031",
+      "location": "1.13.1.1 個金業務需求(G) · 轉錄第2頁",
+      "page": 2,
+      "excerpt": "(G) 勞工紓困專案理賠後還款\n請客戶轉帳繳款 313+ID，系統自動將款項轉入 901540726901 (一般自行帳戶) , 若客戶有參加\n協商後續在透過 RPA 拆帳，依特定比率將款項入各放款帳號，無參加協商戶，會將已還款金額\n紀錄到催收平台\n (a)勞工紓困貸款狀態為催收時，結清註記應變更為”N”，即不得受理臨櫃辦理結清，需經理債\n單位確認後並更該欄位為”Y-可結清",
+      "url": "./index.html?source-document=SSR-B2-031&source-line=53#LN-DOC-SSR-B2-031",
+      "verified_at": "2026-10-12",
+      "text_sha256": "dfaa7721694d5b2773fb49658b5efd217d40a8561944cb9ab701eee18b6c426d",
+      "excerpt_sha256": "eb30ad8c4ec0b2ed52b0ad672e5b9c4c0ef71d185e0b67f1daf51792b2feff21",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 53
+    },
+    "S-GUAR-3": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-031(信保基金)-v1.99.doc",
+      "version": "v1.99",
+      "document_key": "SSR-B2-031",
+      "location": "1.13.1.1 個金業務需求(G)(a) · 轉錄第2頁",
+      "page": 2,
+      "excerpt": "(a)勞工紓困貸款狀態為催收時，結清註記應變更為”N”，即不得受理臨櫃辦理結清，需經理債\n單位確認後並更該欄位為”Y-可結清”時，臨櫃才可辦理結清交易。\n 法金業務需求\n(1) 支援單筆/批次報送信保作業，區分批次保證及一般信保(",
+      "url": "./index.html?source-document=SSR-B2-031&source-line=57#LN-DOC-SSR-B2-031",
+      "verified_at": "2026-10-12",
+      "text_sha256": "dfaa7721694d5b2773fb49658b5efd217d40a8561944cb9ab701eee18b6c426d",
+      "excerpt_sha256": "8786107e4707e2604d8b0d743ee3c80b1197086a2d386c4dd4523b8594a51131",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 57
+    },
+    "S-GUAR-4": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-031(信保基金)-v1.99.doc",
+      "version": "v1.99",
+      "document_key": "SSR-B2-031",
+      "location": "1.13.1.1 交易17034檢核(c) · 轉錄第5頁",
+      "page": 5,
+      "excerpt": "● c. 信保理賠註記為 Y 時，信保理賠成數為必輸值。\n1.13.1.2 中國",
+      "url": "./index.html?source-document=SSR-B2-031&source-line=166#LN-DOC-SSR-B2-031",
+      "verified_at": "2026-10-12",
+      "text_sha256": "dfaa7721694d5b2773fb49658b5efd217d40a8561944cb9ab701eee18b6c426d",
+      "excerpt_sha256": "4e67f836601168e8e74d7d2933937e04031a3bbe1bfecc942f9c71689b12f5ef",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 166
+    },
+    "S-CLOSE-1": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-028(結清)-v1.99.doc",
+      "version": "v1.99",
+      "document_key": "SSR-B2-028",
+      "location": "1.10.1.1 共同業務需求／結清(13)(A) · 轉錄第10頁",
+      "page": 10,
+      "excerpt": "(A) 有擔放款同一擔保品項下之所有貸款都要結清才可以領清償證明(綁約期間一併計入塗銷違約\n金)\n(B) 列印清償證明時，系統同步帶出同一擔保品相關帳號及擔保品明細，若單一擔保品有連兩",
+      "url": "./index.html?source-document=SSR-B2-028&source-line=103#LN-DOC-SSR-B2-028",
+      "verified_at": "2026-10-12",
+      "text_sha256": "ba690a17be49ecc46050486cf1c25501f0f611638491755e6fc26c92dcddaddd",
+      "excerpt_sha256": "07cb658e57e387985628b149f56c1d18fb0d0fba2efbf341cf5391a4c02e551c",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 103
+    },
+    "S-CLOSE-2": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-028(結清)-v1.99.doc",
+      "version": "v1.99",
+      "document_key": "SSR-B2-028",
+      "location": "1.10.1.1 共同業務需求／結清(5)(F) · 轉錄第4頁",
+      "page": 4,
+      "excerpt": "(F) 透支結清金額查詢須留意當日透支增減額(參考 00417 當日餘額)，理透結清需檢核「可否結清 \n=Y」及「透支終止註記=Y」(兩者皆需要為 Y)，夜間系統跑檔一併結清貸款。(2.2 透支型融資)\n(G) 結清查詢應包括「應收寬緩期利息」餘額。\n(H) 一般查詢，可選擇對外債權查詢；",
+      "url": "./index.html?source-document=SSR-B2-028&source-line=46#LN-DOC-SSR-B2-028",
+      "verified_at": "2026-10-12",
+      "text_sha256": "ba690a17be49ecc46050486cf1c25501f0f611638491755e6fc26c92dcddaddd",
+      "excerpt_sha256": "3284342e34182e921db37a12fd80db9b7c1a32933b27fb4391db9aa466d1af63",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 46
+    },
+    "S-CLOSE-3": {
+      "type": "SSR",
+      "title": "20220030-BC-SSR-B2-028(結清)-v1.99.doc",
+      "version": "v1.99",
+      "document_key": "SSR-B2-028",
+      "location": "1.10.1.1 共同業務需求／結清(4) · 轉錄第1頁",
+      "page": 1,
+      "excerpt": "(4) 還款帳號：分期型貸款結清匯入帳號為〝貸放帳號〞；透支型結清匯入帳號為連結的〝存款帳號〞。\n(5) 結清金額查詢：\n(A) 依「產品」需求參數設定可否",
+      "url": "./index.html?source-document=SSR-B2-028&source-line=14#LN-DOC-SSR-B2-028",
+      "verified_at": "2026-10-12",
+      "text_sha256": "ba690a17be49ecc46050486cf1c25501f0f611638491755e6fc26c92dcddaddd",
+      "excerpt_sha256": "c78ac8a648955079562face1014e541e0fdb266ebf97a9f63652d8a503039788",
+      "scope": "僅依收錄SSR指定章節作答；不等同最新上線規則、法條或全文件最終決議",
+      "line_start": 14
+    }
+  },
+  "questions": [
+    {
+      "id": "LN-Q-LAW-001",
+      "version": 1,
+      "topic": "授信與擔保",
+      "type": "multi",
+      "difficulty": "基礎",
+      "prompt": "依銀行法第12條，哪些擔保屬於該條列示的擔保授信範圍？（選出所有符合項目）",
+      "options": [
+        {
+          "id": "0",
+          "label": "不動產抵押權",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "權利質權",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "銀行提供的保證",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "僅由一般自然人提供的保證",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0",
+        "1",
+        "2"
+      ],
+      "explanation": "第12條列有抵押權、質權，以及公庫主管機關、銀行或核准信用保證機構的保證。一般自然人保證未列在第4款；不因此推論該保證契約無效。",
+      "source_ids": [
+        "LAW-BANK-12"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-002",
+      "version": 1,
+      "topic": "授信與擔保",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依銀行法第13條，判斷無擔保授信的法定標準是什麼？",
+      "options": [
+        {
+          "id": "1",
+          "label": "沒有銀行法第12條各款擔保",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "貸款金額低於100萬元",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "借款人沒有工作",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "完全沒有任何還款來源",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "法定分類看是否提供第12條各款擔保，不直接以金額、職業或是否有還款來源分類。",
+      "source_ids": [
+        "LAW-BANK-13"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-003",
+      "version": 1,
+      "topic": "授信與擔保",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依民法第474條，消費借貸約定返還的核心是什麼？",
+      "options": [
+        {
+          "id": "2",
+          "label": "只能返還不動產",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "只能返還勞務",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "原本借出的同一張鈔票",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "種類、品質、數量相同之物",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "消費借貸是移轉金錢或代替物所有權，返還同種類、品質、數量之物；與必須返還原物的概念不同。",
+      "source_ids": [
+        "LAW-CIVIL-474"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-004",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "某債務依法或依約應付利息，但未約定利率，亦無其他法律可據。依民法第203條，週年利率是多少？",
+      "options": [
+        {
+          "id": "3",
+          "label": "20%",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "3%",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "5%",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "16%",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "第203條的前提是應付利息、利率未約定、亦無法律可據，才適用5%；不能解讀成所有無約定借貸一律有5%利息。",
+      "source_ids": [
+        "LAW-CIVIL-203"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-005",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "單就民法第205條，約定週年利率18%時，該條規定的法律效果為何？",
+      "options": [
+        {
+          "id": "0",
+          "label": "整份借貸契約全部無效",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "超過16%部分之利率約定無效",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "18%全額均依該條有效",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "全部利息自動改為5%",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "第205條處理超過週年16%的部分，不是宣告整份借貸契約無效，也不是改用第203條5%。本題不另處理特別法。",
+      "source_ids": [
+        "LAW-CIVIL-205"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-006",
+      "version": 1,
+      "topic": "還款與結清",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依民法第323條文字，清償給付的抵充順序為何？",
+      "options": [
+        {
+          "id": "1",
+          "label": "利息→費用→原本",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "費用→利息→原本",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "費用→原本→利息",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "原本→利息→費用",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "2"
+      ],
+      "explanation": "第323條明列先抵充費用，次充利息，次充原本；不能把這個法定原則直接當成所有系統產品參數都相同。",
+      "source_ids": [
+        "LAW-CIVIL-323"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-007",
+      "version": 1,
+      "topic": "還款與結清",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依民法第323條抵充，假設無其他約定或特別規定，費用1,000元、利息2,000元、本金10,000元，客戶支付5,000元，可抵充本金多少？",
+      "options": [
+        {
+          "id": "2",
+          "label": "3,000元",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "5,000元",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "0元",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "2,000元",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "先付費用1,000元及利息2,000元，剩餘5,000−1,000−2,000＝2,000元抵充本金，本金仍餘8,000元。",
+      "source_ids": [
+        "LAW-CIVIL-323"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LAW-008",
+      "version": 1,
+      "topic": "授信與擔保",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依民法第860條，普通抵押權的主要特徵為何？",
+      "options": [
+        {
+          "id": "3",
+          "label": "必須先清償所有無擔保債權",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "不動產須移轉占有給債權人",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "不移轉占有，得就不動產賣得價金優先受償",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "設定後不動產所有權自動歸銀行",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "普通抵押權以不移轉占有的不動產作擔保，並就賣得價金優先受償，不是設定時即移轉所有權。",
+      "source_ids": [
+        "LAW-CIVIL-860"
+      ],
+      "status": "來源已核對",
+      "scope": "法規基礎"
+    },
+    {
+      "id": "LN-Q-LIMIT-001",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR章節，額度控管的五個層次由上而下如何排列？",
+      "options": [
+        {
+          "id": "0",
+          "label": "企業團→子企業團→客戶→額度→產品",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "客戶→企業團→子企業團→產品→額度",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "企業團→客戶→產品→子企業團→額度",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "額度→產品→客戶→子企業團→企業團",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "指定章節列明企業團層、子企業團層、客戶層、額度層、產品層；本題考該版本的業務額度架構。",
+      "source_ids": [
+        "S-LIMIT-1"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-LIMIT-002",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR，人工限縮上階額度後，新增下階額度應如何處理上階限額？",
+      "options": [
+        {
+          "id": "1",
+          "label": "維持人工限制，不由系統自動重算限額",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "每日重評時自動解除限制",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "把上階餘額也停止重評",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "自動提高至下階加總值",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "人工限縮鎖定限額，除非人工再次調整，系統不能因新增額度自行重算；原文同時說餘額仍會重評。",
+      "source_ids": [
+        "S-LIMIT-2"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-LIMIT-003",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，上階已設定為非循環額度，下階能否設定為循環？",
+      "options": [
+        {
+          "id": "2",
+          "label": "不可以，下階不得設定循環",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "僅外幣額度可以",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "可以，額度金額不超過即可",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "可以，只要利率相同",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "2"
+      ],
+      "explanation": "本題引用章節直接限制上階非循環時下階不得循環；金額、利率或幣別並非該款解除限制的条件。",
+      "source_ids": [
+        "S-LIMIT-3"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-LIMIT-004",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR，承諾額度核准100萬元，已實際動用30萬元，該款要求以多少佔用上階額度？",
+      "options": [
+        {
+          "id": "3",
+          "label": "0元",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "30萬元",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "70萬元",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "100萬元",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "2"
+      ],
+      "explanation": "承諾額度依核准金額佔用上階，而不是只依已動用金額；此例以核准100萬元佔用。",
+      "source_ids": [
+        "S-LIMIT-4"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-LIMIT-005",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，轉催收後佔用額度採用哪個金額？",
+      "options": [
+        {
+          "id": "0",
+          "label": "催收款項本金",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "本金加全部催收利息",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "全部催收款項含費用",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "只採用催收費用",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "該款明示以催收款項本金佔用額度，並排除催收款項全部的解讀。",
+      "source_ids": [
+        "S-LIMIT-5"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-LIMIT-006",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，借款用途、借款期間、聯貸註記等授信條件主要設定在哪一層？",
+      "options": [
+        {
+          "id": "1",
+          "label": "子企業團層",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "客戶層",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "額度層",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "企業團層",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "3"
+      ],
+      "explanation": "該款區分額度層的授信條件，其他層次主要提供額度管控資訊，不能把用途等欄位概括配置到所有層。",
+      "source_ids": [
+        "S-LIMIT-6"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-LIMIT-007",
+      "version": 1,
+      "topic": "額度管理",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，上下階額度是否必須使用相同幣別？",
+      "options": [
+        {
+          "id": "2",
+          "label": "可支援上下階幣別不同，幣別可參數設定",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "只能在結清後改為不同幣別",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "所有層必須同一幣別",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "僅產品層可有不同幣別",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "2"
+      ],
+      "explanation": "該款明載可支援上下階額度幣別不同；同一階的幣別管理要求與上下階能否不同，是兩個不同問題。",
+      "source_ids": [
+        "S-LIMIT-7"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-INT-001",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，台幣計息遇閏年時，年基數如何設定？",
+      "options": [
+        {
+          "id": "3",
+          "label": "依月份天數任意設定",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "必須改為366日",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "仍以365日計算",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "改為360日",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "該版本寫明台幣年基數365日、算頭不算尾，閏年分母仍以365計；不外推到所有外幣產品。",
+      "source_ids": [
+        "S-INT-1"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-INT-002",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR，計息區間內曾還本，使本金降低，結息時应如何計算？",
+      "options": [
+        {
+          "id": "0",
+          "label": "全期使用期末最低本金",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "全期使用起始最高本金",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "依實際放款餘額分段計算",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "把整期利息歸零",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "2"
+      ],
+      "explanation": "本金異動時以實際放款餘額分段，避免把整段期間一律套用期初或期末餘額。",
+      "source_ids": [
+        "S-INT-2"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-INT-003",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，結息時每期應繳利息的billed記帳處理是在什麼時間？",
+      "options": [
+        {
+          "id": "1",
+          "label": "繳款日後一個月",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "只有結清當天",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "貸款到期後才處理",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "繳款日前一天",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "指定章節寫明於繳款日前一天執行billed，且分別記錄每一期應繳利息。",
+      "source_ids": [
+        "S-INT-3"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-INT-004",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR的Discount(A)公式，墊款金額100,000元、年利率3.65%、天數10日、BASIS DAYS=365，預收利息是多少？",
+      "options": [
+        {
+          "id": "2",
+          "label": "365元",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "1,000元",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "10元",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "100元",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "100,000×0.0365×10÷365＝100元。這裡指定Discount(A)，不能改用True Discount(T)公式。",
+      "source_ids": [
+        "S-INT-4"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-INT-005",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，貼現貸款以轉帳撥款且採預收利息時，入存款帳戶的金額如何處理？",
+      "options": [
+        {
+          "id": "3",
+          "label": "一律全額入帳，不處理利息",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "貸款金額再加上預收利息",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "貸款金額扣除預收利息",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "只將預收利息入存款帳戶",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "指定章節說明貼現貸款先扣除預收利息再入存款帳戶；不把本金與預收息視為同一筆全額入帳。",
+      "source_ids": [
+        "S-INT-5"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-INT-006",
+      "version": 1,
+      "topic": "利息與計息",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，實際繳款金額大於DUE AMT，出現「負積欠」表示什麼？",
+      "options": [
+        {
+          "id": "0",
+          "label": "完全沒有繳款",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "利率一定為負值",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "仍欠當期本金",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "多繳，會產生抵繳",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "3"
+      ],
+      "explanation": "負積欠表示實際交易金額超過應繳金額而多繳；抵繳當期或次期等處理仍需依參數設定。",
+      "source_ids": [
+        "S-INT-6"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-GUAR-001",
+      "version": 1,
+      "topic": "信保與催收",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR，勞工紓困專案理賠後還款且客戶參加協商，款項入一般自行帳戶後，後續如何處理？",
+      "options": [
+        {
+          "id": "1",
+          "label": "全部直接入單一帳號，不拆帳",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "只記錄到催收平台，不處理拆帳",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "參加協商即不接受還款",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "以RPA依特定比率拆入各放款帳號",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "指定(G)段區分協商與未協商。參加協商的後續為RPA依特定比率拆帳；本題不補造比率或未來人工處理決議。",
+      "source_ids": [
+        "S-GUAR-1"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-GUAR-002",
+      "version": 1,
+      "topic": "信保與催收",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，勞工紓困專案理賠後還款，未參加協商戶的已還款金額記錄到哪裡？",
+      "options": [
+        {
+          "id": "2",
+          "label": "人事平台",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "證券下單平台",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "信用卡平台",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "催收平台",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "指定(G)段明載無參加協商戶會將已還款金額紀錄到催收平台；不能套用參加協商戶的拆帳路徑。",
+      "source_ids": [
+        "S-GUAR-1"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-GUAR-003",
+      "version": 1,
+      "topic": "信保與催收",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR，勞工紓困貸款為催收狀態且結清註記N，臨櫃辦理結清須先完成什麼？",
+      "options": [
+        {
+          "id": "3",
+          "label": "只要當日為營業日即可",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "經理債單位確認，註記改為Y可結清",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "經辦直接忽略N執行",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "只要有入款紀錄即可",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "N表示不得受理臨櫃結清，须經理債單位確認並改為Y可結清，不能以有還款就跳過控管。",
+      "source_ids": [
+        "S-GUAR-3"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-GUAR-004",
+      "version": 1,
+      "topic": "信保與催收",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，信保理賠註記為Y時，哪個欄位為必輸？",
+      "options": [
+        {
+          "id": "0",
+          "label": "信保理賠成數",
+          "display_letter": "A"
+        },
+        {
+          "id": "1",
+          "label": "客戶電子郵件",
+          "display_letter": "B"
+        },
+        {
+          "id": "2",
+          "label": "共同借款人英文名",
+          "display_letter": "C"
+        },
+        {
+          "id": "3",
+          "label": "往來分行電話",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0"
+      ],
+      "explanation": "交易17034檢核(c)明列理賠註記Y時理賠成數必輸。這是指定版本的欄位要求，不額外猜測錯誤碼。",
+      "source_ids": [
+        "S-GUAR-4"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-CLOSE-001",
+      "version": 1,
+      "topic": "還款與結清",
+      "type": "single",
+      "difficulty": "情境",
+      "prompt": "依本題SSR，同一擔保品擔保A、B兩筆貸款，只有A結清，能否據該款領取清償證明？",
+      "options": [
+        {
+          "id": "1",
+          "label": "可以，只要A本金較大",
+          "display_letter": "A"
+        },
+        {
+          "id": "2",
+          "label": "不可以，同一擔保品項下所有貸款都要結清",
+          "display_letter": "B"
+        },
+        {
+          "id": "3",
+          "label": "可以，無須核對B",
+          "display_letter": "C"
+        },
+        {
+          "id": "0",
+          "label": "可以，任一筆結清即可",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "2"
+      ],
+      "explanation": "指定(13)(A)要求同一擔保品項下所有貸款都結清；不能只依其中一筆狀態出具證明。",
+      "source_ids": [
+        "S-CLOSE-1"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-CLOSE-002",
+      "version": 1,
+      "topic": "還款與結清",
+      "type": "multi",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，理透結清須同時檢核哪些註記為Y？（選出所有必要項目）",
+      "options": [
+        {
+          "id": "2",
+          "label": "客戶電子郵件已驗證",
+          "display_letter": "A"
+        },
+        {
+          "id": "3",
+          "label": "行動銀行已登入",
+          "display_letter": "B"
+        },
+        {
+          "id": "0",
+          "label": "可否結清",
+          "display_letter": "C"
+        },
+        {
+          "id": "1",
+          "label": "透支終止註記",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "0",
+        "1"
+      ],
+      "explanation": "指定(5)(F)要求可否結清與透支終止註記兩者皆Y，不能只核對其中一項。本題不自行補上其他欄位。",
+      "source_ids": [
+        "S-CLOSE-2"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    },
+    {
+      "id": "LN-Q-CLOSE-003",
+      "version": 1,
+      "topic": "還款與結清",
+      "type": "single",
+      "difficulty": "基礎",
+      "prompt": "依本題SSR，分期型貸款與透支型貸款結清的匯入帳號有何差異？",
+      "options": [
+        {
+          "id": "3",
+          "label": "兩者都匯入任意第三人帳號",
+          "display_letter": "A"
+        },
+        {
+          "id": "0",
+          "label": "兩者都匯入貸放帳號",
+          "display_letter": "B"
+        },
+        {
+          "id": "1",
+          "label": "分期匯入貸放帳號；透支匯入連結存款帳號",
+          "display_letter": "C"
+        },
+        {
+          "id": "2",
+          "label": "分期匯入連結存款帳號；透支匯入貸放帳號",
+          "display_letter": "D"
+        }
+      ],
+      "correct": [
+        "1"
+      ],
+      "explanation": "該款明確區分分期型與透支型結清匯入帳號。實務操作仍須依實際產品與交易控管確認。",
+      "source_ids": [
+        "S-CLOSE-3"
+      ],
+      "status": "來源已核對",
+      "scope": "CTBC收錄文件版本"
+    }
+  ]
+}

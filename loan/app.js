@@ -26,7 +26,7 @@ function importRecord(c){return {id:c.id,title:c.key+'｜'+c.title,topic:c.group
 function drawCategories(){
  const modules=['知識庫','SSR','FSD','需求清單','L6','L7','撰寫爭議','更新紀錄','全部'];
  $('#categories').innerHTML=modules.map(x=>'<button class="chip '+(x===category?'active':'')+'" data-category="'+esc(x)+'">'+esc(x)+'</button>').join('');
- $('#module-nav').innerHTML=modules.filter(x=>x!=='全部').map(x=>'<a href="#module-'+encodeURIComponent(x)+'" class="side-link '+(x===category?'active':'')+'" data-module="'+esc(x)+'">'+moduleIcon(x)+'<span>'+esc(x)+'</span></a>').join('');
+ $('#module-nav').innerHTML=modules.filter(x=>x!=='全部').map(x=>'<a href="#module-'+encodeURIComponent(x)+'" class="side-link '+(x===category?'active':'')+'" data-module="'+esc(x)+'">'+moduleIcon(x)+'<span>'+esc(x)+'</span></a>').join('')+'<a class="side-link" href="./challenge.html">'+moduleIcon('L6')+'<span>業務知識挑戰</span></a>';
  document.querySelectorAll('[data-category],[data-module]').forEach(b=>b.onclick=e=>{e.preventDefault();setModule(b.dataset.category||b.dataset.module)});
 }
 function setModule(x){category=x;page=0;selected=null;active='全部';$('#q').value='';$('#topic').value='';$('#source').value='';drawFilters();drawCategories();render();}
@@ -84,3 +84,4 @@ $('#q').addEventListener('input',()=>{page=0;selected=null;if(/^放[\s_-]*\d+[\s
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{view=b.dataset.view;document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));if(selected)show(selected)});
 window.addEventListener('hashchange',()=>{const id=decodeURIComponent(location.hash.slice(1));if(records.some(r=>r.id===id)){active='全部';category='全部';$('#q').value='';$('#topic').value='';$('#source').value='';$('#group').value='';selected=id;page=0;drawFilters();drawCategories();render()}});
 init().catch(e=>$('#detail').innerHTML='<div class="empty">資料載入失敗：'+esc(e.message)+'。請重新整理。</div>');
+
