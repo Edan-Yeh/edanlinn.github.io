@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-08",
-  "completedDays": 18,
-  "currentTrack": "Modernization / Containers / ECS vs EKS",
+  "updatedAt": "2026-10-12",
+  "completedDays": 19,
+  "currentTrack": "ECS Rollback / Database Schema Compatibility",
   "scores": [
     {
       "day": 1,
@@ -66,6 +66,18 @@ window.CLOUD_SA_DATA = {
     {
       "day": 16,
       "score": 98
+    },
+    {
+      "day": 19,
+      "score": 90
+    },
+    {
+      "day": 17,
+      "score": 100
+    },
+    {
+      "day": 18,
+      "score": 90
     }
   ],
   "roadmap": [
@@ -92,7 +104,7 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–16"
+        "value": "Day 1–19"
       },
       {
         "label": "目前主題",
@@ -3286,6 +3298,29 @@ window.CLOUD_SA_DATA = {
         "ALB Healthy ≠ Loan Transaction Healthy；必須搭配交易級 Smoke Test。",
         "Rolling Deployment 的 Task 啟停取決於 minimumHealthyPercent、maximumPercent 與健康檢查。",
         "Database Schema Migration 應考慮向前/向後相容與安全 Rollback。"
+      ]
+    },
+    {
+      "day": 19,
+      "date": "2026-10-12",
+      "topic": "ECS Application Rollback / Database Schema Compatibility / Expand–Migrate–Contract",
+      "score": 90,
+      "status": "completed",
+      "mastered": [
+        "能辨識 ECS 應用程式版本回滾與資料庫 Schema 變更是不同層次的復原問題",
+        "理解部署需維持新舊版本與資料庫 Schema 相容，降低 Rolling Deployment 風險",
+        "能將 Expand–Migrate–Contract 應用於金融 Loan API 的無停機變更"
+      ],
+      "corrections": [
+        [
+          "資料庫 Schema Expansion 與 ECS 新版部署的先後順序",
+          "應先部署向後相容的 Schema Expansion，再逐步部署新版 ECS Tasks；資料遷移與舊欄位移除需在確認相容與穩定後進行。"
+        ]
+      ],
+      "memory": [
+        "Expand → Migrate → Contract：先擴充相容 Schema，再遷移資料及程式流量，最後移除舊結構。",
+        "ECS Application Rollback 不等於 Database Schema Rollback。",
+        "Rolling Deployment 期間必須支援新舊版本同時存取資料庫。"
       ]
     }
   ]
