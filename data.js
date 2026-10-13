@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-12",
-  "completedDays": 19,
-  "currentTrack": "ECS Rollback / Database Schema Compatibility",
+  "updatedAt": "2026-10-13",
+  "completedDays": 20,
+  "currentTrack": "CI/CD / Release Governance / Quality & Security Gates",
   "scores": [
     {
       "day": 1,
@@ -78,6 +78,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 18,
       "score": 90
+    },
+    {
+      "day": 20,
+      "score": 65
     }
   ],
   "roadmap": [
@@ -104,7 +108,7 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–19"
+        "value": "Day 1–20"
       },
       {
         "label": "目前主題",
@@ -3321,6 +3325,42 @@ window.CLOUD_SA_DATA = {
         "Expand → Migrate → Contract：先擴充相容 Schema，再遷移資料及程式流量，最後移除舊結構。",
         "ECS Application Rollback 不等於 Database Schema Rollback。",
         "Rolling Deployment 期間必須支援新舊版本同時存取資料庫。"
+      ]
+    },
+    {
+      "day": 20,
+      "date": "2026-10-13",
+      "topic": "CI/CD / Quality Gates / ECR / Staging / Manual Approval / Production Release",
+      "score": 65,
+      "status": "completed",
+      "answers": {
+        "Q1": "B",
+        "Q2": "A, C, E",
+        "Q3": "1→D, 2→A, 3→C, 4→B",
+        "pipelineOrder": "D → A → E → B → F → C → G"
+      },
+      "mastered": [
+        "Critical Vulnerability 應修補或走正式風險例外流程，不直接繞過 Security Gate",
+        "Staging 與 Production 應使用相同可追溯 Image Artifact",
+        "Manual Approval 不取代自動化測試；Production 必須做交易級驗證"
+      ],
+      "corrections": [
+        [
+          "Q3 誤將 Security Gate 與 Manual Approval Gate 對調",
+          "正確配對 1→C、2→A、3→D、4→B；Security Gate 根據弱點及政策阻擋，Manual Approval Gate 等待有權限人員核准，Test Gate 負責測試，Production Incident Response 處理上線後事故。"
+        ],
+        [
+          "CI/CD 發布排序誤答 D→A→E→B→F→C→G",
+          "本題條件下正確順序 D→A→F→C→B→E→G：建置/單元測試→安全掃描→Staging 驗證→正式變更核准→相容 Schema Expansion→ECS Production 部署→交易 Smoke Test。Schema Expansion 必須早於新應用程式部署。"
+        ]
+      ],
+      "memory": [
+        "Staging = 盡可能貼近 Production 的預備發布驗證環境；與 SIT、UAT 目的不同。",
+        "ECR = Elastic Container Registry；儲存、管理與掃描 Container Images，不負責執行容器。",
+        "Manual Approval = 人工授權發布關卡，不等於自動化資安或品質測試。",
+        "Test Gate 問測試是否通過；Security Gate 問是否符合資安政策；Approval Gate 問是否獲授權；Production Verification 問上線後交易是否正常。",
+        "ECR 有弱點掃描不代表自動阻止部署；須明確設定 Pipeline Policy Gate。",
+        "Expand–Migrate–Contract：先相容 Schema Expansion，再部署新版及遷移，確認安全後才 Contract。"
       ]
     }
   ]
