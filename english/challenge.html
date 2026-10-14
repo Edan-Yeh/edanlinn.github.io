@@ -100,8 +100,32 @@
       </div>
     </section>
 
+    <section class="section" id="vocabularySection">
+      <div class="section-head">
+        <div>
+          <h2>基礎單字｜Daily Vocabulary</h2>
+          <p>先自己想意思，再看答案；每個單字都有北美＋印度發音與簡單例句。重點是日常口說，不是專業術語。</p>
+        </div>
+        <div class="filters vocab-filters">
+          <select id="vocabFilter" aria-label="單字分類">
+            <option value="all">全部分類</option>
+            <option value="日常高頻">日常高頻</option>
+            <option value="基礎動詞">基礎動詞</option>
+            <option value="基礎形容詞">基礎形容詞</option>
+            <option value="口說副詞">口說副詞</option>
+            <option value="連接表達">連接表達</option>
+            <option value="口說片語">口說片語</option>
+          </select>
+          <button class="btn secondary" id="randomVocabBtn" type="button">隨機 8 個</button>
+          <button class="btn ghost" id="learningVocabBtn" type="button">只看不熟</button>
+          <button class="btn ghost" id="allVocabBtn" type="button">顯示全部</button>
+        </div>
+      </div>
+      <div class="grid grid-4" id="vocabGrid"></div>
+    </section>
+
     <section class="section">
-      <div class="section-head"><div><h2>Active Chunks｜口說＋基礎單字</h2><p>除了面試英文，也加入高頻日常口說、基礎動詞與連接語，讓你更容易自然聊天與即時組句。</p></div><div class="filters"><select id="chunkLevelFilter" aria-label="Chunk 難度"><option value="all">全部難度</option><option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option></select><button class="btn ghost" id="randomChunksBtn" type="button">隨機 3 個</button></div></div>
+      <div class="section-head"><div><h2>Active Chunks｜自然口說</h2><p>把單字放進真正會說出口的句型裡，練習自然反應、連接與面試表達。</p></div><div class="filters"><select id="chunkLevelFilter" aria-label="Chunk 難度"><option value="all">全部難度</option><option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option></select><button class="btn ghost" id="randomChunksBtn" type="button">隨機 3 個</button></div></div>
       <div class="grid grid-3" id="chunkGrid"></div>
     </section>
 
@@ -144,8 +168,8 @@
 <nav class="mobile-dock" aria-label="手機快速練習">
   <button class="mobile-dock-btn primary start-mode" data-mode="adaptive" data-size="5" type="button"><span>⚡</span>5題挑戰</button>
   <button class="mobile-dock-btn start-mode" data-mode="listening" data-size="5" type="button"><span>🎧</span>聽力</button>
+  <button class="mobile-dock-btn" id="mobileVocabBtn" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" type="button"><span>💬</span>Chunks</button>
-  <button class="mobile-dock-btn" id="mobileSettingsBtn" type="button"><span>⚙️</span>設定</button>
 </nav>
 <script src="question-bank.js"></script>
 <script src="app.js"></script>
