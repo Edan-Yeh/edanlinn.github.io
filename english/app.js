@@ -546,6 +546,7 @@
     $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
     $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
+    $('jumpVocabBtn')?.addEventListener('click',()=>{renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
     $('mobileVocabBtn')?.addEventListener('click',()=>{renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
     $('mobileChunksBtn')?.addEventListener('click',()=>{$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});
