@@ -11,14 +11,14 @@
   const skillLabels = CONTENT.skillLabels;
   const initialSkills = {listening:1.0,speaking:1.1,chunks:1.2,interview:1.2,rescue:1.0};
   const defaultState = () => ({
-    schemaVersion: 2,
+    schemaVersion: 3,
     xp: 0,
     skills: {...initialSkills},
     qstats: {},
     chunkKnown: {},
     sessions: [],
     completedDates: [],
-    settings: {accent:'adaptive', speechRate:'adaptive', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
+    settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
     lastContentVersion: CONTENT.contentVersion
   });
 
@@ -41,15 +41,18 @@
       if(!raw) return defaultState();
       const parsed = JSON.parse(raw);
       const base = defaultState();
+      const migratedSettings={...base.settings,...(parsed.settings||{})};
+      if((parsed.schemaVersion||0)<3 && migratedSettings.speechRate==='adaptive')migratedSettings.speechRate='1.00';
       return {
         ...base,
         ...parsed,
+        schemaVersion:3,
         skills:{...base.skills,...(parsed.skills||{})},
         qstats: parsed.qstats||{},
         chunkKnown: parsed.chunkKnown||{},
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
-        settings:{...base.settings,...(parsed.settings||{})},
+        settings:migratedSettings,
         lastContentVersion:CONTENT.contentVersion
       };
     }catch(e){ return defaultState(); }
@@ -461,10 +464,10 @@
     const allowedRates=new Set(['adaptive','0.75','0.85','0.90','0.95','1.00','1.05','1.10','1.15','1.20']);
     const allowedQualities=new Set(['natural','system']);
     if(!allowedAccents.has(state.settings.accent))state.settings.accent='adaptive';
-    if(!allowedRates.has(String(state.settings.speechRate)))state.settings.speechRate='adaptive';
+    if(!allowedRates.has(String(state.settings.speechRate)))state.settings.speechRate='1.00';
     if(!allowedQualities.has(state.settings.voiceQuality))state.settings.voiceQuality='natural';
     $('accentSelect').value=state.settings.accent||'adaptive';
-    $('speechRateSelect').value=String(state.settings.speechRate||'adaptive');
+    $('speechRateSelect').value=String(state.settings.speechRate||'1.00');
     $('voiceQualitySelect').value=state.settings.voiceQuality||'natural';
     $('sessionSizeSelect').value=String(state.settings.sessionSize||10);
     $('speechRecognitionSelect').value=state.settings.speechRecognition||'auto';
