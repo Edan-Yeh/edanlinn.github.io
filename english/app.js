@@ -83,6 +83,16 @@
     return count;
   }
 
+  function setMobileDockActive(key){
+    const buttons=[...document.querySelectorAll('.mobile-dock-btn[data-nav]')];
+    buttons.forEach(btn=>{
+      const active=btn.dataset.nav===key;
+      btn.classList.toggle('active',active);
+      if(active) btn.setAttribute('aria-current','page');
+      else btn.removeAttribute('aria-current');
+    });
+  }
+
   function renderOverview(){
     const [rank] = rankInfo();
     $('rankValue').textContent = rank;
@@ -262,6 +272,7 @@
 
   function startSession(mode,sizeOverride=null){
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
+    setMobileDockActive(mode==='listening'?'listening':'challenge');
     const requestedSize=sizeOverride===null?state.settings.sessionSize:sizeOverride;
     const size = clamp(parseInt(requestedSize,10)||10,5,15);
     const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習'};
@@ -546,9 +557,10 @@
     $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
     $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
-    $('jumpVocabBtn')?.addEventListener('click',()=>{renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
-    $('mobileVocabBtn')?.addEventListener('click',()=>{renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
-    $('mobileChunksBtn')?.addEventListener('click',()=>{$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});
+    $('jumpVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
+    $('mobileVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
+    $('mobileChunksBtn')?.addEventListener('click',()=>{setMobileDockActive('chunks');$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});
+    document.querySelectorAll('.mobile-dock-btn[data-nav]').forEach(btn=>btn.addEventListener('click',()=>setMobileDockActive(btn.dataset.nav)));
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});
     $('speechRateSelect').addEventListener('change',e=>{state.settings.speechRate=e.target.value;save();});
     $('voiceQualitySelect').addEventListener('change',e=>{state.settings.voiceQuality=e.target.value;save();});
