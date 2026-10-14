@@ -1,7 +1,7 @@
 window.EDAN_ENGLISH_CONTENT = {
   schemaVersion: 1,
-  contentVersion: '2026.10.14-v2',
-  updatedAt: '2026-10-14',
+  contentVersion: '2026.10.15-v3',
+  updatedAt: '2026-10-15',
   baseline: 'MongoDB recruiter interview 2026-10-12',
   skillLabels: {
     listening: '聽力 / Question Intent',
@@ -40,7 +40,33 @@ window.EDAN_ENGLISH_CONTENT = {
     {id:'c27', level:3, en:'From a customer perspective…', zh:'從客戶角度來看…', example:'From a customer perspective, the main concern is service continuity.'},
     {id:'c28', level:3, en:'To keep the project moving forward…', zh:'為了讓專案往前…', example:'To keep the project moving forward, I clarify ownership, actions, and deadlines.'},
     {id:'c29', level:4, en:'I bridge business and technical teams.', zh:'我連結業務與技術團隊。', example:'I bridge business and technical teams by translating impact, risk, and technical constraints.'},
-    {id:'c30', level:4, en:'I make the decision based on…', zh:'我會依據…做決策。', example:'I make the decision based on customer impact, risk, timeline, and reversibility.'}
+    {id:'c30', level:4, en:'I make the decision based on…', zh:'我會依據…做決策。', example:'I make the decision based on customer impact, risk, timeline, and reversibility.'},
+
+    {id:'c31', level:1, en:'It depends.', zh:'要看情況。', example:'It depends. Sometimes I work from the office, and sometimes I work from home.'},
+    {id:'c32', level:1, en:'That makes sense.', zh:'這樣說有道理。', example:'That makes sense. I understand why the team chose that approach.'},
+    {id:'c33', level:1, en:'I see what you mean.', zh:'我懂你的意思。', example:'I see what you mean. The issue is not the tool, but how we use it.'},
+    {id:'c34', level:1, en:'Actually…', zh:'其實／實際上…', example:'Actually, I started my career as a software engineer.'},
+    {id:'c35', level:1, en:'Basically…', zh:'簡單來說…', example:'Basically, my job is to help different teams solve problems together.'},
+    {id:'c36', level:1, en:'For now…', zh:'目前先…', example:'For now, we are focusing on the most important issues first.'},
+    {id:'c37', level:1, en:'At the moment…', zh:'目前／現在…', example:'At the moment, I am working on a banking transformation project.'},
+    {id:'c38', level:1, en:'Most of the time…', zh:'大部分時間…', example:'Most of the time, I use Mandarin at work, but I also use English with vendors.'},
+    {id:'c39', level:1, en:'I’m not sure yet.', zh:'我還不確定。', example:'I’m not sure yet, but I can check and get back to you.'},
+    {id:'c40', level:1, en:'Let me explain.', zh:'讓我說明一下。', example:'Let me explain. There are two main reasons for this decision.'},
+    {id:'c41', level:1, en:'What I mean is…', zh:'我的意思是…', example:'What I mean is, the process works, but it still needs improvement.'},
+    {id:'c42', level:1, en:'The main reason is…', zh:'主要原因是…', example:'The main reason is that we need more time to test the change.'},
+    {id:'c43', level:1, en:'That’s why…', zh:'所以才會…', example:'The issue affected several teams. That’s why we escalated it early.'},
+    {id:'c44', level:1, en:'It works for me.', zh:'我可以／對我來說沒問題。', example:'Three o’clock works for me. I can join the meeting then.'},
+    {id:'c45', level:1, en:'That sounds good.', zh:'聽起來不錯。', example:'That sounds good. Let’s use that plan for now.'},
+    {id:'c46', level:1, en:'I don’t mind.', zh:'我不介意。', example:'I don’t mind joining a little earlier if needed.'},
+    {id:'c47', level:1, en:'Either way is fine.', zh:'兩種都可以。', example:'We can meet online or in person. Either way is fine.'},
+    {id:'c48', level:1, en:'I’d rather…', zh:'我比較希望…', example:'I’d rather confirm the facts before making a decision.'},
+    {id:'c49', level:1, en:'I haven’t decided yet.', zh:'我還沒決定。', example:'I haven’t decided yet. I want to understand the role first.'},
+    {id:'c50', level:1, en:'I’m used to…', zh:'我已經習慣…', example:'I’m used to working with different teams and tight deadlines.'},
+    {id:'c51', level:2, en:'I’m still getting used to…', zh:'我還在適應…', example:'I’m still getting used to speaking English in interviews.'},
+    {id:'c52', level:2, en:'I’ll check and get back to you.', zh:'我確認後再回覆你。', example:'I’ll check the latest status and get back to you this afternoon.'},
+    {id:'c53', level:2, en:'Let me find out.', zh:'我確認／查一下。', example:'I don’t have the number right now. Let me find out.'},
+    {id:'c54', level:2, en:'I’ll figure it out.', zh:'我會想辦法弄清楚。', example:'I’m not familiar with that tool yet, but I’ll figure it out.'},
+    {id:'c55', level:2, en:'I’ll follow up.', zh:'我會追蹤後續。', example:'I’ll follow up with the team and make sure we close the issue.'}
   ],
   questions: [
     {
@@ -362,6 +388,97 @@ window.EDAN_ENGLISH_CONTENT = {
       intent:'你的差異化：technical + financial IT + customer delivery。',
       model:'My advantage is the combination of technical depth and customer-facing delivery. I can discuss system issues with engineers, understand the business impact for a financial customer, and translate that into clear delivery decisions. That helps me connect technical execution with customer outcomes.',
       keywords:['technical depth','customer-facing delivery','business impact','customer outcomes']
+    },
+
+    {
+      id:'basic-l1-001', source:'Everyday spoken English', skill:'listening', type:'listening_intent', level:1,
+      text:'What do you usually do after work?',
+      intent:'一般口說：問你下班後通常做什麼。',
+      options:['下班後的日常活動','目前專案內容','薪資期待','工作年資'], answer:0,
+      model:'After work, I usually exercise, watch a show, or just relax at home.',
+      keywords:['usually','after work','relax']
+    },
+    {
+      id:'basic-l1-002', source:'Everyday spoken English', skill:'listening', type:'listening_intent', level:1,
+      text:'How long does it usually take?',
+      intent:'一般口說：問某件事情通常需要多久。',
+      options:['所需時間','價格','原因','地點'], answer:0,
+      model:'It usually takes about thirty minutes.',
+      keywords:['how long','usually take']
+    },
+    {
+      id:'basic-l1-003', source:'Everyday spoken English', skill:'listening', type:'listening_intent', level:1,
+      text:'Are you okay with that?',
+      intent:'一般口說：確認你是否能接受這個安排。',
+      options:['是否能接受安排','是否聽懂技術內容','是否要離職','是否需要加薪'], answer:0,
+      model:'Yes, that works for me.',
+      keywords:['okay with that','works for me']
+    },
+    {
+      id:'basic-l1-004', source:'Everyday spoken English', skill:'listening', type:'listening_intent', level:1,
+      text:'What do you mean by that?',
+      intent:'一般口說：請對方進一步說明剛剛的意思。',
+      options:['請對方解釋','請對方重複名字','問時間','問地點'], answer:0,
+      model:'What I mean is, we should confirm the facts first.',
+      keywords:['what do you mean','explain']
+    },
+    {
+      id:'basic-l1-005', source:'Everyday spoken English', skill:'speaking', type:'speaking', level:1,
+      text:'What do you usually do on weekends?',
+      intent:'練習基礎日常口說，不需要專業內容。',
+      model:'On weekends, I usually spend time with family or friends, exercise, and sometimes watch movies or study English.',
+      keywords:['usually','weekends','friends','exercise']
+    },
+    {
+      id:'basic-l1-006', source:'Everyday spoken English', skill:'speaking', type:'speaking', level:1,
+      text:'What are you doing these days?',
+      intent:'練習自然回答「你最近在忙什麼」。',
+      model:'These days, I’m busy with work and I’m also spending more time improving my English.',
+      keywords:['these days','busy','improving']
+    },
+    {
+      id:'basic-l1-007', source:'Everyday spoken English', skill:'chunks', type:'choice', level:1,
+      text:'「我還不確定，我確認後再回覆你」最自然的說法？',
+      options:['I’m not sure yet. I’ll check and get back to you.','I don’t know. Wait.','Maybe later I tell you.','I will see.'], answer:0,
+      model:'I’m not sure yet. I’ll check and get back to you.',
+      keywords:['not sure yet','check','get back to you']
+    },
+    {
+      id:'basic-l1-008', source:'Everyday spoken English', skill:'chunks', type:'choice', level:1,
+      text:'「這樣對我沒問題」最自然的口語說法？',
+      options:['That works for me.','It can use me.','I can okay.','That is work.'], answer:0,
+      model:'That works for me.',
+      keywords:['works for me']
+    },
+    {
+      id:'basic-l2-001', source:'Everyday spoken English', skill:'speaking', type:'speaking', level:2,
+      text:'Tell me about something you are still getting used to.',
+      intent:'練習 used to / getting used to 的自然口說。',
+      model:'I’m still getting used to speaking English in interviews. I understand a lot, but I need more practice responding quickly.',
+      keywords:['getting used to','practice','responding quickly']
+    },
+    {
+      id:'basic-l2-002', source:'Everyday spoken English', skill:'listening', type:'listening_intent', level:2,
+      text:'Would you rather do it now or wait until tomorrow?',
+      intent:'一般口說：問你比較偏好現在做，還是明天做。',
+      options:['偏好與選擇','工作內容','專案風險','年資'], answer:0,
+      model:'I’d rather do it now so we can finish it today.',
+      keywords:['would you rather','now','tomorrow']
+    },
+    {
+      id:'basic-l2-003', source:'Everyday spoken English', skill:'listening', type:'listening_intent', level:2,
+      text:'Have you decided yet?',
+      intent:'一般口說：問你是否已經做出決定。',
+      options:['是否已做決定','是否已吃飯','是否已上線','是否有經驗'], answer:0,
+      model:'Not yet. I’m still thinking about it.',
+      keywords:['decided yet','not yet']
+    },
+    {
+      id:'basic-l2-004', source:'Everyday spoken English', skill:'speaking', type:'speaking', level:2,
+      text:'Tell me about something that took you a while to learn.',
+      intent:'練習一般敘事與 took a while 這種高頻口說。',
+      model:'It took me a while to get comfortable speaking English at work. I improved by listening more and practicing short answers every day.',
+      keywords:['took a while','comfortable','practice']
     }
   ]
 };
