@@ -202,9 +202,10 @@
     return selected;
   }
 
-  function startSession(mode){
+  function startSession(mode,sizeOverride=null){
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
-    const size = clamp(parseInt(state.settings.sessionSize,10)||10,5,15);
+    const requestedSize=sizeOverride===null?state.settings.sessionSize:sizeOverride;
+    const size = clamp(parseInt(requestedSize,10)||10,5,15);
     const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習'};
     session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null};
     $('resultSection').classList.remove('show');
@@ -482,7 +483,9 @@
     $('chunkLevelFilter').addEventListener('change',()=>renderChunks()); $('randomChunksBtn').addEventListener('click',()=>renderChunks(3));
     $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
-    $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});\n    $('mobileChunksBtn')?.addEventListener('click',()=>{$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});\n    $('mobileSettingsBtn')?.addEventListener('click',()=>{$('settingsSection').classList.remove('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
+    $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
+    $('mobileChunksBtn')?.addEventListener('click',()=>{$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});
+    $('mobileSettingsBtn')?.addEventListener('click',()=>{$('settingsSection').classList.remove('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});
     $('speechRateSelect').addEventListener('change',e=>{state.settings.speechRate=e.target.value;save();});
     $('voiceQualitySelect').addEventListener('change',e=>{state.settings.voiceQuality=e.target.value;save();});
