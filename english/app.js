@@ -17,6 +17,7 @@
     qstats: {},
     chunkKnown: {},
     vocabKnown: {},
+    vocabStats: {},
     sessions: [],
     completedDates: [],
     settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
@@ -29,6 +30,7 @@
   let speakingTimer = null;
   let speakingSeconds = 45;
   let speechTranscript = '';
+  let vocabPracticeSession = null;
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
@@ -52,6 +54,7 @@
         qstats: parsed.qstats||{},
         chunkKnown: parsed.chunkKnown||{},
         vocabKnown: parsed.vocabKnown||{},
+        vocabStats: parsed.vocabStats||{},
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         settings:migratedSettings,
@@ -203,6 +206,134 @@
       state.vocabKnown[b.dataset.id]=!state.vocabKnown[b.dataset.id];
       save();
       renderVocabulary(limit,randomize,learningOnly);
+    }));
+  }
+
+  function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
+  function vocabPool(){
+    const filter=$('vocabFilter')?.value||'all';
+    return (CONTENT.vocabulary||[]).filter(v=>filter==='all'||v.category===filter);
+  }
+  function vocabStat(id){
+    if(!state.vocabStats[id]) state.vocabStats[id]={attempts:0,correct:0,choice:0,sentence:0,listening:0};
+    return state.vocabStats[id];
+  }
+  function escapeRegExpText(s){return String(s).replace(/[.*+?^$()|[\]{}\\]/g,'\\  function qstat(id){');}
+  function sentenceBlank(v){
+    const irregular={
+      choose:['chose','chosen'],
+      mean:['meant'],
+      feel:['felt'],
+      forget:['forgot','forgotten'],
+      'find out':['found out'],
+      'get back to':['got back to'],
+      'get used to':['got used to'],
+      'make sure':['made sure']
+    };
+    const forms=[v.word,...(irregular[v.word.toLowerCase()]||[])];
+    if(!v.word.includes(' ')){
+      const w=v.word.toLowerCase();
+      forms.push(w+'s',w+'ed',w+'ing');
+      if(w.endsWith('e')) forms.push(w.slice(0,-1)+'ing',w+'d');
+      if(w.endsWith('y')) forms.push(w.slice(0,-1)+'ied',w.slice(0,-1)+'ies');
+    }
+    for(const form of [...new Set(forms)].sort((a,b)=>b.length-a.length)){
+      const re=new RegExp('\\b'+escapeRegExpText(form)+'\\b','i');
+      if(re.test(v.example)) return v.example.replace(re,'_____');
+    }
+    return null;
+  }
+  function vocabDistractors(current,field,count=3,poolOverride=null){
+    const pool=(poolOverride||CONTENT.vocabulary||[]).filter(v=>v.id!==current.id);
+    const values=[];
+    for(const v of shuffle(pool)){
+      const val=field==='word'?v.word:v.zh;
+      if(!values.includes(val)){values.push(val);if(values.length>=count)break;}
+    }
+    return values;
+  }
+  function setVocabModeActive(mode){
+    document.querySelectorAll('.vocab-mode-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.vocabMode===mode));
+  }
+  function showVocabCards(){
+    vocabPracticeSession=null;
+    setVocabModeActive('cards');
+    $('vocabPracticeHost')?.classList.add('hidden');
+    $('vocabGrid')?.classList.remove('hidden');
+    renderVocabulary(12,true,false);
+  }
+  function startVocabPractice(mode,size=8){
+    setMobileDockActive('vocab');
+    setVocabModeActive(mode);
+    let pool=vocabPool();
+    if(mode==='sentence') pool=pool.filter(v=>sentenceBlank(v));
+    if(pool.length<4) pool=(CONTENT.vocabulary||[]).filter(v=>mode!=='sentence'||sentenceBlank(v));
+    const queue=shuffle(pool).slice(0,Math.min(size,pool.length));
+    vocabPracticeSession={mode,queue,index:0,correct:0,answered:false};
+    $('vocabGrid')?.classList.add('hidden');
+    $('vocabPracticeHost')?.classList.remove('hidden');
+    renderVocabPracticeQuestion();
+    $('vocabPracticeHost')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function renderVocabPracticeQuestion(){
+    const host=$('vocabPracticeHost');
+    const s=vocabPracticeSession;
+    if(!host||!s)return;
+    if(s.index>=s.queue.length){
+      const pct=s.queue.length?Math.round(s.correct/s.queue.length*100):0;
+      host.innerHTML=`<article class="vocab-practice-card panel"><div class="badge good">SESSION COMPLETE</div><div class="vocab-practice-score">${pct}%</div><h3>這輪 ${s.correct} / ${s.queue.length} 題答對</h3><p class="support">答錯的字會保留在學習紀錄裡。可以換另一種模式再刷一次。</p><div class="btn-row"><button class="btn primary" id="vocabRetryBtn" type="button">同模式再 8 題</button><button class="btn ghost" id="vocabCardsBtn2" type="button">回單字卡</button></div></article>`;
+      $('vocabRetryBtn').addEventListener('click',()=>startVocabPractice(s.mode,8));
+      $('vocabCardsBtn2').addEventListener('click',showVocabCards);
+      return;
+    }
+    s.answered=false;
+    const v=s.queue[s.index];
+    const progress=`${s.index+1} / ${s.queue.length}`;
+    let prompt='',sub='',answer='',options=[],audioHtml='';
+    if(s.mode==='choice'){
+      prompt=esc(v.word); sub='選出最接近的中文意思'; answer=v.zh;
+      options=shuffle([answer,...vocabDistractors(v,'zh',3)]);
+    }else if(s.mode==='sentence'){
+      prompt=esc(sentenceBlank(v)||v.example); sub='哪個單字最適合放進句子？'; answer=v.word;
+      options=shuffle([answer,...vocabDistractors(v,'word',3)]);
+    }else{
+      prompt='先聽，不看單字'; sub='聽完選出正確意思'; answer=v.zh;
+      options=shuffle([answer,...vocabDistractors(v,'zh',3)]);
+      audioHtml=`<div class="vocab-listening-box"><button class="btn primary" id="vocabListenNA" type="button">▶ 北美</button><button class="btn secondary" id="vocabListenIN" type="button">▶ 印度</button><span class="support" id="vocabListenStatus">單字文字會在作答後顯示</span></div>`;
+    }
+    host.innerHTML=`<article class="vocab-practice-card panel"><div class="vocab-practice-top"><span class="badge">${s.mode==='choice'?'選擇題':s.mode==='sentence'?'句型':'聽力'}</span><span class="support">${progress} · 已答對 ${s.correct}</span></div><div class="vocab-practice-prompt">${prompt}</div><div class="support vocab-practice-sub">${sub}</div>${audioHtml}<div class="options vocab-practice-options">${options.map(o=>`<button class="option vocab-option" data-value="${esc(o)}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="vocabPracticeFeedback"></div><div class="vocab-answer-detail hidden" id="vocabAnswerDetail"><strong>${esc(v.word)}｜${esc(v.zh)}</strong><p>${esc(v.example)}</p><div class="btn-row"><button class="btn ghost" id="vocabAnswerNA" type="button">▶ 北美例句</button><button class="btn ghost" id="vocabAnswerIN" type="button">▶ 印度例句</button></div></div><button class="btn primary hidden vocab-next" id="vocabNextBtn" type="button">下一題 →</button></article>`;
+
+    if(s.mode==='listening'){
+      $('vocabListenNA').addEventListener('click',()=>{
+        const lang=chooseVoiceLang(1); const r=speak(v.word,playbackRate(1,'chunk'),lang);
+        $('vocabListenStatus').textContent=`${accentLabel(lang)} · ${r?.voiceName||'System voice'}`;
+      });
+      $('vocabListenIN').addEventListener('click',()=>{
+        const r=speak(v.word,playbackRate(1,'chunk'),'en-IN');
+        $('vocabListenStatus').textContent=`Indian English${r?.fallback?` · fallback: ${r.actualLabel}`:''} · ${r?.voiceName||'System voice'}`;
+      });
+    }
+    document.querySelectorAll('.vocab-option').forEach(btn=>btn.addEventListener('click',()=>{
+      if(s.answered)return;
+      s.answered=true;
+      const chosen=btn.dataset.value;
+      const correct=chosen===answer;
+      if(correct)s.correct++;
+      const st=vocabStat(v.id); st.attempts++; if(correct)st.correct++; st[s.mode]=(st[s.mode]||0)+1;
+      if(st.attempts>=3 && st.correct/st.attempts>=.8) state.vocabKnown[v.id]=true;
+      save();
+      document.querySelectorAll('.vocab-option').forEach(b=>{
+        b.disabled=true;
+        if(b.dataset.value===answer)b.classList.add('correct');
+        if(b===btn&&!correct)b.classList.add('wrong');
+      });
+      const fb=$('vocabPracticeFeedback');fb.className=`feedback show ${correct?'good':'bad'}`;
+      fb.innerHTML=`<strong>${correct?'答對了':'再記一次'}</strong>${s.mode==='sentence'?`答案：${esc(v.word)}`:`答案：${esc(v.zh)}`}`;
+      $('vocabAnswerDetail').classList.remove('hidden');
+      $('vocabNextBtn').classList.remove('hidden');
+      $('vocabAnswerNA').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),chooseVoiceLang(1)));
+      $('vocabAnswerIN').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),'en-IN'));
+      $('vocabNextBtn').addEventListener('click',()=>{s.index++;renderVocabPracticeQuestion();},{once:true});
     }));
   }
 
@@ -665,15 +796,19 @@
     $('nextAdaptiveBtn').addEventListener('click',()=>startSession('adaptive'));
     $('backOverviewBtn').addEventListener('click',()=>{$('resultSection').classList.remove('show');$('overviewSection').scrollIntoView({behavior:'smooth'});});
     $('chunkLevelFilter').addEventListener('change',()=>renderChunks()); $('randomChunksBtn').addEventListener('click',()=>renderChunks(3));
-    $('vocabFilter')?.addEventListener('change',()=>renderVocabulary(12));
-    $('randomVocabBtn')?.addEventListener('click',()=>renderVocabulary(8,true,false));
-    $('learningVocabBtn')?.addEventListener('click',()=>renderVocabulary(12,true,true));
-    $('allVocabBtn')?.addEventListener('click',()=>renderVocabulary(null,false,false));
+    $('vocabFilter')?.addEventListener('change',()=>{if(vocabPracticeSession)startVocabPractice(vocabPracticeSession.mode,8);else renderVocabulary(12);});
+    $('randomVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(8,true,false);});
+    $('learningVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(12,true,true);});
+    $('allVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(null,false,false);});
+    document.querySelectorAll('.vocab-mode-btn').forEach(btn=>btn.addEventListener('click',()=>{
+      const mode=btn.dataset.vocabMode;
+      if(mode==='cards')showVocabCards(); else startVocabPractice(mode,8);
+    }));
     $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
     $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
-    $('jumpVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
-    $('mobileVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
+    $('jumpVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
+    $('mobileVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
     $('mobileChunksBtn')?.addEventListener('click',()=>{setMobileDockActive('chunks');$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});
     document.querySelectorAll('.mobile-dock-btn[data-nav]').forEach(btn=>btn.addEventListener('click',()=>setMobileDockActive(btn.dataset.nav)));
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});

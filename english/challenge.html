@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261015v5-1">
+  <link rel="stylesheet" href="styles.css?v=20261015v6-1">
   <title>English Challenge｜Edan's Workspace</title>
 </head>
 <body>
@@ -110,7 +110,7 @@
       <div class="section-head">
         <div>
           <h2>基礎單字｜Daily Vocabulary</h2>
-          <p>先自己想意思，再看答案；每個單字都有北美＋印度發音與簡單例句。重點是日常口說，不是專業術語。</p>
+          <p>同一批單字用不同方式練：單字卡、選擇題、句型填空、北美／印度聽力。不要只記中文意思，要練到能在句子裡認得。</p>
         </div>
         <div class="filters vocab-filters">
           <select id="vocabFilter" aria-label="單字分類">
@@ -127,6 +127,13 @@
           <button class="btn ghost" id="allVocabBtn" type="button">顯示全部</button>
         </div>
       </div>
+      <div class="vocab-mode-switch" role="group" aria-label="單字練習模式">
+        <button class="vocab-mode-btn active" data-vocab-mode="cards" type="button"><span>🃏</span>單字卡</button>
+        <button class="vocab-mode-btn" data-vocab-mode="choice" type="button"><span>✅</span>選擇題</button>
+        <button class="vocab-mode-btn" data-vocab-mode="sentence" type="button"><span>🧩</span>句型</button>
+        <button class="vocab-mode-btn" data-vocab-mode="listening" type="button"><span>🎧</span>聽力</button>
+      </div>
+      <div class="hidden" id="vocabPracticeHost"></div>
       <div class="grid grid-4" id="vocabGrid"></div>
     </section>
 
@@ -177,7 +184,7 @@
   <button class="mobile-dock-btn" id="mobileVocabBtn" data-nav="vocab" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js?v=20261015v5-1"></script>
-<script src="app.js?v=20261015v5-1"></script>
+<script src="question-bank.js?v=20261015v6-1"></script>
+<script src="app.js?v=20261015v6-1"></script>
 </body>
 </html>
