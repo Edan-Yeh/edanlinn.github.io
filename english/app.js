@@ -16,6 +16,7 @@
     skills: {...initialSkills},
     qstats: {},
     chunkKnown: {},
+    vocabKnown: {},
     sessions: [],
     completedDates: [],
     settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
@@ -50,6 +51,7 @@
         skills:{...base.skills,...(parsed.skills||{})},
         qstats: parsed.qstats||{},
         chunkKnown: parsed.chunkKnown||{},
+        vocabKnown: parsed.vocabKnown||{},
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         settings:migratedSettings,
@@ -89,7 +91,7 @@
     $('listeningLevelValue').textContent = `L${state.skills.listening.toFixed(1)}`;
     $('interviewLevelValue').textContent = `L${Math.max(state.skills.interview,state.skills.speaking).toFixed(1)}`;
     $('contentVersionBadge').textContent = `題庫 ${CONTENT.contentVersion}`;
-    $('versionText').textContent = `${CONTENT.contentVersion} · ${CONTENT.questions.length} 題 · ${CONTENT.chunks.length} chunks`;
+    $('versionText').textContent = `${CONTENT.contentVersion} · ${CONTENT.questions.length} 題 · ${CONTENT.chunks.length} chunks · ${(CONTENT.vocabulary||[]).length} words`;
     renderSkills();
     renderHistory();
   }
@@ -135,6 +137,62 @@
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
       state.chunkKnown[b.dataset.id] = !state.chunkKnown[b.dataset.id];
       save(); renderChunks(limit);
+    }));
+  }
+
+  function renderVocabulary(limit=12,randomize=false,learningOnly=false){
+    const host=$('vocabGrid');
+    if(!host || !Array.isArray(CONTENT.vocabulary)) return;
+    const filter=$('vocabFilter')?.value||'all';
+    let arr=CONTENT.vocabulary.filter(v=>filter==='all'||v.category===filter);
+    if(learningOnly) arr=arr.filter(v=>!state.vocabKnown[v.id]);
+    if(randomize) arr=[...arr].sort(()=>Math.random()-.5);
+    if(limit) arr=arr.slice(0,limit);
+    if(!arr.length){
+      host.innerHTML='<div class="panel support">這個篩選目前沒有需要複習的單字。</div>';
+      return;
+    }
+    host.innerHTML=arr.map(v=>`<article class="panel vocab-card">
+      <div class="vocab-card-top"><span class="badge">${esc(v.category)}</span><span class="support">${esc(v.pos)}</span></div>
+      <div class="vocab-word">${esc(v.word)}</div>
+      <div class="vocab-meaning hidden" data-meaning-id="${v.id}"><b>${esc(v.zh)}</b><p>${esc(v.example)}</p></div>
+      <div class="btn-row vocab-audio-row">
+        <button class="btn ghost vocab-listen-na" data-id="${v.id}" type="button">▶ 北美</button>
+        <button class="btn ghost vocab-listen-in" data-id="${v.id}" type="button">▶ 印度</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn secondary vocab-reveal" data-id="${v.id}" type="button">看意思</button>
+        <button class="btn ${state.vocabKnown[v.id]?'good':'ghost'} vocab-known" data-id="${v.id}" type="button">${state.vocabKnown[v.id]?'✓ 已會':'我會了'}</button>
+      </div>
+      <div class="support vocab-audio-status" data-vocab-status-id="${v.id}">先自己想意思，再聽發音。</div>
+    </article>`).join('');
+
+    document.querySelectorAll('.vocab-reveal').forEach(b=>b.addEventListener('click',()=>{
+      const box=document.querySelector(`.vocab-meaning[data-meaning-id="${CSS.escape(b.dataset.id)}"]`);
+      if(!box)return;
+      box.classList.toggle('hidden');
+      b.textContent=box.classList.contains('hidden')?'看意思':'收起意思';
+    }));
+    document.querySelectorAll('.vocab-listen-na').forEach(b=>b.addEventListener('click',()=>{
+      const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
+      const lang=chooseVoiceLang(1);
+      const resolved=speak(`${v.word}. ${v.example}`,playbackRate(1,'chunk'),lang);
+      const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
+      if(status) status.textContent=`${accentLabel(lang)} · ${resolved?.voiceName||'System voice'} · ${playbackRate(1,'chunk').toFixed(2)}x`;
+    }));
+    document.querySelectorAll('.vocab-listen-in').forEach(b=>b.addEventListener('click',()=>{
+      const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
+      const resolved=speak(`${v.word}. ${v.example}`,playbackRate(1,'chunk'),'en-IN');
+      const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
+      if(status){
+        const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
+        status.textContent=`Indian English${fallback} · ${resolved?.voiceName||'System voice'} · ${playbackRate(1,'chunk').toFixed(2)}x`;
+      }
+    }));
+    document.querySelectorAll('.vocab-known').forEach(b=>b.addEventListener('click',()=>{
+      state.vocabKnown[b.dataset.id]=!state.vocabKnown[b.dataset.id];
+      save();
+      renderVocabulary(limit,randomize,learningOnly);
     }));
   }
 
@@ -457,7 +515,7 @@
   function download(name,text,type){const blob=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 
   function importProgress(file){
-    const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!parsed||typeof parsed!=='object')throw new Error('bad');state={...defaultState(),...parsed,skills:{...initialSkills,...(parsed.skills||{})},settings:{...defaultState().settings,...(parsed.settings||{})}};save();syncSettingsUI();renderOverview();renderChunks();alert('進度已匯入。');}catch(e){alert('這不是有效的進度 JSON。');}};reader.readAsText(file);
+    const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!parsed||typeof parsed!=='object')throw new Error('bad');state={...defaultState(),...parsed,skills:{...initialSkills,...(parsed.skills||{})},settings:{...defaultState().settings,...(parsed.settings||{})}};save();syncSettingsUI();renderOverview();renderVocabulary(12);renderChunks();alert('進度已匯入。');}catch(e){alert('這不是有效的進度 JSON。');}};reader.readAsText(file);
   }
 
   function syncSettingsUI(){
@@ -481,22 +539,26 @@
     $('nextAdaptiveBtn').addEventListener('click',()=>startSession('adaptive'));
     $('backOverviewBtn').addEventListener('click',()=>{$('resultSection').classList.remove('show');$('overviewSection').scrollIntoView({behavior:'smooth'});});
     $('chunkLevelFilter').addEventListener('change',()=>renderChunks()); $('randomChunksBtn').addEventListener('click',()=>renderChunks(3));
+    $('vocabFilter')?.addEventListener('change',()=>renderVocabulary(12));
+    $('randomVocabBtn')?.addEventListener('click',()=>renderVocabulary(8,true,false));
+    $('learningVocabBtn')?.addEventListener('click',()=>renderVocabulary(12,true,true));
+    $('allVocabBtn')?.addEventListener('click',()=>renderVocabulary(null,false,false));
     $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
     $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
+    $('mobileVocabBtn')?.addEventListener('click',()=>{renderVocabulary(8,true,false);$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
     $('mobileChunksBtn')?.addEventListener('click',()=>{$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});
-    $('mobileSettingsBtn')?.addEventListener('click',()=>{$('settingsSection').classList.remove('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});
     $('speechRateSelect').addEventListener('change',e=>{state.settings.speechRate=e.target.value;save();});
     $('voiceQualitySelect').addEventListener('change',e=>{state.settings.voiceQuality=e.target.value;save();});
     $('sessionSizeSelect').addEventListener('change',e=>{state.settings.sessionSize=Number(e.target.value);save();});
     $('speechRecognitionSelect').addEventListener('change',e=>{state.settings.speechRecognition=e.target.value;save();});
-    $('resetAllBtn').addEventListener('click',()=>{if(confirm('確定清除這台瀏覽器的所有英文訓練進度？')){localStorage.removeItem(STORE_KEY);state=defaultState();save();syncSettingsUI();renderOverview();renderChunks();alert('已清除。');}});
+    $('resetAllBtn').addEventListener('click',()=>{if(confirm('確定清除這台瀏覽器的所有英文訓練進度？')){localStorage.removeItem(STORE_KEY);state=defaultState();save();syncSettingsUI();renderOverview();renderVocabulary(12);renderChunks();alert('已清除。');}});
     $('resetTodayBtn').addEventListener('click',()=>{renderOverview();renderChunks();alert('已依目前進度重新計算顯示。');});
   }
 
   function init(){
-    syncSettingsUI();bindStaticEvents();renderOverview();renderChunks();
+    syncSettingsUI();bindStaticEvents();renderOverview();renderVocabulary(12);renderChunks();
     if('speechSynthesis' in window) window.speechSynthesis.getVoices();
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
   }
