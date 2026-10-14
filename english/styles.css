@@ -193,7 +193,8 @@ a{color:inherit}
     font-size:11px;
     padding:5px 2px;
   }
-  .mobile-dock-btn.primary{background:#2447d8;color:#fff}
+  .mobile-dock-btn.active{background:#2447d8;color:#fff;box-shadow:0 5px 14px rgba(36,71,216,.24)}
+  .mobile-dock-btn:not(.active):active{background:#eef2ff;color:#2944b8}
   .mobile-dock-btn span{display:block;font-size:18px;line-height:1;margin-bottom:4px}
 }
 @media(max-width:380px){
