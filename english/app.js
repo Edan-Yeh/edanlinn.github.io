@@ -197,7 +197,7 @@
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel(); speechTranscript='';
     const q=session.questions[session.index];
     if(!q){ finishSession(); return; }
-    session.currentMeta={listens:0,hint:false,answered:false};
+    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0}};
     $('questionCounter').textContent=`${session.index+1} / ${session.questions.length}`;
     $('questionLevelBadge').textContent=`L${q.level}`;
     $('questionSkillBadge').textContent=skillLabels[q.skill]||q.skill;
@@ -208,17 +208,26 @@
   }
 
   function renderListeningQuestion(q){
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">先不要看文字，聽懂「他在問什麼」</div><div class="question-intent">L${q.level} · 第一次聽懂最有價值；需要重播完全沒關係，系統會記錄。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playAudioBtn" type="button">▶ 播放題目</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字</button><span class="audio-status" id="audioStatus">尚未播放</span></div><div class="transcript" id="transcriptBox">${esc(q.text)}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div><div class="model-answer" id="modelAnswer"><strong>可以這樣回答</strong><br>${esc(q.model)}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
-    $('playAudioBtn').addEventListener('click',()=>{
-      session.currentMeta.listens++;
-      qstat(q.id).listens++;
-      const lang=chooseVoiceLang(q.level); $('audioStatus').textContent=`已播放 ${session.currentMeta.listens} 次 · ${accentLabel(lang)} · ${rateForLevel(q.level).toFixed(2)}x`;
-      speak(q.text, rateForLevel(q.level), lang); save();
-    });
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">先不要看文字，聽懂「他在問什麼」</div><div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox">${esc(q.text)}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div><div class="model-answer" id="modelAnswer"><strong>可以這樣回答</strong><br>${esc(q.model)}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    $('playNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'audioStatus'));
+    $('playIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','audioStatus'));
     $('showTranscriptBtn').addEventListener('click',()=>{
       session.currentMeta.hint=true; qstat(q.id).hints++; $('transcriptBox').classList.add('show'); save();
     });
     bindOptionButtons(q,true);
+  }
+
+  function playQuestionAccent(q,key,lang,statusId){
+    session.currentMeta.listens++;
+    session.currentMeta.accentCounts=session.currentMeta.accentCounts||{northAmerica:0,india:0};
+    session.currentMeta.accentCounts[key]=(session.currentMeta.accentCounts[key]||0)+1;
+    qstat(q.id).listens++;
+    const resolved=speak(q.text,rateForLevel(q.level),lang);
+    const c=session.currentMeta.accentCounts;
+    const requested=key==='india'?'Indian English':accentLabel(lang);
+    const fallback=resolved && resolved.fallback ? ` · 裝置 fallback: ${resolved.actualLabel}` : '';
+    $(statusId).textContent=`北美 ${c.northAmerica||0} 次 · 印度 ${c.india||0} 次 · 本次 ${requested}${fallback} · ${rateForLevel(q.level).toFixed(2)}x`;
+    save();
   }
 
   function renderChoiceQuestion(q){
@@ -233,15 +242,17 @@
       session.currentMeta.answered=true;
       const selected=Number(btn.dataset.index); const correct=selected===q.answer;
       buttons.forEach((b,i)=>{ b.disabled=true; if(i===q.answer)b.classList.add('correct'); if(i===selected&&i!==q.answer)b.classList.add('wrong'); });
+      const accentCounts=session.currentMeta.accentCounts||{northAmerica:0,india:0};
+      const accentRepeats=Math.max(0,(accentCounts.northAmerica||0)-1)+Math.max(0,(accentCounts.india||0)-1);
       let quality;
       if(correct){
-        if(isListening && (session.currentMeta.hint || session.currentMeta.listens>=3)) quality=1;
-        else if(isListening && session.currentMeta.listens===2) quality=2;
+        if(isListening && (session.currentMeta.hint || accentRepeats>=2)) quality=1;
+        else if(isListening && accentRepeats===1) quality=2;
         else quality=3;
       } else quality=0;
-      const feedback=$('feedbackBox'); feedback.className=`feedback show ${correct?'good':'bad'}`; feedback.innerHTML=`<strong>${correct?'答對了':'這題先記下來'}</strong>${esc(q.intent||'')} ${isListening?`<br><span class="support">播放 ${session.currentMeta.listens} 次${session.currentMeta.hint?'，使用了 transcript':''}</span>`:''}`;
+      const feedback=$('feedbackBox'); feedback.className=`feedback show ${correct?'good':'bad'}`; feedback.innerHTML=`<strong>${correct?'答對了':'這題先記下來'}</strong>${esc(q.intent||'')} ${isListening?`<br><span class="support">北美 ${accentCounts.northAmerica||0} 次 · 印度 ${accentCounts.india||0} 次${session.currentMeta.hint?'，使用了 transcript':''}</span>`:''}`;
       $('modelAnswer').classList.add('show'); $('nextBtn').classList.remove('hidden');
-      recordAnswer(q,quality,correct,{listens:session.currentMeta.listens,hint:session.currentMeta.hint});
+      recordAnswer(q,quality,correct,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,accentCounts:{...accentCounts},repeats:accentRepeats});
       $('nextBtn').addEventListener('click',nextQuestion,{once:true});
     }));
   }
@@ -250,8 +261,9 @@
     const hideText=q.level>=3;
     const SR=speechRecognitionCtor();
     const recognitionAvailable=!!SR && state.settings.speechRecognition!=='off';
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 不寫答案。先直接講，講完再看 model answer。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakQBtn" type="button">▶ 聽面試官問題</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">${voiceDisplay(q.level)}</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。卡住可以用「Let me think for a moment.」</div><div class="btn-row" style="margin-top:12px"><button class="btn secondary" id="startTimerBtn" type="button">開始 45 秒</button><button class="btn ghost" id="finishSpeakingBtn" type="button">我講完了</button>${recognitionAvailable?'<button class="btn ghost" id="recognitionBtn" type="button">🎙 語音轉文字（可選）</button>':''}</div><div class="speech-text ${recognitionAvailable?'':'hidden'}" id="speechText">${recognitionAvailable?'如果使用語音辨識，辨識結果會出現在這裡。':''}</div></div><div class="model-answer" id="modelAnswer"><strong>Model answer（講完才看）</strong><br>${esc(q.model)}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div><div class="feedback neutral" id="feedbackBox"><strong>自評這一次</strong>不要看文法完美度，只評「有沒有把意思完整講出去」。<div class="self-rate"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
-    $('playSpeakQBtn').addEventListener('click',()=>{session.currentMeta.listens++;qstat(q.id).listens++;const lang=chooseVoiceLang(q.level);$('speakAudioStatus').textContent=`已播放 ${session.currentMeta.listens} 次 · ${accentLabel(lang)} · ${rateForLevel(q.level).toFixed(2)}x`;speak(q.text,rateForLevel(q.level),lang);save();});
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 不寫答案。先直接講，講完再看 model answer。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。卡住可以用「Let me think for a moment.」</div><div class="btn-row" style="margin-top:12px"><button class="btn secondary" id="startTimerBtn" type="button">開始 45 秒</button><button class="btn ghost" id="finishSpeakingBtn" type="button">我講完了</button>${recognitionAvailable?'<button class="btn ghost" id="recognitionBtn" type="button">🎙 語音轉文字（可選）</button>':''}</div><div class="speech-text ${recognitionAvailable?'':'hidden'}" id="speechText">${recognitionAvailable?'如果使用語音辨識，辨識結果會出現在這裡。':''}</div></div><div class="model-answer" id="modelAnswer"><strong>Model answer（講完才看）</strong><br>${esc(q.model)}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div><div class="feedback neutral" id="feedbackBox"><strong>自評這一次</strong>不要看文法完美度，只評「有沒有把意思完整講出去」。<div class="self-rate"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    $('playSpeakNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'speakAudioStatus'));
+    $('playSpeakIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','speakAudioStatus'));
     if(hideText) $('revealSpeakQBtn').addEventListener('click',()=>{session.currentMeta.hint=true;qstat(q.id).hints++;$('speakingQuestionText').textContent=q.text;$('revealSpeakQBtn').disabled=true;save();});
     $('startTimerBtn').addEventListener('click',()=>startSpeakingTimer(45));
     $('finishSpeakingBtn').addEventListener('click',()=>finishSpeakingStage(q));
@@ -322,7 +334,7 @@
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
     if(!state.completedDates.includes(todayKey()))state.completedDates.push(todayKey()); save();
     $('resultScore').textContent=`${score}%`;
-    const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+Math.max(0,(a.extra?.listens||0)-1),0);
+    const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+(Number.isFinite(a.extra?.repeats)?a.extra.repeats:Math.max(0,(a.extra?.listens||0)-1)),0);
     $('resultSummary').textContent=score>=80?'這輪很穩。系統會逐步增加問法變化與難度，但仍保留到期複習。':score>=60?'基礎已經能撐住。下一輪會繼續集中在弱項，不需要一次補很多新東西。':'這輪不要追求升級。先讓相同問題用不同問法出現，直到你能自然抓到意圖並講完整句。';
     $('resultGrid').innerHTML=`<div class="result-mini"><b>${strong}</b><span>高品質回答</span></div><div class="result-mini"><b>${low}</b><span>需要重練</span></div><div class="result-mini"><b>${hint}</b><span>使用文字提示</span></div><div class="result-mini"><b>${repeats}</b><span>額外重播次數</span></div>`;
     $('resultSection').classList.add('show');$('resultSection').scrollIntoView({behavior:'smooth',block:'start'}); session=null; renderOverview();
@@ -340,19 +352,30 @@
   function accentLabel(lang){
     if(lang==='en-CA')return 'Canadian English';
     if(lang==='en-US')return 'North American English';
+    if(lang==='en-IN')return 'Indian English';
     return lang;
   }
   function voiceDisplay(level){const lang=chooseVoiceLang(level);return `${accentLabel(lang)} · ${rateForLevel(level).toFixed(2)}x`;}
-  function speak(text,rate=1,lang='en-US'){
-    if(!('speechSynthesis' in window))return;
-    speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=lang;u.rate=rate;u.pitch=1;
+  function resolveVoice(lang){
     const voices=speechSynthesis.getVoices();
-    const exact=(code)=>voices.find(v=>v.lang.toLowerCase()===code.toLowerCase());
+    const exact=(code)=>voices.find(v=>(v.lang||'').toLowerCase()===code.toLowerCase());
     let voice=exact(lang);
-    if(!voice && lang==='en-CA')voice=voices.find(v=>/canada|canadian/i.test(v.name))||exact('en-US');
+    if(!voice && lang==='en-IN')voice=voices.find(v=>/india|indian/i.test(v.name||''));
+    if(!voice && lang==='en-CA')voice=voices.find(v=>/canada|canadian/i.test(v.name||''))||exact('en-US');
     if(!voice && lang==='en-US')voice=exact('en-CA');
-    if(!voice)voice=voices.find(v=>v.lang.toLowerCase().startsWith('en'));
-    if(voice)u.voice=voice;speechSynthesis.speak(u);
+    if(!voice)voice=voices.find(v=>(v.lang||'').toLowerCase().startsWith('en'));
+    const actualLang=voice?.lang||lang;
+    return {voice,actualLang,actualLabel:accentLabel(actualLang),fallback:!!voice && actualLang.toLowerCase()!==lang.toLowerCase()};
+  }
+  function speak(text,rate=1,lang='en-US'){
+    if(!('speechSynthesis' in window))return null;
+    speechSynthesis.cancel();
+    const resolved=resolveVoice(lang);
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=resolved.voice?.lang||lang;u.rate=rate;u.pitch=1;
+    if(resolved.voice)u.voice=resolved.voice;
+    speechSynthesis.speak(u);
+    return resolved;
   }
 
   function exportProgress(){
