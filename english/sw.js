@@ -1,4 +1,4 @@
-const CACHE='edan-english-adaptive-v3-20261015-basic-spoken-1';
+const CACHE='edan-english-adaptive-v3-20261015-mobile-2';
 const ASSETS=['./','./index.html','./challenge.html','./styles.css','./app.js','./question-bank.js','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
