@@ -475,14 +475,14 @@
   }
 
   function bindStaticEvents(){
-    document.querySelectorAll('.start-mode').forEach(b=>b.addEventListener('click',()=>startSession(b.dataset.mode)));
+    document.querySelectorAll('.start-mode').forEach(b=>b.addEventListener('click',()=>startSession(b.dataset.mode,b.dataset.size?Number(b.dataset.size):null)));
     $('quitBtn').addEventListener('click',quitSession);
     $('nextAdaptiveBtn').addEventListener('click',()=>startSession('adaptive'));
     $('backOverviewBtn').addEventListener('click',()=>{$('resultSection').classList.remove('show');$('overviewSection').scrollIntoView({behavior:'smooth'});});
     $('chunkLevelFilter').addEventListener('change',()=>renderChunks()); $('randomChunksBtn').addEventListener('click',()=>renderChunks(3));
     $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
-    $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
+    $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});\n    $('mobileChunksBtn')?.addEventListener('click',()=>{$('chunkGrid').scrollIntoView({behavior:'smooth',block:'center'});});\n    $('mobileSettingsBtn')?.addEventListener('click',()=>{$('settingsSection').classList.remove('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});
     $('speechRateSelect').addEventListener('change',e=>{state.settings.speechRate=e.target.value;save();});
     $('voiceQualitySelect').addEventListener('change',e=>{state.settings.voiceQuality=e.target.value;save();});
