@@ -107,9 +107,27 @@
     let level = $('chunkLevelFilter').value;
     let arr = CONTENT.chunks.filter(c => level==='all' || String(c.level)===level);
     if(limit) arr = [...arr].sort(()=>Math.random()-.5).slice(0,limit);
-    $('chunkGrid').innerHTML = arr.map(c => `<article class="panel"><span class="badge">L${c.level}</span><h3 style="margin:10px 0 5px">${esc(c.en)}</h3><div class="support">${esc(c.zh)}</div><p style="line-height:1.6;margin:12px 0">${esc(c.example)}</p><div class="btn-row"><button class="btn ghost chunk-listen" data-id="${c.id}" type="button">▶ 聽</button><button class="btn ${state.chunkKnown[c.id]?'good':'secondary'} chunk-known" data-id="${c.id}" type="button">${state.chunkKnown[c.id]?'✓ 已熟':'我會用了'}</button></div></article>`).join('');
-    document.querySelectorAll('.chunk-listen').forEach(b => b.addEventListener('click', () => {
-      const c = CONTENT.chunks.find(x=>x.id===b.dataset.id); if(c) speak(c.example, Math.min(1.0,.84+c.level*.04), chooseVoiceLang(c.level));
+    $('chunkGrid').innerHTML = arr.map(c => `<article class="panel"><span class="badge">L${c.level}</span><h3 style="margin:10px 0 5px">${esc(c.en)}</h3><div class="support">${esc(c.zh)}</div><p style="line-height:1.6;margin:12px 0">${esc(c.example)}</p><div class="btn-row"><button class="btn ghost chunk-listen-na" data-id="${c.id}" type="button">▶ 北美</button><button class="btn ghost chunk-listen-in" data-id="${c.id}" type="button">▶ 印度</button><button class="btn ${state.chunkKnown[c.id]?'good':'secondary'} chunk-known" data-id="${c.id}" type="button">${state.chunkKnown[c.id]?'✓ 已熟':'我會用了'}</button></div><div class="support chunk-audio-status" data-status-id="${c.id}" style="margin-top:8px">北美＋印度雙口音</div></article>`).join('');
+    document.querySelectorAll('.chunk-listen-na').forEach(b => b.addEventListener('click', () => {
+      const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
+      if(!c) return;
+      const lang=chooseVoiceLang(c.level);
+      const resolved=speak(c.example, Math.min(1.0,.84+c.level*.04), lang);
+      const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
+      if(status){
+        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : '';
+        status.textContent=`本次：${accentLabel(lang)}${fallback}`;
+      }
+    }));
+    document.querySelectorAll('.chunk-listen-in').forEach(b => b.addEventListener('click', () => {
+      const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
+      if(!c) return;
+      const resolved=speak(c.example, Math.min(1.0,.84+c.level*.04), 'en-IN');
+      const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
+      if(status){
+        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : '';
+        status.textContent=`本次：Indian English${fallback}`;
+      }
     }));
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
       state.chunkKnown[b.dataset.id] = !state.chunkKnown[b.dataset.id];
