@@ -18,7 +18,7 @@
     chunkKnown: {},
     sessions: [],
     completedDates: [],
-    settings: {accent:'adaptive', sessionSize:10, speechRecognition:'auto'},
+    settings: {accent:'adaptive', speechRate:'adaptive', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
     lastContentVersion: CONTENT.contentVersion
   });
 
@@ -112,21 +112,21 @@
       const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
       if(!c) return;
       const lang=chooseVoiceLang(c.level);
-      const resolved=speak(c.example, Math.min(1.0,.84+c.level*.04), lang);
+      const resolved=speak(c.example, playbackRate(c.level,'chunk'), lang);
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
       if(status){
-        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : '';
-        status.textContent=`本次：${accentLabel(lang)}${fallback}`;
+        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.voiceName ? ` · ${resolved.voiceName}` : '';
+        status.textContent=`本次：${accentLabel(lang)}${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
       }
     }));
     document.querySelectorAll('.chunk-listen-in').forEach(b => b.addEventListener('click', () => {
       const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
       if(!c) return;
-      const resolved=speak(c.example, Math.min(1.0,.84+c.level*.04), 'en-IN');
+      const resolved=speak(c.example, playbackRate(c.level,'chunk'), 'en-IN');
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
       if(status){
-        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : '';
-        status.textContent=`本次：Indian English${fallback}`;
+        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.voiceName ? ` · ${resolved.voiceName}` : '';
+        status.textContent=`本次：Indian English${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
       }
     }));
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
@@ -240,11 +240,11 @@
     session.currentMeta.accentCounts=session.currentMeta.accentCounts||{northAmerica:0,india:0};
     session.currentMeta.accentCounts[key]=(session.currentMeta.accentCounts[key]||0)+1;
     qstat(q.id).listens++;
-    const resolved=speak(q.text,rateForLevel(q.level),lang);
+    const resolved=speak(q.text,playbackRate(q.level,'question'),lang);
     const c=session.currentMeta.accentCounts;
     const requested=key==='india'?'Indian English':accentLabel(lang);
-    const fallback=resolved && resolved.fallback ? ` · 裝置 fallback: ${resolved.actualLabel}` : '';
-    $(statusId).textContent=`北美 ${c.northAmerica||0} 次 · 印度 ${c.india||0} 次 · 本次 ${requested}${fallback} · ${rateForLevel(q.level).toFixed(2)}x`;
+    const fallback=resolved && resolved.fallback ? ` · 裝置 fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.voiceName ? ` · ${resolved.voiceName}` : '';
+    $(statusId).textContent=`北美 ${c.northAmerica||0} 次 · 印度 ${c.india||0} 次 · 本次 ${requested}${fallback}${voiceName} · ${playbackRate(q.level,'question').toFixed(2)}x`;
     save();
   }
 
@@ -360,7 +360,15 @@
 
   function quitSession(){if(!session)return;if(confirm('要結束這一回合嗎？已完成的題目仍會保留進度。'))finishSession();}
 
-  function rateForLevel(level){return [0,.80,.90,1.0,1.06,1.12][clamp(level,1,5)];}
+  function rateForLevel(level){return [0,.80,.90,1.0,1.04,1.08][clamp(level,1,5)];}
+  function playbackRate(level,context='question'){
+    const pref=state.settings.speechRate||'adaptive';
+    if(pref!=='adaptive'){
+      const n=Number(pref);
+      return clamp(Number.isFinite(n)?n:1,0.70,1.25);
+    }
+    return context==='chunk' ? Math.min(1.0,.84+level*.04) : rateForLevel(level);
+  }
   function chooseVoiceLang(level){
     const pref=state.settings.accent;
     if(pref!=='adaptive')return pref;
@@ -373,24 +381,53 @@
     if(lang==='en-IN')return 'Indian English';
     return lang;
   }
-  function voiceDisplay(level){const lang=chooseVoiceLang(level);return `${accentLabel(lang)} · ${rateForLevel(level).toFixed(2)}x`;}
+  function voiceDisplay(level){const lang=chooseVoiceLang(level);return `${accentLabel(lang)} · ${playbackRate(level,'question').toFixed(2)}x`;}
+  function voiceScore(v,targetLang){
+    const name=(v.name||'').toLowerCase();
+    const lang=(v.lang||'').toLowerCase();
+    const target=targetLang.toLowerCase();
+    let score=0;
+    if(lang===target)score+=120;
+    else if(lang.startsWith(target.slice(0,2)))score+=25;
+    if(/natural|neural|premium|enhanced/.test(name))score+=80;
+    if(/online/.test(name))score+=45;
+    if(/microsoft/.test(name))score+=30;
+    if(/google/.test(name))score+=22;
+    if(v.localService===false)score+=8;
+    return score;
+  }
+  function bestVoice(candidates,targetLang){
+    if(!candidates.length)return null;
+    if((state.settings.voiceQuality||'natural')==='system')return candidates[0];
+    return [...candidates].sort((a,b)=>voiceScore(b,targetLang)-voiceScore(a,targetLang))[0];
+  }
   function resolveVoice(lang){
     const voices=speechSynthesis.getVoices();
-    const exact=(code)=>voices.find(v=>(v.lang||'').toLowerCase()===code.toLowerCase());
-    let voice=exact(lang);
-    if(!voice && lang==='en-IN')voice=voices.find(v=>/india|indian/i.test(v.name||''));
-    if(!voice && lang==='en-CA')voice=voices.find(v=>/canada|canadian/i.test(v.name||''))||exact('en-US');
-    if(!voice && lang==='en-US')voice=exact('en-CA');
-    if(!voice)voice=voices.find(v=>(v.lang||'').toLowerCase().startsWith('en'));
+    const byLang=(code)=>voices.filter(v=>(v.lang||'').toLowerCase()===code.toLowerCase());
+    let candidates=byLang(lang);
+    if(!candidates.length && lang==='en-IN')candidates=voices.filter(v=>/india|indian/i.test(v.name||''));
+    if(!candidates.length && lang==='en-CA')candidates=byLang('en-US');
+    if(!candidates.length && lang==='en-US')candidates=byLang('en-CA');
+    if(!candidates.length)candidates=voices.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
+    const voice=bestVoice(candidates,lang);
     const actualLang=voice?.lang||lang;
-    return {voice,actualLang,actualLabel:accentLabel(actualLang),fallback:!!voice && actualLang.toLowerCase()!==lang.toLowerCase()};
+    return {
+      voice,
+      actualLang,
+      actualLabel:accentLabel(actualLang),
+      voiceName:voice?.name||'System default',
+      fallback:!!voice && actualLang.toLowerCase()!==lang.toLowerCase()
+    };
   }
   function speak(text,rate=1,lang='en-US'){
     if(!('speechSynthesis' in window))return null;
     speechSynthesis.cancel();
     const resolved=resolveVoice(lang);
     const u=new SpeechSynthesisUtterance(text);
-    u.lang=resolved.voice?.lang||lang;u.rate=rate;u.pitch=1;
+    u.lang=resolved.voice?.lang||lang;
+    u.rate=clamp(Number(rate)||1,0.70,1.25);
+    u.pitch=1;
+    u.volume=1;
     if(resolved.voice)u.voice=resolved.voice;
     speechSynthesis.speak(u);
     return resolved;
@@ -421,8 +458,17 @@
 
   function syncSettingsUI(){
     const allowedAccents=new Set(['adaptive','en-US','en-CA']);
+    const allowedRates=new Set(['adaptive','0.75','0.85','0.90','0.95','1.00','1.05','1.10','1.15','1.20']);
+    const allowedQualities=new Set(['natural','system']);
     if(!allowedAccents.has(state.settings.accent))state.settings.accent='adaptive';
-    $('accentSelect').value=state.settings.accent||'adaptive'; $('sessionSizeSelect').value=String(state.settings.sessionSize||10); $('speechRecognitionSelect').value=state.settings.speechRecognition||'auto'; save();
+    if(!allowedRates.has(String(state.settings.speechRate)))state.settings.speechRate='adaptive';
+    if(!allowedQualities.has(state.settings.voiceQuality))state.settings.voiceQuality='natural';
+    $('accentSelect').value=state.settings.accent||'adaptive';
+    $('speechRateSelect').value=String(state.settings.speechRate||'adaptive');
+    $('voiceQualitySelect').value=state.settings.voiceQuality||'natural';
+    $('sessionSizeSelect').value=String(state.settings.sessionSize||10);
+    $('speechRecognitionSelect').value=state.settings.speechRecognition||'auto';
+    save();
   }
 
   function bindStaticEvents(){
@@ -435,6 +481,8 @@
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
     $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
     $('accentSelect').addEventListener('change',e=>{state.settings.accent=e.target.value;save();});
+    $('speechRateSelect').addEventListener('change',e=>{state.settings.speechRate=e.target.value;save();});
+    $('voiceQualitySelect').addEventListener('change',e=>{state.settings.voiceQuality=e.target.value;save();});
     $('sessionSizeSelect').addEventListener('change',e=>{state.settings.sessionSize=Number(e.target.value);save();});
     $('speechRecognitionSelect').addEventListener('change',e=>{state.settings.speechRecognition=e.target.value;save();});
     $('resetAllBtn').addEventListener('click',()=>{if(confirm('確定清除這台瀏覽器的所有英文訓練進度？')){localStorage.removeItem(STORE_KEY);state=defaultState();save();syncSettingsUI();renderOverview();renderChunks();alert('已清除。');}});
