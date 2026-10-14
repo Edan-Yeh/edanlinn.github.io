@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2447d8">
+  <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>English Challenge｜Edan's Workspace</title>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div class="brand-text"><b>EDAN’S ENGLISH WORKSPACE</b><small>ADAPTIVE INTERVIEW / LISTENING LAB</small></div>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="exportReportBtn" type="button">匯出學習報告</button>
+        <button class="btn ghost" id="settingsBtn" type="button">設定</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero" id="overviewSection">
+      <div class="hero-main">
+        <div class="eyebrow">Edan's Practice Room · MongoDB Baseline</div>
+        <h1>不是背英文，是把你真正會的事講出來。</h1>
+        <p>每回合 10 題。系統會優先出你的弱項、錯題與到期複習，並依表現逐步提高問法、語速與專業深度。聽力題先聽後看文字；口說題以 30–60 秒完整回答為目標。</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card"><div class="stat-label">目前稱號</div><div class="stat-value" id="rankValue">English Starter</div><div class="stat-sub" id="xpSub">0 XP</div></div>
+        <div class="stat-card"><div class="stat-label">連續訓練</div><div class="stat-value" id="streakValue">0 天</div><div class="stat-sub">不要求每天滿 1 小時，維持連續性更重要</div></div>
+        <div class="stat-card"><div class="stat-label">聽力等級</div><div class="stat-value" id="listeningLevelValue">L1.0</div><div class="stat-sub">依「第一次聽懂」表現調整</div></div>
+        <div class="stat-card"><div class="stat-label">專業面試等級</div><div class="stat-value" id="interviewLevelValue">L1.0</div><div class="stat-sub">依回答與自評逐步提升</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="modesSection">
+      <div class="section-head"><div><h2>今天怎麼練</h2><p>這個網站取代你原本 15–20 分鐘的 AI 面試練習，不額外增加總學習時間。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
+      <div class="grid grid-4">
+        <article class="panel mode-card">
+          <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
+        </article>
+        <article class="panel mode-card">
+          <span class="badge good">Listening</span><h3>聽力特訓</h3><p>先只聽聲音抓意圖。等級越高，問法越長、語速越快，並混入不同英文語音。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
+        </article>
+        <article class="panel mode-card">
+          <span class="badge warn">Review</span><h3>錯題複習</h3><p>只挑曾答錯、曾需要提示或口說自評「很卡」的題目，直到真正熟。</p><button class="btn ghost start-mode" data-mode="wrong" type="button">複習弱項</button>
+        </article>
+        <article class="panel mode-card">
+          <span class="badge dark">Due</span><h3>今日複習</h3><p>依簡化間隔複習機制挑今天到期的題目；如果沒有到期題，就補最弱技能。</p><button class="btn ghost start-mode" data-mode="due" type="button">今日複習</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>目前能力輪廓</h2><p>不是考 TOEIC 分數，而是追蹤你在「真的面試」需要的能力。</p></div><button class="btn ghost" id="resetTodayBtn" type="button">今天狀態重新整理</button></div>
+      <div class="panel" id="skillPanel"></div>
+    </section>
+
+    <section class="section challenge-wrap" id="challengeSection" aria-live="polite">
+      <div class="challenge-toolbar">
+        <div>
+          <div class="eyebrow" style="color:#667085">LIVE CHALLENGE</div>
+          <h2 style="margin:4px 0 0" id="sessionTitle">自適應挑戰</h2>
+        </div>
+        <div class="challenge-meta">
+          <span class="badge dark" id="questionCounter">1 / 10</span>
+          <span class="badge" id="questionLevelBadge">L1</span>
+          <span class="badge good" id="questionSkillBadge">Listening</span>
+          <button class="btn ghost" id="quitBtn" type="button">結束回合</button>
+        </div>
+      </div>
+      <div class="progress"><span id="sessionProgress" style="width:0%"></span></div>
+      <div id="questionHost"></div>
+    </section>
+
+    <section class="section result-card" id="resultSection">
+      <div class="panel">
+        <div class="eyebrow" style="color:#667085">SESSION COMPLETE</div>
+        <div class="result-score" id="resultScore">0%</div>
+        <h2 style="margin:0 0 8px">這一輪的重點不是分數，是下一輪要更準。</h2>
+        <p style="color:var(--muted);line-height:1.65" id="resultSummary"></p>
+        <div class="result-grid" id="resultGrid"></div>
+        <div class="btn-row"><button class="btn primary" id="nextAdaptiveBtn" type="button">再做一輪自適應</button><button class="btn ghost" id="backOverviewBtn" type="button">回到總覽</button></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>MongoDB 2026-10-12：你的基線</h2><p>這些是真實面試暴露出的問題類型，現在直接變成你的固定訓練素材。</p></div><span class="badge bad">Baseline</span></div>
+      <div class="grid grid-3">
+        <div class="panel"><b>① 聽懂問題意圖</b><p style="color:var(--muted);line-height:1.6">不再用 Yes / Yeah 撐住對話；先抓 PM scope、duration、English usage、compensation 等關鍵意圖。</p></div>
+        <div class="panel"><b>② 即時組完整句</b><p style="color:var(--muted);line-height:1.6">從碎句改成「Direct answer → 2 個重點 → 停」，先求清楚，再求華麗。</p></div>
+        <div class="panel"><b>③ 專業內容英文化</b><p style="color:var(--muted);line-height:1.6">Developer → SA / Consultant → Delivery / PM 的真實故事，先用中文釐清，再做成可講的英文。</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Active Chunks</h2><p>不背孤立單字。只複習會直接在面試裡用到的語塊。</p></div><div class="filters"><select id="chunkLevelFilter" aria-label="Chunk 難度"><option value="all">全部難度</option><option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option></select><button class="btn ghost" id="randomChunksBtn" type="button">隨機 3 個</button></div></div>
+      <div class="grid grid-3" id="chunkGrid"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>持續更新機制</h2><p>網站本身會自適應；內容版本則可以隨你新的面試、工作案例與弱項持續增加。</p></div></div>
+      <div class="grid grid-2">
+        <div class="panel">
+          <h3 style="margin-top:0">把學習狀況回傳給我</h3>
+          <p style="color:var(--muted);line-height:1.65">按「匯出學習報告」會產生 Markdown，包含技能等級、常錯題、使用提示次數、口說自評與近期回合。你把檔案丟回 ChatGPT，我就能依真實弱項擴充下一版題庫。</p>
+          <div class="btn-row"><button class="btn primary" id="exportReportBtn2" type="button">匯出學習報告</button><button class="btn ghost" id="exportProgressBtn" type="button">備份進度 JSON</button></div>
+        </div>
+        <div class="panel">
+          <h3 style="margin-top:0">匯入新版題庫 / 還原進度</h3>
+          <p style="color:var(--muted);line-height:1.65">正式更新 GitHub Pages 時，只要替換 question-bank.js 就會得到新版題庫。也可用進度 JSON 在不同裝置還原學習紀錄。</p>
+          <div class="btn-row"><label class="btn ghost" for="importProgressInput" style="display:inline-block">匯入進度 JSON</label><input class="hidden" id="importProgressInput" type="file" accept="application/json,.json"><button class="btn bad" id="resetAllBtn" type="button">清除本機進度</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hidden" id="settingsSection">
+      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>不同裝置可用的英文語音不同。若沒有 en-IN，系統會自動 fallback。</p></div></div>
+      <div class="panel settings-grid">
+        <div class="field"><label for="accentSelect">偏好語音</label><select id="accentSelect"><option value="adaptive">自適應混合</option><option value="en-US">US English</option><option value="en-GB">UK English</option><option value="en-IN">India English（若裝置支援）</option></select></div>
+        <div class="field"><label for="sessionSizeSelect">每回合題數</label><select id="sessionSizeSelect"><option value="10">10 題（推薦）</option><option value="5">5 題快速版</option><option value="15">15 題加強版</option></select></div>
+        <div class="field"><label for="speechRecognitionSelect">口說辨識</label><select id="speechRecognitionSelect"><option value="auto">可用時啟用</option><option value="off">只做自評</option></select></div>
+      </div>
+      <div class="callout" style="margin-top:12px"><strong>Brave 注意：</strong>瀏覽器可能不提供 Speech Recognition。這不影響主要課程；你仍可直接出聲回答，再用「順暢 / 有卡 / 很卡」自評。聽力播放使用系統的 Speech Synthesis。</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>最近回合</h2><p>不同裝置目前不會自動同步；可用 JSON 備份。</p></div></div>
+      <div class="panel history" id="historyList"></div>
+    </section>
+
+    <footer class="footer"><span>Edan English Adaptive Lab · local-first</span><span class="version" id="versionText"></span></footer>
+  </main>
+</div>
+<script src="question-bank.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
