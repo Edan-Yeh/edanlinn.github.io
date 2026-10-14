@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261015v4-3">
+  <link rel="stylesheet" href="styles.css?v=20261015v5-1">
   <title>English Challenge｜Edan's Workspace</title>
 </head>
 <body>
@@ -158,7 +158,7 @@
         <div class="field"><label for="speechRateSelect">播放語速</label><select id="speechRateSelect"><option value="adaptive">依難度自適應</option><option value="0.75">0.75x 很慢</option><option value="0.85">0.85x 慢</option><option value="0.90">0.90x</option><option value="0.95">0.95x</option><option value="1.00">1.00x 正常業界對話（預設）</option><option value="1.05">1.05x</option><option value="1.10">1.10x 快</option><option value="1.15">1.15x</option><option value="1.20">1.20x 很快</option></select></div>
         <div class="field"><label for="voiceQualitySelect">聲音品質</label><select id="voiceQualitySelect"><option value="natural">優先 Natural / Neural 語音（推薦）</option><option value="system">使用系統原始語音順序</option></select></div>
         <div class="field"><label for="sessionSizeSelect">每回合題數</label><select id="sessionSizeSelect"><option value="10">10 題（推薦）</option><option value="5">5 題快速版</option><option value="15">15 題加強版</option></select></div>
-        <div class="field"><label for="speechRecognitionSelect">口說辨識</label><select id="speechRecognitionSelect"><option value="auto">可用時啟用</option><option value="off">只做自評</option></select></div>
+        <div class="field"><label for="speechRecognitionSelect">錄音回答 / 語音辨識</label><select id="speechRecognitionSelect"><option value="auto">可用時啟用並自動評分</option><option value="off">關閉，改用自評</option></select></div>
       </div>
       <div class="callout" style="margin-top:12px"><strong>語音注意：</strong>網站會優先尋找 Natural / Neural / Premium / Enhanced 類型的系統語音，並顯示實際使用的 voice 名稱。若 Windows / Brave 沒有 en-IN 印度英文語音，仍會 fallback 到可用英文 voice。語音自然度最終仍取決於你的 Windows / 瀏覽器已安裝哪些 Speech Synthesis voices。</div>
     </section>
@@ -177,7 +177,7 @@
   <button class="mobile-dock-btn" id="mobileVocabBtn" data-nav="vocab" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js?v=20261015v4-3"></script>
-<script src="app.js?v=20261015v4-3"></script>
+<script src="question-bank.js?v=20261015v5-1"></script>
+<script src="app.js?v=20261015v5-1"></script>
 </body>
 </html>

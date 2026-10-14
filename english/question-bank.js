@@ -1,6 +1,6 @@
 window.EDAN_ENGLISH_CONTENT = {
   schemaVersion: 1,
-  contentVersion: '2026.10.15-v4',
+  contentVersion: '2026.10.15-v5',
   updatedAt: '2026-10-15',
   baseline: 'MongoDB recruiter interview 2026-10-12',
   skillLabels: {

@@ -352,11 +352,11 @@
     const hideText=q.level>=3;
     const SR=speechRecognitionCtor();
     const recognitionAvailable=!!SR && state.settings.speechRecognition!=='off';
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 不寫答案。先直接講，講完再看 model answer。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。卡住可以用「Let me think for a moment.」</div><div class="btn-row" style="margin-top:12px"><button class="btn secondary" id="startTimerBtn" type="button">開始 45 秒</button><button class="btn ghost" id="finishSpeakingBtn" type="button">我講完了</button>${recognitionAvailable?'<button class="btn ghost" id="recognitionBtn" type="button">🎙 語音轉文字（可選）</button>':''}</div><div class="speech-text ${recognitionAvailable?'':'hidden'}" id="speechText">${recognitionAvailable?'如果使用語音辨識，辨識結果會出現在這裡。':''}</div></div><div class="model-answer" id="modelAnswer"><strong>Model answer（講完才看）</strong><br>${esc(q.model)}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div><div class="feedback neutral" id="feedbackBox"><strong>自評這一次</strong>不要看文法完美度，只評「有沒有把意思完整講出去」。<div class="self-rate"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音辨識後會比對內容並給 0–100 分與調整建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。系統會看回答內容、完整度、結構與流暢度線索。</div><div class="btn-row" style="margin-top:12px">${recognitionAvailable?'<button class="btn primary" id="recognitionBtn" type="button">🎙 開始錄音回答</button>':'<button class="btn secondary" id="startTimerBtn" type="button">開始 45 秒</button>'}<button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="speech-text ${recognitionAvailable?'':'hidden'}" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，辨識文字會即時出現在這裡。':''}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div><div class="model-answer" id="modelAnswer"><strong>Model answer（講完才看）</strong><br>${esc(q.model)}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div><div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">錄音後會自動評分</strong><span id="feedbackNote">如果瀏覽器無法辨識語音，仍可用下方自評完成這題。</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
     $('playSpeakNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'speakAudioStatus'));
     $('playSpeakIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','speakAudioStatus'));
     if(hideText) $('revealSpeakQBtn').addEventListener('click',()=>{session.currentMeta.hint=true;qstat(q.id).hints++;$('speakingQuestionText').textContent=q.text;$('revealSpeakQBtn').disabled=true;save();});
-    $('startTimerBtn').addEventListener('click',()=>startSpeakingTimer(45));
+    if(!recognitionAvailable) $('startTimerBtn').addEventListener('click',()=>startSpeakingTimer(45));
     $('finishSpeakingBtn').addEventListener('click',()=>finishSpeakingStage(q));
     if(recognitionAvailable) $('recognitionBtn').addEventListener('click',()=>startRecognition(q));
     document.querySelectorAll('.self-rate button').forEach(b=>b.addEventListener('click',()=>{
@@ -366,18 +366,125 @@
       if(session.currentMeta.hint && quality===3) quality=2;
       document.querySelectorAll('.self-rate button').forEach(x=>x.disabled=true);
       b.style.outline='2px solid #516ce0';
-      recordAnswer(q,quality,quality>=2,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,transcript:speechTranscript});
+      recordAnswer(q,quality,quality>=2,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,transcript:speechTranscript,manualRating:true});
       $('nextBtn').classList.remove('hidden'); $('nextBtn').addEventListener('click',nextQuestion,{once:true});
     }));
   }
 
   function finishSpeakingStage(q){
+    if(session.currentMeta.scoringDone) return;
     stopSpeakingTimer(); stopRecognition();
     $('modelAnswer').classList.add('show'); $('feedbackBox').classList.add('show');
-    if(speechTranscript){
-      const coverage=keywordCoverage(speechTranscript,q.keywords||[]);
-      $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(speechTranscript)}<br><span class="support">關鍵字覆蓋：約 ${coverage}%（僅供參考，不等於英文分數）</span>`;
-    }
+    const recognitionBtn=$('recognitionBtn'); if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='🎙 錄音完成';}
+    setTimeout(()=>{
+      const transcript=(speechTranscript||'').trim();
+      if(transcript.split(/\s+/).filter(Boolean).length>=3){
+        const analysis=analyzeSpeakingAnswer(transcript,q);
+        renderSpeakingScore(analysis,q,transcript);
+        if(!session.currentMeta.answered){
+          session.currentMeta.answered=true;
+          session.currentMeta.scoringDone=true;
+          let quality=analysis.score>=80?3:analysis.score>=60?2:1;
+          if(session.currentMeta.hint && quality===3) quality=2;
+          recordAnswer(q,quality,analysis.score>=60,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,transcript,systemScore:analysis.score,scoreBreakdown:analysis.breakdown,suggestions:analysis.suggestions});
+          $('nextBtn').classList.remove('hidden');
+          $('nextBtn').addEventListener('click',nextQuestion,{once:true});
+        }
+      }else{
+        $('feedbackTitle').textContent='沒有取得足夠的語音辨識內容';
+        $('feedbackNote').textContent='可以重試錄音；若瀏覽器無法辨識，就用下方自評完成這題。';
+        const recognitionBtn=$('recognitionBtn'); if(recognitionBtn){recognitionBtn.disabled=false;recognitionBtn.textContent='🎙 重新錄音';}
+      }
+    },320);
+  }
+
+  const SPEAKING_STOPWORDS=new Set('a an the and or but to of in on at for with from by as is are was were be been being i you we they he she it my your our their this that these those do does did have has had can could would should will just very really about into over after before than then so if when where what how why who which'.split(' '));
+  function speakingTokens(text){return (String(text||'').toLowerCase().match(/[a-z]+(?:'[a-z]+)?/g)||[]);}
+  function meaningfulTokens(text){return speakingTokens(text).filter(w=>w.length>2&&!SPEAKING_STOPWORDS.has(w));}
+  function keywordHit(text,keyword){
+    const norm=String(text||'').toLowerCase();
+    const phrase=String(keyword||'').toLowerCase().replace(/[^a-z0-9+ ]/g,' ').replace(/\s+/g,' ').trim();
+    if(phrase && norm.includes(phrase)) return true;
+    const parts=meaningfulTokens(keyword);
+    if(!parts.length) return false;
+    const answerSet=new Set(speakingTokens(text));
+    const hits=parts.filter(p=>answerSet.has(p)).length;
+    return hits>=Math.max(1,Math.ceil(parts.length*.55));
+  }
+  function countFillers(text){
+    const t=' '+String(text||'').toLowerCase().replace(/[^a-z' ]/g,' ')+' ';
+    const phrases=[' um ',' uh ',' er ',' you know ',' i mean ',' kind of ',' sort of '];
+    return phrases.reduce((n,p)=>n+(t.split(p).length-1),0);
+  }
+  function analyzeSpeakingAnswer(text,q){
+    const tokens=speakingTokens(text);
+    const keywordChecks=(q.keywords||[]).map(k=>({keyword:k,hit:keywordHit(text,k)}));
+    const hits=keywordChecks.filter(x=>x.hit).length;
+    const keywordRatio=keywordChecks.length?hits/keywordChecks.length:.65;
+
+    const modelSet=new Set(meaningfulTokens(q.model||''));
+    const answerSet=new Set(meaningfulTokens(text));
+    const overlap=[...answerSet].filter(w=>modelSet.has(w)).length;
+    const modelRatio=modelSet.size?Math.min(1,overlap/Math.max(3,Math.min(10,modelSet.size)*.55)):.6;
+    const contentScore=Math.round(45*(keywordRatio*.78+modelRatio*.22));
+
+    const targets=[0,16,24,32,40,48];
+    const target=targets[clamp(q.level||1,1,5)];
+    const completenessScore=Math.round(20*Math.min(1,tokens.length/target));
+
+    const connectorRe=/\b(because|also|first|second|another|for example|for instance|however|so|therefore|mainly|especially|while|when|which|that means|my role|my responsibility|one example)\b/gi;
+    const connectors=(text.match(connectorRe)||[]).length;
+    let structureScore=4;
+    if(tokens.length>=8) structureScore+=4;
+    if(tokens.length>=16) structureScore+=3;
+    structureScore+=Math.min(9,connectors*3);
+    structureScore=Math.min(20,structureScore);
+
+    const fillers=countFillers(text);
+    let repeats=0;
+    for(let i=1;i<tokens.length;i++) if(tokens[i]===tokens[i-1]&&tokens[i].length>2) repeats++;
+    const fluencyScore=clamp(Math.round(15-fillers*2-repeats*1.5),4,15);
+
+    const score=clamp(contentScore+completenessScore+structureScore+fluencyScore,0,100);
+    const missing=keywordChecks.filter(x=>!x.hit).map(x=>x.keyword);
+    const suggestions=[];
+    if(missing.length) suggestions.push(`補上關鍵內容：${missing.slice(0,3).join(' / ')}。`);
+    if(tokens.length<target*.7) suggestions.push(`回答偏短（目前約 ${tokens.length} words）；再補一個重點或具體例子，目標約 ${target} words。`);
+    if(connectors===0&&tokens.length>=10) suggestions.push('句子有內容但連接較弱；加入 because / also / for example，讓回答更像完整口說。');
+    if(fillers>=2) suggestions.push(`偵測到約 ${fillers} 個 filler；卡住時寧可停 1 秒，再繼續說。`);
+    if(repeats>=2) suggestions.push('有明顯重複字；先停頓再重新起句，比連續重複同一個字更自然。');
+    if(!suggestions.length) suggestions.push('內容與結構已經完整；下一步可專注自然停頓、語調與更精簡的表達。');
+
+    return {
+      score,
+      breakdown:{content:contentScore,completeness:completenessScore,structure:structureScore,fluency:fluencyScore},
+      keywordRatio:Math.round(keywordRatio*100),
+      missing,
+      suggestions:suggestions.slice(0,3),
+      wordCount:tokens.length,
+      fillers,
+      repeats
+    };
+  }
+  function renderSpeakingScore(analysis,q,transcript){
+    const host=$('speakingScoreHost');
+    if(!host)return;
+    const b=analysis.breakdown;
+    const tone=analysis.score>=80?'good':analysis.score>=60?'mid':'low';
+    host.className=`speaking-score ${tone}`;
+    host.innerHTML=`<div class="speaking-score-head"><div><div class="support">回答比對分數</div><div class="speaking-score-number">${analysis.score}<span>/100</span></div></div><div class="speaking-score-summary">${analysis.score>=80?'內容完整，可以往更自然的表達前進。':analysis.score>=60?'主要意思有說到，再補齊缺少內容會更穩。':'目前回答和題目重點有落差，先把核心內容講完整。'}</div></div>
+      <div class="score-breakdown">
+        <div><b>${b.content}/45</b><span>內容切題</span></div>
+        <div><b>${b.completeness}/20</b><span>完整度</span></div>
+        <div><b>${b.structure}/20</b><span>回答結構</span></div>
+        <div><b>${b.fluency}/15</b><span>流暢度線索</span></div>
+      </div>
+      <div class="spoken-compare"><div><strong>你說的</strong><p>${esc(transcript)}</p></div><div><strong>需要調整</strong><ul>${analysis.suggestions.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div></div>
+      <div class="support score-disclaimer">此分數依語音轉文字後的內容、關鍵重點、長度、結構與 filler / 重複字計算；目前不評發音準確度或口音。</div>`;
+    $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(transcript)}<br><span class="support">關鍵內容覆蓋：約 ${analysis.keywordRatio}% · ${analysis.wordCount} words</span>`;
+    $('feedbackTitle').textContent='系統已完成比對';
+    $('feedbackNote').textContent='分數會直接納入這一題的訓練紀錄；Model answer 是參考，不需要逐字一樣。';
+    const self=$('selfRateBlock'); if(self)self.classList.add('hidden');
   }
 
   function startSpeakingTimer(sec){
@@ -390,11 +497,17 @@
   function speechRecognitionCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
   function startRecognition(q){
     const SR=speechRecognitionCtor(); if(!SR)return;
-    stopRecognition(); speechTranscript=''; recognition=new SR(); recognition.lang='en-US'; recognition.continuous=true; recognition.interimResults=true;
+    stopRecognition(); speechTranscript=''; session.currentMeta.scoringDone=false; session.currentMeta.answered=false;
+    recognition=new SR(); recognition.lang='en-US'; recognition.continuous=true; recognition.interimResults=true;
     recognition.onresult=(e)=>{let text='';for(let i=0;i<e.results.length;i++)text+=e.results[i][0].transcript+' ';speechTranscript=text.trim();const el=$('speechText');if(el)el.textContent=speechTranscript||'正在聽…';};
-    recognition.onerror=()=>{const el=$('speechText');if(el)el.textContent='此瀏覽器的語音辨識目前不可用，直接出聲回答再自評即可。';};
+    recognition.onerror=()=>{const el=$('speechText');if(el)el.textContent='此瀏覽器的語音辨識目前不可用，可以改用自評完成這題。'; const fb=$('feedbackBox');if(fb)fb.classList.add('show');};
     recognition.onend=()=>{recognition=null;};
-    try{recognition.start(); const el=$('speechText');if(el)el.textContent='正在聽你的回答…'; startSpeakingTimer(45);}catch(e){}
+    try{
+      recognition.start();
+      const el=$('speechText');if(el)el.textContent='● 正在錄音辨識…直接回答即可。';
+      const btn=$('recognitionBtn');if(btn){btn.textContent='● 錄音中';btn.disabled=true;}
+      startSpeakingTimer(45);
+    }catch(e){}
   }
   function stopRecognition(){if(recognition){try{recognition.stop();}catch(e){} recognition=null;}}
   function keywordCoverage(text,keywords){if(!text||!keywords.length)return 0;const t=text.toLowerCase();let hit=0;keywords.forEach(k=>{const pieces=k.toLowerCase().split(/\s+/).filter(w=>w.length>3);if(pieces.some(p=>t.includes(p)))hit++;});return Math.round(hit/keywords.length*100);}
@@ -513,11 +626,13 @@
   function exportLearningReport(){
     const weakQuestions=CONTENT.questions.map(q=>({q,s:state.qstats[q.id]})).filter(x=>x.s&&x.s.seen>0).sort((a,b)=>((a.s.lastQuality??3)+(a.s.correct/(a.s.seen||1)))-((b.s.lastQuality??3)+(b.s.correct/(b.s.seen||1)))).slice(0,12);
     const recent=state.sessions.slice(-8).reverse();
+    const speakingRecent=state.sessions.flatMap(s=>(s.answers||[]).map(a=>({...a,sessionDate:s.date}))).filter(a=>Number.isFinite(a.extra?.systemScore)).slice(-12).reverse();
     const lines=[
       '# Edan English Learning Report',`- Exported: ${new Date().toLocaleString('zh-TW',{hour12:false})}`,`- Content version: ${CONTENT.contentVersion}`,`- XP: ${state.xp}`,`- Streak: ${streak()} days`,'',
       '## Skill profile',...skillKeys.map(k=>`- ${skillLabels[k]}: L${(state.skills[k]||1).toFixed(2)}`),'',
       '## Weak / review-priority questions',...(weakQuestions.length?weakQuestions.map(({q,s},i)=>`${i+1}. [${q.id}] L${q.level} ${q.text}\n   - seen=${s.seen}, correct=${s.correct}, wrong=${s.wrong}, hints=${s.hints}, listens=${s.listens}, lastQuality=${s.lastQuality}, due=${s.due}`):['- No answered questions yet.']),'',
       '## Recent sessions',...(recent.length?recent.map(s=>`- ${s.date} | ${s.title} | ${s.score}% | weakest: ${s.weakest}`):['- No completed sessions yet.']),'',
+      '## Recent speaking auto-scores',...(speakingRecent.length?speakingRecent.map(a=>`- ${a.sessionDate} | [${a.id}] ${a.extra.systemScore}/100 | transcript: ${a.extra.transcript||''} | suggestions: ${(a.extra.suggestions||[]).join(' / ')}`):['- No auto-scored speaking answers yet.']),'',
       '## Request for ChatGPT update','Please use this report to update my English Interview Lab question bank. Prioritize repeated weak areas, create paraphrased listening questions, add professional interview follow-ups, and increase difficulty only where my performance supports it. Keep the daily site practice within 15–20 minutes because my total English study limit is about one hour per day.'
     ];
     download(`edan-english-learning-report-${todayKey()}.md`,lines.join('\n'),'text/markdown');
