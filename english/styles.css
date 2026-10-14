@@ -54,3 +54,152 @@ a{color:inherit}
 .hidden{display:none!important}
 @media(max-width:900px){.hero{grid-template-columns:1fr}.grid-4,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}.settings-grid{grid-template-columns:1fr}.topbar-inner{align-items:flex-start}.top-actions{max-width:50%}.skill-row{grid-template-columns:120px 1fr 48px}.result-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.shell{padding:22px 14px 56px}.topbar-inner{padding:12px 14px}.brand-text small{display:none}.top-actions .btn{padding:9px 10px;font-size:12px}.hero-main{padding:24px 20px;border-radius:24px}.hero-stats{grid-template-columns:1fr 1fr}.grid-4,.grid-3{grid-template-columns:1fr}.question-card{padding:18px;border-radius:22px}.question-top{flex-direction:column}.question-title{font-size:24px}.self-rate{grid-template-columns:1fr}.challenge-toolbar{align-items:flex-start;flex-direction:column}.skill-row{grid-template-columns:1fr}.skill-score{text-align:left}.result-grid{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}.top-actions{max-width:none}.brand{max-width:45%}}
+
+/* Mobile-first practice dock / touch ergonomics */
+.mobile-dock{display:none}
+@media(max-width:620px){
+  html{scroll-padding-top:72px}
+  body{
+    -webkit-text-size-adjust:100%;
+    overscroll-behavior-y:contain;
+    padding-bottom:calc(78px + env(safe-area-inset-bottom));
+  }
+  button,.btn,.option,select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .topbar{backdrop-filter:blur(22px)}
+  .topbar-inner{min-height:58px;padding:9px 12px;gap:8px}
+  .brand{max-width:none;gap:8px}
+  .brand-mark{width:34px;height:34px;border-radius:10px;flex:0 0 auto}
+  .brand-text b{font-size:12px;white-space:nowrap}
+  .top-actions{margin-left:auto;flex-wrap:nowrap}
+  #exportReportBtn{display:none}
+  .top-actions .btn{min-height:40px;padding:8px 11px}
+
+  .shell{padding:14px 12px 36px}
+  .hero{gap:10px}
+  .hero-main{padding:18px 16px 17px;border-radius:20px}
+  .eyebrow{font-size:10px;letter-spacing:.09em}
+  .hero h1{font-size:26px;line-height:1.08;margin:6px 0 8px}
+  .hero p{font-size:13px;line-height:1.55}
+  .hero-stats{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding:1px 1px 5px;margin-right:-12px}
+  .hero-stats::-webkit-scrollbar{display:none}
+  .stat-card{min-width:150px;padding:13px;border-radius:16px;scroll-snap-align:start;box-shadow:none}
+  .stat-value{font-size:21px}
+  .stat-sub{font-size:10px;line-height:1.35}
+
+  .section{margin-top:20px}
+  .section-head{gap:8px;margin-bottom:10px}
+  .section-head h2{font-size:19px;line-height:1.25}
+  .section-head p{font-size:12px;line-height:1.45}
+
+  #modesSection .grid-4{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+  .mode-card{min-height:0;padding:14px;border-radius:18px;box-shadow:none}
+  .mode-card h3{font-size:15px;margin:5px 0 6px}
+  .mode-card p{font-size:11px;line-height:1.4;margin-bottom:10px}
+  .mode-card .btn{width:100%;min-height:45px;padding:10px 8px;font-size:12px}
+
+  .panel{padding:15px;border-radius:18px;box-shadow:none}
+  .question-card{padding:15px;border-radius:20px;box-shadow:none;margin-left:-2px;margin-right:-2px}
+  .question-title{font-size:22px;line-height:1.25;margin-top:7px}
+  .question-intent{font-size:11px;line-height:1.45}
+  .challenge-toolbar{gap:8px;margin-bottom:8px}
+  .challenge-meta{gap:5px;width:100%;align-items:center}
+  .challenge-meta .badge{font-size:10px}
+  #quitBtn{margin-left:auto;min-height:38px}
+  .progress{margin:8px 0 12px;height:8px}
+
+  .audio-stage{padding:12px;margin:13px 0;border-radius:16px}
+  .audio-main{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .audio-main .btn{min-height:50px;width:100%;padding:10px 8px}
+  .audio-main .btn.ghost{grid-column:1 / -1}
+  .audio-status{grid-column:1 / -1;line-height:1.4;padding-top:1px}
+  .transcript{font-size:14px;padding:12px;margin-top:10px}
+
+  .options{gap:9px;margin-top:13px}
+  .option{
+    min-height:54px;
+    padding:13px 14px;
+    border-radius:14px;
+    font-size:15px;
+    line-height:1.35;
+  }
+  .feedback,.model-answer{font-size:14px;padding:13px;border-radius:14px}
+  .model-answer{line-height:1.6}
+  #nextBtn{width:100%;min-height:52px;font-size:15px}
+  .question-card>.btn-row:last-child{position:sticky;bottom:calc(70px + env(safe-area-inset-bottom));z-index:8;padding-top:6px}
+
+  .speaking-stage{padding:13px;border-radius:16px;margin-top:13px}
+  .speaking-stage .timer{font-size:27px}
+  .speaking-stage .btn-row{display:grid;grid-template-columns:1fr 1fr}
+  .speaking-stage .btn-row .btn{min-height:48px;width:100%}
+  #recognitionBtn{grid-column:1 / -1}
+  .self-rate{gap:8px}
+  .self-rate button{min-height:50px}
+
+  .skill-row{margin:9px 0;padding-bottom:8px;border-bottom:1px solid #eef1f5}
+  .skill-row:last-of-type{border-bottom:0}
+  .result-grid{gap:8px}
+  .result-mini{padding:12px;border-radius:14px}
+
+  /* Active Chunks become swipeable cards instead of a very long vertical wall. */
+  #chunkGrid{
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+    scroll-snap-type:x mandatory;
+    padding:1px 12px 8px 0;
+    margin-right:-12px;
+  }
+  #chunkGrid::-webkit-scrollbar{display:none}
+  #chunkGrid>.panel{
+    flex:0 0 min(86vw,340px);
+    scroll-snap-align:start;
+    min-height:250px;
+  }
+  #chunkGrid .btn-row{display:grid;grid-template-columns:1fr 1fr}
+  #chunkGrid .chunk-known{grid-column:1 / -1}
+  #chunkGrid .btn{min-height:46px}
+
+  .filters{width:100%;display:grid;grid-template-columns:1fr auto}
+  .filters select,.filters .btn{min-height:44px}
+  .settings-grid{gap:10px}
+  .field select,.field input{min-height:48px;font-size:16px}
+
+  .mobile-dock{
+    position:fixed;
+    left:10px;right:10px;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    z-index:60;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    padding:7px;
+    border:1px solid rgba(216,222,234,.95);
+    border-radius:18px;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(20px);
+    box-shadow:0 12px 32px rgba(23,32,51,.16);
+  }
+  .mobile-dock-btn{
+    min-height:48px;
+    border:0;
+    border-radius:13px;
+    background:transparent;
+    color:#48536a;
+    font-weight:800;
+    font-size:11px;
+    padding:5px 2px;
+  }
+  .mobile-dock-btn.primary{background:#2447d8;color:#fff}
+  .mobile-dock-btn span{display:block;font-size:18px;line-height:1;margin-bottom:4px}
+}
+@media(max-width:380px){
+  #modesSection .grid-4{grid-template-columns:1fr}
+  .hero h1{font-size:23px}
+  .brand-text b{font-size:11px}
+  .mobile-dock{left:6px;right:6px}
+  .mobile-dock-btn{font-size:10px}
+}
