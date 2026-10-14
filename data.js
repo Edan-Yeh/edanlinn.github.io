@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-13",
-  "completedDays": 20,
-  "currentTrack": "CI/CD / Release Governance / Quality & Security Gates",
+  "updatedAt": "2026-10-14",
+  "completedDays": 21,
+  "currentTrack": "CI/CD / ECS Rollback / Multi-cloud Architecture",
   "scores": [
     {
       "day": 1,
@@ -82,6 +82,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 20,
       "score": 65
+    },
+    {
+      "day": 21,
+      "score": 90
     }
   ],
   "roadmap": [
@@ -108,7 +112,7 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–20"
+        "value": "Day 1–21"
       },
       {
         "label": "目前主題",
@@ -3361,6 +3365,48 @@ window.CLOUD_SA_DATA = {
         "Test Gate 問測試是否通過；Security Gate 問是否符合資安政策；Approval Gate 問是否獲授權；Production Verification 問上線後交易是否正常。",
         "ECR 有弱點掃描不代表自動阻止部署；須明確設定 Pipeline Policy Gate。",
         "Expand–Migrate–Contract：先相容 Schema Expansion，再部署新版及遷移，確認安全後才 Contract。"
+      ]
+    },
+    {
+      "day": 21,
+      "date": "2026-10-14",
+      "topic": "CI/CD Failure Handling / ECS Rollback / Business Transaction Recovery",
+      "score": 90,
+      "status": "completed",
+      "answers": {
+        "Q1": "B",
+        "Q2": "1→C, 2→B, 3→D, 4→A",
+        "Q3": "C, D, F",
+        "practice1": "B",
+        "practice2": "C",
+        "practice3": "Rollback restores application only; verify DB, configuration, deployment success, main and changed functions."
+      },
+      "mastered": [
+        "正確判斷部署期間 CloudWatch Alarm、ECS Circuit Breaker、Test Gate 與 Manual Approval Gate 的責任",
+        "能辨識 Loan Interest Calculation 錯誤屬於 Application Business Logic Failure",
+        "知道 Application Rollback 後仍需驗證業務交易、環境設定與服務狀態"
+      ],
+      "corrections": [
+        [
+          "Q3 漏選 A：ECS 自動回復的先前成功部署條件",
+          "ECS deployment rollback 需要符合條件的先前已成功完成部署；不能假設任何版本都能自動回復。"
+        ],
+        [
+          "誤認只要資料庫新增欄位，Application Rollback 時就應同步 DB 還原",
+          "若是向後相容的 nullable Schema Expansion 且舊版可讀寫，通常無須還原 DB；應優先確認相容性，避免破壞性 Schema 回復。"
+        ],
+        [
+          "Application Rollback 後未明確評估已執行交易的業務結果",
+          "應區分試算、正式入帳及外部副作用，調查受影響交易、重算/修正資料、保留稽核軌跡；程式回復不會自動修正已產生的錯誤結果。"
+        ]
+      ],
+      "memory": [
+        "ECS = AWS 原生 Container Orchestration；負責部署、執行、維持 Tasks、更新與擴縮，不是 Image Registry。",
+        "ECS Cluster = 邏輯分組；Task Definition = Image/CPU/Memory/Port 等執行規格；Task = 實際執行個體；Service = 維持 Desired Count 與服務部署。",
+        "銀行 Loan API：CodeBuild 建 Image → ECR 儲存 Image → ECS Service 以 Task Definition 在兩 AZ 執行 4 Tasks → ALB 導流 → RDS。",
+        "ECS + Fargate 適合 AWS-native 容器化、無 Kubernetes 需求且希望減少主機管理；ECS + EC2 適合需要較多主機控制的情境。",
+        "Rollback Application ≠ Rollback DB ≠ Repair Business Transactions；需個別驗證。",
+        "跨雲學習建議：AWS 60%、Azure 25%、GCP 15%；以架構需求對照服務，不把 ECS、Azure Container Apps/AKS、Cloud Run/GKE 視為一對一等價。"
       ]
     }
   ]
