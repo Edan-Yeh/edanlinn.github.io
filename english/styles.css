@@ -203,3 +203,44 @@ a{color:inherit}
   .mobile-dock{left:6px;right:6px}
   .mobile-dock-btn{font-size:10px}
 }
+
+
+/* Dedicated vocabulary practice */
+.vocab-card{display:flex;flex-direction:column;min-height:255px}
+.vocab-card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.vocab-word{font-size:30px;font-weight:900;letter-spacing:-.03em;margin:18px 0 10px;word-break:break-word}
+.vocab-meaning{padding:13px 14px;border-radius:14px;background:#f6f8fc;border:1px solid var(--line);line-height:1.55;margin-bottom:12px}
+.vocab-meaning b{display:block;font-size:16px}
+.vocab-meaning p{margin:7px 0 0;color:var(--muted);font-size:13px}
+.vocab-card .vocab-audio-row{margin-top:auto}
+.vocab-card .btn-row{margin-top:9px}
+.vocab-audio-status{margin-top:9px}
+.vocab-filters{align-items:center}
+
+@media(max-width:620px){
+  #vocabGrid{
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+    scroll-snap-type:x mandatory;
+    padding:1px 12px 8px 0;
+    margin-right:-12px;
+  }
+  #vocabGrid::-webkit-scrollbar{display:none}
+  #vocabGrid>.panel{
+    flex:0 0 min(86vw,340px);
+    scroll-snap-align:start;
+    min-height:270px;
+  }
+  .vocab-word{font-size:34px;margin:20px 0 12px}
+  .vocab-card .btn-row{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .vocab-card .btn{min-height:48px;width:100%}
+  .vocab-filters{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .vocab-filters select{grid-column:1 / -1}
+  .vocab-filters #allVocabBtn{grid-column:1 / -1}
+}
