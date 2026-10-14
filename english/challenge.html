@@ -47,7 +47,7 @@
           <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
         </article>
         <article class="panel mode-card">
-          <span class="badge good">Listening</span><h3>聽力特訓</h3><p>先只聽聲音抓意圖。等級越高，問法越長、語速越快，並混入不同英文語音。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
+          <span class="badge good">Listening</span><h3>聽力特訓</h3><p>先只聽聲音抓意圖。等級越高，問法越長、語速越快；聽力以北美英語為主，並混合美國與加拿大語音。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
         </article>
         <article class="panel mode-card">
           <span class="badge warn">Review</span><h3>錯題複習</h3><p>只挑曾答錯、曾需要提示或口說自評「很卡」的題目，直到真正熟。</p><button class="btn ghost start-mode" data-mode="wrong" type="button">複習弱項</button>
@@ -122,9 +122,9 @@
     </section>
 
     <section class="section hidden" id="settingsSection">
-      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>不同裝置可用的英文語音不同。若沒有 en-IN，系統會自動 fallback。</p></div></div>
+      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>聽力預設採北美英語。自適應模式會混合美國與加拿大語音；若裝置沒有加拿大語音，系統會自動改用可用的北美英文語音。</p></div></div>
       <div class="panel settings-grid">
-        <div class="field"><label for="accentSelect">偏好語音</label><select id="accentSelect"><option value="adaptive">自適應混合</option><option value="en-US">US English</option><option value="en-GB">UK English</option><option value="en-IN">India English（若裝置支援）</option></select></div>
+        <div class="field"><label for="accentSelect">偏好語音</label><select id="accentSelect"><option value="adaptive">北美自適應（美國＋加拿大）</option><option value="en-US">North American / US English</option><option value="en-CA">Canadian English（若裝置支援）</option></select></div>
         <div class="field"><label for="sessionSizeSelect">每回合題數</label><select id="sessionSizeSelect"><option value="10">10 題（推薦）</option><option value="5">5 題快速版</option><option value="15">15 題加強版</option></select></div>
         <div class="field"><label for="speechRecognitionSelect">口說辨識</label><select id="speechRecognitionSelect"><option value="auto">可用時啟用</option><option value="off">只做自評</option></select></div>
       </div>
