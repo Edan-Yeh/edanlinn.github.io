@@ -2,12 +2,15 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n  <meta name="apple-mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-status-bar-style" content="default">\n  <meta name="apple-mobile-web-app-title" content="Edan English">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Edan English">
   <meta name="theme-color" content="#2447d8">
   <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261015v4-2">
   <title>English Challenge｜Edan's Workspace</title>
 </head>
 <body>
@@ -42,12 +45,15 @@
 
     <section class="section" id="modesSection">
       <div class="section-head"><div><h2>今天怎麼練</h2><p>這個網站取代你原本 15–20 分鐘的 AI 面試練習，不額外增加總學習時間。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
-      <div class="grid grid-4">
+      <div class="grid grid-5">
         <article class="panel mode-card">
           <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
         </article>
         <article class="panel mode-card">
           <span class="badge good">Listening</span><h3>聽力特訓</h3><p>先只聽聲音抓意圖。每一題都提供兩個版本：北美口音＋印度口音。等級越高，問法越長、語速越快。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
+        </article>
+        <article class="panel mode-card">
+          <span class="badge">Vocabulary</span><h3>單字練習</h3><p>日常高頻字、基礎動詞、形容詞與口說片語。先猜意思，再聽北美／印度發音與例句。</p><button class="btn secondary" id="jumpVocabBtn" type="button">開始刷單字</button>
         </article>
         <article class="panel mode-card">
           <span class="badge warn">Review</span><h3>錯題複習</h3><p>只挑曾答錯、曾需要提示或口說自評「很卡」的題目，直到真正熟。</p><button class="btn ghost start-mode" data-mode="wrong" type="button">複習弱項</button>
@@ -171,7 +177,7 @@
   <button class="mobile-dock-btn" id="mobileVocabBtn" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js"></script>
-<script src="app.js"></script>
+<script src="question-bank.js?v=20261015v4-2"></script>
+<script src="app.js?v=20261015v4-2"></script>
 </body>
 </html>
