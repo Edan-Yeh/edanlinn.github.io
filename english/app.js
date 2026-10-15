@@ -32,6 +32,8 @@
   let speakingSeconds = 45;
   let speechTranscript = '';
   let vocabPracticeSession = null;
+  let chunkUnitIds = null;
+  let chunkUnitCounted = false;
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
@@ -152,10 +154,11 @@
     $('historyList').innerHTML = list.length ? list.map(s => `<div class="history-item"><div><b>${esc(s.title)}</b><small>${esc(s.date)} · ${s.count} 題 · ${esc(s.weakest||'—')}</small></div><span class="badge ${s.score>=80?'good':s.score<60?'bad':'warn'}">${s.score}%</span></div>`).join('') : '<div class="support">還沒有完成的回合。做完第一輪後，這裡會留下趨勢。</div>';
   }
 
-  function renderChunks(limit=null){
+  function renderChunks(limit=null,fixedIds=null){
     let level = $('chunkLevelFilter').value;
     let arr = CONTENT.chunks.filter(c => level==='all' || String(c.level)===level);
-    if(limit) arr = [...arr].sort(()=>Math.random()-.5).slice(0,limit);
+    if(fixedIds) arr=fixedIds.map(id=>CONTENT.chunks.find(c=>c.id===id)).filter(Boolean);
+    else if(limit) arr = [...arr].sort(()=>Math.random()-.5).slice(0,limit);
     $('chunkGrid').innerHTML = arr.map(c => `<article class="panel"><span class="badge">L${c.level}</span><h3 style="margin:10px 0 5px">${esc(c.en)}</h3><div class="support">${esc(c.zh)}</div><p style="line-height:1.6;margin:12px 0">${esc(c.example)}</p><div class="btn-row"><button class="btn ghost chunk-listen-na" data-id="${c.id}" type="button">▶ 北美</button><button class="btn ghost chunk-listen-in" data-id="${c.id}" type="button">▶ 印度</button><button class="btn ${state.chunkKnown[c.id]?'good':'secondary'} chunk-known" data-id="${c.id}" type="button">${state.chunkKnown[c.id]?'✓ 已熟':'我會用了'}</button></div><div class="support chunk-audio-status" data-status-id="${c.id}" style="margin-top:8px">北美＋印度雙口音</div></article>`).join('');
     document.querySelectorAll('.chunk-listen-na').forEach(b => b.addEventListener('click', () => {
       const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
@@ -180,10 +183,21 @@
     }));
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
       state.chunkKnown[b.dataset.id] = !state.chunkKnown[b.dataset.id];
-      save(); renderChunks(limit);
+      if(chunkUnitIds && chunkUnitIds.includes(b.dataset.id) && chunkUnitIds.every(id=>state.chunkKnown[id]) && !chunkUnitCounted){
+        chunkUnitCounted=true; markPracticeDay();
+      }
+      save(); renderOverview(); renderChunks(limit,chunkUnitIds);
     }));
   }
 
+  function startChunkUnit(){
+    const unknown=CONTENT.chunks.filter(c=>!state.chunkKnown[c.id]);
+    const source=unknown.length>=3?unknown:CONTENT.chunks;
+    chunkUnitIds=[...source].sort(()=>Math.random()-.5).slice(0,3).map(c=>c.id);
+    chunkUnitCounted=false;
+    renderChunks(3,chunkUnitIds);
+    $('chunkGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
   function renderVocabulary(limit=12,randomize=false,learningOnly=false){
     const host=$('vocabGrid');
     if(!host || !Array.isArray(CONTENT.vocabulary)) return;
@@ -895,7 +909,7 @@
     $('chunkLevelFilter').addEventListener('change',()=>renderChunks()); $('randomChunksBtn').addEventListener('click',()=>renderChunks(3));
     $('dailyListeningBtn')?.addEventListener('click',()=>startSession('listening',5));
     $('dailyVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');startVocabPractice(recommendedVocabMode(),8);});
-    $('dailyChunksBtn')?.addEventListener('click',()=>{setMobileDockActive('chunks');renderChunks(3);$('chunkGrid')?.scrollIntoView({behavior:'smooth',block:'center'});});
+    $('dailyChunksBtn')?.addEventListener('click',()=>{setMobileDockActive('chunks');startChunkUnit();});
     $('dailySpeakingBtn')?.addEventListener('click',()=>startSession('speaking',2));
     $('vocabFilter')?.addEventListener('change',()=>{if(vocabPracticeSession)startVocabPractice(vocabPracticeSession.mode,8);else renderVocabulary(12);});
     $('randomVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(8,true,false);});
