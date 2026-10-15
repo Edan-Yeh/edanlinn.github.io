@@ -176,7 +176,7 @@ function renderGlossary(query=''){
   const q=query.trim().toLowerCase();
   let items=d.glossary.filter(item=>{
     if(!q) return true;
-    const hay=[item.term,item.fullName,item.category,item.definition,item.example,item.confusion,...(item.aliases||[]),...(item.related||[])].join(' ').toLowerCase();
+    const hay=[item.term,item.fullName,item.category,item.definition,item.example,item.confusion,...(item.cloudCompare?Object.values(item.cloudCompare):[]),...(item.aliases||[]),...(item.related||[])].join(' ').toLowerCase();
     return hay.includes(q);
   });
   if(!q) items=items.slice(0,8);
@@ -194,6 +194,7 @@ function renderGlossary(query=''){
         <span class="glossary-category">${item.category}</span>
       </div>
       <div class="glossary-definition">${item.definition}</div>
+      ${item.cloudCompare?`<div class="cloud-compare"><div class="cloud-compare-heading">跨雲服務對照｜以 AWS 為基準</div><div class="cloud-compare-grid"><div class="cloud-compare-cell"><b>AWS</b><span>${escapeQuiz(item.cloudCompare.aws)}</span></div><div class="cloud-compare-cell"><b>Azure</b><span>${escapeQuiz(item.cloudCompare.azure)}</span></div><div class="cloud-compare-cell"><b>GCP</b><span>${escapeQuiz(item.cloudCompare.gcp)}</span></div></div><div class="cloud-compare-detail"><strong>關鍵差異：</strong>${escapeQuiz(item.cloudCompare.difference)}</div><div class="cloud-compare-detail"><strong>銀行情境：</strong>${escapeQuiz(item.cloudCompare.scenario)}</div></div>`:''}
       <div class="glossary-grid">
         <div class="glossary-box"><b>實際例子</b>${item.example}</div>
         <div class="glossary-box"><b>容易混淆</b>${item.confusion}</div>
