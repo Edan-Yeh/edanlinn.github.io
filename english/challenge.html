@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261015v8-1">
+  <link rel="stylesheet" href="styles.css?v=20261015v9-1">
   <title>English Challenge｜Edan's Workspace</title>
 </head>
 <body>
@@ -45,7 +45,7 @@
 
     <section class="section" id="modesSection">
       <div class="section-head"><div><h2>今天怎麼練</h2><p>這個網站取代你原本 15–20 分鐘的 AI 面試練習，不額外增加總學習時間。答案在作答前會先隱藏，完成後才顯示英文＋繁體中文。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
-      <div class="grid grid-5">
+      <div class="grid mode-grid">
         <article class="panel mode-card">
           <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
         </article>
@@ -61,7 +61,21 @@
         <article class="panel mode-card">
           <span class="badge dark">Due</span><h3>今日複習</h3><p>依簡化間隔複習機制挑今天到期的題目；如果沒有到期題，就補最弱技能。</p><button class="btn ghost start-mode" data-mode="due" type="button">今日複習</button>
         </article>
+        <article class="panel mode-card mock-card">
+          <span class="badge bad">MongoDB</span><h3>Mock Interview</h3><p>8 題依真實面試順序進行：自我介紹 → IBM 現況 → PM scope → 職涯 → stakeholder → 案例 → Why MongoDB → 離職動機。</p><button class="btn primary start-mode" data-mode="mock" data-size="8" type="button">開始模擬面試</button>
+        </article>
       </div>
+    </section>
+
+    <section class="section" id="dailyCoachSection">
+      <div class="section-head"><div><h2>今日 15 分鐘｜系統幫你排</h2><p id="dailyFocusText">完成一個小單元後，系統會依弱點調整優先順序。</p></div><span class="badge good" id="dailyStatusText">今天尚未完成完整單元</span></div>
+      <div class="panel daily-plan">
+        <button class="daily-step" id="dailyListeningBtn" type="button"><b>① 5 題聽力</b><span>先練問題意圖與辨音</span></button>
+        <button class="daily-step" id="dailyVocabBtn" type="button"><b>② 8 題單字</b><span>系統依弱點選擇題／句型／聽力</span></button>
+        <button class="daily-step" id="dailyChunksBtn" type="button"><b>③ 3 個 Chunks</b><span>把單字變成能說出口的句子</span></button>
+        <button class="daily-step" id="dailySpeakingBtn" type="button"><b>④ 2 題口說</b><span>錄音、評分、修正</span></button>
+      </div>
+      <div class="support" style="margin-top:8px">不用四個都做。完整完成其中任一小單元，就會記錄今天 1 天。</div>
     </section>
 
     <section class="section">
@@ -184,7 +198,7 @@
   <button class="mobile-dock-btn" id="mobileVocabBtn" data-nav="vocab" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js?v=20261015v8-1"></script>
-<script src="app.js?v=20261015v8-1"></script>
+<script src="question-bank.js?v=20261015v9-1"></script>
+<script src="app.js?v=20261015v9-1"></script>
 </body>
 </html>
