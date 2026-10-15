@@ -421,16 +421,16 @@
   }
   function languageFixes(text){
     const rules=[
-      [/\\bexperience about\\b/gi,'experience in','experience 通常搭配 in'],
-      [/\\bmany team\\b/gi,'many teams / multiple teams','team 需要複數'],
-      [/\\bI responsible for\\b/gi,'I am responsible for','responsible 前需要 be 動詞'],
-      [/\\bI am work\\b/gi,'I work / I am working','work 的時態要完整'],
-      [/\\bdiscuss about\\b/gi,'discuss','discuss 後面不需要 about'],
-      [/\\bcommunicate to\\b/gi,'communicate with','與人溝通通常用 communicate with'],
-      [/\\bmore better\\b/gi,'better','better 本身已是比較級'],
-      [/\\bdepend of\\b/gi,'depend on','固定搭配是 depend on'],
-      [/\\bI have (\\d+|eight) years experience\\b/gi,'I have $1 years of experience','years of experience 是自然搭配'],
-      [/\\bin IBM\\b/gi,'at IBM','公司前通常用 at']
+      [/\bexperience about\b/gi,'experience in','experience 通常搭配 in'],
+      [/\bmany team\b/gi,'many teams / multiple teams','team 需要複數'],
+      [/\bI responsible for\b/gi,'I am responsible for','responsible 前需要 be 動詞'],
+      [/\bI am work\b/gi,'I work / I am working','work 的時態要完整'],
+      [/\bdiscuss about\b/gi,'discuss','discuss 後面不需要 about'],
+      [/\bcommunicate to\b/gi,'communicate with','與人溝通通常用 communicate with'],
+      [/\bmore better\b/gi,'better','better 本身已是比較級'],
+      [/\bdepend of\b/gi,'depend on','固定搭配是 depend on'],
+      [/\bI have (\d+|eight) years experience\b/gi,'I have $1 years of experience','years of experience 是自然搭配'],
+      [/\bin IBM\b/gi,'at IBM','公司前通常用 at']
     ];
     const out=[];
     rules.forEach(([re,to,note])=>{if(re.test(text)){re.lastIndex=0;out.push({to,note});}});
