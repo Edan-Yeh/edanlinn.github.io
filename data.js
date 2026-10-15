@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-14",
-  "completedDays": 21,
-  "currentTrack": "CI/CD / ECS Rollback / Multi-cloud Architecture",
+  "updatedAt": "2026-10-15",
+  "completedDays": 22,
+  "currentTrack": "Multi-cloud Container Selection / Banking Data Recovery",
   "scores": [
     {
       "day": 1,
@@ -86,6 +86,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 21,
       "score": 90
+    },
+    {
+      "day": 22,
+      "score": 78
     }
   ],
   "roadmap": [
@@ -112,11 +116,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–21"
+        "value": "Day 1–22"
       },
       {
         "label": "目前主題",
-        "value": "Docker / ECR / ECS Task Definition"
+        "value": "Multi-cloud Containers / Azure Container Apps / GCP Cloud Run"
       },
       {
         "label": "已建立基礎",
@@ -1962,6 +1966,75 @@ window.CLOUD_SA_DATA = {
         "Cutover",
         "Replication Lag"
       ]
+    },
+    {
+      "term": "Azure Container Apps",
+      "fullName": "Azure Container Apps｜Azure 受管容器應用平台",
+      "category": "Multi-cloud / Containers",
+      "aliases": [
+        "ACA",
+        "Container Apps",
+        "Azure 容器應用"
+      ],
+      "definition": "Azure 託管容器應用平台，支援 HTTP、TCP 及事件驅動擴縮，使用 Revision/Replica 管理應用版本與執行副本。",
+      "example": "銀行行銷活動 API 使用 HTTP Scaling；背景處理服務使用事件觸發規則。",
+      "confusion": "不是 AKS；Azure Container Apps 與 ECS、Cloud Run 的資源模型及部署機制不完全相同。",
+      "related": [
+        "ECS",
+        "Cloud Run",
+        "KEDA"
+      ]
+    },
+    {
+      "term": "Cloud Run",
+      "fullName": "Google Cloud Run｜GCP 全代管容器運算",
+      "category": "Multi-cloud / Containers",
+      "aliases": [
+        "GCP Cloud Run",
+        "Cloud Run Services"
+      ],
+      "definition": "以受管方式執行容器化 HTTP 應用與工作負載，服務可依請求等負載調整執行個體，常見設定可縮至零。",
+      "example": "平時幾乎沒有請求、活動期間流量激增的貸款試算 API。",
+      "confusion": "Scale to Zero 可能帶來啟動延遲；Minimum Instances 有助降低冷啟動風險，但會增加成本。",
+      "related": [
+        "Azure Container Apps",
+        "ECS",
+        "Minimum Instances"
+      ]
+    },
+    {
+      "term": "Compensating Transaction",
+      "fullName": "Compensating Transaction｜補償／補正交易",
+      "category": "Banking / Data Consistency",
+      "aliases": [
+        "沖正",
+        "補正交易",
+        "補償交易"
+      ],
+      "definition": "以受控、可稽核的新交易抵銷或修正先前錯誤的業務效果，而非直接倒轉整個資料庫。",
+      "example": "錯誤計息已正式入帳，依銀行授權流程產生沖正與正確計息補正紀錄，核對總分戶帳。",
+      "confusion": "試算錯誤、入帳錯誤、對外清算後的錯誤處理方式不同；不能假設重跑交易就安全。",
+      "related": [
+        "Idempotency",
+        "PITR",
+        "Audit Trail"
+      ]
+    },
+    {
+      "term": "Idempotency",
+      "fullName": "Idempotency｜冪等性",
+      "category": "Banking / Data Consistency",
+      "aliases": [
+        "冪等",
+        "防重複入帳"
+      ],
+      "definition": "相同請求重試多次時，不應產生重複的業務副作用。",
+      "example": "放款交易重試使用唯一交易識別碼檢核，避免同筆交易重複入帳。",
+      "confusion": "技術層 HTTP Retry 不等於業務交易可安全重跑；須有業務鍵、狀態及對帳機制。",
+      "related": [
+        "Compensating Transaction",
+        "PITR"
+      ]
     }
   ],
   "quizBank": [
@@ -2684,6 +2757,73 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "先控制來源寫入並等待 CDC catch up，確認 Target data 後再切 Application，做 smoke test 後才開正式流量。",
       "memory": "Cutover 要先收斂資料，再切 Application。"
+    },
+    {
+      "id": "D22-Q1",
+      "category": "Multi-cloud / Containers",
+      "difficulty": "中等",
+      "question": "銀行 Loan API 已在 AWS，使用 RDS 與 CloudWatch，需全天候運行、無 K8s 經驗且希望減少 EC2 管理，應優先評估哪個平台？",
+      "options": [
+        "EKS，因為所有容器必須使用 Kubernetes",
+        "ECS + Fargate，搭配 ALB、Auto Scaling 與高可用設計",
+        "Cloud Run，一定比 AWS 便宜且延遲更低",
+        "單一 EC2 Docker，無需容器編排"
+      ],
+      "answer": 1,
+      "explanation": "AWS 現有整合、無 Kubernetes 維運需求、需要持續服務及管理 Tasks，ECS + Fargate 是合理第一優先。",
+      "memory": "選型依需求、既有平台、團隊能力與運維成本；不是一律選 K8s。"
+    },
+    {
+      "id": "D22-Q2",
+      "category": "Multi-cloud / Containers",
+      "difficulty": "中等",
+      "question": "關於 AWS ECS、Azure Container Apps、GCP Cloud Run，哪些敘述正確？（複選）",
+      "options": [
+        "A ECS Task Definition 描述執行規格；Service 維持 Tasks",
+        "B Azure Container Apps 支援 HTTP 或事件來源擴縮，需正確配置 Scale Rules",
+        "C Cloud Run 可能縮至零；延遲敏感服務評估 Minimum Instances 與成本",
+        "D 三者部署機制完全一致可直接複製",
+        "E Application Rollback 自動修復錯誤放款交易",
+        "F Auto Scaling 仍須評估 DB 連線與容量"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "explanation": "A、B、C、F 正確。容器服務功能有交集但不等價；Rollback 不會自動修復已產生的交易結果。",
+      "memory": "Azure Container Apps：Scale Rules；Cloud Run：Scale to Zero / Minimum Instances；DB 是擴縮瓶頸之一。"
+    },
+    {
+      "id": "D22-Q3",
+      "category": "Multi-cloud / Containers",
+      "difficulty": "中等",
+      "question": "下列哪個 ECS 元件用來定義 Image、CPU、Memory、Port？",
+      "options": [
+        "Cluster",
+        "Task Definition",
+        "Service",
+        "ALB"
+      ],
+      "answer": 1,
+      "explanation": "Task Definition 是容器執行規格；Service 負責維持 Task 數量，Cluster 是邏輯分組。",
+      "memory": "Task Definition = 規格；Task = 實例；Service = 持續維持；Cluster = 分組。"
+    },
+    {
+      "id": "D22-Q4",
+      "category": "Banking / Data Recovery",
+      "difficulty": "進階",
+      "question": "部分放款利息計算錯誤，但其他正式交易正常，應如何修復？",
+      "options": [
+        "直接 PITR 回到事故前，再全部重跑",
+        "僅擴大 ECS Tasks",
+        "隔離受影響交易、確認影響範圍，受控回復應用，透過審核的補正/沖正/重算程序修正並對帳",
+        "因 ECS Healthy 不需處理"
+      ],
+      "answer": 2,
+      "explanation": "整庫 PITR 可能連正常交易一起倒退，造成資料遺失或重複入帳。應保留流水、冪等性、稽核軌跡並按銀行作業規範修正。",
+      "memory": "Application Rollback ≠ DB Restore ≠ Business Data Repair；PITR 不是少量業務錯帳的預設解法。"
     }
   ],
   "days": [
@@ -3408,6 +3548,49 @@ window.CLOUD_SA_DATA = {
         "Rollback Application ≠ Rollback DB ≠ Repair Business Transactions；需個別驗證。",
         "跨雲學習建議：AWS 60%、Azure 25%、GCP 15%；以架構需求對照服務，不把 ECS、Azure Container Apps/AKS、Cloud Run/GKE 視為一對一等價。"
       ]
+    },
+    {
+      "day": 22,
+      "date": "2026-10-15",
+      "topic": "Multi-cloud Container Selection / AWS ECS Fargate / Azure Container Apps / GCP Cloud Run / Banking Transaction Recovery",
+      "score": 78,
+      "status": "completed",
+      "answers": {
+        "Q1": "B",
+        "Q2": "A, F",
+        "Q3": "1→B, 2→D, 3→A, 4→C",
+        "practice1": "A: ECS + Fargate; B: Cloud Run",
+        "practice2": "Multi-AZ + ECS Service Auto Scaling",
+        "practice3": "先查 Log 與原因，對已產生交易提出 PITR 回交易前再重跑"
+      },
+      "mastered": [
+        "根據既有 AWS、RDS、CloudWatch 與無 K8s 經驗選擇 ECS + Fargate",
+        "能辨識 Cloud Run 對 HTTP 負載自動擴縮的優勢",
+        "理解 ECS Task Definition、Service 與 Azure Replica Scaling、GCP Revision 的配對",
+        "知道業務異常需先縮小影響範圍，不應立即還原 DB"
+      ],
+      "corrections": [
+        [
+          "Q2 漏選 B、C",
+          "Azure Container Apps 可依 HTTP/事件規則擴縮；Cloud Run 可能 Scale to Zero，延遲敏感服務需評估 Minimum Instances 與成本。"
+        ],
+        [
+          "實作 2 高可用架構描述不足",
+          "ALB + 跨至少兩個 AZ 的 Private ECS Tasks + 健康檢查 + 足夠最小容量 + Service Auto Scaling + RDS Multi-AZ；需評估單 AZ 故障後的剩餘容量。"
+        ],
+        [
+          "實作 3 建議將 DB PITR 回到錯誤交易前再重跑",
+          "少量錯誤計息不應預設整庫 PITR，可能倒退大量正常交易；先確認是否僅試算或已入帳、調查流水及影響，按審核流程進行沖正、重算或補正，防重複入帳並對帳。"
+        ]
+      ],
+      "memory": [
+        "AWS ECS + Fargate 適合 AWS-native 全天候 Loan API；GCP Cloud Run 適合平時低流量、活動期間尖峰的試算 API，但要評估 Cold Start 與資料庫連線。",
+        "Azure Container Apps 支援 HTTP 與事件驅動 Scaling；Cloud Run 可 Scale to Zero，Minimum Instances 可減少 Cold Start 但增加成本。",
+        "ECS HA：ALB + 至少兩 AZ ECS Tasks + Health Check + Service Auto Scaling + RDS Multi-AZ，還要確認 AZ 故障後容量。",
+        "PITR 不等於業務補正；不要直接還原共用正式 DB 來修少量錯誤利息。",
+        "保留全部題目、選項、正解、作答、解析與實務案例，供日後查閱，不只保存錯題。"
+      ],
+      "archive": "docs/cloud-sa-day22-2026-10-15.md"
     }
   ]
 };
