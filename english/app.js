@@ -51,7 +51,7 @@
   }
   function recommendedVocabMode(){
     const w=topWeakness();
-    return w==='sound'?'listening':(w==='output'||w==='structure'?'sentence':'choice');
+    return (w==='sound'||w==='intent')?'listening':(w==='output'||w==='structure'||w==='usage'?'sentence':'choice');
   }
   function renderDailyCoach(){
     const focus=$('dailyFocusText');
@@ -183,10 +183,10 @@
     }));
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
       state.chunkKnown[b.dataset.id] = !state.chunkKnown[b.dataset.id];
-      if(chunkUnitIds && chunkUnitIds.includes(b.dataset.id) && chunkUnitIds.every(id=>state.chunkKnown[id]) && !chunkUnitCounted){
+      if(fixedIds && chunkUnitIds && chunkUnitIds.includes(b.dataset.id) && chunkUnitIds.every(id=>state.chunkKnown[id]) && !chunkUnitCounted){
         chunkUnitCounted=true; markPracticeDay();
       }
-      save(); renderOverview(); renderChunks(limit,chunkUnitIds);
+      save(); renderOverview(); renderChunks(limit,fixedIds);
     }));
   }
 
@@ -429,7 +429,7 @@
       [/\bcommunicate to\b/gi,'communicate with','與人溝通通常用 communicate with'],
       [/\bmore better\b/gi,'better','better 本身已是比較級'],
       [/\bdepend of\b/gi,'depend on','固定搭配是 depend on'],
-      [/\bI have (\d+|eight) years experience\b/gi,'I have $1 years of experience','years of experience 是自然搭配'],
+      [/\bI have (\d+|eight) years experience\b/gi,'I have X years of experience','years of experience 是自然搭配'],
       [/\bin IBM\b/gi,'at IBM','公司前通常用 at']
     ];
     const out=[];
