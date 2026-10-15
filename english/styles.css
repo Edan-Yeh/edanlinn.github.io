@@ -322,3 +322,8 @@ a{color:inherit}
 .recorded-audio strong{display:block;margin-bottom:9px;font-size:13px}
 .recorded-audio audio{display:block;width:100%;max-width:620px}
 .recorded-audio .support{display:block;margin-top:7px}
+
+
+/* Local Whisper speaking analysis */
+.speaking-pace{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.82);border:1px solid var(--line)}
+.speaking-pace b{font-size:18px}.speaking-pace span{font-size:12px;color:var(--muted)}
