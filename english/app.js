@@ -632,7 +632,7 @@
         }
       }else{
         $('feedbackTitle').textContent='錄音已完成，但沒有取得足夠的轉文字內容';
-        $('feedbackNote').textContent=recordedAudioUrl?'可以先播放「你的錄音」回聽，再用下方自評；若要重錄，也可以直接重新錄音。':'如果麥克風錄音也沒有成功，請確認網站的麥克風權限後重試。';
+        $('feedbackNote').textContent=session.currentMeta.mediaRecorderStarted?'可以先播放「你的錄音」回聽，再用下方自評；若要重錄，也可以直接重新錄音。':'如果麥克風錄音也沒有成功，請確認網站的麥克風權限後重試。';
         const recognitionBtn=$('recognitionBtn'); if(recognitionBtn){recognitionBtn.disabled=false;recognitionBtn.textContent='🎙 重新錄音';}
       }
     },320);
@@ -825,6 +825,7 @@
     const btn=$('recognitionBtn');
     if(btn){btn.disabled=true;btn.textContent='● 啟動麥克風…';}
     const recorded=await startMediaRecording();
+    session.currentMeta.mediaRecorderStarted=recorded;
     const recognized=recognitionAvailable?startRecognition(q,false):false;
     const el=$('speechText');
     if(el){
