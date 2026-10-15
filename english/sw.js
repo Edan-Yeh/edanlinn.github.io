@@ -1,5 +1,5 @@
-const CACHE='edan-english-adaptive-v7-20261015-bilingual-answer-1';
-const ASSETS=['./','./index.html','./challenge.html','./styles.css?v=20261015v7-1','./app.js?v=20261015v7-1','./question-bank.js?v=20261015v7-1','./manifest.webmanifest','./icon.svg'];
+const CACHE='edan-english-adaptive-v8-20261015-unit-day-sentence-zh-1';
+const ASSETS=['./','./index.html','./challenge.html','./styles.css?v=20261015v8-1','./app.js?v=20261015v8-1','./question-bank.js?v=20261015v8-1','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{

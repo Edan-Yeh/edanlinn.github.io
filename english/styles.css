@@ -301,3 +301,8 @@ a{color:inherit}
 .model-answer .answer-en{margin-top:7px;line-height:1.7}
 .model-answer .answer-zh{margin-top:11px;padding-top:10px;border-top:1px solid rgba(189,201,232,.22);color:#dfe7ff;line-height:1.7}
 .model-answer .answer-zh span{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;color:#aebee9;margin-bottom:4px}
+
+/* Hidden sentence Chinese hint */
+.sentence-zh-hint{margin:10px 0 4px}
+.sentence-zh-hint .btn{padding:8px 11px;font-size:12px}
+.sentence-zh-text{margin-top:8px;padding:11px 13px;border-radius:13px;background:#eef2ff;border:1px solid #d8e0ff;color:#33415f;line-height:1.6;font-size:14px}

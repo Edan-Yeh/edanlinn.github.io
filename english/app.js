@@ -34,8 +34,13 @@
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
-  const todayKey = () => new Date().toISOString().slice(0,10);
-  const addDays = (days) => { const d = new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); };
+  const localDateKey = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const todayKey = () => localDateKey();
+  const addDays = (days) => { const d = new Date(); d.setDate(d.getDate()+days); return localDateKey(d); };
+  function markPracticeDay(){
+    const k=todayKey();
+    if(!state.completedDates.includes(k)) state.completedDates.push(k);
+  }
   const esc = (s='') => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
   function loadState(){
@@ -83,7 +88,7 @@
     let d = new Date();
     let count = 0;
     for(let i=0;i<366;i++){
-      const k = d.toISOString().slice(0,10);
+      const k = localDateKey(d);
       if(set.has(k)){ count++; d.setDate(d.getDate()-1); }
       else if(i===0){ d.setDate(d.getDate()-1); }
       else break;
@@ -223,7 +228,11 @@
     if(!state.vocabStats[id]) state.vocabStats[id]={attempts:0,correct:0,choice:0,sentence:0,listening:0};
     return state.vocabStats[id];
   }
-  function escapeRegExpText(s){return String(s).replace(/[.*+?^$()|[\]{}\\]/g,'\\  function qstat(id){');}
+  function vocabExampleTranslation(v){return v?.exampleZh || CONTENT.vocabExampleTranslations?.[v?.id] || '';}
+  function escapeRegExpText(s){
+    const specials='^$.*+?()[]{}|';
+    return String(s).split('').map(ch=>(specials.includes(ch)||ch.charCodeAt(0)===92)?String.fromCharCode(92)+ch:ch).join('');
+  }
   function sentenceBlank(v){
     const irregular={
       choose:['chose','chosen'],
@@ -286,7 +295,8 @@
     if(!host||!s)return;
     if(s.index>=s.queue.length){
       const pct=s.queue.length?Math.round(s.correct/s.queue.length*100):0;
-      host.innerHTML=`<article class="vocab-practice-card panel"><div class="badge good">SESSION COMPLETE</div><div class="vocab-practice-score">${pct}%</div><h3>這輪 ${s.correct} / ${s.queue.length} 題答對</h3><p class="support">答錯的字會保留在學習紀錄裡。可以換另一種模式再刷一次。</p><div class="btn-row"><button class="btn primary" id="vocabRetryBtn" type="button">同模式再 8 題</button><button class="btn ghost" id="vocabCardsBtn2" type="button">回單字卡</button></div></article>`;
+      markPracticeDay(); save(); renderOverview();
+      host.innerHTML=`<article class="vocab-practice-card panel"><div class="badge good">SESSION COMPLETE</div><div class="vocab-practice-score">${pct}%</div><h3>這輪 ${s.correct} / ${s.queue.length} 題答對</h3><p class="support">✓ 已完成 1 個完整單元，今天已記錄為練習日。答錯的字會保留在學習紀錄裡。</p><div class="btn-row"><button class="btn primary" id="vocabRetryBtn" type="button">同模式再 8 題</button><button class="btn ghost" id="vocabCardsBtn2" type="button">回單字卡</button></div></article>`;
       $('vocabRetryBtn').addEventListener('click',()=>startVocabPractice(s.mode,8));
       $('vocabCardsBtn2').addEventListener('click',showVocabCards);
       return;
@@ -306,7 +316,15 @@
       options=shuffle([answer,...vocabDistractors(v,'zh',3)]);
       audioHtml=`<div class="vocab-listening-box"><button class="btn primary" id="vocabListenNA" type="button">▶ 北美</button><button class="btn secondary" id="vocabListenIN" type="button">▶ 印度</button><span class="support" id="vocabListenStatus">單字文字會在作答後顯示</span></div>`;
     }
-    host.innerHTML=`<article class="vocab-practice-card panel"><div class="vocab-practice-top"><span class="badge">${s.mode==='choice'?'選擇題':s.mode==='sentence'?'句型':'聽力'}</span><span class="support">${progress} · 已答對 ${s.correct}</span></div><div class="vocab-practice-prompt">${prompt}</div><div class="support vocab-practice-sub">${sub}</div>${audioHtml}<div class="options vocab-practice-options">${options.map(o=>`<button class="option vocab-option" data-value="${esc(o)}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="vocabPracticeFeedback"></div><div class="vocab-answer-detail hidden" id="vocabAnswerDetail"><strong>${esc(v.word)}｜${esc(v.zh)}</strong><p>${esc(v.example)}</p><div class="btn-row"><button class="btn ghost" id="vocabAnswerNA" type="button">▶ 北美例句</button><button class="btn ghost" id="vocabAnswerIN" type="button">▶ 印度例句</button></div></div><button class="btn primary hidden vocab-next" id="vocabNextBtn" type="button">下一題 →</button></article>`;
+    const exampleZh=vocabExampleTranslation(v);
+    const sentenceZhHtml=s.mode==='sentence'&&exampleZh?`<div class="sentence-zh-hint"><button class="btn ghost" id="vocabSentenceZhBtn" type="button">顯示中文提示</button><div class="sentence-zh-text hidden" id="vocabSentenceZhText">${esc(exampleZh)}</div></div>`:'';
+    host.innerHTML=`<article class="vocab-practice-card panel"><div class="vocab-practice-top"><span class="badge">${s.mode==='choice'?'選擇題':s.mode==='sentence'?'句型':'聽力'}</span><span class="support">${progress} · 已答對 ${s.correct}</span></div><div class="vocab-practice-prompt">${prompt}</div><div class="support vocab-practice-sub">${sub}</div>${sentenceZhHtml}${audioHtml}<div class="options vocab-practice-options">${options.map(o=>`<button class="option vocab-option" data-value="${esc(o)}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="vocabPracticeFeedback"></div><div class="vocab-answer-detail hidden" id="vocabAnswerDetail"><strong>${esc(v.word)}｜${esc(v.zh)}</strong><p>${esc(v.example)}</p><div class="btn-row"><button class="btn ghost" id="vocabAnswerNA" type="button">▶ 北美例句</button><button class="btn ghost" id="vocabAnswerIN" type="button">▶ 印度例句</button></div></div><button class="btn primary hidden vocab-next" id="vocabNextBtn" type="button">下一題 →</button></article>`;
+    if(s.mode==='sentence'&&exampleZh){
+      $('vocabSentenceZhBtn').addEventListener('click',()=>{
+        const zh=$('vocabSentenceZhText'); zh.classList.toggle('hidden');
+        $('vocabSentenceZhBtn').textContent=zh.classList.contains('hidden')?'顯示中文提示':'隱藏中文提示';
+      });
+    }
 
     if(s.mode==='listening'){
       $('vocabListenNA').addEventListener('click',()=>{
@@ -423,7 +441,7 @@
   function renderCurrentQuestion(){
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel(); speechTranscript='';
     const q=session.questions[session.index];
-    if(!q){ finishSession(); return; }
+    if(!q){ finishSession(true); return; }
     session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0}};
     $('questionCounter').textContent=`${session.index+1} / ${session.questions.length}`;
     $('questionLevelBadge').textContent=`L${q.level}`;
@@ -661,18 +679,19 @@
     session.answers.push({id:q.id,skill:q.skill,level:q.level,quality,correct,extra:extra||{},xp}); save(); renderOverview();
   }
 
-  function nextQuestion(){session.index++;if(session.index>=session.questions.length)finishSession();else renderCurrentQuestion();}
+  function nextQuestion(){session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
 
-  function finishSession(){
+  function finishSession(completedUnit=true){
     stopSpeakingTimer();stopRecognition();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
     if(!session || !session.answers.length){session=null;return;}
     const avg=session.answers.reduce((a,b)=>a+b.quality,0)/(session.answers.length*3); const score=Math.round(avg*100);
     const bySkill={};session.answers.forEach(a=>{bySkill[a.skill]=bySkill[a.skill]||[];bySkill[a.skill].push(a.quality);});
     const skillAvgs=Object.entries(bySkill).map(([k,v])=>[k,v.reduce((a,b)=>a+b,0)/v.length]).sort((a,b)=>a[1]-b[1]);
     const weakest=skillAvgs[0]?.[0]||'listening';
-    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title,count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice()};
+    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(completedUnit?'':'（未完成）'),count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit};
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
-    if(!state.completedDates.includes(todayKey()))state.completedDates.push(todayKey()); save();
+    if(completedUnit) markPracticeDay();
+    save();
     $('resultScore').textContent=`${score}%`;
     const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+(Number.isFinite(a.extra?.repeats)?a.extra.repeats:Math.max(0,(a.extra?.listens||0)-1)),0);
     $('resultSummary').textContent=score>=80?'這輪很穩。系統會逐步增加問法變化與難度，但仍保留到期複習。':score>=60?'基礎已經能撐住。下一輪會繼續集中在弱項，不需要一次補很多新東西。':'這輪不要追求升級。先讓相同問題用不同問法出現，直到你能自然抓到意圖並講完整句。';
@@ -680,7 +699,7 @@
     $('resultSection').classList.add('show');$('resultSection').scrollIntoView({behavior:'smooth',block:'start'}); session=null; renderOverview();
   }
 
-  function quitSession(){if(!session)return;if(confirm('要結束這一回合嗎？已完成的題目仍會保留進度。'))finishSession();}
+  function quitSession(){if(!session)return;if(confirm('要結束這一回合嗎？已完成的題目仍會保留進度，但未完成整個單元不會計入今日連續訓練。'))finishSession(false);}
 
   function rateForLevel(level){return [0,.80,.90,1.0,1.04,1.08][clamp(level,1,5)];}
   function playbackRate(level,context='question'){
