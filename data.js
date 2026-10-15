@@ -810,7 +810,14 @@ window.CLOUD_SA_DATA = {
         "DR",
         "RTO",
         "Failover"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "High Availability",
+        "azure": "Availability Zones / Zone Redundancy",
+        "gcp": "Regional managed instance / Multi-zone designs",
+        "difference": "HA 取決於服務具體配置、健康檢查、容量及切換時間。",
+        "scenario": "Loan API 在 AZ 故障時仍維持服務。"
+      }
     },
     {
       "term": "Multi-AZ",
@@ -828,7 +835,14 @@ window.CLOUD_SA_DATA = {
         "Multi-Region",
         "RDS Multi-AZ",
         "HA"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Multi-AZ",
+        "azure": "Availability Zones",
+        "gcp": "Zones / Regional resources",
+        "difference": "AWS、Azure、GCP Zone 與資源部署模型不完全一致。",
+        "scenario": "API 跨區域內多 Zone 部署，搭配 DB HA。"
+      }
     },
     {
       "term": "Multi-Region",
@@ -846,7 +860,14 @@ window.CLOUD_SA_DATA = {
         "DR",
         "RTO",
         "RPO"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Multi-Region",
+        "azure": "Azure Paired Regions / multi-region design",
+        "gcp": "Multi-region architecture",
+        "difference": "多 Region 不自動代表資料一致性或零 RPO；需明確定義複寫與流量切換。",
+        "scenario": "跨 Region 災難復原與演練。"
+      }
     },
     {
       "term": "VPC",
@@ -864,7 +885,14 @@ window.CLOUD_SA_DATA = {
         "Route Table",
         "IGW",
         "NAT Gateway"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "VPC",
+        "azure": "Azure Virtual Network (VNet)",
+        "gcp": "Google Cloud VPC",
+        "difference": "GCP VPC 是全球性網路資源；AWS VPC、Azure VNet 的區域範圍與子網路模型不同。",
+        "scenario": "銀行將 API 與資料庫分段，搭配路由、Firewall 與私有連線。"
+      }
     },
     {
       "term": "Public Subnet",
@@ -880,7 +908,14 @@ window.CLOUD_SA_DATA = {
         "Private Subnet",
         "IGW",
         "Route Table"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Public Subnet",
+        "azure": "Public subnet + public IP / routing（非一對一）",
+        "gcp": "Subnet + external IP / routes（非一對一）",
+        "difference": "Azure/GCP 沒有完全相同的 AWS Public Subnet 分類；對外可達性由多種網路設定共同決定。",
+        "scenario": "網銀公開入口與內部 Loan API 需明確隔離。"
+      }
     },
     {
       "term": "Private Subnet",
@@ -897,7 +932,14 @@ window.CLOUD_SA_DATA = {
         "NAT Gateway",
         "RDS",
         "EC2"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Private Subnet",
+        "azure": "Private subnet / private endpoints",
+        "gcp": "Subnet + no external IP / Private Google Access",
+        "difference": "不能單靠子網名稱推斷是否可從 Internet 存取，仍須檢查路由、IP 與防火牆。",
+        "scenario": "Loan API、DB 使用私有位址，僅允許必要路徑。"
+      }
     },
     {
       "term": "IGW",
@@ -914,7 +956,14 @@ window.CLOUD_SA_DATA = {
         "NAT Gateway",
         "Public Subnet",
         "VPC"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "IGW",
+        "azure": "Internet access via public IP / routing（無直接同名元件）",
+        "gcp": "Internet gateway routes / external IP（非一對一）",
+        "difference": "Azure/GCP 的 Internet Connectivity 模型與 AWS IGW 不完全相同。",
+        "scenario": "銀行對外 API 的入站路徑設計。"
+      }
     },
     {
       "term": "NAT Gateway",
@@ -931,7 +980,14 @@ window.CLOUD_SA_DATA = {
         "IGW",
         "Private Subnet",
         "Route Table"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "NAT Gateway",
+        "azure": "Azure NAT Gateway",
+        "gcp": "Cloud NAT",
+        "difference": "三者主要處理私有工作負載主動對外連線；GCP Cloud NAT 不是流量代理主機。",
+        "scenario": "Private API 需要下載修補程式，但不接受 Internet 直接連入。"
+      }
     },
     {
       "term": "Security Group",
@@ -949,7 +1005,14 @@ window.CLOUD_SA_DATA = {
         "ALB-SG",
         "APP-SG",
         "Least Privilege"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Security Group",
+        "azure": "Network Security Group (NSG)",
+        "gcp": "VPC Firewall Rules / Firewall Policies",
+        "difference": "AWS SG 是 stateful instance/ENI 規則；Azure NSG 與 GCP Firewall 的套用範圍、規則模型不同。",
+        "scenario": "僅允許 ALB 到 Loan API、Loan API 到 DB 指定 Port。"
+      }
     },
     {
       "term": "NACL",
@@ -966,7 +1029,14 @@ window.CLOUD_SA_DATA = {
         "Security Group",
         "Subnet",
         "Stateless"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "NACL",
+        "azure": "NSG subnet rules（非一對一）",
+        "gcp": "VPC Firewall Rules（非一對一）",
+        "difference": "AWS NACL 為 subnet-level stateless；Azure NSG 與 GCP Firewall 並非等價的 stateless NACL。",
+        "scenario": "Subnet 邊界的額外封鎖與防護策略。"
+      }
     },
     {
       "term": "AWS WAF",
@@ -983,7 +1053,14 @@ window.CLOUD_SA_DATA = {
         "ALB",
         "Security Group",
         "Web Security"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "AWS WAF",
+        "azure": "Azure Web Application Firewall",
+        "gcp": "Google Cloud Armor",
+        "difference": "比較 L7 防護能力、部署入口、規則與計價。",
+        "scenario": "網銀 API 防 SQL Injection、惡意流量與常見 Web 攻擊。"
+      }
     },
     {
       "term": "ALB",
@@ -1001,7 +1078,14 @@ window.CLOUD_SA_DATA = {
         "Target Group",
         "Health Check",
         "WAF"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "ALB",
+        "azure": "Azure Application Gateway",
+        "gcp": "Cloud Load Balancing（External Application Load Balancer）",
+        "difference": "皆能做 HTTP(S) L7 路由；網路拓撲、WAF 整合與健康檢查配置不同。",
+        "scenario": "將 Loan API 請求導向健康的服務實例。"
+      }
     },
     {
       "term": "EC2",
@@ -1019,7 +1103,14 @@ window.CLOUD_SA_DATA = {
         "ASG",
         "Launch Template",
         "ALB"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "EC2",
+        "azure": "Azure Virtual Machines",
+        "gcp": "Compute Engine",
+        "difference": "三者皆是 IaaS VM；比較主機規格、區域可用性、磁碟與維運責任。",
+        "scenario": "核心放款批次需要 OS 控制或 Legacy 程式時可考慮 VM。"
+      }
     },
     {
       "term": "ASG",
@@ -1037,7 +1128,14 @@ window.CLOUD_SA_DATA = {
         "Launch Template",
         "Scale Out",
         "Replacement"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "ASG",
+        "azure": "Virtual Machine Scale Sets (VMSS)",
+        "gcp": "Managed Instance Groups (MIG)",
+        "difference": "主要對應 VM 擴縮；容器服務本身另有擴縮機制。",
+        "scenario": "貸款查詢尖峰時增加 VM 應用實例。"
+      }
     },
     {
       "term": "Launch Template",
@@ -1140,7 +1238,14 @@ window.CLOUD_SA_DATA = {
         "IAM Policy",
         "Temporary Credentials",
         "AssumeRole"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "IAM Role",
+        "azure": "Azure RBAC + Managed Identities",
+        "gcp": "IAM Service Accounts + IAM Roles",
+        "difference": "AWS Role、Azure Managed Identity、GCP Service Account 的身分與授權模型不同，不能直接一對一翻譯。",
+        "scenario": "Loan API 無須硬編碼資料庫或雲端存取金鑰。"
+      }
     },
     {
       "term": "IAM Policy",
@@ -1157,7 +1262,14 @@ window.CLOUD_SA_DATA = {
         "Action",
         "Resource ARN",
         "Least Privilege"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "IAM Policy",
+        "azure": "Azure RBAC Role Assignments / Definitions",
+        "gcp": "IAM Policies / Roles",
+        "difference": "三者皆需 Least Privilege，但 Scope、Deny、繼承與條件語法不同。",
+        "scenario": "限制批次工作只能讀指定儲存空間。"
+      }
     },
     {
       "term": "AssumeRole",
@@ -1293,7 +1405,14 @@ window.CLOUD_SA_DATA = {
         "Object",
         "Versioning",
         "Lifecycle"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "S3",
+        "azure": "Azure Blob Storage",
+        "gcp": "Cloud Storage",
+        "difference": "皆提供 Object Storage；儲存層級、生命週期、版本及鎖定能力要個別核對。",
+        "scenario": "保存貸款對帳檔、報表與稽核文件。"
+      }
     },
     {
       "term": "Versioning",
@@ -1310,7 +1429,14 @@ window.CLOUD_SA_DATA = {
         "Backup",
         "S3",
         "Object Lock"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Versioning",
+        "azure": "Blob Versioning",
+        "gcp": "Object Versioning",
+        "difference": "版本保留與刪除、保留政策、費用的細節不同。",
+        "scenario": "避免 Loan Report 被覆寫後無法追溯。"
+      }
     },
     {
       "term": "Lifecycle",
@@ -1328,7 +1454,14 @@ window.CLOUD_SA_DATA = {
         "Standard-IA",
         "Glacier",
         "Versioning"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Lifecycle",
+        "azure": "Blob Lifecycle Management",
+        "gcp": "Object Lifecycle Management",
+        "difference": "三者可自動轉換儲存層級或刪除物件，規則與成本不同。",
+        "scenario": "七年稽核檔案依規定轉低頻儲存。"
+      }
     },
     {
       "term": "Standard-IA",
@@ -1379,7 +1512,14 @@ window.CLOUD_SA_DATA = {
         "KMS",
         "S3",
         "Encryption"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "SSE-KMS",
+        "azure": "Azure Key Vault / Managed HSM + customer-managed keys",
+        "gcp": "Cloud KMS + CMEK",
+        "difference": "金鑰管理、加密整合、權限及輪替機制並不完全相同。",
+        "scenario": "客戶敏感文件使用客戶管理金鑰加密。"
+      }
     },
     {
       "term": "CloudTrail",
@@ -1396,7 +1536,14 @@ window.CLOUD_SA_DATA = {
         "Data Events",
         "Audit",
         "AssumeRole"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "CloudTrail",
+        "azure": "Azure Activity Log / Resource Logs",
+        "gcp": "Cloud Audit Logs",
+        "difference": "AWS CloudTrail 側重 API 活動稽核；Azure/GCP 需選對控制面與資料面記錄來源。",
+        "scenario": "調查誰在何時變更 Production IAM 與資料。"
+      }
     },
     {
       "term": "Data Events",
@@ -1447,7 +1594,14 @@ window.CLOUD_SA_DATA = {
         "RDS Multi-AZ",
         "Read Replica",
         "Endpoint"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "RDS",
+        "azure": "Azure SQL Database / Azure Database for PostgreSQL",
+        "gcp": "Cloud SQL",
+        "difference": "要依資料庫引擎選型；Azure SQL 不等於所有 RDS 引擎。",
+        "scenario": "核心 Loan DB 選 PostgreSQL 時比較 Azure Database for PostgreSQL 與 Cloud SQL for PostgreSQL。"
+      }
     },
     {
       "term": "Read Replica",
@@ -1464,7 +1618,14 @@ window.CLOUD_SA_DATA = {
         "RDS",
         "Multi-AZ",
         "Read Scaling"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "Read Replica",
+        "azure": "Read Replicas（依資料庫產品）",
+        "gcp": "Cloud SQL Read Replicas",
+        "difference": "Replica 主要支援讀取擴展，HA/Failover 行為依產品而異。",
+        "scenario": "Loan Report 讀取與正式交易分流。"
+      }
     },
     {
       "term": "S3 Object Lock",
@@ -1586,7 +1747,14 @@ window.CLOUD_SA_DATA = {
         "PITR",
         "Failover",
         "RDS"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "RDS Multi-AZ DB instance",
+        "azure": "Azure Database for PostgreSQL HA / Azure SQL zone redundancy",
+        "gcp": "Cloud SQL HA",
+        "difference": "HA 方式、同步複寫與故障切換設計各有差異，不應把 Read Replica 當作 HA Standby。",
+        "scenario": "單一 AZ 故障時恢復資料庫服務。"
+      }
     },
     {
       "term": "RDS Multi-AZ DB cluster",
@@ -1622,7 +1790,14 @@ window.CLOUD_SA_DATA = {
         "RDS",
         "RTO",
         "RPO"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "PITR",
+        "azure": "Azure SQL / PostgreSQL Point-in-Time Restore",
+        "gcp": "Cloud SQL Point-in-Time Recovery",
+        "difference": "還原通常涉及建立/恢復資料庫資源及切換程序；不等於修正少量錯帳。",
+        "scenario": "重大 DB 事故還原，錯誤計息優先用受控補正交易。"
+      }
     },
     {
       "term": "Replica Lag",
@@ -1983,7 +2158,14 @@ window.CLOUD_SA_DATA = {
         "ECS",
         "Cloud Run",
         "KEDA"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "ECS + Fargate",
+        "azure": "ECS + Fargate（功能近似，非等價）",
+        "gcp": "Cloud Run（功能近似，非等價）",
+        "difference": "Azure Container Apps 具 Revision/Replica 與 HTTP/事件驅動擴縮；需比較入口、Scale Rules 與網路。",
+        "scenario": "活動 API 依流量自動擴縮。"
+      }
     },
     {
       "term": "Cloud Run",
@@ -2000,7 +2182,14 @@ window.CLOUD_SA_DATA = {
         "Azure Container Apps",
         "ECS",
         "Minimum Instances"
-      ]
+      ],
+      "cloudCompare": {
+        "aws": "ECS + Fargate",
+        "azure": "ECS + Fargate（功能近似，非等價）",
+        "gcp": "Cloud Run",
+        "difference": "Cloud Run 以 Service/Revision/Instance 運行，支援 Scale to Zero；冷啟動與最小實例需權衡。",
+        "scenario": "貸款試算活動平時低流量、活動時尖峰。"
+      }
     },
     {
       "term": "Compensating Transaction",
@@ -3592,5 +3781,11 @@ window.CLOUD_SA_DATA = {
       ],
       "archive": "docs/cloud-sa-day22-2026-10-15.md"
     }
-  ]
+  ],
+  "cloudComparison": {
+    "title": "AWS / Azure / GCP 服務並排對照",
+    "note": "依架構能力比較；名稱相近不代表部署模型、權限、網路或 SLA 完全等價。",
+    "updatedAt": "2026-10-15",
+    "mappedTerms": 27
+  }
 };
