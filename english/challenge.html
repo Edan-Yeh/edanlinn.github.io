@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261015v10-1">
+  <link rel="stylesheet" href="styles.css?v=20261016v11-1">
   <title>English Challenge｜Edan's Workspace</title>
 </head>
 <body>
@@ -179,9 +179,9 @@
         <div class="field"><label for="speechRateSelect">播放語速</label><select id="speechRateSelect"><option value="adaptive">依難度自適應</option><option value="0.75">0.75x 很慢</option><option value="0.85">0.85x 慢</option><option value="0.90">0.90x</option><option value="0.95">0.95x</option><option value="1.00">1.00x 正常業界對話（預設）</option><option value="1.05">1.05x</option><option value="1.10">1.10x 快</option><option value="1.15">1.15x</option><option value="1.20">1.20x 很快</option></select></div>
         <div class="field"><label for="voiceQualitySelect">聲音品質</label><select id="voiceQualitySelect"><option value="natural">優先 Natural / Neural 語音（推薦）</option><option value="system">使用系統原始語音順序</option></select></div>
         <div class="field"><label for="sessionSizeSelect">每回合題數</label><select id="sessionSizeSelect"><option value="10">10 題（推薦）</option><option value="5">5 題快速版</option><option value="15">15 題加強版</option></select></div>
-        <div class="field"><label for="speechRecognitionSelect">錄音回答 / 自動轉文字</label><select id="speechRecognitionSelect"><option value="auto">錄音＋可用時自動轉文字評分</option><option value="off">只錄音回放，不做自動轉文字</option></select></div>
+        <div class="field"><label for="speechRecognitionSelect">錄音回答 / 自動分析</label><select id="speechRecognitionSelect"><option value="auto">錄音＋瀏覽器／本機 Whisper 自動評分</option><option value="off">只錄音回放，不做自動分析</option></select></div>
       </div>
-      <div class="callout" style="margin-top:12px"><strong>語音注意：</strong>「錄音回放」與「自動轉文字」是兩個不同功能。現在只要瀏覽器允許麥克風，就會真的錄下你的回答並顯示播放器；即使自動轉文字不可用，仍可回聽後自評。錄音只保留在目前頁面，不會自動上傳。系統朗讀仍會優先尋找 Natural / Neural / Premium / Enhanced 類型的英文 voice。</div>
+      <div class="callout" style="margin-top:12px"><strong>語音注意：</strong>錄音完成後會先使用瀏覽器即時轉文字；若不可用，就改用本機 Whisper 轉文字，再依內容、完整度、結構、常見文法與語速提供評分與修正。第一次使用本機 Whisper 需要下載模型，之後瀏覽器會快取。錄音本身仍只保留在目前頁面，不會自動上傳。</div>
     </section>
 
     <section class="section">
@@ -198,7 +198,7 @@
   <button class="mobile-dock-btn" id="mobileVocabBtn" data-nav="vocab" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js?v=20261015v10-1"></script>
-<script src="app.js?v=20261015v10-1"></script>
+<script src="question-bank.js?v=20261016v11-1"></script>
+<script src="app.js?v=20261016v11-1"></script>
 </body>
 </html>
