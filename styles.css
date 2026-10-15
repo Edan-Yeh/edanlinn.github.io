@@ -73,3 +73,13 @@ a{color:inherit}.shell{max-width:1180px;margin:auto;padding:0 20px}.top{position
   .module-card small{min-height:0}.module-togglebar{align-items:flex-start}.module-togglecopy span{white-space:normal}.module-togglebtn{padding:7px 9px}
 }
 @media(max-width:430px){.module-grid{grid-template-columns:1fr}.module-card{min-height:auto}.module-card small{min-height:auto}.module-meta{margin-top:7px}}
+
+/* Cloud SA AWS-first cross-cloud glossary comparison */
+.cloud-compare{margin:12px 0;padding:12px;border:1px solid rgba(116,147,194,.27);border-radius:12px;background:rgba(85,124,183,.065)}
+.cloud-compare-heading{font-size:.78rem;font-weight:750;margin-bottom:9px;letter-spacing:.02em}
+.cloud-compare-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.cloud-compare-cell{min-width:0;padding:10px;border-radius:9px;background:rgba(115,145,185,.1);display:flex;flex-direction:column;gap:6px;overflow-wrap:anywhere;font-size:.81rem}
+.cloud-compare-cell b{font-size:.72rem;opacity:.75}
+.cloud-compare-cell:first-child{background:rgba(62,119,214,.16)}
+.cloud-compare-detail{margin-top:9px;font-size:.8rem;line-height:1.6}
+@media(max-width:580px){.cloud-compare-grid{grid-template-columns:1fr}.cloud-compare-cell{flex-direction:row;align-items:baseline}.cloud-compare-cell b{min-width:44px}}
