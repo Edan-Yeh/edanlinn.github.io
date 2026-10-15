@@ -327,3 +327,13 @@ a{color:inherit}
 /* Local Whisper speaking analysis */
 .speaking-pace{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.82);border:1px solid var(--line)}
 .speaking-pace b{font-size:18px}.speaking-pace span{font-size:12px;color:var(--muted)}
+
+
+/* Spoken answer correction versions */
+.correction-version{margin-top:12px;padding:13px 14px;border-radius:14px;background:#f8f9fc;border:1px solid var(--line)}
+.correction-version.natural{background:#f3f7ff;border-color:#d8e3ff}
+.correction-version>span,.correction-notes>span{display:block;font-size:12px;font-weight:900;color:#43506a;margin-bottom:6px}
+.correction-version p{margin:0 0 10px;line-height:1.7;color:#25324a}
+.correction-version .btn{padding:8px 11px;font-size:12px}
+.correction-notes{margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+.correction-notes ul{margin:6px 0 8px;padding-left:18px;line-height:1.65;color:#3b465c}
