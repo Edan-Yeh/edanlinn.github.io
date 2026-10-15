@@ -28,6 +28,11 @@
   let state = loadState();
   let session = null;
   let recognition = null;
+  let mediaRecorder = null;
+  let mediaStream = null;
+  let mediaChunks = [];
+  let recordedAudioUrl = '';
+  let discardRecording = false;
   let speakingTimer = null;
   let speakingSeconds = 45;
   let speechTranscript = '';
@@ -518,7 +523,7 @@
   }
 
   function renderCurrentQuestion(){
-    stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel(); speechTranscript='';
+    stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); speechSynthesis.cancel(); speechTranscript='';
     const q=session.questions[session.index];
     if(!q){ finishSession(true); return; }
     session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0}};
@@ -585,13 +590,15 @@
     const hideText=q.level>=3;
     const SR=speechRecognitionCtor();
     const recognitionAvailable=!!SR && state.settings.speechRecognition!=='off';
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音辨識後會比對內容並給 0–100 分與調整建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。系統會看回答內容、完整度、結構與流暢度線索。</div><div class="btn-row" style="margin-top:12px">${recognitionAvailable?'<button class="btn primary" id="recognitionBtn" type="button">🎙 開始錄音回答</button>':'<button class="btn secondary" id="startTimerBtn" type="button">開始 45 秒</button>'}<button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="speech-text ${recognitionAvailable?'':'hidden'}" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，辨識文字會即時出現在這裡。':''}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">錄音後會自動評分</strong><span id="feedbackNote">如果瀏覽器無法辨識語音，仍可用下方自評完成這題。</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    const recorderAvailable=mediaRecorderAvailable();
+    const recordLabel=recorderAvailable?'🎙 開始錄音回答':(recognitionAvailable?'🎙 開始語音辨識':'開始 45 秒');
+    const recordClass=(recorderAvailable||recognitionAvailable)?'btn primary':'btn secondary';
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後可回放；若瀏覽器支援語音轉文字，系統會再提供 0–100 分與調整建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。錄音與自動轉文字是兩個不同功能；即使無法轉文字，只要麥克風權限正常仍可錄音並回放。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若自動轉文字失敗，仍可播放自己的錄音並用下方自評。':'目前無法自動轉文字，所以完成錄音後請回聽，再用下方自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
     $('playSpeakNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'speakAudioStatus'));
     $('playSpeakIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','speakAudioStatus'));
     if(hideText) $('revealSpeakQBtn').addEventListener('click',()=>{session.currentMeta.hint=true;qstat(q.id).hints++;$('speakingQuestionText').textContent=q.text;$('revealSpeakQBtn').disabled=true;save();});
-    if(!recognitionAvailable) $('startTimerBtn').addEventListener('click',()=>startSpeakingTimer(45));
+    $('recognitionBtn').addEventListener('click',()=>startRecordedAnswer(q,recognitionAvailable));
     $('finishSpeakingBtn').addEventListener('click',()=>finishSpeakingStage(q));
-    if(recognitionAvailable) $('recognitionBtn').addEventListener('click',()=>startRecognition(q));
     document.querySelectorAll('.self-rate button').forEach(b=>b.addEventListener('click',()=>{
       if(session.currentMeta.answered) return;
       session.currentMeta.answered=true;
@@ -599,14 +606,14 @@
       if(session.currentMeta.hint && quality===3) quality=2;
       document.querySelectorAll('.self-rate button').forEach(x=>x.disabled=true);
       b.style.outline='2px solid #516ce0';
-      recordAnswer(q,quality,quality>=2,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,transcript:speechTranscript,manualRating:true});
+      recordAnswer(q,quality,quality>=2,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,transcript:speechTranscript,manualRating:true,recordedAudio:!!recordedAudioUrl});
       $('nextBtn').classList.remove('hidden'); $('nextBtn').addEventListener('click',nextQuestion,{once:true});
     }));
   }
 
   function finishSpeakingStage(q){
     if(session.currentMeta.scoringDone) return;
-    stopSpeakingTimer(); stopRecognition();
+    stopSpeakingTimer(); stopRecognition(); stopMediaRecording(false);
     $('modelAnswer').classList.add('show'); $('feedbackBox').classList.add('show');
     const recognitionBtn=$('recognitionBtn'); if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='🎙 錄音完成';}
     setTimeout(()=>{
@@ -624,8 +631,8 @@
           $('nextBtn').addEventListener('click',nextQuestion,{once:true});
         }
       }else{
-        $('feedbackTitle').textContent='沒有取得足夠的語音辨識內容';
-        $('feedbackNote').textContent='可以重試錄音；若瀏覽器無法辨識，就用下方自評完成這題。';
+        $('feedbackTitle').textContent='錄音已完成，但沒有取得足夠的轉文字內容';
+        $('feedbackNote').textContent=recordedAudioUrl?'可以先播放「你的錄音」回聽，再用下方自評；若要重錄，也可以直接重新錄音。':'如果麥克風錄音也沒有成功，請確認網站的麥克風權限後重試。';
         const recognitionBtn=$('recognitionBtn'); if(recognitionBtn){recognitionBtn.disabled=false;recognitionBtn.textContent='🎙 重新錄音';}
       }
     },320);
@@ -730,19 +737,103 @@
   function updateSpeakTimer(){const el=$('speakTimer');if(el)el.textContent=`00:${String(Math.max(0,speakingSeconds)).padStart(2,'0')}`;}
 
   function speechRecognitionCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
-  function startRecognition(q){
-    const SR=speechRecognitionCtor(); if(!SR)return;
+  function mediaRecorderAvailable(){return !!(navigator.mediaDevices?.getUserMedia && window.MediaRecorder);}
+  function cleanupRecordedAudio(){
+    if(recordedAudioUrl){try{URL.revokeObjectURL(recordedAudioUrl);}catch(e){}}
+    recordedAudioUrl='';
+  }
+  function releaseMediaStream(){
+    if(mediaStream){mediaStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});}
+    mediaStream=null;
+  }
+  function renderRecordedAudio(blob){
+    cleanupRecordedAudio();
+    recordedAudioUrl=URL.createObjectURL(blob);
+    const host=$('recordedAudioHost');
+    const player=$('recordedAudioPlayer');
+    const status=$('recordedAudioStatus');
+    if(host&&player){
+      player.src=recordedAudioUrl;
+      host.classList.remove('hidden');
+      if(status)status.textContent='已錄好，可直接播放回聽。這段音訊只保留在目前頁面，不會上傳。';
+    }
+  }
+  function stopMediaRecording(discard=false){
+    discardRecording=discard;
+    if(mediaRecorder && mediaRecorder.state!=='inactive'){
+      try{mediaRecorder.stop();}catch(e){releaseMediaStream();}
+    }else{
+      releaseMediaStream();
+      if(discard){cleanupRecordedAudio();}
+    }
+  }
+  async function startMediaRecording(){
+    if(!mediaRecorderAvailable())return false;
+    try{
+      stopMediaRecording(true);
+      cleanupRecordedAudio();
+      mediaChunks=[];
+      discardRecording=false;
+      mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder=new MediaRecorder(mediaStream);
+      mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)mediaChunks.push(e.data);};
+      mediaRecorder.onstop=()=>{
+        const chunks=mediaChunks.slice();
+        mediaChunks=[];
+        const shouldDiscard=discardRecording;
+        releaseMediaStream();
+        mediaRecorder=null;
+        if(!shouldDiscard&&chunks.length){
+          const blob=new Blob(chunks,{type:chunks[0].type||'audio/webm'});
+          renderRecordedAudio(blob);
+        }else if(shouldDiscard){
+          cleanupRecordedAudio();
+        }
+        discardRecording=false;
+      };
+      mediaRecorder.start();
+      return true;
+    }catch(e){
+      releaseMediaStream();
+      const host=$('recordedAudioHost');
+      const status=$('recordedAudioStatus');
+      if(host)host.classList.remove('hidden');
+      if(status)status.textContent='無法啟用麥克風錄音。請確認瀏覽器已允許此網站使用麥克風。';
+      return false;
+    }
+  }
+  function startRecognition(q,startTimer=true){
+    const SR=speechRecognitionCtor(); if(!SR)return false;
     stopRecognition(); speechTranscript=''; session.currentMeta.scoringDone=false; session.currentMeta.answered=false;
     recognition=new SR(); recognition.lang='en-US'; recognition.continuous=true; recognition.interimResults=true;
     recognition.onresult=(e)=>{let text='';for(let i=0;i<e.results.length;i++)text+=e.results[i][0].transcript+' ';speechTranscript=text.trim();const el=$('speechText');if(el)el.textContent=speechTranscript||'正在聽…';};
-    recognition.onerror=()=>{const el=$('speechText');if(el)el.textContent='此瀏覽器的語音辨識目前不可用，可以改用自評完成這題。'; const fb=$('feedbackBox');if(fb)fb.classList.add('show');};
+    recognition.onerror=()=>{
+      const el=$('speechText');if(el)el.textContent='自動轉文字目前不可用，但錄音仍會保留。講完後可播放回聽並用自評完成。';
+      const fb=$('feedbackBox');if(fb)fb.classList.add('show');
+    };
     recognition.onend=()=>{recognition=null;};
     try{
       recognition.start();
-      const el=$('speechText');if(el)el.textContent='● 正在錄音辨識…直接回答即可。';
-      const btn=$('recognitionBtn');if(btn){btn.textContent='● 錄音中';btn.disabled=true;}
-      startSpeakingTimer(45);
-    }catch(e){}
+      const el=$('speechText');if(el)el.textContent='● 正在錄音；若自動轉文字可用，內容會顯示在這裡。';
+      if(startTimer)startSpeakingTimer(45);
+      return true;
+    }catch(e){recognition=null;return false;}
+  }
+  async function startRecordedAnswer(q,recognitionAvailable){
+    stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); speechTranscript='';
+    session.currentMeta.scoringDone=false; session.currentMeta.answered=false;
+    const btn=$('recognitionBtn');
+    if(btn){btn.disabled=true;btn.textContent='● 啟動麥克風…';}
+    const recorded=await startMediaRecording();
+    const recognized=recognitionAvailable?startRecognition(q,false):false;
+    const el=$('speechText');
+    if(el){
+      if(recognized) el.textContent='● 正在錄音；若自動轉文字可用，內容會顯示在這裡。';
+      else if(recorded) el.textContent='● 正在錄音。此瀏覽器無法自動轉文字，但你講完後可以直接播放回聽。';
+      else el.textContent='無法啟用麥克風。請確認網站權限；你仍可用計時＋自評完成這題。';
+    }
+    if(btn){btn.textContent=(recorded||recognized)?'● 錄音中':'開始 45 秒';btn.disabled=recorded||recognized;}
+    startSpeakingTimer(45);
   }
   function stopRecognition(){if(recognition){try{recognition.stop();}catch(e){} recognition=null;}}
   function keywordCoverage(text,keywords){if(!text||!keywords.length)return 0;const t=text.toLowerCase();let hit=0;keywords.forEach(k=>{const pieces=k.toLowerCase().split(/\s+/).filter(w=>w.length>3);if(pieces.some(p=>t.includes(p)))hit++;});return Math.round(hit/keywords.length*100);}
@@ -766,7 +857,7 @@
   function nextQuestion(){session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
 
   function finishSession(completedUnit=true){
-    stopSpeakingTimer();stopRecognition();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
+    stopSpeakingTimer();stopRecognition();stopMediaRecording(true);cleanupRecordedAudio();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
     if(!session || !session.answers.length){session=null;return;}
     const avg=session.answers.reduce((a,b)=>a+b.quality,0)/(session.answers.length*3); const score=Math.round(avg*100);
     const bySkill={};session.answers.forEach(a=>{bySkill[a.skill]=bySkill[a.skill]||[];bySkill[a.skill].push(a.quality);});
