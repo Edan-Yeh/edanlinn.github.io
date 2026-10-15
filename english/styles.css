@@ -316,3 +316,9 @@ a{color:inherit}
 .language-fix-box strong{display:block;margin-bottom:6px}.language-fix-box ul{margin:6px 0 8px;padding-left:18px;line-height:1.6}.language-fix-box p{margin:5px 0 8px;color:#48536a;line-height:1.6}
 @media(max-width:900px){.daily-plan{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.daily-plan{grid-template-columns:1fr 1fr;padding:10px}.daily-step{padding:12px}.result-grid{grid-template-columns:1fr 1fr}}
+
+/* Recorded speaking audio */
+.recorded-audio{margin-top:12px;padding:13px 14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.recorded-audio strong{display:block;margin-bottom:9px;font-size:13px}
+.recorded-audio audio{display:block;width:100%;max-width:620px}
+.recorded-audio .support{display:block;margin-top:7px}
