@@ -1,5 +1,5 @@
-const CACHE='edan-english-adaptive-v10-20261015-real-recording-1';
-const ASSETS=['./','./index.html','./challenge.html','./styles.css?v=20261015v10-1','./app.js?v=20261015v10-1','./question-bank.js?v=20261015v10-1','./manifest.webmanifest','./icon.svg'];
+const CACHE='edan-english-adaptive-v11-20261016-local-whisper-1';
+const ASSETS=['./','./index.html','./challenge.html','./styles.css?v=20261016v11-1','./app.js?v=20261016v11-1','./question-bank.js?v=20261016v11-1','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
