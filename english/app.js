@@ -430,23 +430,102 @@
     if(!key)return;
     state.weaknessCounts[key]=(state.weaknessCounts[key]||0)+1;
   }
-  function languageFixes(text){
+  function normalizeSpokenSentence(text){
+    let t=String(text||'').replace(/\s+/g,' ').trim();
+    t=t.replace(/\bi\b/g,'I');
+    t=t.replace(/\b(\w+)\s+\1\b/gi,'$1');
+    t=t.replace(/\s+([,.!?])/g,'$1');
+    if(t) t=t.charAt(0).toUpperCase()+t.slice(1);
+    if(t && !/[.!?]$/.test(t)) t+='.';
+    return t;
+  }
+  function applyGrammarRules(text,q){
+    let t=normalizeSpokenSentence(text);
+    const notes=[];
     const rules=[
       [/\bexperience about\b/gi,'experience in','experience 通常搭配 in'],
-      [/\bmany team\b/gi,'many teams / multiple teams','team 需要複數'],
+      [/\bmany team\b/gi,'many teams','team 需要複數'],
       [/\bI responsible for\b/gi,'I am responsible for','responsible 前需要 be 動詞'],
-      [/\bI am work\b/gi,'I work / I am working','work 的時態要完整'],
+      [/\bI am work\b/gi,'I am working','be 動詞後要接 V-ing'],
       [/\bdiscuss about\b/gi,'discuss','discuss 後面不需要 about'],
       [/\bcommunicate to\b/gi,'communicate with','與人溝通通常用 communicate with'],
       [/\bmore better\b/gi,'better','better 本身已是比較級'],
       [/\bdepend of\b/gi,'depend on','固定搭配是 depend on'],
-      [/\bI have (\d+|eight) years experience\b/gi,'I have X years of experience','years of experience 是自然搭配'],
-      [/\bin IBM\b/gi,'at IBM','公司前通常用 at']
+      [/\bI have (\d+|eight) years experience\b/gi,'I have $1 years of experience','自然搭配是 years of experience'],
+      [/\bin IBM\b/gi,'at IBM','公司前通常用 at'],
+      [/\bwork in IBM\b/gi,'work at IBM','公司前通常用 at']
     ];
-    const out=[];
-    rules.forEach(([re,to,note])=>{if(re.test(text)){re.lastIndex=0;out.push({to,note});}});
-    return out.slice(0,3);
+    rules.forEach(([re,to,note])=>{
+      if(re.test(t)){re.lastIndex=0;t=t.replace(re,to);notes.push(note);}
+    });
+
+    if(/current|currently/i.test(q?.text||'') && /\bI will work on\b/i.test(t)){
+      t=t.replace(/\bI will work on\b/i,"I'm currently working on");
+      notes.push('題目問現在的工作，使用現在進行式比 will work 更正確');
+    }
+
+    if(q?.id==='mdb-l1-010'){
+      if(/large banking transformation project/i.test(t)){
+        t=t.replace(/large banking transformation project/i,'large core banking transformation project');
+        notes.push('這題是在介紹目前核心銀行轉型專案，core banking 會更精準');
+      }
+      const lower=t.toLowerCase();
+      if(lower.includes('analyze') && lower.includes('business') && lower.includes('system')){
+        const parts=t.split(/(?<=[.!?])\s+/);
+        const first=parts[0]||'';
+        t=normalizeSpokenSentence(first+' I mainly analyze business requirements and system requirements.');
+        notes.push('把重複、破碎的 analyze / business / system 重組成完整句');
+      }
+    }
+
+    const incompletePatterns=[
+      [/\s+(?:and\s+)?I have better\.?$/i,'','「I have better」不是完整句，需要補受詞或直接刪除'],
+      [/\s+(?:and\s+)?I have\.?$/i,'','句尾「I have」資訊不完整，需要補上內容'],
+      [/\s+(?:and\s+)?I am better\.?$/i,'','「I am better」在這裡語意不完整，需要說明 better at / better than / better in 什麼']
+    ];
+    incompletePatterns.forEach(([re,to,note])=>{
+      if(re.test(t)){t=t.replace(re,to).trim();notes.push(note);}
+    });
+
+    t=normalizeSpokenSentence(t);
+    return {text:t,notes:[...new Set(notes)]};
   }
+  function naturalizeSpokenAnswer(corrected,original,q){
+    let t=corrected;
+    const notes=[];
+    if(q?.id==='mdb-l1-010'){
+      const lower=String(original||'').toLowerCase();
+      const sentences=[];
+      if(lower.includes('bank')||lower.includes('transformation')){
+        sentences.push("I'm currently working on a large core banking transformation project.");
+      }
+      if(lower.includes('analy')||lower.includes('business')||lower.includes('system')){
+        sentences.push('My main responsibility is analyzing business requirements and system-related issues.');
+      }
+      if(sentences.length){
+        t=sentences.join(' ');
+        notes.push('自然版保留你原本「專案＋主要工作」兩個重點，改成面試更順的兩句結構');
+      }
+    }else{
+      t=t.replace(/^I work on\b/i,"I'm currently working on");
+      t=t.replace(/\bI mainly analyze\b/i,'My main responsibility is to analyze');
+      t=t.replace(/\bI mainly handle\b/i,'My main responsibility is handling');
+      t=t.replace(/\bI want to\b/i,"I'm looking to");
+      t=normalizeSpokenSentence(t);
+    }
+    return {text:t,notes};
+  }
+  function buildSpokenCorrection(text,q){
+    const grammar=applyGrammarRules(text,q);
+    const natural=naturalizeSpokenAnswer(grammar.text,text,q);
+    const notes=[...new Set([...grammar.notes,...natural.notes])].slice(0,5);
+    return {
+      corrected:grammar.text,
+      natural:natural.text,
+      notes
+    };
+  }
+
   function qstat(id){
     if(!state.qstats[id]) state.qstats[id] = {seen:0,correct:0,wrong:0,hints:0,listens:0,lastQuality:null,interval:0,due:todayKey(),lastSeen:null};
     return state.qstats[id];
@@ -756,8 +835,9 @@
     const host=$('speakingScoreHost');
     if(!host)return;
     const b=analysis.breakdown;
-    const fixes=languageFixes(transcript);
-    const fixHtml='<div class="language-fix-box"><strong>英文修正</strong>'+(fixes.length?'<ul>'+fixes.map(f=>'<li><b>'+esc(f.to)+'</b> — '+esc(f.note)+'</li>').join('')+'</ul>':'<p>沒有偵測到目前規則庫中的常見錯法；優先依上面的內容與結構建議調整。</p>')+'<div class="support">更自然的完整版本請看下方 Model answer；不需要逐字背誦。</div></div>';
+    const correction=buildSpokenCorrection(transcript,q);
+    const notesHtml=correction.notes.length?'<ul>'+correction.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<p>目前沒有偵測到明顯的規則型文法錯誤；可以再看內容完整度與 Model answer 的差異。</p>';
+    const fixHtml='<div class="language-fix-box"><strong>依據你剛剛說的內容修正</strong><div class="correction-version"><span>文法修正版</span><p>'+esc(correction.corrected)+'</p><button class="btn ghost" id="playCorrectedBtn" type="button">▶ 聽修正版</button></div><div class="correction-version natural"><span>更自然的面試說法</span><p>'+esc(correction.natural)+'</p><button class="btn ghost" id="playNaturalBtn" type="button">▶ 聽自然版</button></div><div class="correction-notes"><span>為什麼這樣改</span>'+notesHtml+'</div><div class="support">修正會盡量保留你的原意，不是直接拿 Model answer 取代你的回答。若語音轉文字有辨識錯字，也可能影響修正結果。</div></div>';
     const tone=analysis.score>=80?'good':analysis.score>=60?'mid':'low';
     const paceHtml=analysis.wordsPerMinute?`<div class="speaking-pace"><b>${analysis.wordsPerMinute} WPM</b><span>錄音 ${analysis.recordingDurationSec}s · 語速參考</span></div>`:'';
     host.className=`speaking-score ${tone}`;
@@ -773,6 +853,8 @@
     $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(transcript)}<br><span class="support">關鍵內容覆蓋：約 ${analysis.keywordRatio}% · ${analysis.wordCount} words</span>`;
     $('feedbackTitle').textContent='系統已完成比對';
     $('feedbackNote').textContent='分數會直接納入這一題的訓練紀錄；Model answer 是參考，不需要逐字一樣。';
+    $('playCorrectedBtn')?.addEventListener('click',()=>speak(correction.corrected,1.0,chooseVoiceLang(q.level||1)));
+    $('playNaturalBtn')?.addEventListener('click',()=>speak(correction.natural,1.0,chooseVoiceLang(q.level||1)));
     const self=$('selfRateBlock'); if(self)self.classList.add('hidden');
   }
 
