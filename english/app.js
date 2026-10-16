@@ -218,7 +218,7 @@
   function answerTranslation(q){ return q?.modelZh || CONTENT.answerTranslations?.[q?.id] || ''; }
   function modelAnswerHtml(q,label='推薦答案'){
     const zh=answerTranslation(q);
-    return `<div class="model-answer"><strong>${esc(label)}</strong><div class="answer-en">${esc(q.model)}</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div>`;
+    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en">${esc(q.model)}</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div>`;
   }
 
   function rankInfo(){
@@ -1313,6 +1313,23 @@
 
   function bindStaticEvents(){
     document.querySelectorAll('.start-mode').forEach(b=>b.addEventListener('click',()=>startSession(b.dataset.mode,b.dataset.size?Number(b.dataset.size):null)));
+    $('questionHost')?.addEventListener('click',e=>{
+      const btn=e.target.closest?.('[data-model-audio]');
+      if(!btn)return;
+      const q=session?.questions?.[session.index];
+      if(!q?.model)return;
+      const kind=btn.dataset.modelAudio;
+      const lang=kind==='india'?'en-IN':chooseVoiceLang(q.level||1);
+      const rate=playbackRate(q.level||1,'question');
+      const resolved=speak(q.model,rate,lang);
+      const status=btn.closest('.model-answer')?.querySelector('[data-model-audio-status]');
+      if(status){
+        const requested=kind==='india'?'Indian English':accentLabel(lang);
+        const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
+        const voice=resolved?.voiceName?` · ${resolved.voiceName}`:'';
+        status.textContent=`${requested}${fallback}${voice} · ${rate.toFixed(2)}x`;
+      }
+    });
     $('quitBtn').addEventListener('click',quitSession);
     $('nextAdaptiveBtn').addEventListener('click',()=>startSession('adaptive'));
     $('backOverviewBtn').addEventListener('click',()=>{$('resultSection').classList.remove('show');$('overviewSection').scrollIntoView({behavior:'smooth'});});
