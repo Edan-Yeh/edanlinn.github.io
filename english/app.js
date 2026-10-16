@@ -642,8 +642,30 @@
   }
 
   function qstat(id){
-    if(!state.qstats[id]) state.qstats[id] = {seen:0,correct:0,wrong:0,hints:0,listens:0,lastQuality:null,interval:0,due:todayKey(),lastSeen:null};
-    return state.qstats[id];
+    if(!state.qstats[id]) state.qstats[id] = {seen:0,correct:0,wrong:0,hints:0,listens:0,lastQuality:null,interval:0,due:todayKey(),lastSeen:null,manualReview:false,guessCount:0,markedAt:null};
+    const s=state.qstats[id];
+    if(typeof s.manualReview!=='boolean') s.manualReview=false;
+    if(!Number.isFinite(s.guessCount)) s.guessCount=0;
+    return s;
+  }
+
+  function setManualReview(q,enabled,reason='manual'){
+    const s=qstat(q.id);
+    s.manualReview=!!enabled;
+    s.markedAt=enabled?todayKey():null;
+    if(enabled){
+      if(reason==='guess') s.guessCount=(s.guessCount||0)+1;
+      s.interval=0;
+      s.due=todayKey();
+      if(s.lastQuality===null || s.lastQuality>1) s.lastQuality=1;
+    }
+    save();
+    window.EDAN_CLOUD?.logEvent?.(enabled?'question_marked_review':'question_unmarked_review',{
+      questionId:q.id,
+      reason,
+      text:q.text,
+      guessCount:s.guessCount||0
+    }, q.id+'-'+todayKey());
   }
 
   function effectiveSkillForQuestion(q){
@@ -657,7 +679,7 @@
     if(mode==='listening') qs = qs.filter(q => q.skill==='listening' || (q.type==='speaking' && q.level>=2));
     if(mode==='speaking') qs = qs.filter(q => q.type==='speaking');
     if(mode==='wrong'){
-      const weak = qs.filter(q => { const s = state.qstats[q.id]; return s && (s.wrong>0 || s.hints>0 || (s.lastQuality!==null && s.lastQuality<=1)); });
+      const weak = qs.filter(q => { const s = state.qstats[q.id]; return s && (s.manualReview || s.wrong>0 || s.hints>0 || (s.lastQuality!==null && s.lastQuality<=1)); });
       if(weak.length) qs = weak;
     }
     if(mode==='due'){
@@ -677,6 +699,7 @@
     if(s.wrong) w *= 1 + Math.min(2,s.wrong*.4);
     if(s.hints) w *= 1 + Math.min(1.5,s.hints*.25);
     if(s.lastQuality!==null && s.lastQuality<=1) w *= 1.45;
+    if(s.manualReview) w *= 2.2;
     if(s.due && s.due<=todayKey()) w *= 1.55;
     if(s.seen===0) w *= 1.15;
     if(q.level > skill + 1.15) w *= .25;
@@ -795,9 +818,25 @@
         else if(isListening && accentRepeats===1) quality=2;
         else quality=3;
       } else quality=0;
-      const feedback=$('feedbackBox'); feedback.className=`feedback show ${correct?'good':'bad'}`; feedback.innerHTML=`<strong>${correct?'答對了':'這題先記下來'}</strong>${esc(q.intent||'')} ${isListening?`<br><span class="support">北美 ${accentCounts.northAmerica||0} 次 · 印度 ${accentCounts.india||0} 次${session.currentMeta.hint?'，使用了 transcript':''}</span>`:''}`;
+      const feedback=$('feedbackBox');
+      const marked=qstat(q.id).manualReview;
+      const reviewLabel=marked?'✓ 已標註複習（點擊取消）':(correct?'🎯 我是猜的，加入複習':'☆ 加入複習');
+      feedback.className=`feedback show ${correct?'good':'bad'}`;
+      feedback.innerHTML=`<strong>${correct?'答對了':'這題先記下來'}</strong>${esc(q.intent||'')} ${isListening?`<br><span class="support">北美 ${accentCounts.northAmerica||0} 次 · 印度 ${accentCounts.india||0} 次${session.currentMeta.hint?'，使用了 transcript':''}</span>`:''}<div class="review-mark-row"><button class="btn ghost review-mark-btn ${marked?'active':''}" id="manualReviewBtn" type="button">${reviewLabel}</button><span class="support" id="manualReviewHint">${marked?'這題會優先出現在錯題複習與自適應挑戰。':correct?'如果這題是猜中的，標註後系統會把它當成不熟題優先複習。':'答錯題本來就會進弱項複習，也可另外固定標註。'}</span></div>`;
       $('modelAnswer').classList.add('show'); $('nextBtn').classList.remove('hidden');
       recordAnswer(q,quality,correct,{listens:session.currentMeta.listens,hint:session.currentMeta.hint,accentCounts:{...accentCounts},repeats:accentRepeats});
+      $('manualReviewBtn')?.addEventListener('click',()=>{
+        const st=qstat(q.id);
+        const next=!st.manualReview;
+        setManualReview(q,next,correct?'guess':'manual');
+        const btn=$('manualReviewBtn');
+        const hint=$('manualReviewHint');
+        if(btn){
+          btn.classList.toggle('active',next);
+          btn.textContent=next?'✓ 已標註複習（點擊取消）':(correct?'🎯 我是猜的，加入複習':'☆ 加入複習');
+        }
+        if(hint) hint.textContent=next?'這題會優先出現在錯題複習與自適應挑戰。':(correct?'如果這題是猜中的，標註後系統會把它當成不熟題優先複習。':'答錯題本來就會進弱項複習，也可另外固定標註。');
+      });
       $('nextBtn').addEventListener('click',nextQuestion,{once:true});
     }));
   }
