@@ -2,9 +2,9 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#edf6ff">
-<title>Edan Cloud SA Learning Hub</title>
-<meta name="description" content="Edan 的 Cloud Solutions Architect 學習、錯題、必背觀念、能力地圖與進度 Dashboard。">
+<meta name="theme-color" content="#f5f7fb">
+<title>Cloud × AI Solutions Architect | Edan Learning Journey</title>
+<meta name="description" content="Cloud × AI Solutions Architect Learning Journey — AWS、Azure、GCP、AI Tutor 架構、真實案例、每日訓練紀錄與工程設計思維。">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="game.css?v=20261001-1">
 <link rel="stylesheet" href="blue.css?v=20261002-world-v5">
@@ -17,10 +17,11 @@
 <link rel="stylesheet" href="league.css?v=20261003-battle-v1">
 <link rel="stylesheet" href="moba.css?v=20261004-cards-v1">
 <link rel="stylesheet" href="learning-campaign.css?v=20261004-cards-v1">
+<link rel="stylesheet" href="architect-ios.css?v=20261016-v1">
 </head>
 <body>
 <aside class="sidebar" aria-label="學習導航">
-  <div class="side-brand"><div class="brand-mark" data-icon="quiz"></div><div><b>ARCHITECT</b><small>EDAN'S CHAMPION ACADEMY</small></div></div>
+  <div class="side-brand"><div class="brand-mark" data-icon="quiz"></div><div><b>ARCHITECT</b><small>CLOUD × AI LEARNING JOURNEY</small></div></div>
   <div class="side-label">WORKSPACE</div>
   <nav class="side-nav">
     <button class="side-link active" data-section="dashboard"><span data-icon="dashboard"></span><span>總覽</span></button>
@@ -33,11 +34,11 @@
   </nav>
   <div class="side-bottom"><span><i class="live-dot"></i> YOUR NEXT CHAPTER</span><b>Solutions Architect</b><p>每天一小步，建立架構判斷力。</p></div>
 </aside>
-<header class="top"><div class="shell"><div class="brand">Learning workspace / 學習總覽<small>AWS 主線 · Cloud Solutions Architect</small></div><div class="nav"><a href="#modules">學習模組</a><button id="expand">展開模組</button><button id="collapse">收合模組</button><div class="top-profile"><span class="avatar">EY</span><div class="profile-name">Edan Yeh<small>Architect in progress</small></div></div></div></div></header>
+<header class="top"><div class="shell"><div class="brand">Architecture workspace / 學習總覽<small>AWS · Azure · Google Cloud · Applied AI</small></div><div class="nav"><a href="#modules">學習模組</a><button id="expand">展開模組</button><button id="collapse">收合模組</button><div class="top-profile"><span class="avatar">EY</span><div class="profile-name">Edan Yeh<small>Architect in progress</small></div></div></div></div></header>
 <main class="shell">
 <section class="hero" id="dashboard">
   <div class="hero-main">
-    <div><div class="hero-eyebrow">CLOUD ARCHITECT · CHAMPION ACADEMY <span class="season-tag">SEASON 01</span></div><h1>把概念練成直覺。<br><span>你的英雄旅程，現在啟動。</span></h1><p class="hero-copy">Edan，歡迎回到訓練中心。從銀行情境出發，練習每一次架構選擇、故障判斷與取捨。</p><div class="hero-buttons"><button class="primary-action" data-practice="all"><span data-icon="quiz"></span>開始今日挑戰<span data-icon="arrow"></span></button><button class="quiet-action" data-practice="all" data-mode="due">複習到期題目</button></div></div>
+    <div><div class="hero-eyebrow">CLOUD × AI SOLUTIONS ARCHITECT <span class="season-tag">LEARNING JOURNEY</span></div><h1>從 Cloud Architecture<br><span>走向 AI Systems Engineering.</span></h1><p class="hero-copy">以金融系統實務為背景，建立跨雲架構、AI 工程、可靠性與安全治理的端到端能力。公開學習紀錄、設計取捨與可驗證的技術成果。</p><div class="hero-buttons"><button class="primary-action" data-practice="all"><span data-icon="quiz"></span>開始今日挑戰<span data-icon="arrow"></span></button><button class="quiet-action" data-practice="all" data-mode="due">複習到期題目</button></div></div>
     <div class="rank-card"><div class="rank-top"><span>ARCHITECT JOURNEY</span><span class="rank-level" id="game-level">LV. 01</span></div><div class="rank-emblem" data-icon="skill-map"></div><div class="rank-title">Architecture Explorer</div><div class="rank-subtitle">用每一次練習，解鎖下一個等級</div><div class="xp-labels"><span id="game-xp-label">0 / 200 XP</span><span id="game-xp-next">再 200 XP 升級</span></div><div class="xp-meter" id="game-xp-meter" role="progressbar" aria-label="距離下一等級的經驗值" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0"><i id="game-xp-fill"></i></div><div class="rank-foot"><span id="game-xp">0 XP</span><span>遊戲等級 · 非能力評分</span></div></div>
   </div>
   <div class="stats"><div class="stat"><span class="muted">完成訓練</span><b id="completed">-</b><small>每日訓練紀錄</small></div><div class="stat"><span class="muted">訓練平均分數</span><b id="avg">-</b><small>依已記錄的每日分數</small></div><div class="stat"><span class="muted">目前主題</span><b id="track">-</b><small>主線進度</small></div><div class="stat"><span class="muted">內容更新日期</span><b id="updated">-</b><small>題庫與訓練內容</small></div></div><div id="roadmap" class="track"></div>
@@ -61,12 +62,28 @@
 </div>
 <section class="path-panel"><div class="panel-head"><h3>你的架構學習路線</h3><small>階段狀態 · 依每日訓練整理</small></div><p class="panel-sub" id="game-current-topic"></p><div id="game-domain-path" class="domain-path"></div></section>
 
+<section id="ai-foundations" class="ai-foundations" aria-labelledby="ai-foundations-title">
+ <div class="section-kicker">ENGINEERING FIELD NOTES · AI FOUNDATIONS</div>
+ <div class="ai-foundations-head"><div><h2 id="ai-foundations-title">AI 系統設計筆記</h2><p class="muted">先理解概念、看得懂架構，再用案例練習決策。這裡是教學參考，不是當日正式考題。</p></div><span class="ai-lesson-label">FOUNDATION / 01</span></div>
+ <div class="ai-feature-grid">
+  <article class="ai-feature"><span class="ai-feature-index">01 / REQUEST FLOW</span><h3>一個 AI Tutor 請求，實際經過哪些服務？</h3><p>Vue 負責互動；Spring Boot 驗證身份、檢查權限並產生 Request ID；FastAPI 接收受控上下文，執行模型推論；Spring Boot 驗證回應再交給 Vue。Postgres 由授權業務流程寫入學習資料。</p><div class="ai-code-path">Vue → Spring Boot → FastAPI → Spring Boot → Vue</div><p class="ai-feature-note"><b>例子：</b>學生問「什麼是 RTO？」；AI 可以解釋，但不能自行更改該學生的正式測驗成績。</p></article>
+  <article class="ai-feature"><span class="ai-feature-index">02 / RELIABILITY</span><h3>AI Timeout：為什麼要有降級模式？</h3><p>推論比一般 API 更可能受模型載入、佇列與運算延遲影響。呼叫 AI 時設定 Timeout、限制重試與併發，逾時時返回固定教材或提示，避免核心考試功能被 AI 拖垮。</p><div class="ai-code-path">AI Timeout → Fallback → 固定教材</div><p class="ai-feature-note"><b>例子：</b>學生正在考試，AI 解說超時；考試仍能提交，畫面改顯示預先準備的解析，而非卡住。</p></article>
+  <article class="ai-feature"><span class="ai-feature-index">03 / DATA GOVERNANCE</span><h3>AI 建議與正式成績必須分離</h3><p>AI 的輸出是機率性結果，可能出錯。正式成績需由 Spring Boot 的既有評分規則與權限控管寫入 Postgres；AI 只能提供教學建議，不能直接擁有成績寫入權限。</p><div class="ai-code-path">AI Recommendation ≠ Grade Authority</div><p class="ai-feature-note"><b>例子：</b>AI 認為學生答對，但標準答案規則判定答錯；正式成績以受控評分流程為準，必要時由教師審核。</p></article>
+  <article class="ai-feature"><span class="ai-feature-index">04 / INCIDENT RESPONSE</span><h3>Rollback 只修復版本，不會自動修復資料</h3><p>先限制錯誤影響、記錄 Request ID／部署版本／模型版本／Prompt 版本，再回復穩定程式。已寫入的錯誤資料要先比對影響範圍，經核准後補正，不能直接整庫 PITR。</p><div class="ai-code-path">Contain → Rollback → Reconcile → Verify</div><p class="ai-feature-note"><b>例子：</b>新版 AI 產生錯誤建議，回復 FastAPI 版本後，仍需檢查哪些學生看過錯誤內容。</p></article>
+ </div>
+ <div class="ai-architecture">
+ <div><span class="ai-feature-index">REFERENCE ARCHITECTURE</span><h3>Cloud SA Academy · AI Tutor</h3><p>以現有 Vue + Spring Boot + Postgres + NAS Docker 為基礎，獨立新增 Python FastAPI。第一階段採零成本優先，後續再評估 RAG、Embedding、模型推論與多雲部署。</p></div>
+ <div class="ai-arch-flow"><span>Vue<br><small>Experience</small></span><i>→</i><span>Spring Boot<br><small>Auth · Business</small></span><i>→</i><span>FastAPI<br><small>AI Inference</small></span></div>
+ </div>
+ <details class="ai-detail"><summary>延伸學習：LLM、Token、Embedding、RAG 與 Agent 有何不同？</summary><div class="ai-detail-body"><p><b>LLM：</b>透過訓練資料學習語言模式的模型，適合生成與推理，但可能產生不準確回答。</p><p><b>Token：</b>模型處理文字的單位；輸入與輸出 Token 數會影響上下文長度、延遲與推論成本。</p><p><b>Embedding：</b>把文字轉成向量表示，讓系統能比較語意相近程度，例如找到最相關的課程段落。</p><p><b>RAG：</b>先檢索授權教材，再把檢索結果提供模型生成回答；仍需驗證來源、權限與引用品質。</p><p><b>Agent：</b>模型在明確權限與工具規則下選擇下一步操作，例如查詢題庫；高風險寫入必須由業務系統驗證與授權。</p><p><b>具體範例：</b>學生問「RPO 5 分鐘代表什麼？」→ 檢索 DR 教材 → 將段落與問題送入模型 → 回傳有來源的說明 → 記錄 Request ID 與教材版本；沒有授權就不讀取企業機密文件。</p></div></details>
+ <div class="ai-method"><b>學習方法</b><span>概念 → 白話例子 → 架構流程 → Trade-off → 情境題 → 實作驗收</span><small>公開頁面是學習與作品展示；正式每日作答、批改及成績仍以已保存的學習紀錄為準。</small></div>
+</section>
 <section id="modules" class="module-dashboard">
-  <div class="section-kicker">YOUR TRAINING TOOLS</div>
+  <div class="section-kicker">KNOWLEDGE & ENGINEERING</div>
   <div class="module-dashboard-head">
     <div>
-      <h2>選擇你的訓練裝備</h2>
-      <p class="muted">挑戰、案例與知識庫，都在這裡。</p>
+      <h2>探索學習與技術成果</h2>
+      <p class="muted">從架構案例、知識筆記到每日技術決策，保留完整學習脈絡。</p>
     </div>
     <div class="module-dashboard-actions">
       <button id="open-last-module">開啟上次模組</button>
@@ -194,9 +211,9 @@
   <section id="days" class="days"></section><div id="empty" class="empty">找不到符合條件的內容。</div>
 </section>
 </main>
-<footer class="footer shell">Edan Cloud SA Learning Hub · 內容依每日訓練持續更新</footer>
+<footer class="footer shell">Cloud × AI Solutions Architect Learning Journey · Continuous Learning & Engineering</footer>
 <div id="game-feedback" class="game-feedback"></div>
-<script src="data.js"></script><script src="drag-quiz.js?v=20261002-competition-lock"></script><script src="app.js?v=20261016-history-archive"></script><script src="game-ui.js?v=20261002-cosmic-v6"></script><script src="avatar.js?v=20261003-battle-v1"></script><script src="blue-ui.js?v=20261002-cosmic-v6"></script>
+<script src="data.js?v=20261016-ai-v1"></script><script src="drag-quiz.js?v=20261002-competition-lock"></script><script src="app.js?v=20261016-history-archive"></script><script src="game-ui.js?v=20261002-cosmic-v6"></script><script src="avatar.js?v=20261003-battle-v1"></script><script src="blue-ui.js?v=20261002-cosmic-v6"></script>
 <script src="ranking-config.js?v=20261002-supabase"></script><script src="arena.js?v=20261003-hero-sync-v2"></script>
 <script src="map-relations.js?v=20261002-cosmic-v6"></script>
 <script src="teams.js?v=20261002-teams-v1"></script>
