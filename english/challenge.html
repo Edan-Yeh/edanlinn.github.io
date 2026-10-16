@@ -7,11 +7,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Edan English">
   <meta name="theme-color" content="#2447d8">
-  <meta name="description" content="Edan 專屬自適應英文面試訓練：MongoDB 真實面試基線、聽力、口說、Active Chunks、錯題與學習紀錄。">
+  <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261016v12-1">
-  <title>English Challenge｜Edan's Workspace</title>
+  <link rel="stylesheet" href="styles.css?v=20261016v13-1">
+  <title>Edan's English Coach｜Career English</title>
 </head>
 <body>
 <div class="page">
@@ -19,7 +19,7 @@
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-mark">E</div>
-        <div class="brand-text"><b>EDAN’S ENGLISH WORKSPACE</b><small>ADAPTIVE INTERVIEW / LISTENING LAB</small></div>
+        <div class="brand-text"><b>EDAN’S ENGLISH COACH</b><small>CAREER ENGLISH · INTERVIEW · REAL WORK</small></div>
       </div>
       <div class="top-actions">
         <button class="btn ghost" id="exportReportBtn" type="button">匯出學習報告</button>
@@ -31,9 +31,9 @@
   <main class="shell">
     <section class="hero" id="overviewSection">
       <div class="hero-main">
-        <div class="eyebrow">Edan's Practice Room · MongoDB Baseline</div>
-        <h1>不是背英文，是把你真正會的事講出來。</h1>
-        <p>每回合 10 題。系統會優先出你的弱項、錯題與到期複習，並依表現逐步提高問法、語速與專業深度。聽力題先聽後看文字；口說題以 30–60 秒完整回答為目標。</p>
+        <div class="eyebrow">Built for Edan · IBM / Core Banking / Global Tech</div>
+        <h1>不是學更多英文，是讓你的英文配得上你的實力。</h1>
+        <p>內容只圍繞你真正會遇到的情境：IBM 工作、核心銀行轉型、跨團隊協調、MongoDB／國際科技公司面試，以及你的日常口說弱點。系統會記住你真正犯過的錯，下一輪優先讓你把同一類問題練穩。</p>
       </div>
       <div class="hero-stats">
         <div class="stat-card"><div class="stat-label">目前稱號</div><div class="stat-value" id="rankValue">English Starter</div><div class="stat-sub" id="xpSub">0 XP</div></div>
@@ -43,8 +43,33 @@
       </div>
     </section>
 
+    <section class="section" id="coachBriefSection">
+      <div class="section-head">
+        <div><h2>Edan Coach Brief</h2><p>不是通用英文分數，而是判斷你現在去面國際科技公司時，英文最可能在哪裡讓專業能力打折。</p></div>
+        <button class="btn primary" id="coachStartBtn" type="button">開始今天推薦</button>
+      </div>
+      <div class="coach-brief-grid">
+        <article class="panel coach-readiness">
+          <span class="badge">Interview Readiness</span>
+          <div class="coach-big-number" id="readinessValue">—</div>
+          <p id="readinessNote">完成幾題口說後開始估算。</p>
+        </article>
+        <article class="panel">
+          <span class="badge good">Current Focus</span>
+          <h3>今天最值得修的地方</h3>
+          <p id="coachFocusText">完成更多錄音後，我會依你的真實表現決定。</p>
+          <div class="coach-recommendation" id="coachRecommendationText">今天的推薦會依你的弱點自動調整。</div>
+        </article>
+        <article class="panel">
+          <span class="badge warn">Personal Error Memory</span>
+          <h3>只記你的錯</h3>
+          <div id="errorMemoryList"><div class="support">完成錄音回答後，這裡會累積你反覆出現的錯誤。</div></div>
+        </article>
+      </div>
+    </section>
+
     <section class="section" id="modesSection">
-      <div class="section-head"><div><h2>今天怎麼練</h2><p>這個網站取代你原本 15–20 分鐘的 AI 面試練習，不額外增加總學習時間。答案在作答前會先隱藏，完成後才顯示英文＋繁體中文。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
+      <div class="section-head"><div><h2>今天怎麼練</h2><p>不追求功能多；每一輪都優先處理你的弱點、最近錯誤與真實職涯情境。答案在作答前隱藏，完成後才顯示英文＋繁體中文。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
       <div class="grid mode-grid">
         <article class="panel mode-card">
           <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
@@ -62,7 +87,7 @@
           <span class="badge dark">Due</span><h3>今日複習</h3><p>依簡化間隔複習機制挑今天到期的題目；如果沒有到期題，就補最弱技能。</p><button class="btn ghost start-mode" data-mode="due" type="button">今日複習</button>
         </article>
         <article class="panel mode-card mock-card">
-          <span class="badge bad">MongoDB</span><h3>Mock Interview</h3><p>8 題依真實面試順序進行：自我介紹 → IBM 現況 → PM scope → 職涯 → stakeholder → 案例 → Why MongoDB → 離職動機。</p><button class="btn primary start-mode" data-mode="mock" data-size="8" type="button">開始模擬面試</button>
+          <span class="badge bad">MongoDB</span><h3>Personalized Mock</h3><p>保留真實 MongoDB 面試主軸，但中間題目會優先插入你過去最弱、最容易卡住的口說題。</p><button class="btn primary start-mode" data-mode="mock" data-size="8" type="button">開始模擬面試</button>
         </article>
       </div>
     </section>
@@ -198,7 +223,7 @@
   <button class="mobile-dock-btn" id="mobileVocabBtn" data-nav="vocab" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js?v=20261016v12-1"></script>
-<script src="app.js?v=20261016v12-1"></script>
+<script src="question-bank.js?v=20261016v13-1"></script>
+<script src="app.js?v=20261016v13-1"></script>
 </body>
 </html>
