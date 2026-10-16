@@ -17,3 +17,5 @@ Q3: Which safeguards should an AI Tutor use for data privacy, auditability and g
 Practice: Sketch Vue, Spring Boot, Postgres and FastAPI architecture with timeout fallback and recovery plan.
 
 Do not score or reveal solutions before user answers.
+
+Review format: three questions and one short architecture task. All answers remain pending.
