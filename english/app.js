@@ -186,7 +186,35 @@
       };
     }catch(e){ return defaultState(); }
   }
-  function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  function save(){
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    window.EDAN_CLOUD?.saveState?.(state);
+  }
+  function applyCloudState(incoming){
+    if(!incoming || typeof incoming!=='object') return;
+    const base=defaultState();
+    state={
+      ...base,
+      ...incoming,
+      schemaVersion:3,
+      skills:{...base.skills,...(incoming.skills||{})},
+      qstats:incoming.qstats||{},
+      chunkKnown:incoming.chunkKnown||{},
+      vocabKnown:incoming.vocabKnown||{},
+      vocabStats:incoming.vocabStats||{},
+      weaknessCounts:incoming.weaknessCounts||{},
+      errorMemory:incoming.errorMemory||{},
+      sessions:Array.isArray(incoming.sessions)?incoming.sessions:[],
+      completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
+      settings:{...base.settings,...(incoming.settings||{})},
+      lastContentVersion:CONTENT.contentVersion
+    };
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    renderOverview();
+    renderChunks();
+    renderVocabulary(12,true,false);
+  }
+  window.addEventListener('edan:cloud-state', e=>applyCloudState(e.detail?.state));
   function answerTranslation(q){ return q?.modelZh || CONTENT.answerTranslations?.[q?.id] || ''; }
   function modelAnswerHtml(q,label='推薦答案'){
     const zh=answerTranslation(q);
@@ -1143,6 +1171,19 @@
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
     if(completedUnit) markPracticeDay();
     save();
+    window.EDAN_CLOUD?.logEvent?.('session_completed',{
+      title:rec.title,
+      score:rec.score,
+      count:rec.count,
+      weakest:rec.weakest,
+      completedUnit:rec.completedUnit,
+      answers:rec.answers.map(a=>({
+        id:a.id,skill:a.skill,level:a.level,quality:a.quality,correct:a.correct,
+        systemScore:a.extra?.systemScore??null,
+        weakness:a.extra?.weakness??null,
+        wordsPerMinute:a.extra?.wordsPerMinute??null
+      }))
+    }, rec.title+'-'+todayKey());
     $('resultScore').textContent=`${score}%`;
     const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+(Number.isFinite(a.extra?.repeats)?a.extra.repeats:Math.max(0,(a.extra?.listens||0)-1)),0);
     $('resultSummary').textContent=score>=80?'這輪很穩。系統會逐步增加問法變化與難度，但仍保留到期複習。':score>=60?'基礎已經能撐住。下一輪會繼續集中在弱項，不需要一次補很多新東西。':'這輪不要追求升級。先讓相同問題用不同問法出現，直到你能自然抓到意圖並講完整句。';
