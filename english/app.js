@@ -867,6 +867,125 @@
     }));
   }
 
+  function assessTranscriptReliability(text,q){
+    const tokens=speakingTokens(text);
+    const meaningful=meaningfulTokens(text);
+    const reasons=[];
+    let score=100;
+    const duration=Math.max(0,recordingDurationSec||0);
+    const wpm=duration>1?Math.round(tokens.length/(duration/60)):null;
+
+    if(tokens.length<5){score-=40;reasons.push('辨識到的英文太短');}
+    else if(tokens.length<9){score-=12;reasons.push('辨識字數偏少');}
+
+    if(duration>=10 && wpm!==null){
+      if(wpm<30){score-=38;reasons.push('錄音長度與辨識字數明顯不成比例');}
+      else if(wpm<45){score-=20;reasons.push('錄音長度與辨識字數可能不成比例');}
+      else if(wpm>220){score-=18;reasons.push('辨識出的語速異常偏快');}
+    }
+
+    const keywordHits=(q.keywords||[]).filter(k=>keywordHit(text,k)).length;
+    const modelSet=new Set(meaningfulTokens(q.model||''));
+    const overlap=meaningful.filter(w=>modelSet.has(w)).length;
+    if(tokens.length<=12 && keywordHits===0 && overlap===0){
+      score-=24;
+      reasons.push('辨識內容和題目／參考回答幾乎沒有語意線索重疊');
+    }
+
+    const repeated=tokens.filter((w,i)=>i>0&&tokens[i-1]===w&&w.length>2).length;
+    if(repeated>=3){score-=10;reasons.push('辨識結果有大量重複字');}
+
+    score=clamp(score,0,100);
+    return {
+      score,
+      level:score>=80?'high':score>=60?'medium':'low',
+      reasons:[...new Set(reasons)],
+      wordCount:tokens.length,
+      meaningfulCount:meaningful.length,
+      estimatedWpm:wpm
+    };
+  }
+
+  function renderTranscriptReview(q,transcript,reliability){
+    const host=$('speakingScoreHost');
+    if(!host)return;
+    session.currentMeta.pendingTranscript=transcript;
+    const reasons=reliability.reasons.length
+      ? '<ul>'+reliability.reasons.map(r=>'<li>'+esc(r)+'</li>').join('')+'</ul>'
+      : '<p>系統無法充分確認這份轉錄是否完整。</p>';
+    host.className='speaking-score transcript-review';
+    host.innerHTML=`<div class="transcript-review-head"><div><span class="badge warn">先確認轉錄</span><h3>這次先不自動評分</h3></div><div class="transcript-confidence">${reliability.score}<span>/100</span><small>轉錄可信度</small></div></div>
+      <p class="support">這是「語音辨識可信度」，不是你的英文分數。避免 Whisper 聽錯後反過來扣你的英文能力。</p>
+      <div class="transcript-review-reasons">${reasons}</div>
+      <label class="transcript-edit-label" for="transcriptEditInput">請確認／修正你實際說的英文</label>
+      <textarea id="transcriptEditInput" class="transcript-edit-input" rows="4">${esc(transcript)}</textarea>
+      <div class="btn-row transcript-review-actions">
+        <button class="btn primary" id="confirmTranscriptBtn" type="button">✓ 用這份文字評分</button>
+        <button class="btn ghost" id="retryRecordingBtn" type="button">🎙 重新錄音</button>
+      </div>
+      <div class="support">如果只有少數辨識錯字，直接改成你真正說的內容再評分；如果整句辨識錯很多，重新錄音會更準。</div>`;
+
+    $('speechText').innerHTML=`<strong>⚠️ 語音辨識可能有誤</strong><br><span class="support">目前先暫停文法、內容與 WPM 評分，等你確認文字後才寫入學習紀錄。</span>`;
+    $('feedbackTitle').textContent='請先確認辨識文字';
+    $('feedbackNote').textContent='這次結果不會先扣分，也不會寫入 Error Memory。';
+    const self=$('selfRateBlock'); if(self)self.classList.add('hidden');
+
+    $('confirmTranscriptBtn')?.addEventListener('click',()=>{
+      const edited=String($('transcriptEditInput')?.value||'').trim();
+      if(speakingTokens(edited).length<3){
+        $('feedbackNote').textContent='文字太短，請修正後再評分，或重新錄音。';
+        return;
+      }
+      speechTranscript=edited;
+      session.currentMeta.transcriptionSource=(session.currentMeta.transcriptionSource||'browser')+'+confirmed';
+      scoreSpeakingTranscript(q,edited,reliability,true);
+    });
+
+    $('retryRecordingBtn')?.addEventListener('click',()=>{
+      const recognitionAvailable=!!speechRecognitionCtor() && state.settings.speechRecognition!=='off';
+      startRecordedAnswer(q,recognitionAvailable);
+    });
+
+    const recognitionBtn=$('recognitionBtn');
+    if(recognitionBtn){recognitionBtn.disabled=false;recognitionBtn.textContent='🎙 重新錄音';}
+  }
+
+  function scoreSpeakingTranscript(q,transcript,reliability,userConfirmed=false){
+    if(!session || session.currentMeta.answered)return;
+    const analysis=analyzeSpeakingAnswer(transcript,q);
+    analysis.transcriptReliability=reliability?.score??null;
+    analysis.transcriptConfirmed=!!userConfirmed;
+    applyRecordingMetrics(analysis);
+    const correction=buildSpokenCorrection(transcript,q);
+    rememberSpeakingErrors(q,transcript,analysis,correction);
+    save();
+    $('modelAnswer')?.classList.add('show');
+    renderSpeakingScore(analysis,q,transcript);
+    session.currentMeta.answered=true;
+    session.currentMeta.scoringDone=true;
+    session.currentMeta.processingScore=false;
+    let quality=analysis.score>=80?3:analysis.score>=60?2:1;
+    if(session.currentMeta.hint && quality===3) quality=2;
+    recordAnswer(q,quality,analysis.score>=60,{
+      listens:session.currentMeta.listens,
+      hint:session.currentMeta.hint,
+      transcript,
+      systemScore:analysis.score,
+      scoreBreakdown:analysis.breakdown,
+      suggestions:analysis.suggestions,
+      recordedAudio:!!recordedAudioUrl,
+      recordingDurationSec,
+      wordsPerMinute:analysis.wordsPerMinute||null,
+      transcriptionSource:session.currentMeta.transcriptionSource||'browser',
+      transcriptReliability:reliability?.score??null,
+      transcriptConfirmed:!!userConfirmed
+    });
+    $('nextBtn')?.classList.remove('hidden');
+    $('nextBtn')?.addEventListener('click',nextQuestion,{once:true});
+    const recognitionBtn=$('recognitionBtn');
+    if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='✓ 已完成評分';}
+  }
+
   async function finishSpeakingStage(q){
     if(session.currentMeta.scoringDone || session.currentMeta.processingScore) return;
     session.currentMeta.processingScore=true;
@@ -874,48 +993,29 @@
     const recognitionBtn=$('recognitionBtn');
     if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='處理中…';}
     await stopMediaRecording(false);
-    $('modelAnswer').classList.add('show'); $('feedbackBox').classList.add('show');
+    $('feedbackBox').classList.add('show');
 
     let transcript=(speechTranscript||'').trim();
-    const enoughText=()=>transcript.split(/\s+/).filter(Boolean).length>=3;
+    const enoughText=()=>speakingTokens(transcript).length>=3;
 
     if(!enoughText() && recordedAudioUrl && state.settings.speechRecognition!=='off'){
       $('feedbackTitle').textContent='正在分析你的錄音';
       $('feedbackNote').textContent='瀏覽器即時轉文字不可用，改用本機 Whisper。第一次使用需要下載語音模型，之後會由瀏覽器快取。';
       const el=$('speechText');
-      if(el)el.innerHTML='<strong>本機 AI 轉文字中…</strong><br><span class="support">請保留此頁面開啟，完成後會自動產生評分與修正。</span>';
+      if(el)el.innerHTML='<strong>本機 AI 轉文字中…</strong><br><span class="support">請保留此頁面開啟。完成後會先檢查轉錄可信度，再決定是否評分。</span>';
       transcript=await transcribeRecordedAudio(recordedAudioUrl);
       speechTranscript=transcript;
     }
 
     if(enoughText()){
-      const analysis=analyzeSpeakingAnswer(transcript,q);
-      applyRecordingMetrics(analysis);
-      const correction=buildSpokenCorrection(transcript,q);
-      rememberSpeakingErrors(q,transcript,analysis,correction);
-      save();
-      renderSpeakingScore(analysis,q,transcript);
-      if(!session.currentMeta.answered){
-        session.currentMeta.answered=true;
-        session.currentMeta.scoringDone=true;
-        let quality=analysis.score>=80?3:analysis.score>=60?2:1;
-        if(session.currentMeta.hint && quality===3) quality=2;
-        recordAnswer(q,quality,analysis.score>=60,{
-          listens:session.currentMeta.listens,
-          hint:session.currentMeta.hint,
-          transcript,
-          systemScore:analysis.score,
-          scoreBreakdown:analysis.breakdown,
-          suggestions:analysis.suggestions,
-          recordedAudio:!!recordedAudioUrl,
-          recordingDurationSec,
-          wordsPerMinute:analysis.wordsPerMinute||null,
-          transcriptionSource:session.currentMeta.transcriptionSource||'browser'
-        });
-        $('nextBtn').classList.remove('hidden');
-        $('nextBtn').addEventListener('click',nextQuestion,{once:true});
+      const reliability=assessTranscriptReliability(transcript,q);
+      session.currentMeta.transcriptReliability=reliability.score;
+      if(reliability.level==='high'){
+        scoreSpeakingTranscript(q,transcript,reliability,false);
+      }else{
+        session.currentMeta.processingScore=false;
+        renderTranscriptReview(q,transcript,reliability);
       }
-      if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='✓ 已完成評分';}
     }else{
       session.currentMeta.processingScore=false;
       $('feedbackTitle').textContent='錄音已完成，但自動轉文字沒有成功';
@@ -1013,6 +1113,9 @@
     const notesHtml=correction.notes.length?'<ul>'+correction.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<p>目前沒有偵測到明顯的規則型文法錯誤；可以再看內容完整度與 Model answer 的差異。</p>';
     const fixHtml='<div class="language-fix-box"><strong>依據你剛剛說的內容修正</strong><div class="correction-version"><span>文法修正版</span><p>'+esc(correction.corrected)+'</p><button class="btn ghost" id="playCorrectedBtn" type="button">▶ 聽修正版</button></div><div class="correction-version natural"><span>更自然的面試說法</span><p>'+esc(correction.natural)+'</p><button class="btn ghost" id="playNaturalBtn" type="button">▶ 聽自然版</button></div><div class="correction-notes"><span>為什麼這樣改</span>'+notesHtml+'</div><div class="support">修正會盡量保留你的原意，不是直接拿 Model answer 取代你的回答。若語音轉文字有辨識錯字，也可能影響修正結果。</div></div>';
     const tone=analysis.score>=80?'good':analysis.score>=60?'mid':'low';
+    const reliabilityHtml=analysis.transcriptReliability!==null&&analysis.transcriptReliability!==undefined
+      ? `<div class="transcript-score-note">${analysis.transcriptConfirmed?'✓ 轉錄已由你確認':`轉錄可信度 ${analysis.transcriptReliability}/100`}</div>`
+      : '';
     const paceHtml=analysis.wordsPerMinute?`<div class="speaking-pace"><b>${analysis.wordsPerMinute} WPM</b><span>錄音 ${analysis.recordingDurationSec}s · 語速參考</span></div>`:'';
     host.className=`speaking-score ${tone}`;
     host.innerHTML=`<div class="speaking-score-head"><div><div class="support">回答比對分數</div><div class="speaking-score-number">${analysis.score}<span>/100</span></div></div><div class="speaking-score-summary">${analysis.score>=80?'內容完整，可以往更自然的表達前進。':analysis.score>=60?'主要意思有說到，再補齊缺少內容會更穩。':'目前回答和題目重點有落差，先把核心內容講完整。'}</div></div>
@@ -1022,8 +1125,8 @@
         <div><b>${b.structure}/20</b><span>回答結構</span></div>
         <div><b>${b.fluency}/15</b><span>流暢度線索</span></div>
       </div>
-      ${paceHtml}<div class="spoken-compare"><div><strong>你說的</strong><p>${esc(transcript)}</p></div><div><strong>需要調整</strong><ul>${analysis.suggestions.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div></div>
-      ${fixHtml}<div class="support score-disclaimer">此分數依語音轉文字後的內容、關鍵重點、長度、結構與 filler / 重複字計算；目前不評發音準確度或口音。</div>`;
+      ${reliabilityHtml}${paceHtml}<div class="spoken-compare"><div><strong>你說的</strong><p>${esc(transcript)}</p></div><div><strong>需要調整</strong><ul>${analysis.suggestions.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div></div>
+      ${fixHtml}<div class="support score-disclaimer">此分數只會在轉錄可信度足夠，或你已確認／修正辨識文字後寫入紀錄；依內容、關鍵重點、長度、結構與 filler / 重複字計算。目前不評發音準確度或口音。</div>`;
     $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(transcript)}<br><span class="support">關鍵內容覆蓋：約 ${analysis.keywordRatio}% · ${analysis.wordCount} words</span>`;
     $('feedbackTitle').textContent='系統已完成比對';
     $('feedbackNote').textContent='分數會直接納入這一題的訓練紀錄；Model answer 是參考，不需要逐字一樣。';
@@ -1164,7 +1267,9 @@
   }
   async function startRecordedAnswer(q,recognitionAvailable){
     stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); speechTranscript='';
-    session.currentMeta.scoringDone=false; session.currentMeta.answered=false;
+    session.currentMeta.scoringDone=false; session.currentMeta.answered=false; session.currentMeta.processingScore=false; session.currentMeta.pendingTranscript=null;
+    const scoreHost=$('speakingScoreHost'); if(scoreHost){scoreHost.className='speaking-score hidden';scoreHost.innerHTML='';}
+    const model=$('modelAnswer'); if(model)model.classList.remove('show');
     const btn=$('recognitionBtn');
     if(btn){btn.disabled=true;btn.textContent='● 啟動麥克風…';}
     const recorded=await startMediaRecording();
