@@ -360,6 +360,7 @@ function render(filter='all',q=''){
         <h3>需要持續修正</h3>
         ${day.corrections.map(c=>`<div class="correction"><div class="box bad"><b>容易混淆</b><div>${c[0]}</div></div><div class="box good"><b>正確 SA 思維</b><div>${c[1]}</div></div></div>`).join('')}
         <div class="memory"><b>必背</b><ul>${day.memory.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        ${day.archive?`<p class="archive-link"><a href="${encodeURI(day.archive)}" target="_blank" rel="noopener noreferrer">閱讀 Day ${day.day} 歷史課程補檔 ↗</a><small>Day 1–21 依現存紀錄補檔；未核實原題不冒充原題</small></p>`:''}
       </div>
     </article>`).join('');
   document.querySelector('#empty').style.display=items.length?'none':'block';
