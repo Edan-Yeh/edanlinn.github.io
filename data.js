@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-15",
-  "completedDays": 22,
-  "currentTrack": "Multi-cloud Container Selection / Banking Data Recovery",
+  "updatedAt": "2026-10-16",
+  "completedDays": 23,
+  "currentTrack": "Cloud × AI Solutions Architect / AI Tutor Reliability",
   "scores": [
     {
       "day": 1,
@@ -90,6 +90,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 22,
       "score": 78
+    },
+    {
+      "day": 23,
+      "score": 58
     }
   ],
   "roadmap": [
@@ -116,11 +120,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–22"
+        "value": "Day 1–23"
       },
       {
         "label": "目前主題",
-        "value": "Multi-cloud Containers / Azure Container Apps / GCP Cloud Run"
+        "value": "Cloud × AI / AI Tutor Reliability"
       },
       {
         "label": "已建立基礎",
@@ -3801,6 +3805,71 @@ window.CLOUD_SA_DATA = {
         "保留全部題目、選項、正解、作答、解析與實務案例，供日後查閱，不只保存錯題。"
       ],
       "archive": "docs/cloud-sa-day22-2026-10-15.md"
+    },
+    {
+      "day": 23,
+      "date": "2026-10-16",
+      "topic": "Cloud × AI Architecture Review / ECS Rollback / Azure Container Apps Revisions / GCP Cloud Run Traffic / AI Tutor Reliability",
+      "score": 58,
+      "status": "completed",
+      "answers": {
+        "Q1": "C",
+        "Q2": "1→C、2→A、3→B",
+        "Q3": "A, C, E",
+        "practice": "Vue 畫面>Spring Boot權限和帳號> Python FastAPI AI Tutor輔助驗證和降級\n\n真的有資料異動 Postgres\n\n新版發生錯誤時要先保留LOG資訊，先將版本回復到穩定版本，恢復完成在依據key值修復資料。"
+      },
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15,
+          "correct": "C"
+        },
+        "Q2": {
+          "earned": 0,
+          "max": 20,
+          "correct": "1→A、2→B、3→C"
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20,
+          "correct": "A、C、E"
+        },
+        "practice": {
+          "earned": 23,
+          "max": 45
+        }
+      },
+      "mastered": [
+        "辨識業務錯誤不能只靠 Health Check，應控制影響並調查交易",
+        "知道測試資料應使用合成或授權去識別資料",
+        "AI Tutor 與正式業務服務分離、保留模型/Prompt/Request ID",
+        "事故保留 Log、恢復穩定版本、以 Key 追查影響資料"
+      ],
+      "corrections": [
+        [
+          "Q2 三項跨雲發布機制配對錯誤",
+          "正確：AWS ECS → Deployment Circuit Breaker；Azure Container Apps → Multiple Revisions + Traffic Weights；GCP Cloud Run → Revision Tags + Traffic Migration。"
+        ],
+        [
+          "實作未具體說明 AI Timeout 降級",
+          "Spring Boot 呼叫 FastAPI 應設 Timeout、錯誤處理與降級，回退固定教材或非 AI 練習，核心考試/登入不依賴 AI 可用性。"
+        ],
+        [
+          "實作未明確保護正式成績寫入權限",
+          "AI Tutor 不得直接覆寫正式成績；Spring Boot 依 Auth/RBAC、既有評分規則與稽核流程寫 Postgres。"
+        ],
+        [
+          "實作資料修復需加上影響範圍與審核",
+          "保留 Request ID/版本與必要 Log，查明受影響紀錄後經核准修復與驗證，不預設整庫 PITR 或單純重跑。"
+        ]
+      ],
+      "memory": [
+        "ECS Deployment Circuit Breaker、Azure Container Apps Traffic Weights、Cloud Run Revision Tags/Traffic Migration：服務相似但並非一對一等價。",
+        "Cloud SA Academy：Vue → Spring Boot（Auth/RBAC）→ FastAPI AI Tutor；正式成績寫入由 Spring Boot 授權控制。",
+        "AI Timeout 降級到固定教材/非 AI 練習；保留 Request ID、模型/Prompt/Deployment 版本，避免 AI 失效影響核心功能。",
+        "Application Rollback 不會自動修正既有錯誤業務資料；依 Key、稽核紀錄及審核流程補正。"
+      ],
+      "archive": "docs/cloud-ai-day23-2026-10-16.md"
     }
   ],
   "cloudComparison": {
