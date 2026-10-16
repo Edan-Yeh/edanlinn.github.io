@@ -430,3 +430,24 @@ body.auth-locked .page,body.auth-locked .mobile-dock{filter:blur(5px);pointer-ev
   .review-mark-btn{width:100%}
   .review-mark-row .support{width:100%}
 }
+
+
+/* Transcript reliability gate */
+.transcript-review{border:1px solid #f0cf88;background:#fffaf0}
+.transcript-review-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.transcript-review-head h3{margin:8px 0 0;font-size:18px}
+.transcript-confidence{min-width:92px;text-align:right;font-size:34px;font-weight:900;line-height:1;color:#9b6213}
+.transcript-confidence span{font-size:13px;font-weight:800;margin-left:2px}
+.transcript-confidence small{display:block;margin-top:5px;font-size:10px;font-weight:700;color:var(--muted)}
+.transcript-review-reasons{margin:12px 0;padding:11px 13px;border-radius:13px;background:#fff;border:1px solid #efdcae;color:#6d531a;font-size:12px;line-height:1.55}
+.transcript-review-reasons ul{margin:0;padding-left:18px}
+.transcript-edit-label{display:block;margin:12px 0 6px;font-size:12px;font-weight:800;color:#344054}
+.transcript-edit-input{width:100%;resize:vertical;min-height:96px;padding:12px 13px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--text);font:inherit;line-height:1.6}
+.transcript-edit-input:focus{outline:none;border-color:#8295ea;box-shadow:0 0 0 3px rgba(36,71,216,.08)}
+.transcript-review-actions{margin:12px 0 8px}
+.transcript-score-note{display:inline-flex;margin:10px 0 0;padding:6px 9px;border-radius:999px;background:#eef2ff;color:#334eb5;font-size:11px;font-weight:800}
+@media(max-width:620px){
+  .transcript-review-head{align-items:flex-start}
+  .transcript-confidence{font-size:29px}
+  .transcript-review-actions .btn{width:100%}
+}
