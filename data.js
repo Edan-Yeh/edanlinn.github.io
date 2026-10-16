@@ -3048,7 +3048,8 @@ window.CLOUD_SA_DATA = {
         "ALB 管流量；ASG 管機器。",
         "Multi-AZ = HA；Read Replica = Read Scaling。",
         "每放一個 AWS Service，都要能回答：它解決哪個 Requirement / Failure？"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day01-2026-09-16.md"
     },
     {
       "day": 2,
@@ -3079,7 +3080,8 @@ window.CLOUD_SA_DATA = {
         "IGW = VPC 與 Internet 的 Gateway。",
         "NAT Gateway = 讓 Private Subnet 主動存取 Internet。",
         "Public 直接走 IGW；Private 先走 NAT。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day02-2026-09-17.md"
     },
     {
       "day": 3,
@@ -3105,7 +3107,8 @@ window.CLOUD_SA_DATA = {
       "memory": [
         "SG-to-SG 比整段 CIDR 更符合 Least Privilege。",
         "SG = Resource Level；NACL = Subnet Level。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day03-2026-09-18.md"
     },
     {
       "day": 4,
@@ -3134,7 +3137,8 @@ window.CLOUD_SA_DATA = {
       "memory": [
         "Role = 身分；Policy = 權限；Temporary Credentials = 短期憑證。",
         "IAM 決定可不可以做；Network 決定封包怎麼走。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day04-2026-09-20.md"
     },
     {
       "day": 5,
@@ -3163,7 +3167,8 @@ window.CLOUD_SA_DATA = {
       "memory": [
         "Caller 要有 AssumeRole 權；目標 Role 也要 Trust 你。",
         "Trust = 誰能進；Permission = 進去後能做什麼。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day05-2026-09-22.md"
     },
     {
       "day": 6,
@@ -3193,7 +3198,8 @@ window.CLOUD_SA_DATA = {
         "Authentication = 你是誰。",
         "Authorization = 你能做什麼。",
         "SCP 設上限，不直接授權。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day06-2026-09-23.md"
     },
     {
       "day": 7,
@@ -3223,7 +3229,8 @@ window.CLOUD_SA_DATA = {
         "ALB = 流量 + Health Check。",
         "ASG = Capacity + Replacement + Scale In / Out。",
         "Launch Template = EC2 Build Blueprint。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day07-2026-09-23.md"
     },
     {
       "day": 8,
@@ -3255,7 +3262,8 @@ window.CLOUD_SA_DATA = {
         "Scale Out = 負載高，提高 Desired。",
         "Warm-up = 新 Instance 出現不代表已可穩定服務。",
         "可預測流量先準備；不可預測流量再反應。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day08-2026-09-24.md"
     },
     {
       "day": 9,
@@ -3292,7 +3300,8 @@ window.CLOUD_SA_DATA = {
         "Lifecycle = 自動轉換 Storage Tier。",
         "S3 IAM Resource = ARN，不是 s3:// URI。",
         "CloudTrail 有開 ≠ S3 Data Events 一定有開。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day09-2026-09-26.md"
     },
     {
       "day": 10,
@@ -3329,7 +3338,8 @@ window.CLOUD_SA_DATA = {
         "RPO = 可以掉多少資料；RTO = 可以停多久。",
         "CRR = 跨 Region 非同步複寫。",
         "RTC 的技術 SLA ≠ 自動滿足更嚴格的 Business RPO。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day10-2026-09-29.md"
     },
     {
       "day": 11,
@@ -3367,7 +3377,8 @@ window.CLOUD_SA_DATA = {
         "資料搞壞 → Backup / PITR。",
         "Request Path 與 Replication Path 要分開畫。",
         "HA ≠ Backup。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day11-2026-09-29.md"
     },
     {
       "day": 12,
@@ -3409,7 +3420,8 @@ window.CLOUD_SA_DATA = {
         "Aurora Replica = Read Scaling + Failover Target。",
         "Single-Region HA ≠ Multi-Region DR。",
         "Business RPO 要用 replication lag + DR test 驗證。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day12-2026-09-30.md"
     },
     {
       "day": 13,
@@ -3451,7 +3463,8 @@ window.CLOUD_SA_DATA = {
         "RPO = 資料最多可落後多少；Lag 是證據。",
         "RTO = 災難後多久恢復服務，不是多久切回原 Region。",
         "RTO 越短，通常需要越多預先部署的 DR 資源。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day13-2026-10-01.md"
     },
     {
       "day": 14,
@@ -3501,7 +3514,8 @@ window.CLOUD_SA_DATA = {
         "ALB 是 Regional；跨 Region 切流量要 Global Routing。",
         "Active/Active 最難的常常是 Data consistency / conflict。",
         "RTO = 恢復服務，不是 Failback。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day14-2026-10-02.md"
     },
     {
       "day": 15,
@@ -3533,7 +3547,8 @@ window.CLOUD_SA_DATA = {
         "MGN = Server Rehost。",
         "DMS Full Load + CDC = Database Migration。",
         "Migration 成功 = Cutover + Validation 成功，不只是 Copy 完成。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day15-2026-10-05.md"
     },
     {
       "day": 16,
@@ -3572,7 +3587,8 @@ window.CLOUD_SA_DATA = {
         "Microservices ≠ Kubernetes。",
         "ECS / EKS = Orchestration；Fargate / EC2 = Compute。",
         "Modernization 的目標不是把架構變複雜，而是用值得的複雜度解決真正的問題。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day16-2026-10-06.md"
     },
     {
       "day": 17,
@@ -3603,7 +3619,8 @@ window.CLOUD_SA_DATA = {
         "ECS Service = 維持 Tasks 數量、健康狀態與長期服務。",
         "部署主線：Build → ECR → Task Definition → Service/Task → ALB。",
         "流量尖峰擴縮容主要由 ECS Service Auto Scaling 處理，不是修改 ECR 或 Dockerfile。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day17-2026-10-07.md"
     },
     {
       "day": 18,
@@ -3635,7 +3652,8 @@ window.CLOUD_SA_DATA = {
         "ALB Healthy ≠ Loan Transaction Healthy；必須搭配交易級 Smoke Test。",
         "Rolling Deployment 的 Task 啟停取決於 minimumHealthyPercent、maximumPercent 與健康檢查。",
         "Database Schema Migration 應考慮向前/向後相容與安全 Rollback。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day18-2026-10-08.md"
     },
     {
       "day": 19,
@@ -3658,7 +3676,8 @@ window.CLOUD_SA_DATA = {
         "Expand → Migrate → Contract：先擴充相容 Schema，再遷移資料及程式流量，最後移除舊結構。",
         "ECS Application Rollback 不等於 Database Schema Rollback。",
         "Rolling Deployment 期間必須支援新舊版本同時存取資料庫。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day19-2026-10-12.md"
     },
     {
       "day": 20,
@@ -3694,7 +3713,8 @@ window.CLOUD_SA_DATA = {
         "Test Gate 問測試是否通過；Security Gate 問是否符合資安政策；Approval Gate 問是否獲授權；Production Verification 問上線後交易是否正常。",
         "ECR 有弱點掃描不代表自動阻止部署；須明確設定 Pipeline Policy Gate。",
         "Expand–Migrate–Contract：先相容 Schema Expansion，再部署新版及遷移，確認安全後才 Contract。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day20-2026-10-13.md"
     },
     {
       "day": 21,
@@ -3736,7 +3756,8 @@ window.CLOUD_SA_DATA = {
         "ECS + Fargate 適合 AWS-native 容器化、無 Kubernetes 需求且希望減少主機管理；ECS + EC2 適合需要較多主機控制的情境。",
         "Rollback Application ≠ Rollback DB ≠ Repair Business Transactions；需個別驗證。",
         "跨雲學習建議：AWS 60%、Azure 25%、GCP 15%；以架構需求對照服務，不把 ECS、Azure Container Apps/AKS、Cloud Run/GKE 視為一對一等價。"
-      ]
+      ],
+      "archive": "docs/cloud-sa-day21-2026-10-14.md"
     },
     {
       "day": 22,
@@ -3787,5 +3808,12 @@ window.CLOUD_SA_DATA = {
     "note": "依架構能力比較；名稱相近不代表部署模型、權限、網路或 SLA 完全等價。",
     "updatedAt": "2026-10-15",
     "mappedTerms": 27
+  },
+  "archivePolicy": {
+    "version": 1,
+    "scope": "Day 1–22",
+    "historicalDays": "Day 1–21：依現存紀錄補檔，部分原始題目與作答無法核實，不冒充原題",
+    "fullArchiveFrom": "Day 22",
+    "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   }
 };
