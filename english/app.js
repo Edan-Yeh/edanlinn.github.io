@@ -1416,18 +1416,30 @@
       fallback:!!voice && actualLang.toLowerCase()!==lang.toLowerCase()
     };
   }
+  function normalizeTtsText(text){
+    return String(text||'')
+      .normalize('NFKC')
+      .replace(/[’‘‛]/g,"'")
+      .replace(/[“”]/g,'"')
+      .replace(/…/g,'...')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\s*\/\s*/g,', ')
+      .replace(/\s+/g,' ')
+      .trim();
+  }
   function speak(text,rate=1,lang='en-US'){
     if(!('speechSynthesis' in window))return null;
     speechSynthesis.cancel();
     const resolved=resolveVoice(lang);
-    const u=new SpeechSynthesisUtterance(text);
+    const spokenText=normalizeTtsText(text);
+    const u=new SpeechSynthesisUtterance(spokenText);
     u.lang=resolved.voice?.lang||lang;
     u.rate=clamp(Number(rate)||1,0.70,1.25);
     u.pitch=.98;
     u.volume=1;
     if(resolved.voice)u.voice=resolved.voice;
     speechSynthesis.speak(u);
-    return resolved;
+    return {...resolved,spokenText};
   }
 
   function exportProgress(){
