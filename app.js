@@ -170,6 +170,7 @@ renderExamples();
 
 
 
+const escapeQuiz=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function renderGlossary(query=''){
   const root=document.querySelector('#glossary-results');
   document.querySelector('#glossary-count').textContent=d.glossary.length+' 個';
@@ -236,7 +237,7 @@ const quizBank = [...d.quizBank, ...extendedQuizBank];
 const quizStateKey='edan-cloud-sa-quiz-progress-v1';
 const reviewIntervals=[1,3,7,14];
 let quizMode='all', currentQuestion=null, answered=false;
-const escapeQuiz=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 function localDay(time=Date.now()){const t=new Date(time);return [t.getFullYear(),String(t.getMonth()+1).padStart(2,'0'),String(t.getDate()).padStart(2,'0')].join('-');}
 function nextReviewDay(days){const t=new Date();t.setDate(t.getDate()+days);return localDay(t);}
 function loadQuizState(){
