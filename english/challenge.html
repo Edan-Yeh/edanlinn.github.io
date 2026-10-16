@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261016v17-1">
+  <link rel="stylesheet" href="styles.css?v=20261016v18-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -208,7 +208,7 @@
         <div class="field"><label for="sessionSizeSelect">每回合題數</label><select id="sessionSizeSelect"><option value="10">10 題（推薦）</option><option value="5">5 題快速版</option><option value="15">15 題加強版</option></select></div>
         <div class="field"><label for="speechRecognitionSelect">錄音回答 / 自動分析</label><select id="speechRecognitionSelect"><option value="auto">錄音＋瀏覽器／本機 Whisper 自動評分</option><option value="off">只錄音回放，不做自動分析</option></select></div>
       </div>
-      <div class="callout" style="margin-top:12px"><strong>語音注意：</strong>錄音完成後會先使用瀏覽器即時轉文字；若不可用，就改用本機 Whisper 轉文字，再依內容、完整度、結構、常見文法與語速提供評分與修正。第一次使用本機 Whisper 需要下載模型，之後瀏覽器會快取。錄音本身仍只保留在目前頁面，不會自動上傳。</div>
+      <div class="callout" style="margin-top:12px"><strong>語音注意：</strong>錄音完成後會先使用瀏覽器即時轉文字；若不可用，就改用本機 Whisper。系統會先檢查轉錄可信度，可信度不足時先讓你確認或修正文字，再進行內容、完整度、結構、常見文法與語速評分。第一次使用本機 Whisper 需要下載模型，之後瀏覽器會快取。錄音本身仍只保留在目前頁面，不會自動上傳。</div>
     </section>
 
     <section class="section">
@@ -321,9 +321,9 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261016v17-1"></script>
-<script src="auth.js?v=20261016v17-1"></script>
-<script src="question-bank.js?v=20261016v17-1"></script>
-<script src="app.js?v=20261016v17-1"></script>
+<script src="supabase-config.js?v=20261016v18-1"></script>
+<script src="auth.js?v=20261016v18-1"></script>
+<script src="question-bank.js?v=20261016v18-1"></script>
+<script src="app.js?v=20261016v18-1"></script>
 </body>
 </html>
