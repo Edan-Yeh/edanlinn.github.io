@@ -406,3 +406,16 @@ body.auth-locked .page,body.auth-locked .mobile-dock{filter:blur(5px);pointer-ev
   .top-actions #accountBtn{display:inline-flex}
   .account-panel-card{left:10px;right:10px;top:auto;bottom:10px;width:auto;max-height:78vh}
 }
+
+
+/* Model answer audio */
+.model-answer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.model-answer-audio{display:flex;gap:7px;flex-wrap:wrap}
+.model-audio-btn{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+.model-audio-btn:hover{background:rgba(255,255,255,.14)}
+.model-audio-status{margin-top:8px;color:#b8c5e6;font-size:11px;line-height:1.45}
+@media(max-width:620px){
+  .model-answer-head{align-items:flex-start;flex-direction:column}
+  .model-answer-audio{width:100%}
+  .model-audio-btn{flex:1;min-height:40px}
+}
