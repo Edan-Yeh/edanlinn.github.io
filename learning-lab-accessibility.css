@@ -34,3 +34,35 @@ a,button,summary{outline-offset:3px}
 .quiz-options button:focus-visible{outline:3px solid #3b72e9!important}
 @media(max-width:640px){.lab-intro{display:block;padding:18px}.lab-intro a{display:inline-block;margin-top:12px}.lab-intro h2{font-size:23px}}
 @media(prefers-contrast:more){.lab-intro,.portfolio-project,.ai-feature{border-color:#8598b6!important}button,a{font-weight:750}}
+
+/* v2 — screenshot-verified contrast fixes for Daily Training white cards */
+#daily{color:#18283f!important}
+#daily .day{background:#fff!important;color:#18283f!important;border:1px solid #d9e2ee!important}
+#daily .day-head{background:#fff!important;color:#17283e!important}
+#daily .day-head h2{color:#17283e!important;-webkit-text-fill-color:#17283e!important;font-size:clamp(16px,1.35vw,20px)!important;font-weight:750!important;line-height:1.5!important;letter-spacing:-.018em!important;text-shadow:none!important;opacity:1!important}
+#daily .day-head .muted{color:#5b6c82!important;-webkit-text-fill-color:#5b6c82!important;opacity:1!important;font-size:13px!important}
+#daily .day-num{color:#5b6b81!important;-webkit-text-fill-color:#5b6b81!important}
+#daily .day-num b{color:#14243a!important;-webkit-text-fill-color:#14243a!important}
+#daily .score,#daily .score.mid,#daily .score.high{color:#2458ad!important;-webkit-text-fill-color:#2458ad!important;font-size:18px!important;opacity:1!important}
+#daily .day-body{background:#fff!important;color:#1a2b43!important}
+#daily .day-body>h3{color:#1d304b!important;-webkit-text-fill-color:#1d304b!important;font-weight:750!important;font-size:18px!important;margin:16px 0!important;opacity:1!important}
+#daily .correction{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+#daily .correction .box{background:#f8faff!important;color:#243650!important;border:1px solid #dce5f0!important;box-shadow:none!important;padding:17px!important;line-height:1.7!important}
+#daily .correction .box.bad{border-left:4px solid #c98b3e!important}
+#daily .correction .box.good{border-left:4px solid #3176c9!important}
+#daily .correction .box b{color:#1d3556!important;-webkit-text-fill-color:#1d3556!important;display:block;margin-bottom:6px;font-size:14px!important}
+#daily .correction .box div{color:#263b56!important;-webkit-text-fill-color:#263b56!important;font-size:14px!important;opacity:1!important}
+#daily .chips .chip{background:#edf4ff!important;color:#244e8b!important;-webkit-text-fill-color:#244e8b!important;border:1px solid #dce7f7!important;font-size:12px!important;line-height:1.6!important}
+#daily .memory,#daily .memory li,#daily .memory b{color:#203650!important;-webkit-text-fill-color:#203650!important}
+#daily .memory{background:#f7faff!important;border:1px solid #e1eaf6!important;border-radius:14px!important;padding:16px!important}
+#daily .archive-link{background:#eff5ff!important;color:#1f4f9e!important}
+#daily .archive-link a{color:#1f56b3!important;-webkit-text-fill-color:#1f56b3!important}
+#daily .archive-link small{color:#506783!important;-webkit-text-fill-color:#506783!important}
+#daily .toolbar .search{background:#fff!important;color:#1c2c43!important;border:1px solid #cfdbe9!important}
+#daily .toolbar .search::placeholder{color:#66778d!important;opacity:1!important}
+#daily .filter button{background:#f6f9fd!important;color:#243d5e!important;-webkit-text-fill-color:#243d5e!important;border:1px solid #d6e0ed!important}
+#daily .filter button.active{background:#e9f1ff!important;color:#1b50ad!important;-webkit-text-fill-color:#1b50ad!important;border-color:#a7c1ee!important}
+#daily :is(input,select,button){font-size:14px!important}
+#daily :is(input,select){min-height:42px}
+#daily .day-head:focus-visible{outline:3px solid #3678e6!important;outline-offset:-4px}
+@media(max-width:720px){#daily .day-head{grid-template-columns:55px minmax(0,1fr) auto!important;gap:9px!important;padding:15px!important}#daily .day-head h2{font-size:15px!important}#daily .score{font-size:15px!important}#daily .correction{grid-template-columns:1fr!important}#daily .day-body{padding:0 14px 18px!important}}
