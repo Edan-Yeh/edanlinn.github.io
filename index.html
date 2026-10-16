@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="league.css?v=20261003-battle-v1">
 <link rel="stylesheet" href="moba.css?v=20261004-cards-v1">
 <link rel="stylesheet" href="learning-campaign.css?v=20261004-cards-v1">
-<link rel="stylesheet" href="architect-ios.css?v=20261016-v1">
+<link rel="stylesheet" href="architect-ios.css?v=20261016-v2">
 </head>
 <body>
 <aside class="sidebar" aria-label="學習導航">
@@ -28,13 +28,14 @@
     <button class="side-link" data-section="ladder"><span data-icon="trophy"></span><span>天梯</span></button>
     <button class="side-link" data-section="quiz"><span data-icon="quiz"></span><span>挑戰</span></button>
     <button class="side-link" data-section="skill-map"><span data-icon="skill-map"></span><span>能力地圖</span></button>
+    <a class="side-link side-anchor" href="#portfolio"><span data-icon="examples"></span><span>作品集</span></a>
     <button class="side-link" data-section="examples"><span data-icon="examples"></span><span>案例</span></button>
     <button class="side-link" data-section="glossary"><span data-icon="glossary"></span><span>知識庫</span></button>
     <button class="side-link" data-section="daily"><span data-icon="daily"></span><span>紀錄</span></button>
   </nav>
   <div class="side-bottom"><span><i class="live-dot"></i> YOUR NEXT CHAPTER</span><b>Solutions Architect</b><p>每天一小步，建立架構判斷力。</p></div>
 </aside>
-<header class="top"><div class="shell"><div class="brand">Architecture workspace / 學習總覽<small>AWS · Azure · Google Cloud · Applied AI</small></div><div class="nav"><a href="#modules">學習模組</a><button id="expand">展開模組</button><button id="collapse">收合模組</button><div class="top-profile"><span class="avatar">EY</span><div class="profile-name">Edan Yeh<small>Architect in progress</small></div></div></div></div></header>
+<header class="top"><div class="shell"><div class="brand">Architecture workspace / 學習總覽<small>AWS · Azure · Google Cloud · Applied AI</small></div><div class="nav"><a href="#portfolio">作品</a><a href="#learning-method">學習方法</a><a href="#modules">學習模組</a><button id="expand">展開模組</button><button id="collapse">收合模組</button><div class="top-profile"><span class="avatar">EY</span><div class="profile-name">Edan Yeh<small>Architect in progress</small></div></div></div></div></header>
 <main class="shell">
 <section class="hero" id="dashboard">
   <div class="hero-main">
@@ -42,6 +43,14 @@
     <div class="rank-card"><div class="rank-top"><span>ARCHITECT JOURNEY</span><span class="rank-level" id="game-level">LV. 01</span></div><div class="rank-emblem" data-icon="skill-map"></div><div class="rank-title">Architecture Explorer</div><div class="rank-subtitle">用每一次練習，解鎖下一個等級</div><div class="xp-labels"><span id="game-xp-label">0 / 200 XP</span><span id="game-xp-next">再 200 XP 升級</span></div><div class="xp-meter" id="game-xp-meter" role="progressbar" aria-label="距離下一等級的經驗值" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0"><i id="game-xp-fill"></i></div><div class="rank-foot"><span id="game-xp">0 XP</span><span>遊戲等級 · 非能力評分</span></div></div>
   </div>
   <div class="stats"><div class="stat"><span class="muted">完成訓練</span><b id="completed">-</b><small>每日訓練紀錄</small></div><div class="stat"><span class="muted">訓練平均分數</span><b id="avg">-</b><small>依已記錄的每日分數</small></div><div class="stat"><span class="muted">目前主題</span><b id="track">-</b><small>主線進度</small></div><div class="stat"><span class="muted">內容更新日期</span><b id="updated">-</b><small>題庫與訓練內容</small></div></div><div id="roadmap" class="track"></div>
+</section>
+<section class="portfolio-showcase" id="portfolio" aria-labelledby="portfolio-title">
+<div class="portfolio-heading"><div><div class="section-kicker">SELECTED ENGINEERING WORK</div><h2 id="portfolio-title">Architecture Portfolio</h2><p class="muted">把學習轉化為可審查的設計決策、實作計畫與工程證據。清楚區分已完成與待驗證。</p></div><a class="portfolio-text-link" href="https://github.com/Edan-Yeh/edanlinn.github.io/tree/main/docs/architecture" target="_blank" rel="noopener noreferrer">Architecture Documents ↗</a></div>
+<div class="portfolio-grid">
+<article class="portfolio-project featured"><div class="portfolio-project-meta"><span>FEATURED PROJECT / 01</span><span class="portfolio-status">Design documented</span></div><h3>Cloud SA Academy · AI Tutor</h3><p>既有 Vue、Spring Boot、Postgres 與 NAS Docker；規劃將 AI 推論隔離為 Python FastAPI，確保正式成績不受模型輸出影響。優先零成本與可降級設計。</p><div class="portfolio-tags"><span>Java</span><span>Vue</span><span>Postgres</span><span>FastAPI · proposed</span><span>Reliability</span></div><div class="portfolio-project-links"><a href="docs/architecture/ai-tutor-system-design.md">System Design ↗</a><a href="docs/architecture/adr-001-fastapi-boundary.md">ADR-001 ↗</a></div></article>
+<article class="portfolio-project"><div class="portfolio-project-meta"><span>ENGINEERING EVIDENCE / 02</span><span class="portfolio-status muted-status">Verification pending</span></div><h3>Reliability & Quality Gates</h3><p>以可重現的測試驗證 AI Timeout、Fallback、正式成績權限、部署回復與模型輸出品質。不以設計稿取代實測數據。</p><div class="portfolio-metric-grid"><div><b>—</b><small>API P95 latency</small></div><div><b>—</b><small>Fallback success</small></div><div><b>—</b><small>Answer quality</small></div></div><a class="portfolio-text-link" href="docs/architecture/verification-plan.md">查看驗證計畫 ↗</a></article>
+</div>
+<div class="portfolio-principles"><span>DESIGN PRINCIPLES</span><strong>Reliability by design</strong><strong>Security boundaries</strong><strong>Evidence over claims</strong><strong>Cost-aware architecture</strong></div>
 </section>
 <div class="dashboard-heading"><h2>學習儀表板</h2><span id="game-date"></span></div>
 <div class="overview-grid">
@@ -62,6 +71,10 @@
 </div>
 <section class="path-panel"><div class="panel-head"><h3>你的架構學習路線</h3><small>階段狀態 · 依每日訓練整理</small></div><p class="panel-sub" id="game-current-topic"></p><div id="game-domain-path" class="domain-path"></div></section>
 
+<section class="learning-method-panel" id="learning-method" aria-labelledby="learning-method-title"><div class="section-kicker">LEARN · APPLY · VERIFY</div><h2 id="learning-method-title">從理解到可獨立設計</h2><p class="muted">每個 AI 單元都先給背景知識與完整範例，再提供不同情境的題目；答題後才公開該題正解。</p>
+<div class="method-grid"><div><span>01</span><b>Concept</b><p>核心定義與白話說明</p></div><div><span>02</span><b>Worked Example</b><p>完整架構、流程與示範</p></div><div><span>03</span><b>Trade-offs</b><p>成本、延遲、安全與替代方案</p></div><div><span>04</span><b>Assessment</b><p>新情境題與短實作</p></div><div><span>05</span><b>Evidence</b><p>批改、補強與可驗證成果</p></div></div>
+<details class="ai-detail"><summary>完整示範｜AI Tutor 逾時，如何設計不影響正式考試的降級？</summary><div class="ai-detail-body"><p><b>情境：</b>學生送出正式測驗後請求 AI 解說，但推論服務卡住。核心需求是成績先由既有規則保存，AI 解說可延遲或降級。</p><p><b>流程：</b>Vue 提交測驗 → Spring Boot 驗證答案並依正式規則寫入 Postgres → 另行請求 FastAPI 產生解說 → 達到設定 Timeout 時顯示固定教材，不影響原本已保存的分數。</p><p><b>取捨：</b>較短 Timeout 可降低等待但提高降級比例；較長 Timeout 增加完成機會卻拖慢體驗。應先用實測延遲決定門檻，而不是假設所有 AI 呼叫都能在 5 秒內完成。</p><p><b>驗證：</b>模擬 FastAPI 無回應，檢查測驗分數不變、固定解說可用、Request ID 與 Fallback 原因可追蹤。</p><p><b>下一步練習：</b>若 FastAPI 回傳格式錯誤而不是 Timeout，應如何驗證輸出並降級？請自行描述方案；此處不計入正式 Day 分數。</p></div></details>
+</section>
 <section id="ai-foundations" class="ai-foundations" aria-labelledby="ai-foundations-title">
  <div class="section-kicker">ENGINEERING FIELD NOTES · AI FOUNDATIONS</div>
  <div class="ai-foundations-head"><div><h2 id="ai-foundations-title">AI 系統設計筆記</h2><p class="muted">先理解概念、看得懂架構，再用案例練習決策。這裡是教學參考，不是當日正式考題。</p></div><span class="ai-lesson-label">FOUNDATION / 01</span></div>
