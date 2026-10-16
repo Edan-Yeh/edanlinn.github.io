@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="styles.css?v=20261016v13-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
-<body>
+<body class="auth-locked">
 <div class="page">
   <header class="topbar">
     <div class="topbar-inner">
@@ -22,8 +22,10 @@
         <div class="brand-text"><b>EDAN’S ENGLISH COACH</b><small>CAREER ENGLISH · INTERVIEW · REAL WORK</small></div>
       </div>
       <div class="top-actions">
+        <span class="cloud-sync-status" id="cloudSyncStatus">雲端同步</span>
         <button class="btn ghost" id="exportReportBtn" type="button">匯出學習報告</button>
         <button class="btn ghost" id="settingsBtn" type="button">設定</button>
+        <button class="btn ghost" id="accountBtn" type="button">登入</button>
       </div>
     </div>
   </header>
@@ -210,20 +212,118 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>最近回合</h2><p>不同裝置目前不會自動同步；可用 JSON 備份。</p></div></div>
+      <div class="section-head"><div><h2>最近回合</h2><p>登入後會同步到雲端；換裝置或網站更新都會保留學習紀錄。</p></div></div>
       <div class="panel history" id="historyList"></div>
     </section>
 
-    <footer class="footer"><span>Edan English Adaptive Lab · local-first</span><span class="version" id="versionText"></span></footer>
+    <footer class="footer"><span>Edan English Coach · account + cloud sync</span><span class="version" id="versionText"></span></footer>
   </main>
 </div>
+<div class="auth-gate" id="authGate">
+  <div class="auth-card">
+    <div class="auth-brand"><div class="brand-mark">E</div><div><b>EDAN’S ENGLISH COACH</b><span>安全登入後，學習進度會同步到雲端。</span></div></div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-auth-tab="login" type="button">登入</button>
+      <button class="auth-tab" data-auth-tab="register" type="button">註冊</button>
+      <button class="auth-tab" data-auth-tab="forgot" type="button">忘記密碼</button>
+    </div>
+    <div class="auth-message" id="authMessage"></div>
+
+    <section data-auth-view="login">
+      <form class="auth-form" id="loginForm">
+        <label>Email<input id="loginEmail" type="email" autocomplete="email" required></label>
+        <label>密碼<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+        <button class="btn primary" type="submit">登入</button>
+      </form>
+    </section>
+
+    <section class="hidden" data-auth-view="register">
+      <form class="auth-form" id="registerForm">
+        <label>顯示名稱<input id="registerName" type="text" autocomplete="name" placeholder="Edan"></label>
+        <label>Email<input id="registerEmail" type="email" autocomplete="email" required></label>
+        <label>密碼<input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+        <div class="support">至少 8 個字元。註冊後需要先完成信箱驗證，再設定 TOTP 雙重驗證。</div>
+        <button class="btn primary" type="submit">建立帳號</button>
+      </form>
+    </section>
+
+    <section class="hidden" data-auth-view="forgot">
+      <form class="auth-form" id="forgotForm">
+        <label>Email<input id="forgotEmail" type="email" autocomplete="email" required></label>
+        <button class="btn primary" type="submit">寄送重設密碼信</button>
+      </form>
+    </section>
+
+    <section class="hidden" data-auth-view="verify-email">
+      <div class="auth-center">
+        <div class="auth-icon">✉️</div>
+        <h2>請先驗證信箱</h2>
+        <p id="verifyEmailText">請查看驗證信。</p>
+        <button class="btn secondary" id="resendVerificationBtn" type="button">重新寄送驗證信</button>
+      </div>
+    </section>
+
+    <section class="hidden" data-auth-view="reset-password">
+      <form class="auth-form" id="resetPasswordForm">
+        <h2>設定新密碼</h2>
+        <label>新密碼<input id="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+        <button class="btn primary" type="submit">更新密碼</button>
+      </form>
+    </section>
+
+    <section class="hidden" data-auth-view="mfa-enroll">
+      <div id="mfaEnrollIntro" class="auth-center">
+        <div class="auth-icon">🔐</div>
+        <h2>設定雙重驗證</h2>
+        <p>使用 Google Authenticator、Microsoft Authenticator、1Password 等 App。這一步完成後，之後登入會需要 6 位數驗證碼。</p>
+        <button class="btn primary" id="startMfaEnrollBtn" type="button">開始設定 2FA</button>
+      </div>
+      <div class="hidden" id="mfaEnrollSetup">
+        <h2>掃描 QR Code</h2>
+        <div class="mfa-qr-wrap"><img id="mfaQr" alt="TOTP QR Code"></div>
+        <div class="support">無法掃描時，可手動輸入：</div>
+        <code class="mfa-secret" id="mfaSecret"></code>
+        <form class="auth-form" id="mfaEnrollForm">
+          <label>Authenticator 6 位數驗證碼<input id="mfaEnrollCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
+          <button class="btn primary" type="submit">啟用雙重驗證</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="hidden" data-auth-view="mfa-challenge">
+      <form class="auth-form" id="mfaChallengeForm">
+        <div class="auth-icon">🔐</div>
+        <h2>雙重驗證</h2>
+        <p id="mfaChallengeHint">請輸入 Authenticator App 的驗證碼。</p>
+        <label>6 位數驗證碼<input id="mfaChallengeCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label>
+        <button class="btn primary" type="submit">驗證並進入</button>
+      </form>
+    </section>
+  </div>
+</div>
+
+<div class="account-panel hidden" id="accountPanel">
+  <div class="account-panel-backdrop" id="accountPanelBackdrop"></div>
+  <aside class="account-panel-card">
+    <div class="account-panel-head"><div><span class="support">目前帳號</span><h3 id="accountEmail">尚未登入</h3></div><button class="btn ghost" id="closeAccountPanelBtn" type="button">關閉</button></div>
+    <div class="account-row"><span>學習資料</span><b>Supabase 雲端同步</b></div>
+    <div class="account-row"><span>信箱驗證</span><b>已驗證後才能使用</b></div>
+    <div class="account-row"><span>雙重驗證</span><b id="accountMfaStatus">檢查中…</b></div>
+    <div class="callout"><strong>資料保護：</strong>每個帳號只能讀寫自己的學習紀錄；啟用 2FA 後，資料庫也要求 AAL2 才能存取。</div>
+    <button class="btn bad account-signout" id="signOutBtn" type="button">登出</button>
+  </aside>
+</div>
+
 <nav class="mobile-dock" aria-label="手機快速練習">
   <button class="mobile-dock-btn active start-mode" data-nav="challenge" data-mode="adaptive" data-size="5" type="button" aria-current="page"><span>⚡</span>5題挑戰</button>
   <button class="mobile-dock-btn start-mode" data-nav="listening" data-mode="listening" data-size="5" type="button"><span>🎧</span>聽力</button>
   <button class="mobile-dock-btn" id="mobileVocabBtn" data-nav="vocab" type="button"><span>🔤</span>單字</button>
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
-<script src="question-bank.js?v=20261016v13-1"></script>
-<script src="app.js?v=20261016v13-1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=20261016v14-1"></script>
+<script src="auth.js?v=20261016v14-1"></script>
+<script src="question-bank.js?v=20261016v14-1"></script>
+<script src="app.js?v=20261016v14-1"></script>
 </body>
 </html>
