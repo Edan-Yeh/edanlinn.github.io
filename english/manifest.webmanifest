@@ -1,6 +1,6 @@
 {
-  "name": "Edan English Adaptive Lab",
-  "short_name": "English Lab",
+  "name": "Edan English Coach",
+  "short_name": "Edan Coach",
   "start_url": "./challenge.html",
   "display": "standalone",
   "background_color": "#f6f7fb",
