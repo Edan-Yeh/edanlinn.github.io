@@ -19,6 +19,7 @@
     vocabKnown: {},
     vocabStats: {},
     weaknessCounts: {},
+    errorMemory: {},
     sessions: [],
     completedDates: [],
     settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
@@ -73,6 +74,90 @@
     }
     if(status) status.textContent=state.completedDates.includes(todayKey())?'✓ 今天已完成至少 1 個完整單元':'今天尚未完成完整單元';
   }
+  const errorLabels={
+    tense_current:'現在工作時態',
+    fragment:'句子不完整',
+    repetition:'重複／卡句',
+    preposition:'介系詞搭配',
+    plural:'單複數',
+    incomplete:'資訊沒說完',
+    pace_slow:'口說速度偏慢',
+    pace_fast:'口說速度偏快',
+    missing_content:'關鍵內容不足',
+    structure:'回答結構'
+  };
+  function classifyCorrectionNote(note=''){
+    const n=String(note);
+    if(/現在進行式|will work|時態/.test(n)) return 'tense_current';
+    if(/重複|破碎/.test(n)) return 'repetition';
+    if(/介系詞|搭配 in|communicate with|depend on|公司前/.test(n)) return 'preposition';
+    if(/複數/.test(n)) return 'plural';
+    if(/不是完整句|資訊不完整|語意不完整/.test(n)) return 'incomplete';
+    if(/完整句/.test(n)) return 'fragment';
+    if(/結構/.test(n)) return 'structure';
+    return 'fragment';
+  }
+  function rememberError(key,{example='',corrected='',note=''}={}){
+    if(!key)return;
+    const current=state.errorMemory[key]||{count:0,lastSeen:'',example:'',corrected:'',note:''};
+    current.count++;
+    current.lastSeen=todayKey();
+    if(example) current.example=example;
+    if(corrected) current.corrected=corrected;
+    if(note) current.note=note;
+    state.errorMemory[key]=current;
+  }
+  function rememberSpeakingErrors(q,transcript,analysis,correction){
+    (correction?.notes||[]).forEach(note=>rememberError(classifyCorrectionNote(note),{example:transcript,corrected:correction.corrected,note}));
+    if((analysis?.missing||[]).length) rememberError('missing_content',{example:transcript,corrected:correction?.natural||'',note:'回答缺少題目關鍵內容'});
+    if((analysis?.structure||analysis?.breakdown?.structure||20)<12) rememberError('structure',{example:transcript,corrected:correction?.natural||'',note:'回答結構需要更清楚'});
+    if(analysis?.wordsPerMinute && analysis.wordsPerMinute<65) rememberError('pace_slow',{example:transcript,note:`約 ${analysis.wordsPerMinute} WPM`});
+    if(analysis?.wordsPerMinute && analysis.wordsPerMinute>180) rememberError('pace_fast',{example:transcript,note:`約 ${analysis.wordsPerMinute} WPM`});
+  }
+  function recentSpeakingAnswers(limit=12){
+    return state.sessions.flatMap(s=>(s.answers||[]).map(a=>({...a,sessionDate:s.date}))).filter(a=>Number.isFinite(a.extra?.systemScore)).slice(-limit);
+  }
+  function interviewReadiness(){
+    const answers=recentSpeakingAnswers(10);
+    const scoreAvg=answers.length?answers.reduce((n,a)=>n+a.extra.systemScore,0)/answers.length:55;
+    const skillAvg=((state.skills.interview||1)+(state.skills.speaking||1))/2;
+    const skillScore=clamp(((skillAvg-1)/4)*100,0,100);
+    const practice=Math.min(100,state.completedDates.slice(-30).length*8);
+    return Math.round(clamp(scoreAvg*.62+skillScore*.28+practice*.10,20,95));
+  }
+  function topErrorEntries(limit=3){
+    return Object.entries(state.errorMemory||{}).sort((a,b)=>(b[1]?.count||0)-(a[1]?.count||0)).slice(0,limit);
+  }
+  function coachRecommendation(){
+    const weak=topWeakness();
+    const err=topErrorEntries(1)[0]?.[0]||null;
+    if(weak==='sound'||weak==='intent') return {mode:'listening',size:5,label:'先做 5 題聽力',reason:'目前最需要提升的是「聽到問題後快速抓意圖」。'};
+    if(weak==='output'||weak==='structure'||weak==='fluency'||err==='pace_slow') return {mode:'speaking',size:3,label:'先做 3 題口說',reason:'目前最值得投資的是把你已經知道的內容更快、更完整地說出口。'};
+    if(weak==='usage'||err==='preposition'||err==='tense_current') return {mode:'adaptive',size:5,label:'先做 5 題精準挑戰',reason:'今天優先修正常出現的句型與用法，同時保留少量聽力。'};
+    return {mode:'mock',size:8,label:'做一輪 MongoDB Mock',reason:'目前沒有單一弱點特別突出，直接用完整面試檢查最有效。'};
+  }
+  function renderCoachBrief(){
+    const readiness=$('readinessValue');
+    const readinessNote=$('readinessNote');
+    const focus=$('coachFocusText');
+    const errors=$('errorMemoryList');
+    const rec=$('coachRecommendationText');
+    if(readiness){
+      const r=interviewReadiness();
+      readiness.textContent=`${r}%`;
+      readinessNote.textContent=r>=80?'可以開始追求自然度與更難 follow-up。':r>=65?'已能完成多數回答，下一步是穩定與速度。':r>=50?'內容有基礎，但面試時仍容易因英文讓實力打折。':'目前先把短回答、聽力與核心句型打穩。';
+    }
+    const weak=topWeakness();
+    const topErr=topErrorEntries(1)[0];
+    if(focus) focus.textContent=weak?`主要弱點：${weaknessLabels[weak]||weak}${topErr?`；常見錯誤：${errorLabels[topErr[0]]||topErr[0]}`:''}`:'完成更多錄音後，我會從你的真實表現找出最值得補強的地方。';
+    if(errors){
+      const entries=topErrorEntries(3);
+      errors.innerHTML=entries.length?entries.map(([k,v])=>`<div class="coach-error-item"><b>${esc(errorLabels[k]||k)}</b><span>出現 ${v.count} 次${v.note?` · ${esc(v.note)}`:''}</span></div>`).join(''):'<div class="support">目前還沒有累積足夠的個人口說錯誤。完成幾題錄音後，這裡會開始只記你的錯誤。</div>';
+    }
+    const recommendation=coachRecommendation();
+    if(rec) rec.textContent=recommendation.reason;
+    const btn=$('coachStartBtn'); if(btn){btn.textContent=recommendation.label;btn.dataset.mode=recommendation.mode;btn.dataset.size=String(recommendation.size);}
+  }
   const esc = (s='') => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
   function loadState(){
@@ -93,6 +178,7 @@
         vocabKnown: parsed.vocabKnown||{},
         vocabStats: parsed.vocabStats||{},
         weaknessCounts: parsed.weaknessCounts||{},
+        errorMemory: parsed.errorMemory||{},
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         settings:migratedSettings,
@@ -151,6 +237,7 @@
     renderSkills();
     renderHistory();
     renderDailyCoach();
+    renderCoachBrief();
   }
 
   function renderSkills(){
@@ -567,6 +654,10 @@
     if(q.level > skill + 1.15) w *= .25;
     if(q.level < skill - 1.65) w *= .45;
     if(mode==='listening' && q.skill==='listening') w *= 1.4;
+    const personalWeak=topWeakness();
+    if((personalWeak==='sound'||personalWeak==='intent') && q.skill==='listening') w*=1.35;
+    if((personalWeak==='output'||personalWeak==='structure'||personalWeak==='fluency') && q.type==='speaking') w*=1.35;
+    if(personalWeak==='usage' && (q.skill==='chunks'||q.skill==='rescue')) w*=1.25;
     return Math.max(.05,w);
   }
 
@@ -579,8 +670,20 @@
   }
 
   const MOCK_SEQUENCE_IDS=['mdb-l1-006','mdb-l1-010','mdb-l2-010','mdb-l2-004','mdb-l2-005','pro-l3-001','pro-l3-009','pro-l3-010'];
+  function buildPersonalizedMock(size){
+    const anchors=['mdb-l1-006','mdb-l1-010','pro-l3-009','pro-l3-010'];
+    const anchorQs=anchors.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
+    const candidates=CONTENT.questions.filter(q=>q.type==='speaking'&&!anchors.includes(q.id));
+    const priority=q=>{
+      const st=state.qstats[q.id]||{};
+      return (st.wrong||0)*4+(st.hints||0)*2+(st.lastQuality!==undefined&&st.lastQuality!==null&&st.lastQuality<=1?5:0)+(st.seen?0:1);
+    };
+    const middle=[...candidates].sort((a,b)=>priority(b)-priority(a)).slice(0,Math.max(0,size-anchorQs.length));
+    const ordered=[anchorQs[0],anchorQs[1],...middle,anchorQs[2],anchorQs[3]].filter(Boolean);
+    return ordered.slice(0,size);
+  }
   function buildSessionQuestions(mode,size){
-    if(mode==='mock') return MOCK_SEQUENCE_IDS.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean).slice(0,size);
+    if(mode==='mock') return buildPersonalizedMock(size);
     let pool = candidatePool(mode);
     const selected=[];
     while(selected.length<size && pool.length){
@@ -720,6 +823,9 @@
     if(enoughText()){
       const analysis=analyzeSpeakingAnswer(transcript,q);
       applyRecordingMetrics(analysis);
+      const correction=buildSpokenCorrection(transcript,q);
+      rememberSpeakingErrors(q,transcript,analysis,correction);
+      save();
       renderSpeakingScore(analysis,q,transcript);
       if(!session.currentMeta.answered){
         session.currentMeta.answered=true;
@@ -1132,7 +1238,9 @@
     const lines=[
       '# Edan English Learning Report',`- Exported: ${new Date().toLocaleString('zh-TW',{hour12:false})}`,`- Content version: ${CONTENT.contentVersion}`,`- XP: ${state.xp}`,`- Streak: ${streak()} days`,'',
       '## Skill profile',...skillKeys.map(k=>`- ${skillLabels[k]}: L${(state.skills[k]||1).toFixed(2)}`),'',
+      '## Career interview readiness',`- Readiness: ${interviewReadiness()}%`,'',
       '## Weakness profile',...Object.entries(state.weaknessCounts||{}).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${weaknessLabels[k]||k}: ${v}`),'',
+      '## Personal error memory',...topErrorEntries(10).map(([k,v])=>`- ${errorLabels[k]||k}: ${v.count} times | last=${v.lastSeen||''} | note=${v.note||''} | example=${v.example||''} | corrected=${v.corrected||''}`),'',
       '## Weak / review-priority questions',...(weakQuestions.length?weakQuestions.map(({q,s},i)=>`${i+1}. [${q.id}] L${q.level} ${q.text}\n   - seen=${s.seen}, correct=${s.correct}, wrong=${s.wrong}, hints=${s.hints}, listens=${s.listens}, lastQuality=${s.lastQuality}, due=${s.due}`):['- No answered questions yet.']),'',
       '## Recent sessions',...(recent.length?recent.map(s=>`- ${s.date} | ${s.title} | ${s.score}% | weakest: ${s.weakest}`):['- No completed sessions yet.']),'',
       '## Recent speaking auto-scores',...(speakingRecent.length?speakingRecent.map(a=>`- ${a.sessionDate} | [${a.id}] ${a.extra.systemScore}/100 | transcript: ${a.extra.transcript||''} | suggestions: ${(a.extra.suggestions||[]).join(' / ')}`):['- No auto-scored speaking answers yet.']),'',
@@ -1172,6 +1280,7 @@
     $('dailyVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');startVocabPractice(recommendedVocabMode(),8);});
     $('dailyChunksBtn')?.addEventListener('click',()=>{setMobileDockActive('chunks');startChunkUnit();});
     $('dailySpeakingBtn')?.addEventListener('click',()=>startSession('speaking',2));
+    $('coachStartBtn')?.addEventListener('click',e=>startSession(e.currentTarget.dataset.mode||'adaptive',Number(e.currentTarget.dataset.size)||5));
     $('vocabFilter')?.addEventListener('change',()=>{if(vocabPracticeSession)startVocabPractice(vocabPracticeSession.mode,8);else renderVocabulary(12);});
     $('randomVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(8,true,false);});
     $('learningVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(12,true,true);});
