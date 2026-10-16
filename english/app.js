@@ -46,6 +46,7 @@
   let vocabPracticeSession = null;
   let chunkUnitIds = null;
   let chunkUnitCounted = false;
+  let englishVoiceCache = [];
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
@@ -1246,8 +1247,7 @@
   function chooseVoiceLang(level){
     const pref=state.settings.accent;
     if(pref!=='adaptive')return pref;
-    const pool=['en-US','en-CA'];
-    return pool[Math.floor(Math.random()*pool.length)];
+    return 'en-US';
   }
   function accentLabel(lang){
     if(lang==='en-CA')return 'Canadian English';
@@ -1256,18 +1256,27 @@
     return lang;
   }
   function voiceDisplay(level){const lang=chooseVoiceLang(level);return `${accentLabel(lang)} · ${playbackRate(level,'question').toFixed(2)}x`;}
+  function refreshVoiceCache(){
+    if(!('speechSynthesis' in window))return [];
+    const voices=speechSynthesis.getVoices()||[];
+    if(voices.length) englishVoiceCache=voices.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
+    return englishVoiceCache;
+  }
   function voiceScore(v,targetLang){
     const name=(v.name||'').toLowerCase();
     const lang=(v.lang||'').toLowerCase();
     const target=targetLang.toLowerCase();
     let score=0;
-    if(lang===target)score+=120;
-    else if(lang.startsWith(target.slice(0,2)))score+=25;
-    if(/natural|neural|premium|enhanced/.test(name))score+=80;
-    if(/online/.test(name))score+=45;
-    if(/microsoft/.test(name))score+=30;
-    if(/google/.test(name))score+=22;
-    if(v.localService===false)score+=8;
+    if(lang===target)score+=150;
+    else if(target==='en-US' && lang==='en-CA')score+=55;
+    else if(lang.startsWith('en'))score+=30;
+    if(/natural|neural|premium|enhanced|online/.test(name))score+=130;
+    if(/aria|jenny|guy|ava|andrew|emma|brian|sonia|ryan/.test(name))score+=70;
+    if(/google.*us english|google us english/.test(name))score+=60;
+    if(/microsoft/.test(name))score+=38;
+    if(/google/.test(name))score+=28;
+    if(v.localService===false)score+=18;
+    if(/compact|espeak|eloquence|classic|default/.test(name))score-=90;
     return score;
   }
   function bestVoice(candidates,targetLang){
@@ -1276,20 +1285,29 @@
     return [...candidates].sort((a,b)=>voiceScore(b,targetLang)-voiceScore(a,targetLang))[0];
   }
   function resolveVoice(lang){
-    const voices=speechSynthesis.getVoices();
-    const byLang=(code)=>voices.filter(v=>(v.lang||'').toLowerCase()===code.toLowerCase());
-    let candidates=byLang(lang);
-    if(!candidates.length && lang==='en-IN')candidates=voices.filter(v=>/india|indian/i.test(v.name||''));
-    if(!candidates.length && lang==='en-CA')candidates=byLang('en-US');
-    if(!candidates.length && lang==='en-US')candidates=byLang('en-CA');
-    if(!candidates.length)candidates=voices.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
+    let voices=refreshVoiceCache();
+    const requested=(lang||'en-US').toLowerCase();
+    let candidates=voices.filter(v=>(v.lang||'').toLowerCase()===requested);
+    if(!candidates.length && lang==='en-IN') candidates=voices.filter(v=>/india|indian/i.test(v.name||'') || (v.lang||'').toLowerCase()==='en-in');
+    if(!candidates.length && lang==='en-US') candidates=voices.filter(v=>{
+      const l=(v.lang||'').toLowerCase();
+      return l==='en-us' || l==='en-ca' || l==='en-gb' || l.startsWith('en');
+    });
+    if(!candidates.length && lang==='en-CA') candidates=voices.filter(v=>{
+      const l=(v.lang||'').toLowerCase();
+      return l==='en-ca' || l==='en-us' || l.startsWith('en');
+    });
+    if(!candidates.length)candidates=voices;
     const voice=bestVoice(candidates,lang);
     const actualLang=voice?.lang||lang;
+    const qualityName=(voice?.name||'').toLowerCase();
+    const naturalLike=!!voice && (/natural|neural|premium|enhanced|online|aria|jenny|guy|ava|andrew|google.*us english/.test(qualityName));
     return {
       voice,
       actualLang,
       actualLabel:accentLabel(actualLang),
       voiceName:voice?.name||'System default',
+      naturalLike,
       fallback:!!voice && actualLang.toLowerCase()!==lang.toLowerCase()
     };
   }
@@ -1300,7 +1318,7 @@
     const u=new SpeechSynthesisUtterance(text);
     u.lang=resolved.voice?.lang||lang;
     u.rate=clamp(Number(rate)||1,0.70,1.25);
-    u.pitch=1;
+    u.pitch=.98;
     u.volume=1;
     if(resolved.voice)u.voice=resolved.voice;
     speechSynthesis.speak(u);
@@ -1404,7 +1422,12 @@
 
   function init(){
     syncSettingsUI();bindStaticEvents();renderOverview();renderVocabulary(12);renderChunks();
-    if('speechSynthesis' in window) window.speechSynthesis.getVoices();
+    if('speechSynthesis' in window){
+      refreshVoiceCache();
+      window.speechSynthesis.onvoiceschanged=()=>refreshVoiceCache();
+      setTimeout(refreshVoiceCache,250);
+      setTimeout(refreshVoiceCache,900);
+    }
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
   }
   init();
