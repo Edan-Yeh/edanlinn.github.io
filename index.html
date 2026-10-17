@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#171d2c">
+<meta name="theme-color" content="#101827">
 <title>Cloud × AI Solutions Architect | Edan Learning Journey</title>
 <meta name="description" content="Cloud × AI Solutions Architect Learning Journey — AWS、Azure、GCP、AI Tutor 架構、真實案例、每日訓練紀錄與工程設計思維。">
 <link rel="stylesheet" href="styles.css">
@@ -19,12 +19,14 @@
 <link rel="stylesheet" href="learning-campaign.css?v=20261004-cards-v1">
 <link rel="stylesheet" href="architect-ios.css?v=20261017-v3">
 <link rel="stylesheet" href="learning-lab-accessibility.css?v=20261017-v5">
+<link rel="stylesheet" href="modern-journey.css?v=20261017-v1">
 </head>
 <body>
 <aside class="sidebar" aria-label="學習導航">
   <div class="side-brand"><div class="brand-mark" data-icon="quiz"></div><div><b>ARCHITECT</b><small>CLOUD × AI LEARNING JOURNEY</small></div></div>
   <div class="side-label">WORKSPACE</div>
   <nav class="side-nav">
+    <a class="side-link side-anchor guide-side-link" href="#start-here"><span data-icon="glossary"></span><span>從這裡開始</span></a>
     <button class="side-link active" data-section="dashboard"><span data-icon="dashboard"></span><span>總覽</span></button>
     <button class="side-link" data-section="ladder"><span data-icon="trophy"></span><span>天梯</span></button>
     <button class="side-link" data-section="quiz"><span data-icon="quiz"></span><span>挑戰</span></button>
@@ -36,8 +38,17 @@
   </nav>
   <div class="side-bottom"><span><i class="live-dot"></i> YOUR NEXT CHAPTER</span><b>Solutions Architect</b><p>每天一小步，建立架構判斷力。</p></div>
 </aside>
-<header class="top"><div class="shell"><div class="brand">Architecture workspace / 學習總覽<small>AWS · Azure · Google Cloud · Applied AI</small></div><div class="nav"><a href="#portfolio">作品</a><a href="#learning-lab">Learning Lab</a><a href="#learning-method">學習方法</a><a href="#modules">學習模組</a><button id="expand">展開模組</button><button id="collapse">收合模組</button><div class="top-profile"><span class="avatar">EY</span><div class="profile-name">Edan Yeh<small>Architect in progress</small></div></div></div></div></header>
+<header class="top"><div class="shell"><div class="brand">Architecture workspace / 學習總覽<small>AWS · Azure · Google Cloud · Applied AI</small></div><div class="nav"><a href="#start-here">新手導覽</a><a href="#portfolio">作品</a><a href="#learning-lab">Learning Lab</a><a href="#learning-method">學習方法</a><a href="#modules">學習模組</a><button id="expand">展開模組</button><button id="collapse">收合模組</button><div class="top-profile"><span class="avatar">EY</span><div class="profile-name">Edan Yeh<small>Architect in progress</small></div></div></div></div></header>
 <main class="shell">
+<section class="visitor-guide" id="start-here" aria-labelledby="start-title">
+ <div class="visitor-guide-top"><div><span class="guide-eyebrow"><span class="guide-dot"></span> START HERE · 新訪客導覽</span><h2 id="start-title">第一次來？從這裡開始。</h2><p>這是一個公開的 Cloud × AI 架構學習與實作紀錄。你可以直接看技術作品、按順序閱讀課程，或透過互動挑戰練習；不需要先理解遊戲系統。</p></div><span class="guide-time">3 MIN TOUR</span></div>
+ <div class="guide-paths">
+  <a class="guide-path guide-primary" href="#portfolio"><span class="guide-number">01 · 專業訪客</span><strong>先看架構作品 <span aria-hidden="true">↗</span></strong><span class="guide-desc">AI Tutor 設計、架構決策 ADR、風險與工程驗證計畫。</span><span class="guide-cta">查看 Portfolio →</span></a>
+  <a class="guide-path" href="#daily" data-open-module="daily"><span class="guide-number">02 · 學習者</span><strong>從每日課程開始 <span aria-hidden="true">↗</span></strong><span class="guide-desc">按 Day 1–23 閱讀已保存的學習歷程、批改與錯題；不必從最新一日開始。</span><span class="guide-cta">閱讀學習紀錄 →</span></a>
+  <a class="guide-path" href="#quiz" data-open-module="quiz"><span class="guide-number">03 · 想動手的人</span><strong>進入互動訓練 <span aria-hidden="true">↗</span></strong><span class="guide-desc">用情境題與架構挑戰練習判斷；XP 是遊戲獎勵，不代表專業認證。</span><span class="guide-cta">開始挑戰 →</span></a>
+ </div>
+ <div class="guide-bottom"><span><b>推薦路線</b> 作品集 → 架構案例 → 每日課程 → Learning Lab</span><a href="#learning-method">了解教學方法 →</a></div>
+</section>
 <section class="hero" id="dashboard">
   <div class="hero-main">
     <div><div class="hero-eyebrow">CLOUD × AI SOLUTIONS ARCHITECT <span class="season-tag">LEARNING JOURNEY</span></div><h1>從 Cloud Architecture<br><span>走向 AI Systems Engineering.</span></h1><p class="hero-copy">以金融系統實務為背景，建立跨雲架構、AI 工程、可靠性與安全治理的端到端能力。公開學習紀錄、設計取捨與可驗證的技術成果。</p><div class="hero-buttons"><button class="primary-action" data-practice="all"><span data-icon="quiz"></span>開始今日挑戰<span data-icon="arrow"></span></button><button class="quiet-action" data-practice="all" data-mode="due">複習到期題目</button></div></div>
