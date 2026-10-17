@@ -47,6 +47,10 @@
   let chunkUnitIds = null;
   let chunkUnitCounted = false;
   let englishVoiceCache = [];
+  let modelPracticeRecorder = null;
+  let modelPracticeStream = null;
+  let modelPracticeChunks = [];
+  let modelPracticeAudioUrl = '';
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
@@ -217,9 +221,30 @@
   }
   window.addEventListener('edan:cloud-state', e=>applyCloudState(e.detail?.state));
   function answerTranslation(q){ return q?.modelZh || CONTENT.answerTranslations?.[q?.id] || ''; }
+  function modelPracticeCues(q){
+    const keys=(q.keywords||[]).filter(Boolean).slice(0,4);
+    if(keys.length)return keys;
+    return meaningfulTokens(q.model||'').filter((w,i,a)=>a.indexOf(w)===i).slice(0,4);
+  }
   function modelAnswerHtml(q,label='推薦答案'){
     const zh=answerTranslation(q);
-    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en">${esc(q.model)}</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div></div>`;
+    const cues=modelPracticeCues(q);
+    const practiceCount=qstat(q.id).modelPracticeCount||0;
+    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en" data-model-answer-text>${esc(q.model)}</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div>
+      <div class="model-practice-box">
+        <div class="model-practice-head"><div><strong>記憶＋口說練習</strong><span>不要背整段，先記骨架再說。</span></div><span class="model-practice-count" data-model-practice-count>已練 ${practiceCount} 次</span></div>
+        <div class="model-memory-cues">${cues.map((c,i)=>`<span><b>${i+1}</b>${esc(c)}</span>`).join('')}</div>
+        <div class="model-practice-tip"><b>技巧：</b>先聽 1 次 → 看著 cue words 說 1 次 → 遮住英文再說 1 次。面試不用逐字一樣，重點是順序與意思能自己講出來。</div>
+        <div class="btn-row model-practice-actions">
+          <button class="btn ghost" data-model-practice="slow" type="button">▶ 0.88x 跟讀</button>
+          <button class="btn ghost" data-model-practice="hide" type="button">🙈 遮住英文</button>
+          <button class="btn secondary" data-model-practice="record" type="button">🎙 錄一遍</button>
+          <button class="btn ghost hidden" data-model-practice="stop" type="button">■ 停止錄音</button>
+        </div>
+        <div class="model-practice-status" data-model-practice-status>建議先不要追求背起來；能看 cue words 自己重組句子，才是真正記住。</div>
+        <div class="model-practice-playback hidden" data-model-practice-playback><strong>你的跟讀錄音</strong><audio controls preload="metadata" data-model-practice-audio></audio><span>聽完只比較兩件事：有沒有漏重點、能不能不停太久。</span></div>
+      </div>
+    </div>`;
   }
 
   function rankInfo(){
@@ -647,6 +672,7 @@
     const s=state.qstats[id];
     if(typeof s.manualReview!=='boolean') s.manualReview=false;
     if(!Number.isFinite(s.guessCount)) s.guessCount=0;
+    if(!Number.isFinite(s.modelPracticeCount)) s.modelPracticeCount=0;
     return s;
   }
 
@@ -763,7 +789,7 @@
   }
 
   function renderCurrentQuestion(){
-    stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); speechSynthesis.cancel(); speechTranscript='';
+    stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); stopModelPracticeRecording(false); cleanupModelPracticeAudio(); speechSynthesis.cancel(); speechTranscript='';
     const q=session.questions[session.index];
     if(!q){ finishSession(true); return; }
     session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0}};
@@ -1142,6 +1168,70 @@
   function stopSpeakingTimer(){if(speakingTimer){clearInterval(speakingTimer);speakingTimer=null;}}
   function updateSpeakTimer(){const el=$('speakTimer');if(el)el.textContent=`00:${String(Math.max(0,speakingSeconds)).padStart(2,'0')}`;}
 
+  function cleanupModelPracticeAudio(){
+    if(modelPracticeAudioUrl){try{URL.revokeObjectURL(modelPracticeAudioUrl);}catch(e){}}
+    modelPracticeAudioUrl='';
+  }
+  function releaseModelPracticeStream(){
+    if(modelPracticeStream) modelPracticeStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});
+    modelPracticeStream=null;
+  }
+  async function stopModelPracticeRecording(saveTake=true){
+    if(modelPracticeRecorder && modelPracticeRecorder.state!=='inactive'){
+      return new Promise(resolve=>{
+        const recorder=modelPracticeRecorder;
+        const previous=recorder.onstop;
+        recorder.onstop=()=>{
+          if(typeof previous==='function') previous();
+          if(saveTake){
+            const q=session?.questions?.[session.index];
+            if(q){
+              const stat=qstat(q.id); stat.modelPracticeCount=(stat.modelPracticeCount||0)+1; save();
+              const count=document.querySelector('[data-model-practice-count]');
+              if(count)count.textContent=`已練 ${stat.modelPracticeCount} 次`;
+              window.EDAN_CLOUD?.logEvent?.('model_answer_practiced',{questionId:q.id,count:stat.modelPracticeCount},q.id+'-'+todayKey());
+            }
+          }
+          resolve();
+        };
+        try{recorder.stop();}catch(e){releaseModelPracticeStream();resolve();}
+      });
+    }
+    releaseModelPracticeStream();
+  }
+  async function startModelPracticeRecording(){
+    if(!mediaRecorderAvailable())return false;
+    await stopModelPracticeRecording(false);
+    await stopMediaRecording(true);
+    cleanupModelPracticeAudio();
+    modelPracticeChunks=[];
+    try{
+      modelPracticeStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      modelPracticeRecorder=new MediaRecorder(modelPracticeStream);
+      modelPracticeRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)modelPracticeChunks.push(e.data);};
+      modelPracticeRecorder.onstop=()=>{
+        const chunks=modelPracticeChunks.slice();
+        modelPracticeChunks=[];
+        releaseModelPracticeStream();
+        modelPracticeRecorder=null;
+        if(chunks.length){
+          const blob=new Blob(chunks,{type:chunks[0].type||'audio/webm'});
+          cleanupModelPracticeAudio();
+          modelPracticeAudioUrl=URL.createObjectURL(blob);
+          const box=document.querySelector('[data-model-practice-playback]');
+          const audio=document.querySelector('[data-model-practice-audio]');
+          if(box&&audio){audio.src=modelPracticeAudioUrl;box.classList.remove('hidden');}
+        }
+      };
+      modelPracticeRecorder.start();
+      return true;
+    }catch(e){
+      releaseModelPracticeStream();
+      modelPracticeRecorder=null;
+      return false;
+    }
+  }
+
   function speechRecognitionCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
   function mediaRecorderAvailable(){return !!(navigator.mediaDevices?.getUserMedia && window.MediaRecorder);}
   function cleanupRecordedAudio(){
@@ -1306,7 +1396,7 @@
   function nextQuestion(){session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
 
   function finishSession(completedUnit=true){
-    stopSpeakingTimer();stopRecognition();stopMediaRecording(true);cleanupRecordedAudio();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
+    stopSpeakingTimer();stopRecognition();stopMediaRecording(true);cleanupRecordedAudio();stopModelPracticeRecording(false);cleanupModelPracticeAudio();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
     if(!session || !session.answers.length){session=null;return;}
     const avg=session.answers.reduce((a,b)=>a+b.quality,0)/(session.answers.length*3); const score=Math.round(avg*100);
     const bySkill={};session.answers.forEach(a=>{bySkill[a.skill]=bySkill[a.skill]||[];bySkill[a.skill].push(a.quality);});
@@ -1487,21 +1577,55 @@
 
   function bindStaticEvents(){
     document.querySelectorAll('.start-mode').forEach(b=>b.addEventListener('click',()=>startSession(b.dataset.mode,b.dataset.size?Number(b.dataset.size):null)));
-    $('questionHost')?.addEventListener('click',e=>{
-      const btn=e.target.closest?.('[data-model-audio]');
-      if(!btn)return;
+    $('questionHost')?.addEventListener('click',async e=>{
       const q=session?.questions?.[session.index];
       if(!q?.model)return;
-      const kind=btn.dataset.modelAudio;
-      const lang=kind==='india'?'en-IN':chooseVoiceLang(q.level||1);
-      const rate=playbackRate(q.level||1,'question');
-      const resolved=speak(q.model,rate,lang);
-      const status=btn.closest('.model-answer')?.querySelector('[data-model-audio-status]');
-      if(status){
-        const requested=kind==='india'?'Indian English':accentLabel(lang);
-        const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
-        const voice=resolved?.voiceName?` · ${resolved.voiceName}`:'';
-        status.textContent=`${requested}${fallback}${voice} · ${rate.toFixed(2)}x`;
+
+      const audioBtn=e.target.closest?.('[data-model-audio]');
+      if(audioBtn){
+        const kind=audioBtn.dataset.modelAudio;
+        const lang=kind==='india'?'en-IN':chooseVoiceLang(q.level||1);
+        const rate=playbackRate(q.level||1,'question');
+        const resolved=speak(q.model,rate,lang);
+        const status=audioBtn.closest('.model-answer')?.querySelector('[data-model-audio-status]');
+        if(status){
+          const requested=kind==='india'?'Indian English':accentLabel(lang);
+          const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
+          const voice=resolved?.voiceName?` · ${resolved.voiceName}`:'';
+          status.textContent=`${requested}${fallback}${voice} · ${rate.toFixed(2)}x`;
+        }
+        return;
+      }
+
+      const practiceBtn=e.target.closest?.('[data-model-practice]');
+      if(!practiceBtn)return;
+      const action=practiceBtn.dataset.modelPractice;
+      const model=practiceBtn.closest('.model-answer');
+      const status=model?.querySelector('[data-model-practice-status]');
+      const answer=model?.querySelector('[data-model-answer-text]');
+      const recordBtn=model?.querySelector('[data-model-practice="record"]');
+      const stopBtn=model?.querySelector('[data-model-practice="stop"]');
+
+      if(action==='slow'){
+        const resolved=speak(q.model,.88,chooseVoiceLang(q.level||1));
+        if(status)status.textContent=`0.88x 跟讀中 · ${resolved?.voiceName||'System voice'}。先模仿節奏，不要急著背。`;
+      }else if(action==='hide'){
+        const hidden=answer?.classList.toggle('model-answer-hidden');
+        practiceBtn.textContent=hidden?'👁 顯示英文':'🙈 遮住英文';
+        if(status)status.textContent=hidden?'現在只看 cue words 自己說；卡住 3 秒再把全文打開。':'英文已顯示。看一遍後再遮住重說一次。';
+      }else if(action==='record'){
+        speechSynthesis.cancel();
+        const ok=await startModelPracticeRecording();
+        if(ok){
+          if(recordBtn){recordBtn.disabled=true;recordBtn.textContent='● 錄音中';}
+          stopBtn?.classList.remove('hidden');
+          if(status)status.textContent='正在錄你的 Model answer 練習。講完按「停止錄音」，再回聽自己有沒有漏重點。';
+        }else if(status)status.textContent='無法啟用麥克風，請確認網站的麥克風權限。';
+      }else if(action==='stop'){
+        await stopModelPracticeRecording(true);
+        if(recordBtn){recordBtn.disabled=false;recordBtn.textContent='🎙 再錄一遍';}
+        stopBtn?.classList.add('hidden');
+        if(status)status.textContent='已錄好。先播放自己的版本，再播放北美朗讀，比較內容順序與停頓。';
       }
     });
     $('quitBtn').addEventListener('click',quitSession);
