@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261017v21-1">
+  <link rel="stylesheet" href="styles.css?v=20261017v22-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -71,7 +71,7 @@
     </section>
 
     <section class="section" id="modesSection">
-      <div class="section-head"><div><h2>今天怎麼練</h2><p>不追求功能多；每一輪都優先處理你的弱點、最近錯誤與真實職涯情境。答案在作答前隱藏，完成後才顯示英文＋繁體中文。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
+      <div class="section-head"><div><h2>今天怎麼練</h2><p>不追求功能多；每一輪都依熟悉度決定出題頻率：<b>錯的 ＞ 猜的 ＞ 新的 ＞ 已答對</b>。答對越穩定，出現頻率越低；新增題庫也不會把舊進度洗掉。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
       <div class="grid mode-grid">
         <article class="panel mode-card">
           <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
@@ -80,7 +80,7 @@
           <span class="badge good">Listening</span><h3>聽力特訓</h3><p>先只聽聲音抓意圖。每一題都提供兩個版本：北美口音＋印度口音。等級越高，問法越長、語速越快。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
         </article>
         <article class="panel mode-card">
-          <span class="badge">Vocabulary</span><h3>單字練習</h3><p>日常高頻字、基礎動詞、形容詞與口說片語。先猜意思，再聽北美／印度發音與例句。</p><button class="btn secondary" id="jumpVocabBtn" type="button">開始刷單字</button>
+          <span class="badge">Vocabulary</span><h3>單字練習</h3><p>依熟悉度自動降頻：答錯最優先、猜對其次、新字再來；穩定答對的字會越來越少出現。</p><button class="btn secondary" id="jumpVocabBtn" type="button">開始刷單字</button>
         </article>
         <article class="panel mode-card">
           <span class="badge warn">Review</span><h3>錯題複習</h3><p>只挑曾答錯、需要提示、口說很卡，或你手動標註「我是猜的」的題目，直到真正熟。</p><button class="btn ghost start-mode" data-mode="wrong" type="button">複習弱項</button>
@@ -100,7 +100,7 @@
         <button class="daily-step" id="dailyListeningBtn" type="button"><b>① 5 題聽力</b><span>先練問題意圖與辨音</span></button>
         <button class="daily-step" id="dailyVocabBtn" type="button"><b>② 8 題單字</b><span>系統依弱點選擇題／句型／聽力</span></button>
         <button class="daily-step" id="dailyChunksBtn" type="button"><b>③ 3 個 Chunks</b><span>把單字變成能說出口的句子</span></button>
-        <button class="daily-step" id="dailySpeakingBtn" type="button"><b>④ 2 題口說</b><span>錄音、評分、修正</span></button>
+        <button class="daily-step" id="dailySpeakingBtn" type="button"><b>④ 2 題口說</b><span>錄音、評分、修正；低於 60 分同題重練</span></button>
       </div>
       <div class="support" style="margin-top:8px">不用四個都做。完整完成其中任一小單元，就會記錄今天 1 天。</div>
     </section>
@@ -151,7 +151,7 @@
       <div class="section-head">
         <div>
           <h2>基礎單字｜Daily Vocabulary</h2>
-          <p>同一批單字用不同方式練：單字卡、選擇題、句型填空、北美／印度聽力。句型的繁體中文預設隱藏，需要時再點開提示。</p>
+          <p>同一批單字用不同方式練，並依長期熟悉度調整頻率：<b>錯的 ＞ 猜的 ＞ 新的 ＞ 對的</b>。答對會拉長複習間隔；如果其實是猜的，可直接標註，系統會提高後續出現頻率。</p>
         </div>
         <div class="filters vocab-filters">
           <select id="vocabFilter" aria-label="單字分類">
@@ -184,7 +184,7 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>持續更新機制</h2><p>網站本身會自適應；內容版本則可以隨你新的面試、工作案例與弱項持續增加。</p></div></div>
+      <div class="section-head"><div><h2>持續更新機制</h2><p>題庫可以持續更新，但熟悉度、錯題、猜題、口說分數與複習排程都存在你的帳號雲端資料，不會因為網站版本更新重新從頭開始。</p></div></div>
       <div class="grid grid-2">
         <div class="panel">
           <h3 style="margin-top:0">把學習狀況回傳給我</h3>
@@ -321,9 +321,9 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261017v21-1"></script>
-<script src="auth.js?v=20261017v21-1"></script>
-<script src="question-bank.js?v=20261017v21-1"></script>
-<script src="app.js?v=20261017v21-1"></script>
+<script src="supabase-config.js?v=20261017v22-1"></script>
+<script src="auth.js?v=20261017v22-1"></script>
+<script src="question-bank.js?v=20261017v22-1"></script>
+<script src="app.js?v=20261017v22-1"></script>
 </body>
 </html>
