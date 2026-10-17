@@ -66,3 +66,30 @@ a,button,summary{outline-offset:3px}
 #daily :is(input,select){min-height:42px}
 #daily .day-head:focus-visible{outline:3px solid #3678e6!important;outline-offset:-4px}
 @media(max-width:720px){#daily .day-head{grid-template-columns:55px minmax(0,1fr) auto!important;gap:9px!important;padding:15px!important}#daily .day-head h2{font-size:15px!important}#daily .score{font-size:15px!important}#daily .correction{grid-template-columns:1fr!important}#daily .day-body{padding:0 14px 18px!important}}
+
+/* Visual cohesion v4: light blue-grey Learning Lab shell, dark only for the actual game viewport */
+.moba-arena{background:#f8fbff!important;color:#1a2b43!important;border:1px solid #d8e4f1!important;box-shadow:0 12px 35px rgba(26,57,98,.09)!important}
+.moba-arena .moba-head h2{color:#172b48!important;font-size:24px!important}
+.moba-arena .moba-head p,.moba-arena .moba-head .moba-kicker{color:#526b8a!important;font-size:13px!important}
+.moba-arena .moba-head .moba-kicker{font-weight:800!important;letter-spacing:.13em!important}
+.moba-arena .moba-toolbar,.moba-arena .moba-scoreboard{background:#edf4fd!important;border:1px solid #d5e3f1!important;color:#1e3654!important;border-radius:13px!important}
+.moba-arena .moba-toolbar label,.moba-arena .moba-toolbar span,.moba-arena .moba-scoreboard :is(b,strong,small,span){color:#203c5d!important}
+.moba-arena .moba-toolbar select{background:#fff!important;color:#1a304d!important;border:1px solid #bdcde0!important;min-height:38px!important}
+.moba-arena .moba-toolbar select option{color:#172b48!important;background:#fff!important}
+.moba-arena .moba-actions button,.moba-arena .moba-toolbar button{background:#e9f1fb!important;color:#234e84!important;border:1px solid #cbdbea!important;opacity:1!important}
+.moba-arena .moba-actions button:hover,.moba-arena .moba-toolbar button:hover{background:#dceaff!important}
+.moba-arena .moba-actions button:disabled{opacity:.55!important}
+.moba-arena .campaign-panel{background:#fff!important;border:1px solid #d7e3ef!important;color:#1e314d!important;box-shadow:0 4px 16px rgba(20,49,83,.05)!important}
+.moba-arena .campaign-panel :is(h2,h3,h4,p,b,strong,label,summary){color:#1e314d!important}
+.moba-arena .campaign-panel :is(small,.campaign-note,.campaign-source,.campaign-label){color:#526b88!important;opacity:1!important}
+.moba-arena .campaign-panel .campaign-road,.moba-arena .campaign-panel .campaign-brief,.moba-arena .campaign-panel .campaign-objective,.moba-arena .campaign-panel .campaign-answer,.moba-arena .campaign-panel .campaign-recap{background:#f0f6ff!important;border:1px solid #d8e5f4!important;color:#203753!important}
+.moba-arena .campaign-panel .campaign-road :is(b,small,span),.moba-arena .campaign-panel .campaign-objective :is(b,small,span){color:#294766!important}
+.moba-arena .campaign-panel a{color:#245bb3!important}
+.moba-arena .campaign-panel button{color:#1d467a!important;background:#e5effd!important;border:1px solid #c8d9ee!important}
+.moba-arena .campaign-panel button:disabled{opacity:.55!important}
+.moba-arena .campaign-panel .campaign-field{color:#1e3654!important}
+.moba-arena .moba-viewport,.moba-arena .moba-gate,.moba-arena .moba-hud,.moba-arena .moba-viewport :is(h2,h3,p,span,b,strong){color:#f1f6ff!important}
+.moba-arena .moba-viewport{border:1px solid #536a85!important;border-radius:12px!important}
+.moba-arena .moba-help,.moba-arena .moba-note{color:#425d7d!important}
+.moba-arena .moba-viewport .moba-tip{color:#f2f6ff!important}
+@media(max-width:700px){.moba-arena{padding:14px!important}.moba-arena .moba-head{gap:12px!important}.moba-arena .moba-head h2{font-size:21px!important}}
