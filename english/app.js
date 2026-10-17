@@ -657,7 +657,7 @@
           $('vocabGuessStatus')?.classList.remove('hidden');
         },{once:true});
       }
-      $('vocabNextBtn').addEventListener('click',()=>{s.index++;renderVocabPracticeQuestion();},{once:true});
+      $('vocabNextBtn').addEventListener('click',()=>{s.index++;renderVocabPracticeQuestion();scrollPracticeTop('vocabPracticeHost');},{once:true});
     }));
   }
 
@@ -902,6 +902,18 @@
     return selected;
   }
 
+  function scrollPracticeTop(target){
+    const el=typeof target==='string'?$(target):target;
+    if(!el)return;
+    requestAnimationFrame(()=>{
+      const topbar=document.querySelector('.topbar');
+      const offset=(topbar?.offsetHeight||0)+10;
+      const top=el.getBoundingClientRect().top+window.scrollY-offset;
+      const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+      window.scrollTo({top:Math.max(0,top),behavior:reduce?'auto':'smooth'});
+    });
+  }
+
   function startSession(mode,sizeOverride=null){
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
     setMobileDockActive(mode==='listening'?'listening':'challenge');
@@ -912,7 +924,6 @@
     $('resultSection').classList.remove('show');
     $('challengeSection').classList.add('active');
     $('sessionTitle').textContent=session.title;
-    $('challengeSection').scrollIntoView({behavior:'smooth',block:'start'});
     renderCurrentQuestion();
   }
 
@@ -928,6 +939,7 @@
     if(q.type==='listening_intent') renderListeningQuestion(q);
     else if(q.type==='speaking') renderSpeakingQuestion(q);
     else renderChoiceQuestion(q);
+    scrollPracticeTop('challengeSection');
   }
 
   function renderListeningQuestion(q){
@@ -1781,6 +1793,220 @@
 
   function download(name,text,type){const blob=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 
+  function learningReportData(){
+    const questions=(CONTENT.questions||[]).map(q=>{
+      const st=state.qstats[q.id]||{};
+      return {
+        ID:q.id,
+        題型:q.type||'',
+        技能:skillLabels[q.skill]||q.skill||'',
+        等級:`L${q.level||1}`,
+        熟悉度:questionFamiliarity(state.qstats[q.id]||null),
+        題目:q.text||'',
+        作答次數:st.seen||0,
+        答對:st.correct||0,
+        答錯:st.wrong||0,
+        猜題:st.guessCount||0,
+        提示次數:st.hints||0,
+        最近品質:st.lastQuality??'',
+        最近口說分數:Number.isFinite(st.lastSystemScore)?st.lastSystemScore:'',
+        低於60分次數:st.speakingLowScoreCount||0,
+        下次複習:st.due||'',
+        最近作答:st.lastSeen||''
+      };
+    });
+
+    const vocabulary=(CONTENT.vocabulary||[]).map(v=>{
+      const st=state.vocabStats[v.id]||{};
+      return {
+        單字:v.word,
+        中文:v.zh,
+        分類:v.category||'',
+        詞性:v.pos||'',
+        熟悉度:vocabFamiliarity(v),
+        作答次數:st.attempts||0,
+        答對:st.correct||0,
+        答錯:st.wrong||0,
+        猜對:st.guessed||0,
+        連續答對:st.correctStreak||0,
+        下次複習:st.due||'',
+        最近作答:st.lastSeen||'',
+        例句:v.example||''
+      };
+    });
+
+    const speaking=state.sessions.flatMap(sess=>(sess.answers||[]).map(a=>({
+      日期:sess.date||'',
+      回合:sess.title||'',
+      題目ID:a.id||'',
+      分數:Number.isFinite(a.extra?.systemScore)?a.extra.systemScore:'',
+      WPM:Number.isFinite(a.extra?.wordsPerMinute)?a.extra.wordsPerMinute:'',
+      弱點:a.extra?.weakness?weaknessLabels[a.extra.weakness]||a.extra.weakness:'',
+      轉錄:a.extra?.transcript||'',
+      建議:(a.extra?.suggestions||[]).join(' / ')
+    }))).filter(x=>x.分數!=='');
+
+    const errors=Object.entries(state.errorMemory||{}).map(([key,val])=>({
+      類型:errorLabels[key]||key,
+      次數:val.count||0,
+      最近出現:val.lastSeen||'',
+      說明:val.note||'',
+      原句:val.example||'',
+      修正:val.corrected||''
+    })).sort((a,b)=>b.次數-a.次數);
+
+    const sessions=(state.sessions||[]).map(sess=>({
+      日期:sess.date||'',
+      回合:sess.title||'',
+      題數:sess.count||0,
+      分數:sess.score??'',
+      最弱技能:sess.weakest||'',
+      完成: sess.completedUnit===false?'否':'是'
+    })).reverse();
+
+    const skills=skillKeys.map(k=>({
+      技能:skillLabels[k]||k,
+      等級:Number((state.skills[k]||1).toFixed(2))
+    }));
+
+    const weaknesses=Object.entries(state.weaknessCounts||{}).map(([k,v])=>({
+      弱點:weaknessLabels[k]||k,
+      次數:v
+    })).sort((a,b)=>b.次數-a.次數);
+
+    const summary=[
+      {項目:'匯出時間',值:new Date().toLocaleString('zh-TW',{hour12:false})},
+      {項目:'內容版本',值:CONTENT.contentVersion},
+      {項目:'XP',值:state.xp},
+      {項目:'連續學習天數',值:streak()},
+      {項目:'Interview Readiness',值:`${interviewReadiness()}%`},
+      {項目:'完成學習日',值:(state.completedDates||[]).length},
+      {項目:'累積回合',值:(state.sessions||[]).length}
+    ];
+
+    return {summary,skills,weaknesses,errors,questions,vocabulary,speaking,sessions};
+  }
+
+  function setExportStatus(text,tone=''){
+    const el=$('exportReportStatus');
+    if(!el)return;
+    el.textContent=text;
+    el.dataset.tone=tone;
+  }
+
+  function loadExternalScript(src,globalCheck){
+    if(globalCheck?.())return Promise.resolve();
+    return new Promise((resolve,reject)=>{
+      const existing=[...document.scripts].find(x=>x.src===src);
+      if(existing){
+        existing.addEventListener('load',()=>resolve(),{once:true});
+        existing.addEventListener('error',()=>reject(new Error('load failed')),{once:true});
+        return;
+      }
+      const script=document.createElement('script');
+      script.src=src;
+      script.async=true;
+      script.onload=()=>resolve();
+      script.onerror=()=>reject(new Error('無法載入匯出元件'));
+      document.head.appendChild(script);
+    });
+  }
+
+  function addWorkbookSheet(wb,name,rows,widths=[]){
+    const ws=window.XLSX.utils.json_to_sheet(rows.length?rows:[{訊息:'目前沒有資料'}]);
+    if(widths.length)ws['!cols']=widths.map(w=>({wch:w}));
+    window.XLSX.utils.book_append_sheet(wb,ws,name);
+  }
+
+  async function exportLearningExcel(){
+    try{
+      setExportStatus('正在整理 Excel…','loading');
+      await loadExternalScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',()=>!!window.XLSX);
+      const data=learningReportData();
+      const wb=window.XLSX.utils.book_new();
+      addWorkbookSheet(wb,'總覽',data.summary,[22,34]);
+      addWorkbookSheet(wb,'能力',data.skills,[24,12]);
+      addWorkbookSheet(wb,'弱點',data.weaknesses,[28,12]);
+      addWorkbookSheet(wb,'錯誤記憶',data.errors,[24,10,16,34,48,48]);
+      addWorkbookSheet(wb,'單字熟悉度',data.vocabulary,[20,20,16,12,14,12,10,10,10,12,16,16,52]);
+      addWorkbookSheet(wb,'題目熟悉度',data.questions,[18,16,18,8,14,56,12,10,10,10,12,12,16,16,16,16]);
+      addWorkbookSheet(wb,'口說紀錄',data.speaking,[18,26,18,10,10,20,58,58]);
+      addWorkbookSheet(wb,'最近回合',data.sessions,[20,28,10,10,20,10]);
+      window.XLSX.writeFile(wb,`edan-english-learning-${todayKey()}.xlsx`,{compression:true});
+      setExportStatus('✓ Excel 已匯出','success');
+    }catch(err){
+      console.error(err);
+      setExportStatus('Excel 匯出失敗，請確認網路後重試。','error');
+    }
+  }
+
+  function reportTableHtml(title,rows,columns,maxRows=12){
+    const list=(rows||[]).slice(0,maxRows);
+    if(!list.length)return `<section><h2>${esc(title)}</h2><p>目前沒有資料。</p></section>`;
+    return `<section><h2>${esc(title)}</h2><table><thead><tr>${columns.map(c=>`<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>${list.map(row=>`<tr>${columns.map(c=>`<td>${esc(row[c.key]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`;
+  }
+
+  function buildPdfReportElement(){
+    const data=learningReportData();
+    const root=document.createElement('div');
+    root.className='pdf-export-report';
+    root.innerHTML=`
+      <div class="pdf-report-title"><div><span>EDAN'S ENGLISH COACH</span><h1>學習狀況報告</h1></div><div class="pdf-report-date">${esc(new Date().toLocaleString('zh-TW',{hour12:false}))}</div></div>
+      <div class="pdf-report-metrics">
+        <div><b>${state.xp}</b><span>XP</span></div>
+        <div><b>${streak()}</b><span>Streak days</span></div>
+        <div><b>${interviewReadiness()}%</b><span>Interview Readiness</span></div>
+        <div><b>${(state.sessions||[]).length}</b><span>Sessions</span></div>
+      </div>
+      ${reportTableHtml('能力輪廓',data.skills,[{key:'技能',label:'技能'},{key:'等級',label:'目前等級'}],10)}
+      ${reportTableHtml('目前弱點',data.weaknesses,[{key:'弱點',label:'弱點'},{key:'次數',label:'累積次數'}],8)}
+      ${reportTableHtml('Personal Error Memory',data.errors,[{key:'類型',label:'錯誤類型'},{key:'次數',label:'次數'},{key:'說明',label:'說明'},{key:'修正',label:'修正'}],8)}
+      ${reportTableHtml('優先複習題目',data.questions.filter(x=>x.作答次數>0).sort((a,b)=>(b.答錯+b.猜題+b.低於60分次數)-(a.答錯+a.猜題+a.低於60分次數)),[{key:'題目',label:'題目'},{key:'熟悉度',label:'熟悉度'},{key:'答錯',label:'錯'},{key:'猜題',label:'猜'},{key:'最近口說分數',label:'口說'}],12)}
+      ${reportTableHtml('最近口說紀錄',[...data.speaking].reverse(),[{key:'日期',label:'日期'},{key:'題目ID',label:'題目'},{key:'分數',label:'分數'},{key:'WPM',label:'WPM'},{key:'弱點',label:'弱點'}],10)}
+      ${reportTableHtml('最近回合',data.sessions,[{key:'日期',label:'日期'},{key:'回合',label:'回合'},{key:'分數',label:'分數'},{key:'最弱技能',label:'最弱技能'}],10)}
+      <div class="pdf-report-foot">Content version: ${esc(CONTENT.contentVersion)} · 此報告依帳號目前同步的學習紀錄產生。</div>`;
+    document.body.appendChild(root);
+    return root;
+  }
+
+  async function exportLearningPdf(){
+    let report=null;
+    try{
+      setExportStatus('正在產生 PDF…','loading');
+      await Promise.all([
+        loadExternalScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',()=>!!window.html2canvas),
+        loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',()=>!!window.jspdf?.jsPDF)
+      ]);
+      report=buildPdfReportElement();
+      const canvas=await window.html2canvas(report,{scale:1.5,backgroundColor:'#ffffff',useCORS:true,logging:false});
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+      const pageWidth=210;
+      const pageHeight=297;
+      const margin=8;
+      const usableWidth=pageWidth-margin*2;
+      const imgHeight=canvas.height*usableWidth/canvas.width;
+      const img=canvas.toDataURL('image/jpeg',.9);
+      let y=margin;
+      let remaining=imgHeight;
+      pdf.addImage(img,'JPEG',margin,y,usableWidth,imgHeight,undefined,'FAST');
+      remaining-=pageHeight-margin*2;
+      while(remaining>0){
+        pdf.addPage();
+        y=margin-(imgHeight-remaining);
+        pdf.addImage(img,'JPEG',margin,y,usableWidth,imgHeight,undefined,'FAST');
+        remaining-=pageHeight-margin*2;
+      }
+      pdf.save(`edan-english-learning-${todayKey()}.pdf`);
+      setExportStatus('✓ PDF 已匯出','success');
+    }catch(err){
+      console.error(err);
+      setExportStatus('PDF 匯出失敗，請確認網路後重試。','error');
+    }finally{
+      report?.remove();
+    }
+  }
+
   function importProgress(file){
     const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!parsed||typeof parsed!=='object')throw new Error('bad');state={...defaultState(),...parsed,skills:{...initialSkills,...(parsed.skills||{})},settings:{...defaultState().settings,...(parsed.settings||{})}};save();syncSettingsUI();renderOverview();renderVocabulary(12);renderChunks();alert('進度已匯入。');}catch(e){alert('這不是有效的進度 JSON。');}};reader.readAsText(file);
   }
@@ -1892,7 +2118,11 @@
       const mode=btn.dataset.vocabMode;
       if(mode==='cards')showVocabCards(); else startVocabPractice(mode,8);
     }));
-    $('exportReportBtn').addEventListener('click',exportLearningReport); $('exportReportBtn2').addEventListener('click',exportLearningReport); $('exportProgressBtn').addEventListener('click',exportProgress);
+    $('exportReportBtn').addEventListener('click',exportLearningReport);
+    $('exportReportBtn2').addEventListener('click',exportLearningReport);
+    $('exportPdfBtn')?.addEventListener('click',exportLearningPdf);
+    $('exportExcelBtn')?.addEventListener('click',exportLearningExcel);
+    $('exportProgressBtn').addEventListener('click',exportProgress);
     $('importProgressInput').addEventListener('change',(e)=>{const f=e.target.files[0];if(f)importProgress(f);e.target.value='';});
     $('settingsBtn').addEventListener('click',()=>{$('settingsSection').classList.toggle('hidden');$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});});
     $('jumpVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');$('vocabularySection')?.scrollIntoView({behavior:'smooth',block:'start'});});
