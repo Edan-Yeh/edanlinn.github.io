@@ -1,0 +1,69 @@
+/* Modern Journey 2026: cohesive midnight-slate, sea-glass accent, crisp readable text.
+   A single final theme layer; does not change app logic or stored progress. */
+:root{--bg:#101827;--panel:#1a2638;--panel2:#213147;--line:#354960;--text:#f1f6ff;--muted:#b8c8da;--accent:#6dd7cf;--chip:#273c53;--shadow:0 18px 45px rgba(4,10,22,.25);color-scheme:dark}
+html[data-world],html[data-league]{color-scheme:dark}
+body{background:#101827!important;color:#f1f6ff!important;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif!important;letter-spacing:0!important}
+body::before{opacity:.055!important}
+.top{background:rgba(15,25,40,.94)!important;border-bottom:1px solid #304357!important;backdrop-filter:blur(24px)!important}
+.sidebar{background:#142033!important;border-color:#2f4258!important}
+.sidebar .side-link{color:#cad8e9!important;border-radius:12px!important}
+.sidebar .side-link.active,.sidebar .side-link:hover{background:#263c51!important;color:#e7fffb!important;border-color:#4c8d8e!important}
+.guide-side-link{background:#1e3745!important;border:1px solid #356b70!important;color:#bdf9ee!important}
+.sidebar .side-brand b,.sidebar .side-bottom b{color:#f3f8ff!important}
+.sidebar .side-brand small,.sidebar .side-label,.sidebar .side-bottom p,.sidebar .side-bottom span{color:#afc0d5!important}
+.top .brand,.top .profile-name,.top .nav a{color:#e9f1fc!important}
+.top .brand small,.top .profile-name small{color:#aebed1!important}
+.hero,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro{background:#1a273a!important;border:1px solid #34485f!important;box-shadow:0 14px 45px rgba(2,10,22,.17)!important}
+.hero{background:radial-gradient(ellipse at 85% 10%,rgba(69,145,150,.18),transparent 46%),linear-gradient(125deg,#1a283b,#192539)!important;border-radius:24px!important}
+.hero h1,.portfolio-heading h2,.learning-method-panel h2,.ai-foundations h2,.lab-intro h2{color:#f3f8ff!important}
+.hero h1 span{color:#83e4d8!important;-webkit-text-fill-color:#83e4d8!important}
+.hero p,.hero-copy,.portfolio-heading p,.learning-method-panel p,.ai-foundations p,.lab-intro p{color:#c1d0e2!important}
+.section-kicker,.hero-eyebrow,.guide-eyebrow{color:#83e4d8!important}
+.primary-action{background:#66d5ca!important;color:#0e2733!important;border:1px solid #8feee2!important;font-weight:800!important;box-shadow:0 8px 22px rgba(53,180,172,.15)!important}
+.quiet-action{background:#26384d!important;color:#e5f3fa!important;border:1px solid #4a617b!important}
+.rank-card,.stat,.overview-card,.dash-panel,.path-panel,.module-card,.skill-map-panel,.examples-panel,.glossary-panel,.quiz-panel,.concept-map,.day,.box,.module-togglebar{background:#202e43!important;border:1px solid #3a4f68!important;color:#edf4ff!important;border-radius:17px!important}
+.rank-card .rank-title,.rank-card .rank-level,.stat b{color:#f3f8ff!important}
+.rank-card .rank-subtitle,.rank-card .rank-foot,.rank-card .rank-top,.stat small{color:#bacbde!important}
+.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.ai-detail[open] summary{background:#24364a!important;border-color:#40566f!important}
+.portfolio-project h3,.ai-feature h3,.ai-architecture h3,.method-grid b,.ai-detail summary{color:#f1f7ff!important}
+.portfolio-project p,.ai-feature p,.ai-architecture p,.method-grid p,.ai-detail-body p{color:#c7d6e7!important}
+.portfolio-status,.ai-lesson-label,.portfolio-tags span,.portfolio-principles strong,.ai-method span,.ai-code-path,.ai-arch-flow span{background:#2b4857!important;border-color:#456f7a!important;color:#c8fff4!important}
+.ai-feature-index,.method-grid span,.portfolio-project-meta,.portfolio-principles span{color:#8de6da!important}
+.portfolio-text-link,.portfolio-project-links a,.lab-intro a{color:#9af2e5!important}
+.moba-arena{background:#1b2b3c!important;border-color:#425c70!important}
+.moba-arena .moba-toolbar,.moba-arena .moba-scoreboard,.moba-arena .campaign-panel{background:#25384b!important;border-color:#496276!important}
+.moba-arena .moba-actions button,.moba-arena .moba-toolbar button,.moba-arena .campaign-panel button{background:#315268!important;color:#eefaff!important;border-color:#638699!important}
+#daily .day{background:#202e43!important;border-color:#3e536c!important}
+#daily .day-head h2,#daily .day-body>h3{color:#f3f8ff!important;-webkit-text-fill-color:#f3f8ff!important}
+#daily .day-head .muted,#daily .day-num{color:#b9cce1!important;-webkit-text-fill-color:#b9cce1!important}
+#daily .score,#daily .score.mid,#daily .score.high{color:#86e2d7!important;-webkit-text-fill-color:#86e2d7!important}
+#daily .correction .box{background:#293c51!important;border-color:#4a627d!important}
+#daily .correction .box.good{border-left-color:#6dd7cf!important}
+#daily .chips .chip{background:#294959!important;color:#d5fff7!important;-webkit-text-fill-color:#d5fff7!important;border-color:#416e77!important}
+#daily .memory,#daily .archive-link{background:#2a4057!important}
+#daily .filter button.active{background:#287a7b!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+#daily .toolbar .search,#daily :is(input,select){background:#162338!important;border-color:#516a84!important;color:#f1f6ff!important}
+#daily .toolbar .search::placeholder{color:#b4c6dc!important}
+:focus-visible{outline:3px solid #78e1d7!important;outline-offset:3px}
+.visitor-guide{position:relative;isolation:isolate;overflow:hidden;margin:24px 0 28px;padding:30px;border:1px solid #426579;border-radius:24px;background:radial-gradient(ellipse at 96% 0%,rgba(71,194,182,.17),transparent 46%),linear-gradient(145deg,#1b3043,#182637 80%);box-shadow:0 20px 55px rgba(0,7,19,.2)}
+.visitor-guide-top{display:flex;align-items:start;justify-content:space-between;gap:20px;margin-bottom:24px}
+.guide-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.15em;font-weight:800}
+.guide-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#77e6d6;box-shadow:0 0 0 5px rgba(119,230,214,.12)}
+.visitor-guide h2{font-size:clamp(27px,3vw,38px);letter-spacing:-.04em;line-height:1.25;color:#f4faff;margin:12px 0}
+.visitor-guide-top p{max-width:760px;color:#c3d4e7;font-size:14px;line-height:1.85;margin:0}
+.guide-time{font-size:10px;white-space:nowrap;letter-spacing:.14em;font-weight:800;color:#8adfd5;background:#27495a;border:1px solid #417b80;padding:9px 12px;border-radius:99px}
+.guide-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.guide-path{min-width:0;display:flex;flex-direction:column;gap:13px;padding:23px 21px;text-decoration:none!important;background:#22374a;border:1px solid #456077;border-radius:17px;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.guide-path:hover{background:#294459;border-color:#78c5c0;transform:translateY(-3px)}
+.guide-primary{background:linear-gradient(145deg,#27505a,#234054);border-color:#5ca8a5}
+.guide-number{font-size:11px;color:#94dfd7;font-weight:800;letter-spacing:.06em}
+.guide-path strong{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#f2faff;font-size:19px;line-height:1.45;letter-spacing:-.02em}
+.guide-path strong span{color:#83e6d8}
+.guide-desc{font-size:13px;color:#c2d2e5;line-height:1.75;flex:1}
+.guide-cta{font-size:12px;font-weight:800;color:#9df1e4;border-top:1px solid #49647a;padding-top:13px}
+.guide-bottom{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-top:18px;font-size:12px;color:#b6c8dc}
+.guide-bottom b{color:#a7f2e7;margin-right:8px}.guide-bottom a{color:#a2efe6;text-decoration:none;font-weight:750}
+#start-here,#portfolio,#learning-method,#learning-lab{scroll-margin-top:90px}
+@media(max-width:950px){.guide-paths{grid-template-columns:1fr}.guide-path{gap:9px}.visitor-guide{padding:22px}.visitor-guide-top{display:block}.guide-time{display:inline-block;margin-top:14px}}
+@media(max-width:640px){.visitor-guide{margin:14px 0 20px;padding:19px;border-radius:18px}.visitor-guide h2{font-size:27px}.guide-path{padding:18px}.guide-path strong{font-size:17px}.guide-bottom{display:block}.guide-bottom a{display:block;margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.guide-path{transition:none}.guide-path:hover{transform:none}}
