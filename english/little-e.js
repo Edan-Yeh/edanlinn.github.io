@@ -1,24 +1,125 @@
 (() => {
   'use strict';
 
-  const $ = id => document.getElementById(id);
-  const bridge = () => window.EDAN_APP_BRIDGE;
-  let aiSession = null;
-  let aiInitPromise = null;
-  let busy = false;
-  let messages = [];
+  const ADMIN_EMAIL='edan14725836961@gmail.com';
+  const CHAT_KEY_PREFIX='edanLittleEChatV26:';
+  const PREF_KEY='edanLittleEPrefsV26';
 
-  function escapeText(s=''){
+  const $=id=>document.getElementById(id);
+  const bridge=()=>window.EDAN_APP_BRIDGE;
+  const cloud=()=>window.EDAN_CLOUD;
+
+  let aiSession=null;
+  let aiInitPromise=null;
+  let busy=false;
+  let messages=[];
+  let currentFeedbackMessageId=null;
+  let langPrefs={en:true,zh:false};
+  let scenario='coach';
+
+  const SCENARIOS={
+    coach:{
+      label:'學習教練',
+      prompt:'Help the user understand how to learn, remember, and answer. Use short, practical English.'
+    },
+    chat:{
+      label:'英文陪聊',
+      prompt:'Have a natural friendly conversation. Keep English simple enough for an English learner. Ask at most one useful follow-up question.'
+    },
+    interview:{
+      label:'面試陪練',
+      prompt:'Act as an international tech interviewer and career English coach. Ask realistic follow-up questions and improve the user\'s answer without making it sound memorized.'
+    },
+    work:{
+      label:'工作情境',
+      prompt:'Simulate professional workplace English for meetings, stakeholder updates, project delivery, risks, incidents, requirements, and cross-team coordination.'
+    },
+    site:{
+      label:'網站導覽',
+      prompt:'Explain how to use Edan\'s English Coach clearly. Recommend the next feature or practice mode based on the user\'s request.'
+    },
+    style:{
+      label:'我的回答風格',
+      prompt:'Rewrite or answer in the user\'s emerging speaking style: direct, structured, concise, practical, and easy to say. Do not invent personal facts.'
+    },
+    mock:{
+      label:'情境模擬',
+      prompt:'Create a short role-play. Give one line at a time, wait for the user, then continue naturally. Adapt difficulty to the user.'
+    }
+  };
+
+  function esc(s=''){
     return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
   }
 
-  function context(){
-    return bridge()?.context?.() || {};
+  function user(){
+    return cloud()?.user||null;
   }
 
-  function currentQuestionLabel(){
-    const q=context().question;
-    return q ? `目前題目：${q.text}` : '目前沒有進行中的題目';
+  function chatStorageKey(){
+    return CHAT_KEY_PREFIX+(user()?.id||'anonymous');
+  }
+
+  function loadPrefs(){
+    try{
+      const p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');
+      if(typeof p.en==='boolean')langPrefs.en=p.en;
+      if(typeof p.zh==='boolean')langPrefs.zh=p.zh;
+      if(p.scenario&&SCENARIOS[p.scenario])scenario=p.scenario;
+    }catch(e){}
+    if(!langPrefs.en&&!langPrefs.zh)langPrefs.en=true;
+  }
+
+  function savePrefs(){
+    localStorage.setItem(PREF_KEY,JSON.stringify({...langPrefs,scenario}));
+  }
+
+  function loadChat(){
+    try{
+      const raw=localStorage.getItem(chatStorageKey());
+      const parsed=JSON.parse(raw||'[]');
+      messages=Array.isArray(parsed)?parsed.filter(m=>m&&m.role).slice(-40):[];
+    }catch(e){messages=[];}
+    renderMessages();
+  }
+
+  function saveChat(){
+    try{localStorage.setItem(chatStorageKey(),JSON.stringify(messages.slice(-40)));}catch(e){}
+  }
+
+  function clearVisibleChat(){
+    try{localStorage.removeItem(chatStorageKey());}catch(e){}
+    messages=[];
+    renderMessages();
+  }
+
+  function ctx(){
+    return bridge()?.context?.()||{};
+  }
+
+  function memory(){
+    return bridge()?.getMemory?.()||[];
+  }
+
+  function remember(kind,text){
+    bridge()?.remember?.({kind,text});
+  }
+
+  function classifyIntent(text){
+    const t=String(text||'').toLowerCase();
+    if(/翻譯|translate/.test(t))return 'translation';
+    if(/面試|interview|回答|怎麼答|how.*answer/.test(t))return 'interview_answer';
+    if(/文法|grammar|對嗎|自然嗎/.test(t))return 'grammar';
+    if(/怎麼用|功能|網站|使用|哪裡|按鈕/.test(t))return 'site_help';
+    if(/會議|主管|客戶|stakeholder|工作|project|issue|risk/.test(t))return 'work_english';
+    if(/單字|word|vocab/.test(t))return 'vocabulary';
+    return 'chat';
+  }
+
+  function rememberUserRequest(text){
+    const kind=classifyIntent(text);
+    const compact=String(text||'').replace(/\s+/g,' ').trim().slice(0,160);
+    if(compact)remember(kind,compact);
   }
 
   function setStatus(text,tone='neutral'){
@@ -28,38 +129,10 @@
     el.dataset.tone=tone;
   }
 
-  function saveHistory(){
-    bridge()?.saveHistory?.(messages.slice(-30));
-  }
-
-  function addMessage(role,text,meta={}){
-    messages.push({
-      role,
-      text:String(text||'').trim(),
-      ts:new Date().toISOString(),
-      ...meta
-    });
-    messages=messages.slice(-30);
-    saveHistory();
-    renderMessages();
-  }
-
-  function renderMessages(){
-    const host=$('littleEMessages');
-    if(!host)return;
-    if(!messages.length){
-      host.innerHTML='<div class="little-e-empty"><b>嗨，我是小E 👋</b><span>我會看你目前正在練的題目，幫你翻譯、拆回答架構、把英文改成你現在講得出來的版本。</span></div>';
-      return;
-    }
-    host.innerHTML=messages.map((m,i)=>{
-      const who=m.role==='user'?'你':'小E';
-      const cls=m.role==='user'?'user':'assistant';
-      const speak=m.role==='assistant' && /[A-Za-z]{3}/.test(m.text)
-        ? `<button class="little-e-msg-action" data-little-e-speak="${i}" type="button">🔊 朗讀英文</button>`
-        : '';
-      return `<div class="little-e-msg ${cls}"><div class="little-e-msg-who">${who}</div><div class="little-e-msg-text">${escapeText(m.text)}</div>${speak}</div>`;
-    }).join('');
-    host.scrollTop=host.scrollHeight;
+  function currentQuestionLabel(){
+    const q=ctx().question;
+    if(!q)return '目前沒有題目。可以直接聊天、貼一句話翻譯，或問我網站怎麼用。';
+    return `${q.active?'目前題目':'最近題目'}：${q.text}`;
   }
 
   function updateContextBar(){
@@ -67,12 +140,98 @@
     if(el)el.textContent=currentQuestionLabel();
   }
 
+  function assistantPayload(en='',zh='',meta={}){
+    return {
+      role:'assistant',
+      id:'le-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),
+      en:String(en||'').trim(),
+      zh:String(zh||'').trim(),
+      ts:new Date().toISOString(),
+      ...meta
+    };
+  }
+
+  function addUserMessage(text){
+    messages.push({role:'user',id:'le-u-'+Date.now(),text:String(text||'').trim(),ts:new Date().toISOString()});
+    messages=messages.slice(-40);
+    saveChat();
+    renderMessages();
+  }
+
+  function addAssistantMessage(payload){
+    const p=payload?.role==='assistant'?payload:assistantPayload(payload?.en||'',payload?.zh||'',payload||{});
+    messages.push(p);
+    messages=messages.slice(-40);
+    saveChat();
+    renderMessages();
+  }
+
+  function renderMessages(){
+    const host=$('littleEMessages');
+    if(!host)return;
+
+    if(!messages.length){
+      host.innerHTML=`<div class="little-e-empty"><b>嗨，我是小E 👋</b><span>我可以陪你聊天、翻譯一句話、解釋題目、練面試、模擬工作情境，也可以教你怎麼使用這個網站。</span><div class="little-e-empty-examples">例如：<button type="button" data-little-e-sample="幫我翻譯：我晚一點回覆你">幫我翻譯一句話</button><button type="button" data-little-e-sample="這個網站我今天應該先練什麼？">今天先練什麼？</button><button type="button" data-little-e-sample="陪我用英文聊工作">陪我聊工作</button></div></div>`;
+      return;
+    }
+
+    host.innerHTML=messages.map((m,i)=>{
+      if(m.role==='user'){
+        return `<div class="little-e-msg user"><div class="little-e-msg-who">你</div><div class="little-e-msg-text">${esc(m.text||'')}</div></div>`;
+      }
+
+      const en=m.en||'';
+      const zh=m.zh||'';
+      return `<div class="little-e-msg assistant" data-msg-id="${esc(m.id||String(i))}">
+        <div class="little-e-msg-who">小E</div>
+        <div class="little-e-response">
+          <div class="little-e-lang little-e-lang-en ${langPrefs.en?'':'hidden'}"><span class="little-e-lang-label">EN</span><div>${esc(en||'—')}</div></div>
+          <div class="little-e-lang little-e-lang-zh ${langPrefs.zh?'':'hidden'}"><span class="little-e-lang-label">中文</span><div>${esc(zh||'—')}</div></div>
+        </div>
+        <div class="little-e-msg-actions">
+          ${en&&/[A-Za-z]{2}/.test(en)?`<button type="button" data-little-e-speak="${i}">🔊 英文</button>`:''}
+          <button type="button" data-little-e-feedback="helpful" data-index="${i}">👍 有幫助</button>
+          <button type="button" data-little-e-feedback="needs_improvement" data-index="${i}">👎 要改進</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    host.scrollTop=host.scrollHeight;
+  }
+
+  function applyLanguageVisibility(){
+    document.querySelectorAll('.little-e-lang-en').forEach(el=>el.classList.toggle('hidden',!langPrefs.en));
+    document.querySelectorAll('.little-e-lang-zh').forEach(el=>el.classList.toggle('hidden',!langPrefs.zh));
+    const en=$('littleELangEn');
+    const zh=$('littleELangZh');
+    if(en){
+      en.classList.toggle('active',langPrefs.en);
+      en.textContent=langPrefs.en?'EN 顯示':'EN 隱藏';
+    }
+    if(zh){
+      zh.classList.toggle('active',langPrefs.zh);
+      zh.textContent=langPrefs.zh?'中文 顯示':'中文 隱藏';
+    }
+  }
+
+  function setLanguage(which){
+    if(which==='en')langPrefs.en=!langPrefs.en;
+    if(which==='zh')langPrefs.zh=!langPrefs.zh;
+    if(!langPrefs.en&&!langPrefs.zh){
+      if(which==='en')langPrefs.zh=true;
+      else langPrefs.en=true;
+    }
+    savePrefs();
+    applyLanguageVisibility();
+  }
+
   function openPanel(){
     $('littleEPanel')?.classList.remove('hidden');
     $('littleEButton')?.setAttribute('aria-expanded','true');
     updateContextBar();
-    setTimeout(()=>$('littleEInput')?.focus(),120);
+    updateAdminVisibility();
     warmStatus();
+    setTimeout(()=>$('littleEInput')?.focus(),100);
   }
 
   function closePanel(){
@@ -81,27 +240,35 @@
   }
 
   function warmStatus(){
-    if('LanguageModel' in window){
-      setStatus('本機 AI 可用 · 0 API 費用','good');
-    }else if('Translator' in window){
-      setStatus('本機翻譯可用 · 回答建議使用輔助模式','mid');
-    }else{
-      setStatus('基本輔助模式','mid');
-    }
+    if('LanguageModel' in window)setStatus('本機 AI 可用 · 0 API 費用','good');
+    else if('Translator' in window)setStatus('本機翻譯可用 · 對話使用輔助模式','mid');
+    else setStatus('基本輔助模式','mid');
   }
 
-  function littleESystemPrompt(){
+  function scenarioPrompt(){
+    return SCENARIOS[scenario]?.prompt||SCENARIOS.coach.prompt;
+  }
+
+  function systemPrompt(){
     return [
-      'You are 小E, Edan\'s personal Career English coach.',
-      'Edan is an IBM Taiwan IT consultant working on a large core banking transformation project.',
-      'His background includes software development, system analysis, consulting, banking and insurance IT, cross-team coordination, batch operations, testing and delivery.',
-      'His goal is to speak natural, clear English for international tech interviews and work, especially PM, Professional Services, Solutions Architect and consulting roles.',
-      'Always prioritize simple, speakable English over advanced vocabulary.',
-      'For explanations, reply in Traditional Chinese. Put useful English examples on separate lines.',
-      'For interview answers, use: direct answer first, then 2 key points, then stop. Avoid long memorized essays.',
-      'When the user asks for a simpler version, use short sentences and common words.',
-      'When translating, preserve meaning and give natural spoken English, not literal textbook English.',
-      'Use only the supplied current-question context for question-specific facts. Do not invent job achievements or numbers.'
+      'You are 小E, the built-in AI helper inside Edan English Coach.',
+      'Your job is broader than interview coaching: help users understand how to use the site, translate short sentences, practice English, chat naturally, simulate scenarios, and improve answers.',
+      'The product is for English learners. Prefer simple, speakable English, not advanced vocabulary.',
+      'When the user does NOT ask for translation, you may have a normal conversation. Do not force every turn into an interview lesson.',
+      'When the user asks for translation or uses words such as 翻譯 / 幫我翻譯 / translate, translate only the requested sentence or the current question if no sentence is supplied.',
+      'For interview/work answers: direct answer first, then 2 key points, then stop.',
+      'For site-help questions: explain exactly which feature to use and what to click in short steps.',
+      'Do not invent work achievements, numbers, personal facts, or company facts that are not in context.',
+      'Use prior memory only as soft personalization. Never claim the user said something unless the supplied memory shows it.',
+      'EVERY response must use exactly these bilingual markers:',
+      '[EN]',
+      'natural English response here',
+      '[/EN]',
+      '[ZH]',
+      'Traditional Chinese explanation/translation here',
+      '[/ZH]',
+      'Keep the English useful and concise. Chinese can explain nuance but should not be longer than necessary.',
+      'CURRENT SCENARIO: '+scenarioPrompt()
     ].join('\n');
   }
 
@@ -115,193 +282,235 @@
         const availability=await LanguageModel.availability();
         if(availability==='unavailable')return null;
         setStatus(availability==='available'?'正在啟動本機 AI…':'準備下載本機 AI 模型…','loading');
-        const session=await LanguageModel.create({
-          initialPrompts:[{role:'system',content:littleESystemPrompt()}],
+        aiSession=await LanguageModel.create({
+          initialPrompts:[{role:'system',content:systemPrompt()}],
           monitor(m){
             m.addEventListener('downloadprogress',e=>{
-              const pct=Math.round((Number(e.loaded)||0)*100);
-              setStatus(`本機 AI 模型下載中 ${pct}%`,'loading');
+              setStatus(`本機 AI 模型下載中 ${Math.round((Number(e.loaded)||0)*100)}%`,'loading');
             });
           }
         });
-        aiSession=session;
         setStatus('本機 AI · 資料留在裝置','good');
-        return session;
+        return aiSession;
       }catch(err){
-        console.warn('Little E local AI unavailable',err);
-        setStatus('本機 AI 暫不可用 · 已切換輔助模式','mid');
+        console.warn('Little E AI unavailable',err);
+        setStatus('本機 AI 暫不可用 · 輔助模式','mid');
         return null;
       }finally{
         aiInitPromise=null;
       }
     })();
-
     return aiInitPromise;
   }
 
+  function recentConversationText(){
+    return messages.slice(-8).map(m=>{
+      if(m.role==='user')return 'USER: '+(m.text||'');
+      return 'ASSISTANT EN: '+(m.en||'')+'\nASSISTANT ZH: '+(m.zh||'');
+    }).join('\n');
+  }
+
+  function memoryText(){
+    return memory().slice(-12).map(m=>`- [${m.kind}] ${m.text} (asked ${m.count||1}x)`).join('\n');
+  }
+
   function buildPrompt(userText){
-    const ctx=context();
-    const q=ctx.question;
-    const fw=q?.framework;
+    const c=ctx();
+    const q=c.question;
     const parts=[
-      'CURRENT USER REQUEST:',
+      'USER REQUEST:',
       userText,
+      '',
+      'SCENARIO:',
+      SCENARIOS[scenario]?.label||scenario,
+      '',
+      'RECENT CHAT:',
+      recentConversationText()||'(none)',
+      '',
+      'LONG-TERM TOPIC MEMORY:',
+      memoryText()||'(none)',
       '',
       'CURRENT LEARNING CONTEXT:'
     ];
+
     if(q){
       parts.push(
-        `Question: ${q.text}`,
+        `Question (${q.active?'active':'most recent'}): ${q.text}`,
         `Type: ${q.type}; Skill: ${q.skill}; Level: L${q.level}`,
         q.intent?`Intent: ${q.intent}`:'',
         q.keywords?.length?`Keywords: ${q.keywords.join(', ')}`:'',
         q.model?`Reference answer: ${q.model}`:'',
         q.modelZh?`Reference answer zh-TW: ${q.modelZh}`:''
       );
-      if(fw){
-        parts.push(
-          `Answer map: ${fw.title}`,
-          `Memory rule: ${fw.mnemonic}`,
-          ...fw.steps.map(x=>`${x[1]}: ${x[2]} | starter: ${x[3]}`)
-        );
+      if(q.framework){
+        parts.push(`Answer map: ${q.framework.title}`,`Memory rule: ${q.framework.mnemonic}`);
       }
     }else{
-      parts.push('No active question.');
+      parts.push('No current/recent practice question.');
     }
-    if(ctx.transcript)parts.push(`Edan's latest transcript: ${ctx.transcript}`);
-    if(Number.isFinite(ctx.lastSystemScore))parts.push(`Latest score for this question: ${ctx.lastSystemScore}/100`);
-    if(ctx.topWeakness)parts.push(`Current weak area: ${ctx.topWeakness}`);
-    parts.push('', 'Keep the response concise and practical for speaking practice.');
+
+    if(c.transcript)parts.push(`Latest transcript: ${c.transcript}`);
+    if(Number.isFinite(c.lastSystemScore))parts.push(`Latest speaking score: ${c.lastSystemScore}/100`);
+    if(c.topWeakness)parts.push(`Current weak area: ${c.topWeakness}`);
+
     return parts.filter(Boolean).join('\n');
   }
 
-  async function askLocalAI(text){
+  function parseBilingual(raw){
+    const text=String(raw||'').trim();
+    const en=text.match(/\[EN\]([\s\S]*?)\[\/EN\]/i)?.[1]?.trim()||'';
+    const zh=text.match(/\[ZH\]([\s\S]*?)\[\/ZH\]/i)?.[1]?.trim()||'';
+    if(en||zh)return {en,zh};
+
+    const hasZh=/[\u3400-\u9fff]/.test(text);
+    return hasZh?{en:'',zh:text}:{en:text,zh:''};
+  }
+
+  async function askAI(text){
     const session=await ensureAI();
     if(!session)return null;
     try{
       setStatus('小E 思考中…','loading');
       const result=await session.prompt(buildPrompt(text));
       setStatus('本機 AI · 資料留在裝置','good');
-      return String(result||'').trim();
+      return parseBilingual(result);
     }catch(err){
       console.warn('Little E prompt failed',err);
-      setStatus('本機 AI 回覆失敗 · 使用輔助模式','mid');
+      setStatus('本機 AI 回覆失敗 · 輔助模式','mid');
       return null;
     }
   }
 
-  async function createTranslator(sourceLanguage,targetLanguage){
+  async function makeTranslator(source,target){
     if(!('Translator' in window))return null;
     const attempts=[
-      {sourceLanguage,targetLanguage},
-      {sourceLanguage:sourceLanguage.startsWith('zh')?'zh':sourceLanguage,targetLanguage:targetLanguage.startsWith('zh')?'zh':targetLanguage}
+      {sourceLanguage:source,targetLanguage:target},
+      {sourceLanguage:source.startsWith('zh')?'zh':source,targetLanguage:target.startsWith('zh')?'zh':target}
     ];
-    for(const options of attempts){
+    for(const opts of attempts){
       try{
         return await Translator.create({
-          ...options,
-          monitor(m){
-            m.addEventListener('downloadprogress',e=>{
-              const pct=Math.round((Number(e.loaded)||0)*100);
-              setStatus(`本機翻譯模型下載中 ${pct}%`,'loading');
-            });
-          }
+          ...opts,
+          monitor(m){m.addEventListener('downloadprogress',e=>setStatus(`翻譯模型下載中 ${Math.round((Number(e.loaded)||0)*100)}%`,'loading'));}
         });
       }catch(e){}
     }
     return null;
   }
 
-  async function translateText(text){
-    const hasHan=/[\u3400-\u9fff]/.test(text);
-    const source=hasHan?'zh':'en';
-    const target=hasHan?'en':'zh-Hant';
-    const translator=await createTranslator(source,target);
+  async function translateSentence(text){
+    const input=String(text||'').trim();
+    if(!input)return null;
+    const sourceIsZh=/[\u3400-\u9fff]/.test(input);
+    const source=sourceIsZh?'zh':'en';
+    const target=sourceIsZh?'en':'zh-Hant';
+    const translator=await makeTranslator(source,target);
+
     if(translator){
       try{
         setStatus('本機翻譯中…','loading');
-        const out=await translator.translate(text);
-        if(typeof translator.destroy==='function')translator.destroy();
+        const translated=String(await translator.translate(input)||'').trim();
+        translator.destroy?.();
         warmStatus();
-        return String(out||'').trim();
+        return sourceIsZh
+          ? {en:translated,zh:input}
+          : {en:input,zh:translated};
       }catch(e){}
     }
 
-    const ai=await askLocalAI(hasHan
-      ? `請把以下中文翻成自然、簡單、適合口說的英文，只給英文與一個更自然版本：\n${text}`
-      : `請把以下英文翻成繁體中文，並補一句這句英文在口語中的意思：\n${text}`);
+    const ai=await askAI(`Translate exactly this one sentence naturally. Do not add coaching unless necessary:\n${input}`);
     return ai;
   }
 
-  function fallbackAnswer(action){
-    const ctx=context();
-    const q=ctx.question;
-    if(!q)return '目前沒有進行中的題目。你可以直接貼一段英文或中文，我可以先幫你處理翻譯；進入題目後，我也會自動帶入題目內容。';
+  function extractTranslationPayload(text){
+    const raw=String(text||'').trim();
+    if(!/翻譯|translate/i.test(raw))return null;
+    const after=raw.replace(/^.*?(?:幫我翻譯|請翻譯|翻譯|translate)[:：]?\s*/i,'').trim();
+    return after||ctx().question?.text||'';
+  }
+
+  function fallback(action='help'){
+    const c=ctx();
+    const q=c.question;
+
+    if(action==='site'){
+      return assistantPayload(
+        'Start with Today\'s 15-minute plan. Use Listening for question intent, Vocabulary for frequent words, Chunks for usable phrases, and Speaking for recorded answers. Use 小E anytime you get stuck.',
+        '建議先從「今日 15 分鐘」開始：聽力練意圖、單字練高頻字、Chunks 練可直接說的句型、口說做錄音回答。卡住時隨時叫小E。'
+      );
+    }
+
+    if(!q){
+      return assistantPayload(
+        'We can just chat. You can also paste one sentence and say “translate this,” or ask me how to use the site.',
+        '現在沒有題目也沒關係，可以直接聊天。你也可以貼一句話叫我翻譯，或問我網站怎麼用。'
+      );
+    }
 
     if(action==='answer'){
       const fw=q.framework;
-      if(fw){
-        const steps=fw.steps.map(x=>`${x[0]}. ${x[1]}：${x[2]}\n   起手式：${x[3]}`).join('\n');
-        return `這題先不要背完整答案。照這個順序聯想：\n\n${fw.mnemonic}\n\n${steps}\n\n參考答案：\n${q.model}`;
-      }
-      return `先直接回答，再補 2 個重點。\n\n參考答案：\n${q.model}`;
+      const en=fw
+        ? `Use this order: ${fw.mnemonic}. Start with: ${fw.steps.map(x=>x[3]).join(' → ')}\n\nReference: ${q.model}`
+        : `Give a direct answer, add two key points, then stop.\n\nReference: ${q.model}`;
+      const zh=fw
+        ? `先用這個順序聯想：${fw.mnemonic}。不要背整段，先記每一格的起手式再自己組句。`
+        : '先直接回答，再補兩個重點就停。';
+      return assistantPayload(en,zh);
     }
 
     if(action==='simple'){
       const sentences=String(q.model||'').split(/(?<=[.!?])\s+/).filter(Boolean);
-      const simple=sentences.slice(0,Math.min(2,sentences.length)).join(' ');
-      return `先用短版練：\n\n${simple||q.model}\n\n先求順，再慢慢補完整。`;
+      return assistantPayload(sentences.slice(0,2).join(' ')||q.model,'這是短版，先練到能順順說完，再補完整內容。');
     }
 
     if(action==='keywords'){
       const keys=(q.keywords||[]).slice(0,5);
-      return keys.length
-        ? `這題先記這幾個 cue words：\n\n${keys.map((k,i)=>`${i+1}. ${k}`).join('\n')}\n\n只看這些字，試著自己重組答案。`
-        : '這題目前沒有設定 Keywords。可以先用 Answer Map 的四格順序聯想。';
+      return assistantPayload(keys.join(' → ')||'Use the Answer Map.','先看這些 cue words，不看完整答案，試著自己把句子組回來。');
+    }
+
+    if(action==='explain'){
+      return assistantPayload(
+        'The interviewer wants a clear answer with ownership, priorities, and a practical example.',
+        q.intent?`這題的核心意圖：${q.intent}`:'面試官主要想聽你能不能清楚回答、說明自己負責什麼，以及你的實際做法。'
+      );
     }
 
     if(action==='model-zh'){
-      return q.modelZh
-        ? `Model answer 的意思：\n\n${q.modelZh}`
-        : '這題目前沒有預先整理好的繁體中文翻譯。';
+      return assistantPayload(q.model||'',q.modelZh||'這題目前沒有預先整理的繁體中文翻譯。');
     }
 
-    return `目前題目是：\n${q.text}\n\n你可以問我：「這題怎麼回答？」、「幫我簡化」、「這句什麼意思？」或直接貼一段文字要我翻譯。`;
+    return fallback('answer');
   }
 
-  async function runAction(action){
+  async function runQuickAction(action){
     if(busy)return;
     busy=true;
     try{
       updateContextBar();
+      const q=ctx().question;
+
       if(action==='translate-question'){
-        const q=context().question;
-        if(!q){addMessage('assistant','目前沒有進行中的題目。');return;}
-        addMessage('user','翻譯目前題目');
-        const translated=await translateText(q.text);
-        addMessage('assistant',translated || (q.intent?`這題的意思／意圖是：${q.intent}`:'目前無法自動翻譯這題。'));
-        return;
-      }
-      if(action==='model-zh'){
-        addMessage('user','翻譯 Model answer');
-        addMessage('assistant',fallbackAnswer('model-zh'));
-        return;
-      }
-      if(action==='keywords'){
-        addMessage('user','這題要記哪些關鍵字？');
-        addMessage('assistant',fallbackAnswer('keywords'));
+        if(!q){addAssistantMessage(fallback('site'));return;}
+        addUserMessage('翻譯目前題目');
+        const result=await translateSentence(q.text);
+        addAssistantMessage(result?assistantPayload(result.en,result.zh,{category:'translation'}):fallback('explain'));
+        remember('translation',q.text.slice(0,140));
         return;
       }
 
       const prompts={
-        answer:'依據我目前這題，建議我怎麼回答？請用我講得出來的簡單英文，先給聯想架構，再給 20–40 秒版本。',
-        simple:'把目前這題的建議回答改成更簡單、更好說、更容易記的版本。不要用難字。',
-        explain:'解釋目前這題在問什麼，以及面試官真正想聽什麼。用繁體中文說明，再給英文起手式。'
+        answer:'依據目前題目，建議我怎麼回答。先給我可以直接講出口的英文，再用中文解釋聯想架構。',
+        simple:'把目前題目的回答改成更簡單、更好說、更好記的版本。',
+        keywords:'只整理目前題目的 cue words，並告訴我怎麼用它們聯想回答。',
+        explain:'解釋目前題目真正想問什麼，以及面試官想聽什麼。',
+        'model-zh':'翻譯目前 Model answer，英文保留原句，中文做自然翻譯。',
+        site:'告訴我現在這個網站怎麼用，以及我下一步適合做什麼。'
       };
-      const user=prompts[action]||'請幫我處理目前這題。';
-      addMessage('user',user);
-      const ai=await askLocalAI(user);
-      addMessage('assistant',ai || fallbackAnswer(action==='explain'?'answer':action));
+      const text=prompts[action]||'幫我處理目前這題。';
+      addUserMessage(text);
+      rememberUserRequest(text);
+      const ai=await askAI(text);
+      addAssistantMessage(ai?assistantPayload(ai.en,ai.zh,{category:action}):fallback(action));
     }finally{
       busy=false;
     }
@@ -310,49 +519,172 @@
   async function handleUserText(raw){
     const text=String(raw||'').trim();
     if(!text||busy)return;
-    addMessage('user',text);
+
+    addUserMessage(text);
+    rememberUserRequest(text);
     busy=true;
     try{
-      const lower=text.toLowerCase();
-      const translateIntent=/^(翻譯|translate|這句什麼意思|這句英文)/i.test(text);
-      if(translateIntent){
-        const stripped=text.replace(/^(翻譯|translate|這句什麼意思|這句英文)[:：]?\s*/i,'').trim();
-        const target=stripped || context().question?.text || '';
-        if(target){
-          const result=await translateText(target);
-          addMessage('assistant',result || '目前無法啟用本機翻譯。你可以改用上方「翻譯目前題目」，或稍後再試。');
-          return;
-        }
+      const translation=extractTranslationPayload(text);
+      if(translation){
+        const result=await translateSentence(translation);
+        addAssistantMessage(result?assistantPayload(result.en,result.zh,{category:'translation'}):fallback('help'));
+        return;
       }
 
-      const ai=await askLocalAI(text);
-      if(ai){
-        addMessage('assistant',ai);
-      }else{
-        addMessage('assistant',fallbackAnswer('help'));
+      if(/怎麼用|網站.*功能|今天.*練|從哪.*開始/.test(text)){
+        const ai=await askAI(text);
+        addAssistantMessage(ai?assistantPayload(ai.en,ai.zh,{category:'site_help'}):fallback('site'));
+        return;
       }
+
+      const ai=await askAI(text);
+      addAssistantMessage(ai?assistantPayload(ai.en,ai.zh,{category:classifyIntent(text)}):fallback('help'));
     }finally{
       busy=false;
     }
   }
 
+  function feedbackHint(category,rating){
+    const map={
+      translation:'檢查翻譯準確度、自然度與是否只翻譯指定句子',
+      interview_answer:'檢查回答是否符合使用者程度與真實背景',
+      site_help:'改善網站導覽與功能說明',
+      grammar:'改善文法修正與原因說明',
+      work_english:'增加真實工作情境與專業表達',
+      chat:'改善對話延續性、自然度與個人化'
+    };
+    return `${map[category]||'檢查回覆是否真正解決使用者需求'}；回饋類型：${rating}`;
+  }
+
+  async function submitFeedback({rating,message,comment=''}) {
+    const c=cloud();
+    if(!c?.submitLittleEFeedback){
+      setStatus('回饋功能尚未連線','mid');
+      return false;
+    }
+    const category=message?.category||classifyIntent(messages.slice().reverse().find(x=>x.role==='user')?.text||'');
+    try{
+      await c.submitLittleEFeedback({
+        rating,
+        category,
+        comment,
+        userMessage:messages.slice(0,messages.indexOf(message)).reverse().find(x=>x.role==='user')?.text||null,
+        assistantResponse:[message?.en,message?.zh].filter(Boolean).join('\n---\n'),
+        context:{question:ctx().question?.text||null,scenario,version:ctx().contentVersion||null},
+        improvementHint:feedbackHint(category,rating)
+      });
+      setStatus('✓ 已收到你的回饋','good');
+      return true;
+    }catch(err){
+      console.warn(err);
+      setStatus('回饋送出失敗，請稍後再試','mid');
+      return false;
+    }
+  }
+
+  function openFeedbackForm(index=null,rating='suggestion'){
+    currentFeedbackMessageId=index===null?null:Number(index);
+    const modal=$('littleEFeedbackBox');
+    if(!modal)return;
+    modal.classList.remove('hidden');
+    $('littleEFeedbackTitle').textContent=rating==='needs_improvement'?'這則回覆哪裡需要改進？':'給小E一個使用建議';
+    modal.dataset.rating=rating;
+    const input=$('littleEFeedbackText');
+    if(input){input.value='';setTimeout(()=>input.focus(),80);}
+  }
+
+  function closeFeedbackForm(){
+    $('littleEFeedbackBox')?.classList.add('hidden');
+    currentFeedbackMessageId=null;
+  }
+
+  async function sendFeedbackForm(){
+    const box=$('littleEFeedbackBox');
+    const rating=box?.dataset.rating||'suggestion';
+    const comment=$('littleEFeedbackText')?.value.trim()||'';
+    if(!comment){
+      $('littleEFeedbackHint').textContent='請寫一點你希望怎麼改。';
+      return;
+    }
+    const message=currentFeedbackMessageId===null?null:messages[currentFeedbackMessageId];
+    const ok=await submitFeedback({rating,message,comment});
+    if(ok)closeFeedbackForm();
+  }
+
+  function updateAdminVisibility(){
+    const isAdmin=String(user()?.email||'').toLowerCase()===ADMIN_EMAIL && !!cloud()?.isAdmin;
+    $('littleEAdminBtn')?.classList.toggle('hidden',!isAdmin);
+  }
+
+  function feedbackStatusLabel(status){
+    return {new:'新回饋',reviewed:'已查看',planned:'預計改善',done:'已完成'}[status]||status;
+  }
+
+  async function loadAdminFeedback(){
+    const host=$('littleEAdminList');
+    if(!host)return;
+    host.innerHTML='<div class="support">讀取回饋中…</div>';
+    try{
+      const rows=await cloud().listLittleEFeedback(100);
+      if(!rows.length){
+        host.innerHTML='<div class="support">目前沒有使用者回饋。</div>';
+        return;
+      }
+      host.innerHTML=rows.map(r=>`<article class="little-e-admin-item">
+        <div class="little-e-admin-meta"><b>#${r.id} · ${esc(r.rating)}</b><span>${esc(r.user_email||'')} · ${esc(new Date(r.created_at).toLocaleString('zh-TW',{hour12:false}))}</span></div>
+        <div class="little-e-admin-category">${esc(r.category||'general')} · ${esc(r.improvement_hint||'')}</div>
+        ${r.comment?`<div class="little-e-admin-comment">使用者：${esc(r.comment)}</div>`:''}
+        ${r.user_message?`<details><summary>使用者訊息</summary><div>${esc(r.user_message)}</div></details>`:''}
+        ${r.assistant_response?`<details><summary>小E 回覆</summary><div class="little-e-admin-response">${esc(r.assistant_response)}</div></details>`:''}
+        <label class="little-e-admin-status">處理狀態
+          <select data-feedback-status data-id="${r.id}">
+            ${['new','reviewed','planned','done'].map(x=>`<option value="${x}" ${x===r.status?'selected':''}>${feedbackStatusLabel(x)}</option>`).join('')}
+          </select>
+        </label>
+      </article>`).join('');
+    }catch(err){
+      console.warn(err);
+      host.innerHTML='<div class="support">無法讀取 Admin 回饋。</div>';
+    }
+  }
+
+  function openAdmin(){
+    $('littleEAdminPanel')?.classList.remove('hidden');
+    loadAdminFeedback();
+  }
+
+  function closeAdmin(){
+    $('littleEAdminPanel')?.classList.add('hidden');
+  }
+
   function bind(){
-    messages=(bridge()?.getHistory?.()||[]).filter(m=>m&&m.role&&m.text).slice(-30);
-    renderMessages();
+    loadPrefs();
+    scenario=$('littleEScenario')?.value||scenario;
+    if($('littleEScenario'))$('littleEScenario').value=scenario;
+    loadChat();
+    applyLanguageVisibility();
     updateContextBar();
+    updateAdminVisibility();
     warmStatus();
 
     $('littleEButton')?.addEventListener('click',()=>{
-      const panel=$('littleEPanel');
-      if(panel?.classList.contains('hidden'))openPanel(); else closePanel();
+      $('littleEPanel')?.classList.contains('hidden')?openPanel():closePanel();
     });
     $('littleEClose')?.addEventListener('click',closePanel);
-    $('littleEClear')?.addEventListener('click',()=>{
-      messages=[];
-      bridge()?.clearHistory?.();
-      renderMessages();
+    $('littleEClear')?.addEventListener('click',clearVisibleChat);
+    $('littleELangEn')?.addEventListener('click',()=>setLanguage('en'));
+    $('littleELangZh')?.addEventListener('click',()=>setLanguage('zh'));
+    $('littleEScenario')?.addEventListener('change',e=>{
+      scenario=SCENARIOS[e.target.value]?e.target.value:'coach';
+      savePrefs();
+      aiSession?.destroy?.();
+      aiSession=null;
+      setStatus(`已切換：${SCENARIOS[scenario].label}`,'good');
+      remember('scenario',SCENARIOS[scenario].label);
     });
-    document.querySelectorAll('[data-little-e-action]').forEach(btn=>btn.addEventListener('click',()=>runAction(btn.dataset.littleEAction)));
+
+    document.querySelectorAll('[data-little-e-action]').forEach(btn=>btn.addEventListener('click',()=>runQuickAction(btn.dataset.littleEAction)));
+
     $('littleEForm')?.addEventListener('submit',e=>{
       e.preventDefault();
       const input=$('littleEInput');
@@ -360,27 +692,69 @@
       if(input)input.value='';
       handleUserText(text);
     });
-    $('littleEMessages')?.addEventListener('click',e=>{
-      const btn=e.target.closest?.('[data-little-e-speak]');
-      if(!btn)return;
-      const msg=messages[Number(btn.dataset.littleESpeak)];
-      if(!msg)return;
-      const englishLines=String(msg.text).split('\n').filter(line=>/[A-Za-z]{3}/.test(line) && !/[\u3400-\u9fff]/.test(line));
-      const spoken=englishLines.join(' ').trim();
-      if(spoken)bridge()?.speakEnglish?.(spoken,.92);
+
+    $('littleEMessages')?.addEventListener('click',async e=>{
+      const sample=e.target.closest?.('[data-little-e-sample]');
+      if(sample){handleUserText(sample.dataset.littleESample);return;}
+
+      const speakBtn=e.target.closest?.('[data-little-e-speak]');
+      if(speakBtn){
+        const msg=messages[Number(speakBtn.dataset.littleESpeak)];
+        if(msg?.en)bridge()?.speakEnglish?.(msg.en,.92);
+        return;
+      }
+
+      const feedback=e.target.closest?.('[data-little-e-feedback]');
+      if(feedback){
+        const index=Number(feedback.dataset.index);
+        const rating=feedback.dataset.littleEFeedback;
+        const msg=messages[index];
+        if(rating==='helpful'){
+          const ok=await submitFeedback({rating,message:msg,comment:'有幫助'});
+          if(ok){feedback.disabled=true;feedback.textContent='✓ 已回饋';}
+        }else{
+          openFeedbackForm(index,rating);
+        }
+      }
+    });
+
+    $('littleEGeneralFeedbackBtn')?.addEventListener('click',()=>openFeedbackForm(null,'suggestion'));
+    $('littleEFeedbackCancel')?.addEventListener('click',closeFeedbackForm);
+    $('littleEFeedbackSend')?.addEventListener('click',sendFeedbackForm);
+
+    $('littleEAdminBtn')?.addEventListener('click',openAdmin);
+    $('littleEAdminClose')?.addEventListener('click',closeAdmin);
+    $('littleEAdminRefresh')?.addEventListener('click',loadAdminFeedback);
+    $('littleEAdminList')?.addEventListener('change',async e=>{
+      const select=e.target.closest?.('[data-feedback-status]');
+      if(!select)return;
+      try{
+        await cloud().updateLittleEFeedbackStatus(Number(select.dataset.id),select.value);
+        setStatus('✓ Admin 狀態已更新','good');
+      }catch(err){
+        console.warn(err);
+        setStatus('Admin 狀態更新失敗','mid');
+      }
+    });
+
+    window.addEventListener('edan:auth-ready',()=>{
+      loadChat();
+      updateAdminVisibility();
+      updateContextBar();
+    });
+
+    window.addEventListener('edan:auth-signed-out',()=>{
+      clearVisibleChat();
+      closeAdmin();
+      closePanel();
     });
 
     window.addEventListener('edan:cloud-state',()=>{
-      const cloudHistory=bridge()?.getHistory?.()||[];
-      if(cloudHistory.length>=messages.length){
-        messages=cloudHistory.slice(-30);
-        renderMessages();
-      }
       updateContextBar();
     });
 
     const challenge=$('challengeSection');
-    if(challenge && 'MutationObserver' in window){
+    if(challenge&&'MutationObserver'in window){
       new MutationObserver(()=>updateContextBar()).observe(challenge,{subtree:true,childList:true,attributes:true});
     }
   }
