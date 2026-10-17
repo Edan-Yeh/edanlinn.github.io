@@ -1,0 +1,60 @@
+/* Cloud × AI Design System v1.0
+   One palette vocabulary for site chrome, portfolio, learning and game shells.
+   Game viewport remains dark for artwork legibility. No external fonts or trackers. */
+:root,[data-site-theme="graphite"]{--ui-bg:#11151c;--ui-side:#171d27;--ui-panel:#1d2531;--ui-panel-alt:#252f3d;--ui-input:#161e2a;--ui-border:#38465a;--ui-text:#f3f6fc;--ui-muted:#b8c4d5;--ui-accent:#87b8ff;--ui-accent-ink:#0d2445;--ui-accent-soft:#293d59;--ui-hero:#1b2635;--ui-shadow:0 14px 38px rgba(0,0,0,.14);color-scheme:dark}
+[data-site-theme="pearl"]{--ui-bg:#f4f6fa;--ui-side:#ffffff;--ui-panel:#ffffff;--ui-panel-alt:#f0f4fa;--ui-input:#ffffff;--ui-border:#d8e0eb;--ui-text:#18243a;--ui-muted:#52657e;--ui-accent:#2864c5;--ui-accent-ink:#ffffff;--ui-accent-soft:#e8f0ff;--ui-hero:#ffffff;--ui-shadow:0 12px 32px rgba(32,56,88,.06);color-scheme:light}
+[data-site-theme="ocean"]{--ui-bg:#0b1728;--ui-side:#102137;--ui-panel:#14283e;--ui-panel-alt:#1c354d;--ui-input:#102236;--ui-border:#35546e;--ui-text:#eef8ff;--ui-muted:#b5d0e2;--ui-accent:#5dd5d0;--ui-accent-ink:#092c37;--ui-accent-soft:#1b4a54;--ui-hero:#142d45;--ui-shadow:0 16px 42px rgba(0,9,23,.2);color-scheme:dark}
+[data-site-theme="titanium"]{--ui-bg:#191a1d;--ui-side:#222326;--ui-panel:#2a2b2e;--ui-panel-alt:#343538;--ui-input:#202124;--ui-border:#55575b;--ui-text:#f7f6f3;--ui-muted:#d0cbc3;--ui-accent:#e2c89a;--ui-accent-ink:#2d261a;--ui-accent-soft:#494236;--ui-hero:#2a2b2d;--ui-shadow:0 15px 40px rgba(0,0,0,.18);color-scheme:dark}
+html,body{background:var(--ui-bg)!important;color:var(--ui-text)!important}
+html{scroll-padding-top:95px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif!important;font-size:15px;line-height:1.65;font-weight:400;letter-spacing:0!important}
+body::before{opacity:.025!important;pointer-events:none}
+:is(.top,.sidebar){background:var(--ui-side)!important;border-color:var(--ui-border)!important;color:var(--ui-text)!important;box-shadow:none!important}
+.top{backdrop-filter:blur(20px)!important}
+:is(.top .brand,.top .nav a,.top .profile-name,.sidebar .side-brand b,.sidebar .side-bottom b,.sidebar .side-link){color:var(--ui-text)!important}
+:is(.top .brand small,.top .profile-name small,.sidebar .side-brand small,.sidebar .side-label,.sidebar .side-bottom p,.sidebar .side-bottom span){color:var(--ui-muted)!important}
+.sidebar .side-link.active,.sidebar .side-link:hover,.guide-side-link{background:var(--ui-accent-soft)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}
+:is(.hero,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro,.visitor-guide){background:var(--ui-hero)!important;border:1px solid var(--ui-border)!important;color:var(--ui-text)!important;box-shadow:var(--ui-shadow)!important;border-radius:24px!important}
+:is(.hero h1,.portfolio-heading h2,.learning-method-panel h2,.ai-foundations h2,.lab-intro h2,.visitor-guide h2,.dashboard-heading h2){color:var(--ui-text)!important;-webkit-text-fill-color:var(--ui-text)!important}
+.hero h1 span{color:var(--ui-accent)!important;-webkit-text-fill-color:var(--ui-accent)!important}
+:is(.hero p,.hero-copy,.portfolio-heading p,.learning-method-panel p,.ai-foundations p,.lab-intro p,.visitor-guide-top p){color:var(--ui-muted)!important}
+:is(.section-kicker,.hero-eyebrow,.guide-eyebrow,.guide-number,.guide-bottom b,.guide-path strong span){color:var(--ui-accent)!important}
+:is(.rank-card,.stat,.overview-card,.dash-panel,.path-panel,.module-card,.skill-map-panel,.examples-panel,.glossary-panel,.quiz-panel,.concept-map,.day,.box,.module-togglebar,.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.ai-detail[open] summary,.guide-path,.moba-arena,.moba-arena .campaign-panel,.moba-arena .moba-toolbar,.moba-arena .moba-scoreboard){background:var(--ui-panel)!important;border:1px solid var(--ui-border)!important;color:var(--ui-text)!important;box-shadow:none!important;border-radius:17px!important}
+:is(.guide-path,.portfolio-project,.method-grid>div,.ai-feature){background:var(--ui-panel-alt)!important}
+:is(.guide-path strong,.portfolio-project h3,.ai-feature h3,.ai-architecture h3,.method-grid b,.ai-detail summary,.rank-card .rank-title,.rank-card .rank-level,.stat b,.moba-arena .moba-head h2,.moba-arena .campaign-panel h3){color:var(--ui-text)!important}
+:is(.guide-desc,.guide-bottom,.portfolio-project p,.ai-feature p,.ai-architecture p,.method-grid p,.ai-detail-body p,.rank-card .rank-subtitle,.rank-card .rank-foot,.rank-card .rank-top,.stat small,.moba-arena .moba-head p){color:var(--ui-muted)!important}
+:is(.portfolio-status,.ai-lesson-label,.portfolio-tags span,.portfolio-principles strong,.ai-method span,.ai-code-path,.ai-arch-flow span,.guide-time,.moba-arena .campaign-panel .campaign-road,.moba-arena .campaign-panel .campaign-objective){background:var(--ui-accent-soft)!important;border-color:var(--ui-border)!important;color:var(--ui-text)!important}
+:is(.portfolio-text-link,.portfolio-project-links a,.lab-intro a,.guide-bottom a,.guide-cta,.moba-arena .campaign-panel a){color:var(--ui-accent)!important}
+:is(.primary-action,.moba-arena .moba-actions button:not(:disabled)){background:var(--ui-accent)!important;color:var(--ui-accent-ink)!important;border:1px solid var(--ui-accent)!important;box-shadow:none!important}
+:is(.quiet-action,.moba-arena .moba-toolbar button,.moba-arena .campaign-panel button,.top .nav button){background:var(--ui-panel-alt)!important;color:var(--ui-text)!important;border:1px solid var(--ui-border)!important}
+:is(.guide-path,.portfolio-project){transition:border-color .2s ease,transform .2s ease}
+.guide-path:hover{transform:translateY(-2px);border-color:var(--ui-accent)!important}
+#daily{color:var(--ui-text)!important}
+#daily :is(.day,.day-head,.day-body){background:var(--ui-panel)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}
+#daily :is(.day-head h2,.day-body>h3,.day-num b){color:var(--ui-text)!important;-webkit-text-fill-color:var(--ui-text)!important}
+#daily :is(.day-head .muted,.day-num){color:var(--ui-muted)!important;-webkit-text-fill-color:var(--ui-muted)!important}
+#daily :is(.score,.score.mid,.score.high){color:var(--ui-accent)!important;-webkit-text-fill-color:var(--ui-accent)!important}
+#daily .correction .box{background:var(--ui-panel-alt)!important;border-color:var(--ui-border)!important;color:var(--ui-text)!important}
+#daily .correction .box.good{border-left:4px solid var(--ui-accent)!important}
+#daily .correction .box.bad{border-left:4px solid #d49b6c!important}
+#daily .correction .box :is(b,div){color:var(--ui-text)!important;-webkit-text-fill-color:var(--ui-text)!important}
+#daily .chips .chip,#daily .memory,#daily .archive-link{background:var(--ui-accent-soft)!important;border-color:var(--ui-border)!important;color:var(--ui-text)!important;-webkit-text-fill-color:var(--ui-text)!important}
+#daily .archive-link a{color:var(--ui-accent)!important;-webkit-text-fill-color:var(--ui-accent)!important}
+#daily .memory :is(b,li){color:var(--ui-text)!important;-webkit-text-fill-color:var(--ui-text)!important}
+#daily :is(input,select,.toolbar .search){background:var(--ui-input)!important;border:1px solid var(--ui-border)!important;color:var(--ui-text)!important}
+#daily .filter button{background:var(--ui-panel-alt)!important;border:1px solid var(--ui-border)!important;color:var(--ui-text)!important;-webkit-text-fill-color:var(--ui-text)!important}
+#daily .filter button.active{background:var(--ui-accent)!important;color:var(--ui-accent-ink)!important;-webkit-text-fill-color:var(--ui-accent-ink)!important}
+:is(input,select,textarea){background:var(--ui-input)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}
+:is(input,textarea)::placeholder{color:var(--ui-muted)!important;opacity:1!important}
+:is(.moba-arena .campaign-panel,.moba-arena .moba-toolbar,.moba-arena .moba-scoreboard) :is(h2,h3,h4,p,b,strong,label,small,span){color:var(--ui-text)!important}
+.moba-arena .moba-viewport,.moba-arena .moba-gate{background-color:#0e1b2c!important;color:#f3f8ff!important}
+.moba-arena .moba-viewport :is(h2,h3,p,b,span,strong){color:#f3f8ff!important}
+:is(.stat,.day,.portfolio-project,.guide-path) :is(p,small){line-height:1.7}
+.appearance-control{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.appearance-control label{font-size:12px;font-weight:700;color:var(--ui-muted)}
+.appearance-control select{appearance:auto;max-width:175px;min-height:36px;padding:6px 9px;border-radius:10px;background:var(--ui-input)!important;color:var(--ui-text)!important;border:1px solid var(--ui-border)!important;font-size:12px;font-weight:650;cursor:pointer}
+.appearance-control select option{background:var(--ui-panel);color:var(--ui-text)}
+:focus-visible{outline:3px solid var(--ui-accent)!important;outline-offset:3px!important}
+@media(max-width:1050px){.appearance-control label{display:none}.appearance-control select{max-width:130px}}
+@media(max-width:750px){.appearance-control{width:100%;justify-content:flex-end}.appearance-control select{max-width:190px}.visitor-guide{padding:20px!important}.guide-paths{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){.guide-path,.portfolio-project{transition:none!important}}
