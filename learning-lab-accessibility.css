@@ -93,3 +93,74 @@ a,button,summary{outline-offset:3px}
 .moba-arena .moba-help,.moba-arena .moba-note{color:#425d7d!important}
 .moba-arena .moba-viewport .moba-tip{color:#f2f6ff!important}
 @media(max-width:700px){.moba-arena{padding:14px!important}.moba-arena .moba-head{gap:12px!important}.moba-arena .moba-head h2{font-size:21px!important}}
+
+/* Cohesive dusk-indigo palette: retain original game-world mood, remove mismatched white cards.
+   Explicit colors keep lesson records readable independently of selected character world. */
+:root{--bg:#171d2c;--panel:#24283a;--panel2:#2d3045;--line:#49516a;--text:#f0f3fa;--muted:#bbc5d8;--accent:#a9bdf6;--chip:#343d57;--shadow:0 16px 44px rgba(10,13,27,.22);color-scheme:dark}
+html[data-world],html[data-league]{color-scheme:dark}
+body{background:#171d2c!important;color:#f0f3fa!important}
+body::before{opacity:.12!important}
+.top{background:rgba(25,30,46,.96)!important;color:#f0f3fa!important;border-bottom:1px solid #424b66!important}
+.top .brand,.top .profile-name,.top .nav a,.top .nav button{color:#e8edf8!important}
+.top .brand small,.top .profile-name small{color:#b9c5d8!important}
+.sidebar{background:#1e2535!important;border-right:1px solid #3d4961!important;color:#f0f3fa!important}
+.sidebar .side-brand b,.sidebar .side-bottom b{color:#eef2fc!important}
+.sidebar .side-brand small,.sidebar .side-label,.sidebar .side-bottom p,.sidebar .side-bottom span{color:#b6c4d8!important}
+.sidebar .side-link{color:#d6e0f2!important}
+.sidebar .side-link.active,.sidebar .side-link:hover{background:#343f5c!important;color:#fff!important;border-color:#697b9f!important}
+.hero,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro{background:#242a3c!important;color:#edf2fa!important;border:1px solid #47536d!important;box-shadow:0 12px 36px rgba(7,11,25,.12)!important}
+.hero h1,.portfolio-heading h2,.learning-method-panel h2,.ai-foundations h2,.lab-intro h2{color:#f0f4ff!important}
+.hero h1 span{color:#b8caff!important;-webkit-text-fill-color:#b8caff!important}
+.hero p,.hero-copy,.portfolio-heading p,.learning-method-panel p,.ai-foundations p,.lab-intro p{color:#c4cee0!important}
+.section-kicker,.hero-eyebrow{color:#a8c2ff!important}
+.lab-intro h2 small{color:#b9cafa!important}.lab-intro a,.portfolio-text-link{color:#b5caff!important}
+.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.ai-detail[open] summary{background:#2e364d!important;border-color:#53617e!important;color:#edf3ff!important}
+.portfolio-project h3,.ai-feature h3,.ai-architecture h3,.method-grid b,.ai-detail summary{color:#f0f4ff!important}
+.portfolio-project p,.ai-feature p,.ai-architecture p,.method-grid p,.ai-detail-body p{color:#c9d3e6!important}
+.portfolio-status,.ai-lesson-label,.portfolio-tags span,.portfolio-principles strong,.ai-method span,.ai-code-path,.ai-arch-flow span{background:#3c4866!important;border-color:#647491!important;color:#e6efff!important}
+.ai-arch-flow small,.ai-feature-index,.method-grid span,.portfolio-project-meta,.portfolio-principles span{color:#b8caff!important}
+.ai-detail-body b,.ai-feature-note b{color:#d4e2ff!important}
+.stat,.overview-card,.dash-panel,.path-panel,.module-card,.skill-map-panel,.examples-panel,.glossary-panel,.quiz-panel,.concept-map,.day,.box,.module-togglebar{background:#292f43!important;border:1px solid #485570!important;color:#e9f0fc!important;box-shadow:none!important}
+:is(.stat,.overview-card,.dash-panel,.path-panel,.module-card,.skill-map-panel,.examples-panel,.glossary-panel,.quiz-panel,.concept-map,.day,.box,.module-togglebar) :is(h2,h3,h4,b,strong,label){color:#f0f4ff!important}
+:is(.stat,.overview-card,.dash-panel,.path-panel,.module-card,.skill-map-panel,.examples-panel,.glossary-panel,.quiz-panel,.concept-map,.day,.box,.module-togglebar) :is(p,small,.muted,.panel-sub,.module-meta){color:#c1ccde!important}
+.rank-card{background:#303a53!important;border:1px solid #596c91!important;color:#eef4ff!important}
+.rank-card .rank-title,.rank-card .rank-level{color:#f2f6ff!important}
+.rank-card .rank-subtitle,.rank-card .rank-foot,.rank-card .rank-top{color:#c8d6eb!important}
+.moba-arena{background:#242c3e!important;border-color:#4d607a!important;color:#f0f4ff!important}
+.moba-arena .moba-head h2,.moba-arena .moba-head p{color:#f0f4ff!important}
+.moba-arena .moba-toolbar,.moba-arena .moba-scoreboard,.moba-arena .campaign-panel{background:#303b52!important;border-color:#566a87!important;color:#edf3ff!important}
+.moba-arena .campaign-panel :is(h2,h3,h4,p,b,strong,label,summary),.moba-arena .moba-scoreboard :is(b,strong,small,span){color:#edf3ff!important}
+.moba-arena .campaign-panel :is(small,.campaign-note,.campaign-source,.campaign-label){color:#c7d4e9!important}
+.moba-arena .campaign-panel :is(.campaign-road,.campaign-brief,.campaign-objective,.campaign-answer,.campaign-recap){background:#38465e!important;border-color:#62738e!important;color:#edf3ff!important}
+.moba-arena .campaign-panel :is(.campaign-road,.campaign-objective) :is(b,small,span){color:#e6eeff!important}
+.moba-arena .campaign-panel a{color:#b6d1ff!important}
+.moba-arena .moba-toolbar label,.moba-arena .moba-toolbar span{color:#edf3ff!important}
+.moba-arena .moba-actions button,.moba-arena .moba-toolbar button,.moba-arena .campaign-panel button{background:#455777!important;color:#f1f5ff!important;border-color:#7487a8!important}
+.moba-arena .moba-actions button:hover,.moba-arena .moba-toolbar button:hover{background:#566b91!important}
+#daily{color:#f0f4ff!important}
+#daily .daily-title h2,#daily .daily-title p,#daily .daily-title .section-kicker{color:#f0f4ff!important}
+#daily .day{background:#2b3247!important;border:1px solid #56637d!important;color:#edf3ff!important}
+#daily .day-head,#daily .day-body{background:transparent!important;color:#edf3ff!important}
+#daily .day-head h2{color:#f2f5ff!important;-webkit-text-fill-color:#f2f5ff!important}
+#daily .day-head .muted,#daily .day-num{color:#c0cee2!important;-webkit-text-fill-color:#c0cee2!important}
+#daily .day-num b{color:#f2f6ff!important;-webkit-text-fill-color:#f2f6ff!important}
+#daily .score,#daily .score.mid,#daily .score.high{color:#c5d8ff!important;-webkit-text-fill-color:#c5d8ff!important}
+#daily .day-body>h3{color:#f2f5ff!important;-webkit-text-fill-color:#f2f5ff!important}
+#daily .correction .box{background:#354059!important;border:1px solid #63738f!important;color:#eef3ff!important}
+#daily .correction .box.bad{border-left:4px solid #edbc7e!important}
+#daily .correction .box.good{border-left:4px solid #9ac3ff!important}
+#daily .correction .box b,#daily .correction .box div{color:#edf3ff!important;-webkit-text-fill-color:#edf3ff!important}
+#daily .chips .chip{background:#3a4864!important;color:#e4eeff!important;-webkit-text-fill-color:#e4eeff!important;border:1px solid #617492!important}
+#daily .memory{background:#354159!important;border-color:#5f7391!important}
+#daily .memory,#daily .memory li,#daily .memory b{color:#f0f4ff!important;-webkit-text-fill-color:#f0f4ff!important}
+#daily .archive-link{background:#3b4b69!important;color:#eaf1ff!important}
+#daily .archive-link a{color:#c3d8ff!important;-webkit-text-fill-color:#c3d8ff!important}
+#daily .archive-link small{color:#c4d1e4!important;-webkit-text-fill-color:#c4d1e4!important}
+#daily .toolbar .search,#daily :is(input,select){background:#1e2535!important;color:#f2f5ff!important;border:1px solid #64738f!important}
+#daily .toolbar .search::placeholder{color:#c0cde1!important}
+#daily .filter button{background:#3b4761!important;color:#e6efff!important;-webkit-text-fill-color:#e6efff!important;border:1px solid #647897!important}
+#daily .filter button.active{background:#526eaa!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+#daily .day-head:focus-visible{outline-color:#a9c6ff!important}
+.search,input,select,textarea{background:#1f2839;color:#f0f4ff;border-color:#5f7290}
+input::placeholder,textarea::placeholder{color:#b8c7dc;opacity:1}
+.footer{color:#b9c8dc!important}
