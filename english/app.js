@@ -875,10 +875,7 @@
     const anchors=['mdb-l1-006','mdb-l1-010','pro-l3-009','pro-l3-010'];
     const anchorQs=anchors.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
     const candidates=CONTENT.questions.filter(q=>q.type==='speaking'&&!anchors.includes(q.id));
-    const priority=q=>{
-      const st=state.qstats[q.id]||{};
-      return (st.wrong||0)*4+(st.hints||0)*2+(st.lastQuality!==undefined&&st.lastQuality!==null&&st.lastQuality<=1?5:0)+(st.seen?0:1);
-    };
+    const priority=q=>weightQuestion(q,'speaking');
     const middle=[...candidates].sort((a,b)=>priority(b)-priority(a)).slice(0,Math.max(0,size-anchorQs.length));
     const ordered=[anchorQs[0],anchorQs[1],...middle,anchorQs[2],anchorQs[3]].filter(Boolean);
     return ordered.slice(0,size);
