@@ -182,13 +182,17 @@
 
       const en=m.en||'';
       const zh=m.zh||'';
+      const showEn=typeof m.showEn==='boolean'?m.showEn:langPrefs.en;
+      const showZh=typeof m.showZh==='boolean'?m.showZh:langPrefs.zh;
       return `<div class="little-e-msg assistant" data-msg-id="${esc(m.id||String(i))}">
         <div class="little-e-msg-who">小E</div>
         <div class="little-e-response">
-          <div class="little-e-lang little-e-lang-en ${langPrefs.en?'':'hidden'}"><span class="little-e-lang-label">EN</span><div>${esc(en||'—')}</div></div>
-          <div class="little-e-lang little-e-lang-zh ${langPrefs.zh?'':'hidden'}"><span class="little-e-lang-label">中文</span><div>${esc(zh||'—')}</div></div>
+          <div class="little-e-lang little-e-lang-en ${showEn?'':'hidden'}"><span class="little-e-lang-label">EN</span><div>${esc(en||'—')}</div></div>
+          <div class="little-e-lang little-e-lang-zh ${showZh?'':'hidden'}"><span class="little-e-lang-label">中文</span><div>${esc(zh||'—')}</div></div>
         </div>
-        <div class="little-e-msg-actions">
+        <div class="little-e-msg-actions little-e-lang-actions">
+          <button type="button" class="${showEn?'active':''}" data-little-e-msg-lang="en" data-index="${i}">${showEn?'🙈 隱藏英文':'👁 顯示英文'}</button>
+          <button type="button" class="${showZh?'active':''}" data-little-e-msg-lang="zh" data-index="${i}">${showZh?'🙈 隱藏中文':'🇹🇼 顯示中文'}</button>
           ${en&&/[A-Za-z]{2}/.test(en)?`<button type="button" data-little-e-speak="${i}">🔊 英文</button>`:''}
           <button type="button" data-little-e-feedback="helpful" data-index="${i}">👍 有幫助</button>
           <button type="button" data-little-e-feedback="needs_improvement" data-index="${i}">👎 要改進</button>
@@ -200,8 +204,6 @@
   }
 
   function applyLanguageVisibility(){
-    document.querySelectorAll('.little-e-lang-en').forEach(el=>el.classList.toggle('hidden',!langPrefs.en));
-    document.querySelectorAll('.little-e-lang-zh').forEach(el=>el.classList.toggle('hidden',!langPrefs.zh));
     const en=$('littleELangEn');
     const zh=$('littleELangZh');
     if(en){
@@ -212,6 +214,7 @@
       zh.classList.toggle('active',langPrefs.zh);
       zh.textContent=langPrefs.zh?'中文 顯示':'中文 隱藏';
     }
+    renderMessages();
   }
 
   function setLanguage(which){
@@ -221,8 +224,32 @@
       if(which==='en')langPrefs.zh=true;
       else langPrefs.en=true;
     }
+    messages.forEach(m=>{
+      if(m.role!=='assistant')return;
+      m.showEn=langPrefs.en;
+      m.showZh=langPrefs.zh;
+    });
     savePrefs();
+    saveChat();
     applyLanguageVisibility();
+  }
+
+  function toggleMessageLanguage(index,which){
+    const msg=messages[Number(index)];
+    if(!msg||msg.role!=='assistant')return;
+    const currentEn=typeof msg.showEn==='boolean'?msg.showEn:langPrefs.en;
+    const currentZh=typeof msg.showZh==='boolean'?msg.showZh:langPrefs.zh;
+    if(which==='en'){
+      msg.showEn=!currentEn;
+      if(!msg.showEn && !currentZh)msg.showZh=true;
+      else if(typeof msg.showZh!=='boolean')msg.showZh=currentZh;
+    }else if(which==='zh'){
+      msg.showZh=!currentZh;
+      if(!msg.showZh && !currentEn)msg.showEn=true;
+      else if(typeof msg.showEn!=='boolean')msg.showEn=currentEn;
+    }
+    saveChat();
+    renderMessages();
   }
 
   function openPanel(){
@@ -696,6 +723,12 @@
     $('littleEMessages')?.addEventListener('click',async e=>{
       const sample=e.target.closest?.('[data-little-e-sample]');
       if(sample){handleUserText(sample.dataset.littleESample);return;}
+
+      const langBtn=e.target.closest?.('[data-little-e-msg-lang]');
+      if(langBtn){
+        toggleMessageLanguage(Number(langBtn.dataset.index),langBtn.dataset.littleEMsgLang);
+        return;
+      }
 
       const speakBtn=e.target.closest?.('[data-little-e-speak]');
       if(speakBtn){
