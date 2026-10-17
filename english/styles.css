@@ -475,3 +475,69 @@ body.auth-locked .page,body.auth-locked .mobile-dock{filter:blur(5px);pointer-ev
   .model-practice-head{flex-direction:column}
   .model-practice-actions .btn{width:100%}
 }
+
+
+/* Click-to-pronounce Model answer words */
+.pronounce-word{
+  display:inline;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  line-height:inherit;
+  padding:0 1px;
+  margin:0;
+  border-radius:4px;
+  cursor:pointer;
+  text-decoration:underline dotted rgba(255,255,255,.32);
+  text-underline-offset:3px;
+}
+.pronounce-word:hover,.pronounce-word:focus-visible{
+  background:rgba(255,255,255,.12);
+  text-decoration-color:rgba(255,255,255,.8);
+  outline:none;
+}
+.pronounce-word-active{
+  background:#fff!important;
+  color:#2944b8!important;
+  text-decoration:none!important;
+}
+.model-word-hint{
+  margin-top:7px;
+  font-size:10px;
+  color:#b8c5e6;
+}
+.model-memory-cues .model-cue-pronounce{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 9px;
+  border:0;
+  border-radius:999px;
+  background:#fff;
+  color:#26344f;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.model-memory-cues .model-cue-pronounce:hover,
+.model-memory-cues .model-cue-pronounce:focus-visible,
+.model-memory-cues .model-cue-active{
+  background:#e8edff;
+  color:#2944b8;
+  outline:none;
+}
+.model-memory-cues .model-cue-pronounce b{
+  display:grid;
+  place-items:center;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#e8edff;
+  color:#2d4fd0;
+  font-size:10px;
+}
+@media(max-width:620px){
+  .pronounce-word{padding:1px 2px}
+  .model-word-hint{font-size:11px}
+}
