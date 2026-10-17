@@ -844,3 +844,34 @@ body.auth-locked .little-e-panel{display:none!important}
   .little-e-bottom-row{align-items:flex-start;flex-direction:column}
   .little-e-lang{max-width:100%}
 }
+
+
+/* Little E per-message language controls */
+.little-e-lang-actions{
+  margin-top:2px;
+  padding-top:2px;
+  border-top:1px dashed #e6eaf2;
+}
+.little-e-lang-actions button{
+  border:1px solid #dfe4ec;
+  background:#fff;
+  color:#526079;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:900;
+}
+.little-e-lang-actions button.active{
+  background:#eef2ff;
+  border-color:#ccd6ff;
+  color:#2944b8;
+}
+.little-e-lang-actions button[data-little-e-msg-lang="zh"].active{
+  background:#fff7e8;
+  border-color:#ead08f;
+  color:#8a5a08;
+}
+@media(max-width:700px){
+  .little-e-lang-actions{gap:6px}
+  .little-e-lang-actions button{min-height:32px}
+}
