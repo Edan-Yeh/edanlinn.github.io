@@ -1,5 +1,5 @@
-const CACHE='edan-english-coach-v24-20261018-little-e-1';
-const ASSETS=['./','./index.html','./challenge.html','./styles.css?v=20261018v24-1','./app.js?v=20261018v24-1','./little-e.js?v=20261018v24-1','./question-bank.js?v=20261018v24-1','./supabase-config.js?v=20261018v24-1','./auth.js?v=20261018v24-1','./manifest.webmanifest','./icon.svg'];
+const CACHE='edan-english-coach-v25-20261018-report-export-scroll-1';
+const ASSETS=['./','./index.html','./challenge.html','./styles.css?v=20261018v25-1','./app.js?v=20261018v25-1','./little-e.js?v=20261018v25-1','./question-bank.js?v=20261018v25-1','./supabase-config.js?v=20261018v25-1','./auth.js?v=20261018v25-1','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
