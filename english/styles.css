@@ -550,3 +550,23 @@ body.auth-locked .page,body.auth-locked .mobile-dock{filter:blur(5px);pointer-ev
 .vocab-familiarity-pill.new{background:#eef2ff;color:#334eb5;border:1px solid #d8e0ff}
 .vocab-familiarity-pill.correct{background:#eaf7f1;color:#0d7655;border:1px solid #c9e8dc}
 #vocabGuessStatus{margin-top:7px;color:#8a5a08}
+
+
+/* Speaking answer map */
+.speaking-framework{margin-bottom:14px;padding:14px;border:1px solid #dce3ff;border-radius:16px;background:#f7f9ff}
+.speaking-framework-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.speaking-framework-head h4{margin:7px 0 0;font-size:15px;color:#25324a}
+.speaking-framework-mnemonic{margin:12px 0;padding:10px 11px;border-radius:11px;background:#eef2ff;color:#334eb5;font-size:12px;font-weight:800;line-height:1.55}
+.speaking-framework-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.speaking-framework-step{display:flex;gap:8px;padding:10px;border:1px solid #e4e8f2;border-radius:12px;background:#fff;min-width:0}
+.speaking-framework-step>b{display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:#e8edff;color:#2d4fd0;font-size:11px}
+.speaking-framework-step strong,.speaking-framework-step span,.speaking-framework-step em{display:block}
+.speaking-framework-step strong{font-size:11px;color:#26344f;margin-bottom:3px}
+.speaking-framework-step span{font-size:10px;color:#667085;line-height:1.4}
+.speaking-framework-step em{margin-top:5px;font-size:10px;color:#3854c8;font-style:normal;line-height:1.4}
+@media(max-width:900px){.speaking-framework-steps{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){
+  .speaking-framework-head{flex-direction:column}
+  .speaking-framework-steps{grid-template-columns:1fr}
+  .speaking-framework-toggle{width:100%}
+}
