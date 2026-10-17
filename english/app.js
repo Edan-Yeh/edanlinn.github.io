@@ -21,6 +21,7 @@
     weaknessCounts: {},
     errorMemory: {},
     littleEHistory: [],
+    littleEMemory: [],
     sessions: [],
     completedDates: [],
     settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
@@ -52,6 +53,7 @@
   let modelPracticeStream = null;
   let modelPracticeChunks = [];
   let modelPracticeAudioUrl = '';
+  let lastLittleEQuestion = null;
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
@@ -186,6 +188,7 @@
         weaknessCounts: parsed.weaknessCounts||{},
         errorMemory: parsed.errorMemory||{},
         littleEHistory: Array.isArray(parsed.littleEHistory)?parsed.littleEHistory.slice(-30):[],
+        littleEMemory: Array.isArray(parsed.littleEMemory)?parsed.littleEMemory.slice(-60):[],
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         settings:migratedSettings,
@@ -212,6 +215,7 @@
       weaknessCounts:incoming.weaknessCounts||{},
       errorMemory:incoming.errorMemory||{},
       littleEHistory:Array.isArray(incoming.littleEHistory)?incoming.littleEHistory.slice(-30):[],
+      littleEMemory:Array.isArray(incoming.littleEMemory)?incoming.littleEMemory.slice(-60):[],
       sessions:Array.isArray(incoming.sessions)?incoming.sessions:[],
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
       settings:{...base.settings,...(incoming.settings||{})},
@@ -931,6 +935,7 @@
     stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); stopModelPracticeRecording(false); cleanupModelPracticeAudio(); speechSynthesis.cancel(); speechTranscript='';
     const q=session.questions[session.index];
     if(!q){ finishSession(true); return; }
+    lastLittleEQuestion=q;
     session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0}};
     $('questionCounter').textContent=`${session.index+1} / ${session.questions.length}`;
     $('questionLevelBadge').textContent=`L${q.level}`;
@@ -2140,7 +2145,8 @@
 
   window.EDAN_APP_BRIDGE={
     context(){
-      const q=session?.questions?.[session.index]||null;
+      const active=session?.questions?.[session.index]||null;
+      const q=active||lastLittleEQuestion||null;
       const fw=q&&q.type==='speaking'?speakingFramework(q):null;
       const stat=q?qstat(q.id):null;
       return {
@@ -2155,7 +2161,8 @@
           model:q.model||'',
           modelZh:answerTranslation(q)||'',
           keywords:[...(q.keywords||[])],
-          framework:fw
+          framework:fw,
+          active:!!active
         }:null,
         transcript:speechTranscript||'',
         lastSystemScore:stat?.lastSystemScore??null,
@@ -2164,13 +2171,29 @@
         interviewReadiness:interviewReadiness()
       };
     },
-    getHistory(){return Array.isArray(state.littleEHistory)?state.littleEHistory.slice(-30):[];},
-    saveHistory(history){
-      state.littleEHistory=Array.isArray(history)?history.slice(-30):[];
+    getMemory(){return Array.isArray(state.littleEMemory)?state.littleEMemory.slice(-60):[];},
+    remember(entry){
+      if(!entry||typeof entry!=='object')return;
+      const kind=String(entry.kind||'general').slice(0,40);
+      const text=String(entry.text||'').trim().slice(0,220);
+      if(!text)return;
+      const key=(kind+'|'+text.toLowerCase()).slice(0,260);
+      const list=Array.isArray(state.littleEMemory)?state.littleEMemory:[];
+      const found=list.find(x=>x.key===key);
+      if(found){
+        found.count=(found.count||1)+1;
+        found.lastSeen=todayKey();
+      }else{
+        list.push({key,kind,text,count:1,lastSeen:todayKey()});
+      }
+      state.littleEMemory=list.slice(-60);
       save();
     },
+    getHistory(){return [];},
+    saveHistory(){},
     speakEnglish(text,rate=.94){return speak(text,rate,chooseVoiceLang(1));},
-    clearHistory(){state.littleEHistory=[];save();}
+    clearHistory(){},
+    clearCurrentQuestion(){lastLittleEQuestion=null;}
   };
 
   function init(){
