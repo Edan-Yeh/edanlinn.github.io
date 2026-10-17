@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261018v25-1">
+  <link rel="stylesheet" href="styles.css?v=20261018v26-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -321,11 +321,32 @@
 
 <aside class="little-e-panel hidden" id="littleEPanel" aria-label="小E 英文小幫手">
   <div class="little-e-head">
-    <div class="little-e-title"><span class="little-e-avatar">E</span><div><b>小E</b><span>你的英文小幫手</span></div></div>
-    <div class="little-e-head-actions"><button class="btn ghost" id="littleEClear" type="button">清除</button><button class="btn ghost" id="littleEClose" type="button">關閉</button></div>
+    <div class="little-e-title"><span class="little-e-avatar">E</span><div><b>小E</b><span>陪你學、陪你聊、陪你練</span></div></div>
+    <div class="little-e-head-actions"><button class="btn ghost hidden" id="littleEAdminBtn" type="button">Admin</button><button class="btn ghost" id="littleEClear" type="button">清除對話</button><button class="btn ghost" id="littleEClose" type="button">關閉</button></div>
   </div>
-  <div class="little-e-status"><span id="littleEStatus">檢查本機 AI…</span><small>優先使用瀏覽器本機 AI，不需要 API Key。</small></div>
-  <div class="little-e-context" id="littleEContext">目前沒有進行中的題目</div>
+
+  <div class="little-e-status"><span id="littleEStatus">檢查本機 AI…</span><small>優先使用瀏覽器本機 AI；翻譯、聊天與練習不需要另外輸入 API Key。</small></div>
+
+  <div class="little-e-control-row">
+    <label>情境
+      <select id="littleEScenario">
+        <option value="coach">學習教練</option>
+        <option value="chat">英文陪聊</option>
+        <option value="interview">面試陪練</option>
+        <option value="work">工作情境</option>
+        <option value="site">網站導覽</option>
+        <option value="style">我的回答風格</option>
+        <option value="mock">情境模擬</option>
+      </select>
+    </label>
+    <div class="little-e-lang-toggle" aria-label="回覆顯示語言">
+      <button class="active" id="littleELangEn" type="button">EN 顯示</button>
+      <button id="littleELangZh" type="button">中文 隱藏</button>
+    </div>
+  </div>
+
+  <div class="little-e-context" id="littleEContext">目前沒有題目。可以直接聊天、翻譯，或問我網站怎麼用。</div>
+
   <div class="little-e-quick">
     <button type="button" data-little-e-action="translate-question">翻譯目前題目</button>
     <button type="button" data-little-e-action="answer">怎麼回答？</button>
@@ -333,13 +354,34 @@
     <button type="button" data-little-e-action="keywords">關鍵字</button>
     <button type="button" data-little-e-action="explain">面試官想聽什麼？</button>
     <button type="button" data-little-e-action="model-zh">翻譯 Model answer</button>
+    <button type="button" data-little-e-action="site">網站怎麼用？</button>
   </div>
+
   <div class="little-e-messages" id="littleEMessages" aria-live="polite"></div>
+
   <form class="little-e-form" id="littleEForm">
-    <textarea id="littleEInput" rows="3" placeholder="例如：幫我翻譯這句、這題怎麼回答、這句文法對嗎？"></textarea>
+    <textarea id="littleEInput" rows="3" placeholder="例如：幫我翻譯「我晚點回覆你」、陪我聊工作、這題怎麼回答、這個功能怎麼用？"></textarea>
     <button class="btn primary" type="submit">問小E</button>
   </form>
-  <div class="little-e-foot">小E會優先使用目前題目、Model answer、你的 Answer Map 與最近口說狀況作為背景。</div>
+
+  <div class="little-e-bottom-row">
+    <span>英文字預設顯示，中文預設隱藏；可隨時切換。</span>
+    <button class="little-e-feedback-link" id="littleEGeneralFeedbackBtn" type="button">💡 給小E建議</button>
+  </div>
+
+  <div class="little-e-feedback-box hidden" id="littleEFeedbackBox">
+    <div class="little-e-feedback-head"><b id="littleEFeedbackTitle">給小E一個使用建議</b><button type="button" id="littleEFeedbackCancel">取消</button></div>
+    <textarea id="littleEFeedbackText" rows="3" placeholder="例如：翻譯太長、希望回答更口語、希望增加某個情境…"></textarea>
+    <div class="support" id="littleEFeedbackHint">這些回饋會讓 Admin 看得到，方便後續改良。</div>
+    <button class="btn primary" id="littleEFeedbackSend" type="button">送出回饋</button>
+  </div>
+
+  <section class="little-e-admin hidden" id="littleEAdminPanel">
+    <div class="little-e-admin-head"><div><b>小E 回饋中心</b><span>只對 Admin 顯示</span></div><div><button type="button" id="littleEAdminRefresh">重新整理</button><button type="button" id="littleEAdminClose">關閉</button></div></div>
+    <div class="little-e-admin-list" id="littleEAdminList"></div>
+  </section>
+
+  <div class="little-e-foot">小E會參考目前／最近題目、Answer Map、最近口說狀況，以及你過去常問的主題。聊天內容會保留到你登出；登出後清除當次對話，但「你常問什麼」會留下做個人化。</div>
 </aside>
 
 <nav class="mobile-dock" aria-label="手機快速練習">
@@ -349,10 +391,10 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261018v25-1"></script>
-<script src="auth.js?v=20261018v25-1"></script>
-<script src="question-bank.js?v=20261018v25-1"></script>
-<script src="app.js?v=20261018v25-1"></script>
-<script src="little-e.js?v=20261018v25-1"></script>
+<script src="supabase-config.js?v=20261018v26-1"></script>
+<script src="auth.js?v=20261018v26-1"></script>
+<script src="question-bank.js?v=20261018v26-1"></script>
+<script src="app.js?v=20261018v26-1"></script>
+<script src="little-e.js?v=20261018v26-1"></script>
 </body>
 </html>
