@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261018v24-1">
+  <link rel="stylesheet" href="styles.css?v=20261018v25-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -188,8 +188,9 @@
       <div class="grid grid-2">
         <div class="panel">
           <h3 style="margin-top:0">把學習狀況回傳給我</h3>
-          <p style="color:var(--muted);line-height:1.65">按「匯出學習報告」會產生 Markdown，包含技能等級、常錯題、使用提示次數、口說自評與近期回合。你把檔案丟回 ChatGPT，我就能依真實弱項擴充下一版題庫。</p>
-          <div class="btn-row"><button class="btn primary" id="exportReportBtn2" type="button">匯出學習報告</button><button class="btn ghost" id="exportProgressBtn" type="button">備份進度 JSON</button></div>
+          <p style="color:var(--muted);line-height:1.65">可以直接匯出 PDF 或 Excel。PDF 適合快速閱讀與分享；Excel 會拆成總覽、能力、弱點、單字熟悉度、題目熟悉度、口說紀錄、錯誤記憶與最近回合等工作表。原本的 Markdown 與 JSON 備份仍保留。</p>
+          <div class="btn-row report-export-actions"><button class="btn primary" id="exportPdfBtn" type="button">匯出 PDF</button><button class="btn secondary" id="exportExcelBtn" type="button">匯出 Excel</button><button class="btn ghost" id="exportReportBtn2" type="button">Markdown</button><button class="btn ghost" id="exportProgressBtn" type="button">備份 JSON</button></div>
+          <div class="support export-report-status" id="exportReportStatus">報告會使用目前帳號已同步的學習紀錄。</div>
         </div>
         <div class="panel">
           <h3 style="margin-top:0">匯入新版題庫 / 還原進度</h3>
@@ -348,10 +349,10 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261018v24-1"></script>
-<script src="auth.js?v=20261018v24-1"></script>
-<script src="question-bank.js?v=20261018v24-1"></script>
-<script src="app.js?v=20261018v24-1"></script>
-<script src="little-e.js?v=20261018v24-1"></script>
+<script src="supabase-config.js?v=20261018v25-1"></script>
+<script src="auth.js?v=20261018v25-1"></script>
+<script src="question-bank.js?v=20261018v25-1"></script>
+<script src="app.js?v=20261018v25-1"></script>
+<script src="little-e.js?v=20261018v25-1"></script>
 </body>
 </html>
