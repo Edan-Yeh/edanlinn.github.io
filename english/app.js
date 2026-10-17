@@ -785,6 +785,8 @@
     if(!Number.isFinite(s.guessCount)) s.guessCount=0;
     if(!Number.isFinite(s.modelPracticeCount)) s.modelPracticeCount=0;
     if(!('lastOutcome' in s)) s.lastOutcome=null;
+    if(!Number.isFinite(s.speakingLowScoreCount)) s.speakingLowScoreCount=0;
+    if(!Number.isFinite(s.lastSystemScore)) s.lastSystemScore=null;
     return s;
   }
 
@@ -848,6 +850,9 @@
     let w={wrong:14,guessed:8,new:4,correct:1.1}[familiarity]||1;
     if(s?.due && s.due<=todayKey())w*=1.2;
     else if(familiarity==='correct')w*=.5;
+    if(q.type==='speaking' && Number.isFinite(s?.lastSystemScore) && s.lastSystemScore<60){
+      w*=1+Math.min(2.2,(s.speakingLowScoreCount||1)*.55);
+    }
     if(familiarity==='correct' && (s?.correct||0)>=3)w*=.65;
     if(q.skill==='listening' && mode==='listening')w*=1.08;
     if(q.type==='speaking' && mode==='speaking')w*=1.08;
@@ -923,7 +928,7 @@
   }
 
   function renderListeningQuestion(q){
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">先不要看文字，聽懂「他在問什麼」</div><div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox">${esc(q.text)}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div>${modelAnswerHtml(q,'可以這樣回答').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">先不要看文字，聽懂「他在問什麼」</div><div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox">${esc(q.text)}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div>${modelAnswerHtml(q,'可以這樣回答').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 再練這題</button></div></article>`;
     $('playNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'audioStatus'));
     $('playIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','audioStatus'));
     $('showTranscriptBtn').addEventListener('click',()=>{
@@ -988,6 +993,71 @@
     }));
   }
 
+  function speakingFramework(q){
+    const text=((q?.text||'')+' '+(q?.model||'')).toLowerCase();
+    let title='四段聯想法';
+    let mnemonic='一句回答 → 兩個重點 → 一個例子／結果 → 停';
+    let steps=[
+      ['1','先回答','直接回答問題','I would... / I usually...'],
+      ['2','重點一','先說最重要的一點','The main point is...'],
+      ['3','重點二／例子','補一個具體做法或案例','For example... / I also...'],
+      ['4','收尾','用結果或目的結束','This helps... / As a result...']
+    ];
+
+    if(/tell me about yourself|introduce yourself|career|journey|background|current role|currently doing|what do you do/.test(text)){
+      title='職涯／自我介紹：Now → Scope → Proof → Direction';
+      mnemonic='現在是誰 → 負責什麼 → 用一個證據證明 → 往哪裡走';
+      steps=[
+        ['1','Now 現在','一句說現在角色／專案','Currently, I work on...'],
+        ['2','Scope 範圍','說你真正負責的 2 個重點','My role mainly covers...'],
+        ['3','Proof 證據','補一個具體成果／場景','For example, I...'],
+        ['4','Direction 方向','連到下一個職涯目標','That is why I want to...']
+      ];
+    }else if(/why mongodb|why .*company|why are you leaving|why leave|why do you want|motivat/.test(text)){
+      title='動機題：Reason → Fit → Evidence → Future';
+      mnemonic='原因 → 為什麼適合 → 你有什麼證據 → 未來想做什麼';
+      steps=[
+        ['1','Reason 原因','先講真正動機，不繞圈','The main reason is...'],
+        ['2','Fit 適配','公司／職位哪裡吸引你','What interests me is...'],
+        ['3','Evidence 證據','用你的經驗證明不是空話','In my current role, I...'],
+        ['4','Future 未來','說你希望下一步成長什麼','I want to build on that by...']
+      ];
+    }else if(/stakeholder|executive|communicat|status|production issue|critical issue|risk|update/.test(text)){
+      title='高階溝通：Headline → Impact → Action → Next';
+      mnemonic='先講結論 → 影響／風險 → 正在做什麼 → 下一個決策點';
+      steps=[
+        ['1','Headline 結論','先讓主管 10 秒知道發生什麼','The current situation is...'],
+        ['2','Impact 影響','說客戶／時程／風險','The main impact is...'],
+        ['3','Action 行動','說 owner、處理方式與進度','We are currently...'],
+        ['4','Next 下一步','說下一個決策／時間點','The next step is...']
+      ];
+    }else if(/challenge|conflict|unclear ownership|incident|problem|difficult|example|tell me about a time/.test(text)){
+      title='行為題：Situation → Ownership → Action → Result';
+      mnemonic='背景一句 → 我負責什麼 → 我做了什麼 → 結果';
+      steps=[
+        ['1','Situation 情境','一句交代背景，不講太久','The situation was...'],
+        ['2','Ownership 責任','清楚講「我」負責什麼','I was responsible for...'],
+        ['3','Action 行動','只講 2–3 個關鍵動作','I first... Then I...'],
+        ['4','Result 結果','數字、改善或學到什麼','As a result...']
+      ];
+    }else if(/scope|ownership|success|measure|project manager|project success|responsib/.test(text)){
+      title='PM／Ownership：Scope → Criteria → Control → Outcome';
+      mnemonic='範圍 → 怎樣算成功 → 如何控風險／責任 → 結果';
+      steps=[
+        ['1','Scope 範圍','先定義你負責的邊界','My scope includes...'],
+        ['2','Criteria 標準','怎樣算做成功','Success means...'],
+        ['3','Control 控制','風險、owner、時程怎麼管','I track... / I make sure...'],
+        ['4','Outcome 結果','回到客戶／交付結果','The goal is to...']
+      ];
+    }
+
+    return {title,mnemonic,steps};
+  }
+  function speakingFrameworkHtml(q){
+    const fw=speakingFramework(q);
+    return `<div class="speaking-framework"><div class="speaking-framework-head"><div><span class="badge">ANSWER MAP</span><h4>${esc(fw.title)}</h4></div><button class="btn ghost speaking-framework-toggle" type="button" data-framework-toggle>收起架構</button></div><div class="speaking-framework-body" data-framework-body><div class="speaking-framework-mnemonic">${esc(fw.mnemonic)}</div><div class="speaking-framework-steps">${fw.steps.map(step=>`<div class="speaking-framework-step"><b>${esc(step[0])}</b><div><strong>${esc(step[1])}</strong><span>${esc(step[2])}</span><em>${esc(step[3])}</em></div></div>`).join('')}</div><div class="support">先用中文想「每格要講什麼」，再用簡單英文填進去。你不用背 Model answer，只要記住順序。</div></div></div>`;
+  }
+
   function renderSpeakingQuestion(q){
     const hideText=q.level>=3;
     const SR=speechRecognitionCtor();
@@ -995,9 +1065,15 @@
     const recorderAvailable=mediaRecorderAvailable();
     const recordLabel=recorderAvailable?'🎙 開始錄音回答':(recognitionAvailable?'🎙 開始語音辨識':'開始 45 秒');
     const recordClass=(recorderAvailable||recognitionAvailable)?'btn primary':'btn secondary';
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後會先嘗試瀏覽器轉文字；若不可用，改用本機 Whisper，再提供 0–100 分與修正建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage"><div class="timer" id="speakTimer">00:45</div><div class="support">建議結構：Direct answer → 2 個重點 → 停。錄音與轉文字是兩個不同功能。即使瀏覽器即時轉文字不可用，仍會保留錄音，並在講完後嘗試本機 Whisper 分析。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若即時轉文字失敗，系統會再嘗試本機 Whisper。':'完成錄音後會嘗試本機 Whisper 轉文字與評分；若仍失敗才改用自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後會先嘗試瀏覽器轉文字；若不可用，改用本機 Whisper，再提供 0–100 分與修正建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage">${speakingFrameworkHtml(q)}<div class="timer" id="speakTimer">00:45</div><div class="support">先照上面的 Answer Map 聯想，再直接用簡單英文講。錄音與轉文字是兩個不同功能。即使瀏覽器即時轉文字不可用，仍會保留錄音，並在講完後嘗試本機 Whisper 分析。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若即時轉文字失敗，系統會再嘗試本機 Whisper。':'完成錄音後會嘗試本機 Whisper 轉文字與評分；若仍失敗才改用自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
     $('playSpeakNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'speakAudioStatus'));
     $('playSpeakIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','speakAudioStatus'));
+    document.querySelector('[data-framework-toggle]')?.addEventListener('click',e=>{
+      const body=document.querySelector('[data-framework-body]');
+      if(!body)return;
+      body.classList.toggle('hidden');
+      e.currentTarget.textContent=body.classList.contains('hidden')?'展開架構':'收起架構';
+    });
     if(hideText) $('revealSpeakQBtn').addEventListener('click',()=>{session.currentMeta.hint=true;qstat(q.id).hints++;$('speakingQuestionText').textContent=q.text;$('revealSpeakQBtn').disabled=true;save();});
     $('recognitionBtn').addEventListener('click',()=>startRecordedAnswer(q,recognitionAvailable));
     $('finishSpeakingBtn').addEventListener('click',()=>finishSpeakingStage(q));
@@ -1127,15 +1203,17 @@
       transcriptConfirmed:!!userConfirmed
     });
     const nextBtn=$('nextBtn');
+    const retryBtn=$('retrySameSpeakingBtn');
     nextBtn?.classList.remove('hidden');
+    if(nextBtn)nextBtn.textContent='下一題 →';
+    nextBtn?.addEventListener('click',nextQuestion,{once:true});
     if(analysis.score<60){
-      if(nextBtn)nextBtn.textContent='↻ 再練一次（需達 60 分）';
-      $('feedbackTitle').textContent='這題需要再練一次';
-      $('feedbackNote').textContent='目前低於 60 分，不會直接往下一題；再回答同一題，直到達到 60 分以上。';
-      nextBtn?.addEventListener('click',()=>renderCurrentQuestion(),{once:true});
+      retryBtn?.classList.remove('hidden');
+      retryBtn?.addEventListener('click',()=>renderCurrentQuestion(),{once:true});
+      $('feedbackTitle').textContent='這題會提高後續出現頻率';
+      $('feedbackNote').textContent='目前低於 60 分，但你可以直接下一題。系統已把這題標成高優先複習；也可以現在就按「再練這題」。';
     }else{
-      if(nextBtn)nextBtn.textContent='下一題 →';
-      nextBtn?.addEventListener('click',nextQuestion,{once:true});
+      retryBtn?.classList.add('hidden');
     }
     const recognitionBtn=$('recognitionBtn');
     if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='✓ 已完成評分';}
@@ -1509,10 +1587,24 @@
   function recordAnswer(q,quality,correct,extra){
     const s=qstat(q.id); s.seen++; if(correct)s.correct++;else s.wrong++; s.lastQuality=quality;s.lastSeen=todayKey();
     s.lastOutcome=!correct?'wrong':(quality<=1?'guessed':'correct');
-    if(quality>=3){s.interval=s.interval?Math.min(30,Math.max(2,Math.round(s.interval*2))):2;}
-    else if(quality===2){s.interval=s.interval?Math.max(2,Math.round(s.interval*1.3)):2;}
-    else if(quality===1){s.interval=1;} else {s.interval=0;}
-    s.due=addDays(s.interval);
+    if(q.type==='speaking' && Number.isFinite(extra?.systemScore)){
+      s.lastSystemScore=extra.systemScore;
+      if(extra.systemScore<60){
+        s.speakingLowScoreCount=(s.speakingLowScoreCount||0)+1;
+        s.lastOutcome='wrong';
+        s.interval=0;
+        s.due=todayKey();
+      }else{
+        s.speakingLowScoreCount=Math.max(0,(s.speakingLowScoreCount||0)-1);
+      }
+    }
+    const lowSpeaking=q.type==='speaking' && Number.isFinite(extra?.systemScore) && extra.systemScore<60;
+    if(!lowSpeaking){
+      if(quality>=3){s.interval=s.interval?Math.min(30,Math.max(2,Math.round(s.interval*2))):2;}
+      else if(quality===2){s.interval=s.interval?Math.max(2,Math.round(s.interval*1.3)):2;}
+      else if(quality===1){s.interval=1;} else {s.interval=0;}
+      s.due=addDays(s.interval);
+    }
     const k=q.skill; const current=state.skills[k]||1; const delta={3:.09,2:.035,1:-.025,0:-.07}[quality]||0;
     state.skills[k]=clamp(current+delta*(1+Math.max(0,q.level-current)*.12),1,5);
     if(q.type==='speaking') state.skills.speaking=clamp((state.skills.speaking||1)+delta*.85,1,5);
