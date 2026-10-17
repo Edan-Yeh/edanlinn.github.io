@@ -226,15 +226,24 @@
     if(keys.length)return keys;
     return meaningfulTokens(q.model||'').filter((w,i,a)=>a.indexOf(w)===i).slice(0,4);
   }
+  function pronounceableEnglishHtml(text){
+    const parts=String(text||'').match(/[A-Za-z]+(?:['’][A-Za-z]+)?|\d+|\s+|[^A-Za-z\d\s]+/g)||[];
+    return parts.map(part=>{
+      if(/^[A-Za-z]+(?:['’][A-Za-z]+)?$/.test(part)){
+        return `<button class="pronounce-word" data-pronounce-word="${esc(part)}" type="button" title="點一下聽發音">${esc(part)}</button>`;
+      }
+      return esc(part);
+    }).join('');
+  }
   function modelAnswerHtml(q,label='推薦答案'){
     const zh=answerTranslation(q);
     const cues=modelPracticeCues(q);
     const practiceCount=qstat(q.id).modelPracticeCount||0;
-    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en" data-model-answer-text>${esc(q.model)}</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div>
+    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en" data-model-answer-text>${pronounceableEnglishHtml(q.model)}</div><div class="model-word-hint">🔊 點任何英文單字可單獨聽發音</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div>
       <div class="model-practice-box">
         <div class="model-practice-head"><div><strong>記憶＋口說練習</strong><span>不要背整段，先記骨架再說。</span></div><span class="model-practice-count" data-model-practice-count>已練 ${practiceCount} 次</span></div>
-        <div class="model-memory-cues">${cues.map((c,i)=>`<span><b>${i+1}</b>${esc(c)}</span>`).join('')}</div>
-        <div class="model-practice-tip"><b>技巧：</b>先聽 1 次 → 看著 cue words 說 1 次 → 遮住英文再說 1 次。面試不用逐字一樣，重點是順序與意思能自己講出來。</div>
+        <div class="model-memory-cues">${cues.map((c,i)=>`<button class="model-cue-pronounce" data-pronounce-cue="${esc(c)}" type="button" title="點一下聽 cue 發音"><b>${i+1}</b>${esc(c)}</button>`).join('')}</div>
+        <div class="model-practice-tip"><b>技巧：</b>先聽 1 次 → 點不熟的單字確認發音 → 看著 cue words 說 1 次 → 遮住英文再說 1 次。面試不用逐字一樣，重點是順序與意思能自己講出來。</div>
         <div class="btn-row model-practice-actions">
           <button class="btn ghost" data-model-practice="slow" type="button">▶ 0.88x 跟讀</button>
           <button class="btn ghost" data-model-practice="hide" type="button">🙈 遮住英文</button>
@@ -1594,6 +1603,28 @@
           const voice=resolved?.voiceName?` · ${resolved.voiceName}`:'';
           status.textContent=`${requested}${fallback}${voice} · ${rate.toFixed(2)}x`;
         }
+        return;
+      }
+
+      const wordBtn=e.target.closest?.('[data-pronounce-word]');
+      if(wordBtn){
+        const word=wordBtn.dataset.pronounceWord;
+        const resolved=speak(word,.84,chooseVoiceLang(q.level||1));
+        wordBtn.classList.add('pronounce-word-active');
+        setTimeout(()=>wordBtn.classList.remove('pronounce-word-active'),550);
+        const status=wordBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
+        if(status)status.textContent=`🔊 ${word} · ${resolved?.voiceName||'System voice'}。可重複點擊再聽一次。`;
+        return;
+      }
+
+      const cueBtn=e.target.closest?.('[data-pronounce-cue]');
+      if(cueBtn){
+        const cue=cueBtn.dataset.pronounceCue;
+        const resolved=speak(cue,.88,chooseVoiceLang(q.level||1));
+        cueBtn.classList.add('model-cue-active');
+        setTimeout(()=>cueBtn.classList.remove('model-cue-active'),650);
+        const status=cueBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
+        if(status)status.textContent=`🔊 Cue: ${cue} · ${resolved?.voiceName||'System voice'}`;
         return;
       }
 
