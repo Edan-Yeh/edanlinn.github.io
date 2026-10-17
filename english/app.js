@@ -365,8 +365,8 @@
     const filter=$('vocabFilter')?.value||'all';
     let arr=CONTENT.vocabulary.filter(v=>filter==='all'||v.category===filter);
     if(learningOnly) arr=arr.filter(v=>!state.vocabKnown[v.id]);
-    if(randomize) arr=[...arr].sort(()=>Math.random()-.5);
-    if(limit) arr=arr.slice(0,limit);
+    if(randomize) arr=weightedVocabSample(arr,limit||arr.length);
+    else if(limit) arr=arr.slice(0,limit);
     if(!arr.length){
       host.innerHTML='<div class="panel support">這個篩選目前沒有需要複習的單字。</div>';
       return;
@@ -409,7 +409,21 @@
       }
     }));
     document.querySelectorAll('.vocab-known').forEach(b=>b.addEventListener('click',()=>{
-      state.vocabKnown[b.dataset.id]=!state.vocabKnown[b.dataset.id];
+      const id=b.dataset.id;
+      const next=!state.vocabKnown[id];
+      state.vocabKnown[id]=next;
+      const st=vocabStat(id);
+      if(next){
+        st.lastOutcome='correct';
+        st.correctStreak=Math.max(3,st.correctStreak||0);
+        st.interval=Math.max(7,st.interval||0);
+        st.due=addDays(st.interval);
+      }else if(st.attempts===0){
+        st.lastOutcome=null;
+        st.correctStreak=0;
+        st.interval=0;
+        st.due=todayKey();
+      }
       save();
       renderVocabulary(limit,randomize,learningOnly);
     }));
@@ -421,8 +435,85 @@
     return (CONTENT.vocabulary||[]).filter(v=>filter==='all'||v.category===filter);
   }
   function vocabStat(id){
-    if(!state.vocabStats[id]) state.vocabStats[id]={attempts:0,correct:0,choice:0,sentence:0,listening:0};
-    return state.vocabStats[id];
+    if(!state.vocabStats[id]) state.vocabStats[id]={attempts:0,correct:0,wrong:0,guessed:0,choice:0,sentence:0,listening:0,lastOutcome:null,correctStreak:0,interval:0,due:todayKey(),lastSeen:null};
+    const st=state.vocabStats[id];
+    if(!Number.isFinite(st.attempts))st.attempts=0;
+    if(!Number.isFinite(st.correct))st.correct=0;
+    if(!Number.isFinite(st.wrong))st.wrong=Math.max(0,(st.attempts||0)-(st.correct||0));
+    if(!Number.isFinite(st.guessed))st.guessed=0;
+    if(!Number.isFinite(st.correctStreak))st.correctStreak=0;
+    if(!Number.isFinite(st.interval))st.interval=0;
+    if(!st.due)st.due=todayKey();
+    return st;
+  }
+  function vocabFamiliarity(v){
+    const st=vocabStat(v.id);
+    if(st.lastOutcome==='wrong')return 'wrong';
+    if(st.lastOutcome==='guessed')return 'guessed';
+    if(st.attempts===0 && !state.vocabKnown[v.id])return 'new';
+    if(st.lastOutcome==='correct' || state.vocabKnown[v.id])return 'correct';
+    if(st.wrong>0 && st.correct===0)return 'wrong';
+    return st.attempts===0?'new':'correct';
+  }
+  function vocabPriorityWeight(v){
+    const st=vocabStat(v.id);
+    const type=vocabFamiliarity(v);
+    let w={wrong:14,guessed:8,new:4,correct:1.15}[type]||1;
+    if(type==='correct'){
+      if((st.correctStreak||0)>=3)w*=.55;
+      if((st.correctStreak||0)>=5)w*=.55;
+    }
+    if(st.due && st.due<=todayKey())w*=1.2;
+    else if(type==='correct')w*=.45;
+    return Math.max(.08,w);
+  }
+  function weightedVocabSample(pool,size){
+    const source=[...pool];
+    const selected=[];
+    while(selected.length<size && source.length){
+      const weights=source.map(v=>vocabPriorityWeight(v));
+      const total=weights.reduce((a,b)=>a+b,0);
+      let r=Math.random()*total;
+      let pick=0;
+      for(let i=0;i<source.length;i++){r-=weights[i];if(r<=0){pick=i;break;}}
+      selected.push(source[pick]);
+      source.splice(pick,1);
+    }
+    return selected;
+  }
+  function updateVocabResult(v,correct,mode){
+    const st=vocabStat(v.id);
+    st.attempts++;
+    st[mode]=(st[mode]||0)+1;
+    st.lastSeen=todayKey();
+    if(correct){
+      st.correct++;
+      st.lastOutcome='correct';
+      st.correctStreak=(st.correctStreak||0)+1;
+      st.interval=st.correctStreak===1?2:Math.min(30,Math.max(3,Math.round((st.interval||2)*1.8)));
+      st.due=addDays(st.interval);
+      if(st.correctStreak>=3 && st.correct/st.attempts>=.8)state.vocabKnown[v.id]=true;
+    }else{
+      st.wrong=(st.wrong||0)+1;
+      st.lastOutcome='wrong';
+      st.correctStreak=0;
+      st.interval=0;
+      st.due=todayKey();
+      state.vocabKnown[v.id]=false;
+    }
+    return st;
+  }
+  function markVocabGuessed(v){
+    const st=vocabStat(v.id);
+    st.guessed=(st.guessed||0)+1;
+    st.lastOutcome='guessed';
+    st.correctStreak=0;
+    st.interval=1;
+    st.due=addDays(1);
+    st.lastSeen=todayKey();
+    state.vocabKnown[v.id]=false;
+    save();
+    return st;
   }
   function vocabExampleTranslation(v){return v?.exampleZh || CONTENT.vocabExampleTranslations?.[v?.id] || '';}
   function escapeRegExpText(s){
@@ -478,7 +569,7 @@
     let pool=vocabPool();
     if(mode==='sentence') pool=pool.filter(v=>sentenceBlank(v));
     if(pool.length<4) pool=(CONTENT.vocabulary||[]).filter(v=>mode!=='sentence'||sentenceBlank(v));
-    const queue=shuffle(pool).slice(0,Math.min(size,pool.length));
+    const queue=weightedVocabSample(pool,Math.min(size,pool.length));
     vocabPracticeSession={mode,queue,index:0,correct:0,answered:false};
     $('vocabGrid')?.classList.add('hidden');
     $('vocabPracticeHost')?.classList.remove('hidden');
@@ -514,7 +605,9 @@
     }
     const exampleZh=vocabExampleTranslation(v);
     const sentenceZhHtml=s.mode==='sentence'&&exampleZh?`<div class="sentence-zh-hint"><button class="btn ghost" id="vocabSentenceZhBtn" type="button">顯示中文提示</button><div class="sentence-zh-text hidden" id="vocabSentenceZhText">${esc(exampleZh)}</div></div>`:'';
-    host.innerHTML=`<article class="vocab-practice-card panel"><div class="vocab-practice-top"><span class="badge">${s.mode==='choice'?'選擇題':s.mode==='sentence'?'句型':'聽力'}</span><span class="support">${progress} · 已答對 ${s.correct}</span></div><div class="vocab-practice-prompt">${prompt}</div><div class="support vocab-practice-sub">${sub}</div>${sentenceZhHtml}${audioHtml}<div class="options vocab-practice-options">${options.map(o=>`<button class="option vocab-option" data-value="${esc(o)}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="vocabPracticeFeedback"></div><div class="vocab-answer-detail hidden" id="vocabAnswerDetail"><strong>${esc(v.word)}｜${esc(v.zh)}</strong><p>${esc(v.example)}</p><div class="btn-row"><button class="btn ghost" id="vocabAnswerNA" type="button">▶ 北美例句</button><button class="btn ghost" id="vocabAnswerIN" type="button">▶ 印度例句</button></div></div><button class="btn primary hidden vocab-next" id="vocabNextBtn" type="button">下一題 →</button></article>`;
+    const familiarity=vocabFamiliarity(v);
+    const familiarityLabel={wrong:'錯題優先',guessed:'猜對待複習',new:'新單字',correct:'已答對／降頻'}[familiarity]||'學習中';
+    host.innerHTML=`<article class="vocab-practice-card panel"><div class="vocab-practice-top"><span class="badge">${s.mode==='choice'?'選擇題':s.mode==='sentence'?'句型':'聽力'}</span><span class="support">${progress} · 已答對 ${s.correct}</span></div><div class="vocab-familiarity-pill ${familiarity}">${familiarityLabel}</div><div class="vocab-practice-prompt">${prompt}</div><div class="support vocab-practice-sub">${sub}</div>${sentenceZhHtml}${audioHtml}<div class="options vocab-practice-options">${options.map(o=>`<button class="option vocab-option" data-value="${esc(o)}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="vocabPracticeFeedback"></div><div class="vocab-answer-detail hidden" id="vocabAnswerDetail"><strong>${esc(v.word)}｜${esc(v.zh)}</strong><p>${esc(v.example)}</p><div class="btn-row"><button class="btn ghost" id="vocabAnswerNA" type="button">▶ 北美例句</button><button class="btn ghost" id="vocabAnswerIN" type="button">▶ 印度例句</button><button class="btn ghost hidden" id="vocabGuessBtn" type="button">🎯 其實我是猜的</button></div><div class="support hidden" id="vocabGuessStatus">已標成「猜對」，之後會比新單字更常出現。</div></div><button class="btn primary hidden vocab-next" id="vocabNextBtn" type="button">下一題 →</button></article>`;
     if(s.mode==='sentence'&&exampleZh){
       $('vocabSentenceZhBtn').addEventListener('click',()=>{
         const zh=$('vocabSentenceZhText'); zh.classList.toggle('hidden');
@@ -538,8 +631,7 @@
       const chosen=btn.dataset.value;
       const correct=chosen===answer;
       if(correct)s.correct++;
-      const st=vocabStat(v.id); st.attempts++; if(correct)st.correct++; st[s.mode]=(st[s.mode]||0)+1;
-      if(st.attempts>=3 && st.correct/st.attempts>=.8) state.vocabKnown[v.id]=true;
+      const st=updateVocabResult(v,correct,s.mode);
       save();
       document.querySelectorAll('.vocab-option').forEach(b=>{
         b.disabled=true;
@@ -552,6 +644,16 @@
       $('vocabNextBtn').classList.remove('hidden');
       $('vocabAnswerNA').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),chooseVoiceLang(1)));
       $('vocabAnswerIN').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),'en-IN'));
+      if(correct){
+        const guessBtn=$('vocabGuessBtn');
+        guessBtn?.classList.remove('hidden');
+        guessBtn?.addEventListener('click',()=>{
+          markVocabGuessed(v);
+          guessBtn.disabled=true;
+          guessBtn.textContent='✓ 已標成猜對';
+          $('vocabGuessStatus')?.classList.remove('hidden');
+        },{once:true});
+      }
       $('vocabNextBtn').addEventListener('click',()=>{s.index++;renderVocabPracticeQuestion();},{once:true});
     }));
   }
@@ -682,6 +784,7 @@
     if(typeof s.manualReview!=='boolean') s.manualReview=false;
     if(!Number.isFinite(s.guessCount)) s.guessCount=0;
     if(!Number.isFinite(s.modelPracticeCount)) s.modelPracticeCount=0;
+    if(!('lastOutcome' in s)) s.lastOutcome=null;
     return s;
   }
 
@@ -690,10 +793,15 @@
     s.manualReview=!!enabled;
     s.markedAt=enabled?todayKey():null;
     if(enabled){
-      if(reason==='guess') s.guessCount=(s.guessCount||0)+1;
+      if(reason==='guess'){
+        s.guessCount=(s.guessCount||0)+1;
+        s.lastOutcome='guessed';
+      }
       s.interval=0;
       s.due=todayKey();
       if(s.lastQuality===null || s.lastQuality>1) s.lastQuality=1;
+    }else if(reason==='guess' && s.lastOutcome==='guessed'){
+      s.lastOutcome=s.seen>0?'correct':null;
     }
     save();
     window.EDAN_CLOUD?.logEvent?.(enabled?'question_marked_review':'question_unmarked_review',{
@@ -712,7 +820,7 @@
   function candidatePool(mode){
     const today = todayKey();
     let qs = CONTENT.questions.slice();
-    if(mode==='listening') qs = qs.filter(q => q.skill==='listening' || (q.type==='speaking' && q.level>=2));
+    if(mode==='listening') qs = qs.filter(q => q.skill==='listening' && q.type==='listening_intent');
     if(mode==='speaking') qs = qs.filter(q => q.type==='speaking');
     if(mode==='wrong'){
       const weak = qs.filter(q => { const s = state.qstats[q.id]; return s && (s.manualReview || s.wrong>0 || s.hints>0 || (s.lastQuality!==null && s.lastQuality<=1)); });
@@ -725,26 +833,32 @@
     return qs;
   }
 
+  function questionFamiliarity(s){
+    if(!s || !s.seen)return 'new';
+    if(s.lastOutcome==='wrong')return 'wrong';
+    if(s.lastOutcome==='guessed' || s.manualReview)return 'guessed';
+    if(s.lastOutcome==='correct')return 'correct';
+    if(s.lastQuality===0)return 'wrong';
+    if(s.lastQuality===1)return 'guessed';
+    return 'correct';
+  }
   function weightQuestion(q, mode){
-    const s = state.qstats[q.id] || {wrong:0,hints:0,seen:0,due:todayKey(),lastQuality:null};
-    const skill = effectiveSkillForQuestion(q);
-    const dist = Math.abs(q.level - skill);
-    let w = 6 / (1 + dist*1.7);
-    if(q.skill==='listening') w *= 1.45;
-    if(q.skill==='speaking' || q.type==='speaking') w *= 1.22;
-    if(s.wrong) w *= 1 + Math.min(2,s.wrong*.4);
-    if(s.hints) w *= 1 + Math.min(1.5,s.hints*.25);
-    if(s.lastQuality!==null && s.lastQuality<=1) w *= 1.45;
-    if(s.manualReview) w *= 2.2;
-    if(s.due && s.due<=todayKey()) w *= 1.55;
-    if(s.seen===0) w *= 1.15;
-    if(q.level > skill + 1.15) w *= .25;
-    if(q.level < skill - 1.65) w *= .45;
-    if(mode==='listening' && q.skill==='listening') w *= 1.4;
+    const s=state.qstats[q.id]||null;
+    const familiarity=questionFamiliarity(s);
+    let w={wrong:14,guessed:8,new:4,correct:1.1}[familiarity]||1;
+    if(s?.due && s.due<=todayKey())w*=1.2;
+    else if(familiarity==='correct')w*=.5;
+    if(familiarity==='correct' && (s?.correct||0)>=3)w*=.65;
+    if(q.skill==='listening' && mode==='listening')w*=1.08;
+    if(q.type==='speaking' && mode==='speaking')w*=1.08;
+    const skill=effectiveSkillForQuestion(q);
+    const dist=Math.abs(q.level-skill);
+    const fit=clamp(1.08-dist*.07,.88,1.08);
+    w*=fit;
     const personalWeak=topWeakness();
-    if((personalWeak==='sound'||personalWeak==='intent') && q.skill==='listening') w*=1.35;
-    if((personalWeak==='output'||personalWeak==='structure'||personalWeak==='fluency') && q.type==='speaking') w*=1.35;
-    if(personalWeak==='usage' && (q.skill==='chunks'||q.skill==='rescue')) w*=1.25;
+    if((personalWeak==='sound'||personalWeak==='intent') && q.skill==='listening')w*=1.08;
+    if((personalWeak==='output'||personalWeak==='structure'||personalWeak==='fluency') && q.type==='speaking')w*=1.08;
+    if(personalWeak==='usage' && (q.skill==='chunks'||q.skill==='rescue'))w*=1.06;
     return Math.max(.05,w);
   }
 
@@ -1015,8 +1129,17 @@
       transcriptReliability:reliability?.score??null,
       transcriptConfirmed:!!userConfirmed
     });
-    $('nextBtn')?.classList.remove('hidden');
-    $('nextBtn')?.addEventListener('click',nextQuestion,{once:true});
+    const nextBtn=$('nextBtn');
+    nextBtn?.classList.remove('hidden');
+    if(analysis.score<60){
+      if(nextBtn)nextBtn.textContent='↻ 再練一次（需達 60 分）';
+      $('feedbackTitle').textContent='這題需要再練一次';
+      $('feedbackNote').textContent='目前低於 60 分，不會直接往下一題；再回答同一題，直到達到 60 分以上。';
+      nextBtn?.addEventListener('click',()=>renderCurrentQuestion(),{once:true});
+    }else{
+      if(nextBtn)nextBtn.textContent='下一題 →';
+      nextBtn?.addEventListener('click',nextQuestion,{once:true});
+    }
     const recognitionBtn=$('recognitionBtn');
     if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='✓ 已完成評分';}
   }
@@ -1388,6 +1511,7 @@
 
   function recordAnswer(q,quality,correct,extra){
     const s=qstat(q.id); s.seen++; if(correct)s.correct++;else s.wrong++; s.lastQuality=quality;s.lastSeen=todayKey();
+    s.lastOutcome=!correct?'wrong':(quality<=1?'guessed':'correct');
     if(quality>=3){s.interval=s.interval?Math.min(30,Math.max(2,Math.round(s.interval*2))):2;}
     else if(quality===2){s.interval=s.interval?Math.max(2,Math.round(s.interval*1.3)):2;}
     else if(quality===1){s.interval=1;} else {s.interval=0;}
