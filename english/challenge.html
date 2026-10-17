@@ -10,7 +10,7 @@
   <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261017v23-1">
+  <link rel="stylesheet" href="styles.css?v=20261018v24-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -314,6 +314,33 @@
   </aside>
 </div>
 
+<button class="little-e-fab" id="littleEButton" type="button" aria-expanded="false" aria-controls="littleEPanel">
+  <span class="little-e-avatar">E</span><span class="little-e-fab-label">小E</span>
+</button>
+
+<aside class="little-e-panel hidden" id="littleEPanel" aria-label="小E 英文小幫手">
+  <div class="little-e-head">
+    <div class="little-e-title"><span class="little-e-avatar">E</span><div><b>小E</b><span>你的英文小幫手</span></div></div>
+    <div class="little-e-head-actions"><button class="btn ghost" id="littleEClear" type="button">清除</button><button class="btn ghost" id="littleEClose" type="button">關閉</button></div>
+  </div>
+  <div class="little-e-status"><span id="littleEStatus">檢查本機 AI…</span><small>優先使用瀏覽器本機 AI，不需要 API Key。</small></div>
+  <div class="little-e-context" id="littleEContext">目前沒有進行中的題目</div>
+  <div class="little-e-quick">
+    <button type="button" data-little-e-action="translate-question">翻譯目前題目</button>
+    <button type="button" data-little-e-action="answer">怎麼回答？</button>
+    <button type="button" data-little-e-action="simple">簡單一點</button>
+    <button type="button" data-little-e-action="keywords">關鍵字</button>
+    <button type="button" data-little-e-action="explain">面試官想聽什麼？</button>
+    <button type="button" data-little-e-action="model-zh">翻譯 Model answer</button>
+  </div>
+  <div class="little-e-messages" id="littleEMessages" aria-live="polite"></div>
+  <form class="little-e-form" id="littleEForm">
+    <textarea id="littleEInput" rows="3" placeholder="例如：幫我翻譯這句、這題怎麼回答、這句文法對嗎？"></textarea>
+    <button class="btn primary" type="submit">問小E</button>
+  </form>
+  <div class="little-e-foot">小E會優先使用目前題目、Model answer、你的 Answer Map 與最近口說狀況作為背景。</div>
+</aside>
+
 <nav class="mobile-dock" aria-label="手機快速練習">
   <button class="mobile-dock-btn active start-mode" data-nav="challenge" data-mode="adaptive" data-size="5" type="button" aria-current="page"><span>⚡</span>5題挑戰</button>
   <button class="mobile-dock-btn start-mode" data-nav="listening" data-mode="listening" data-size="5" type="button"><span>🎧</span>聽力</button>
@@ -321,9 +348,10 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261017v23-1"></script>
-<script src="auth.js?v=20261017v23-1"></script>
-<script src="question-bank.js?v=20261017v23-1"></script>
-<script src="app.js?v=20261017v23-1"></script>
+<script src="supabase-config.js?v=20261018v24-1"></script>
+<script src="auth.js?v=20261018v24-1"></script>
+<script src="question-bank.js?v=20261018v24-1"></script>
+<script src="app.js?v=20261018v24-1"></script>
+<script src="little-e.js?v=20261018v24-1"></script>
 </body>
 </html>
