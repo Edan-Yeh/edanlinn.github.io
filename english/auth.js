@@ -161,6 +161,11 @@
     cloudReady = true;
     unlockApp();
     updateAccountUI();
+    window.dispatchEvent(new CustomEvent('edan:auth-ready',{detail:{
+      id:currentUser?.id||null,
+      email:currentUser?.email||'',
+      isAdmin:String(currentUser?.email||'').toLowerCase()==='edan14725836961@gmail.com'
+    }}));
     await logEvent('login_ready', { path: location.pathname }, 'login-' + new Date().toISOString().slice(0,10));
   }
 
@@ -313,10 +318,59 @@
     $('accountPanel')?.classList.add('hidden');
   }
 
+  function isAdminUser(){
+    return String(currentUser?.email||'').toLowerCase()==='edan14725836961@gmail.com';
+  }
+
+  async function submitLittleEFeedback(payload={}){
+    if(!currentUser)throw new Error('尚未登入');
+    const row={
+      user_id:currentUser.id,
+      user_email:currentUser.email||null,
+      rating:payload.rating||'suggestion',
+      category:payload.category||null,
+      comment:payload.comment||null,
+      user_message:payload.userMessage||null,
+      assistant_response:payload.assistantResponse||null,
+      context:payload.context||{},
+      improvement_hint:payload.improvementHint||null
+    };
+    const {data,error}=await client.from('little_e_feedback').insert(row).select('id,created_at,status').single();
+    if(error)throw error;
+    return data;
+  }
+
+  async function listLittleEFeedback(limit=100){
+    if(!isAdminUser())throw new Error('需要 Admin 權限');
+    const {data,error}=await client.from('little_e_feedback')
+      .select('id,user_email,rating,category,comment,user_message,assistant_response,context,improvement_hint,status,created_at,reviewed_at')
+      .order('created_at',{ascending:false})
+      .limit(Math.max(1,Math.min(200,Number(limit)||100)));
+    if(error)throw error;
+    return data||[];
+  }
+
+  async function updateLittleEFeedbackStatus(id,status){
+    if(!isAdminUser())throw new Error('需要 Admin 權限');
+    const allowed=new Set(['new','reviewed','planned','done']);
+    if(!allowed.has(status))throw new Error('狀態不正確');
+    const {data,error}=await client.from('little_e_feedback')
+      .update({status,reviewed_at:status==='new'?null:new Date().toISOString()})
+      .eq('id',id)
+      .select('id,status,reviewed_at')
+      .single();
+    if(error)throw error;
+    return data;
+  }
+
   window.EDAN_CLOUD = {
     get client(){ return client; },
     get user(){ return currentUser; },
     get ready(){ return cloudReady; },
+    get isAdmin(){ return isAdminUser(); },
+    submitLittleEFeedback,
+    listLittleEFeedback,
+    updateLittleEFeedbackStatus,
     saveState(state) {
       pendingState = state;
       clearTimeout(saveTimer);
@@ -385,6 +439,7 @@
     $('closeAccountPanelBtn')?.addEventListener('click', closeAccountPanel);
     $('accountPanelBackdrop')?.addEventListener('click', closeAccountPanel);
     $('signOutBtn')?.addEventListener('click', async()=>{
+      window.dispatchEvent(new CustomEvent('edan:auth-signed-out'));
       await client.auth.signOut();
       closeAccountPanel();
       currentUser = null;
@@ -418,6 +473,7 @@
         return;
       }
       if (event === 'SIGNED_OUT') {
+        window.dispatchEvent(new CustomEvent('edan:auth-signed-out'));
         currentUser = null;
         cloudReady = false;
         lockApp();
