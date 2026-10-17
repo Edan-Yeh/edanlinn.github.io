@@ -20,6 +20,7 @@
     vocabStats: {},
     weaknessCounts: {},
     errorMemory: {},
+    littleEHistory: [],
     sessions: [],
     completedDates: [],
     settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
@@ -184,6 +185,7 @@
         vocabStats: parsed.vocabStats||{},
         weaknessCounts: parsed.weaknessCounts||{},
         errorMemory: parsed.errorMemory||{},
+        littleEHistory: Array.isArray(parsed.littleEHistory)?parsed.littleEHistory.slice(-30):[],
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         settings:migratedSettings,
@@ -209,6 +211,7 @@
       vocabStats:incoming.vocabStats||{},
       weaknessCounts:incoming.weaknessCounts||{},
       errorMemory:incoming.errorMemory||{},
+      littleEHistory:Array.isArray(incoming.littleEHistory)?incoming.littleEHistory.slice(-30):[],
       sessions:Array.isArray(incoming.sessions)?incoming.sessions:[],
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
       settings:{...base.settings,...(incoming.settings||{})},
@@ -1904,6 +1907,41 @@
     $('resetAllBtn').addEventListener('click',()=>{if(confirm('確定清除這台瀏覽器的所有英文訓練進度？')){localStorage.removeItem(STORE_KEY);state=defaultState();save();syncSettingsUI();renderOverview();renderVocabulary(12);renderChunks();alert('已清除。');}});
     $('resetTodayBtn').addEventListener('click',()=>{renderOverview();renderChunks();alert('已依目前進度重新計算顯示。');});
   }
+
+  window.EDAN_APP_BRIDGE={
+    context(){
+      const q=session?.questions?.[session.index]||null;
+      const fw=q&&q.type==='speaking'?speakingFramework(q):null;
+      const stat=q?qstat(q.id):null;
+      return {
+        contentVersion:CONTENT.contentVersion,
+        question:q?{
+          id:q.id,
+          type:q.type,
+          skill:q.skill,
+          level:q.level,
+          text:q.text,
+          intent:q.intent||'',
+          model:q.model||'',
+          modelZh:answerTranslation(q)||'',
+          keywords:[...(q.keywords||[])],
+          framework:fw
+        }:null,
+        transcript:speechTranscript||'',
+        lastSystemScore:stat?.lastSystemScore??null,
+        topWeakness:topWeakness(),
+        errorMemory:topErrorEntries(5).map(([key,val])=>({key,label:errorLabels[key]||key,count:val.count||0,note:val.note||''})),
+        interviewReadiness:interviewReadiness()
+      };
+    },
+    getHistory(){return Array.isArray(state.littleEHistory)?state.littleEHistory.slice(-30):[];},
+    saveHistory(history){
+      state.littleEHistory=Array.isArray(history)?history.slice(-30):[];
+      save();
+    },
+    speakEnglish(text,rate=.94){return speak(text,rate,chooseVoiceLang(1));},
+    clearHistory(){state.littleEHistory=[];save();}
+  };
 
   function init(){
     syncSettingsUI();bindStaticEvents();renderOverview();renderVocabulary(12);renderChunks();
