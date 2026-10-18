@@ -38,3 +38,26 @@
 .moba-arena :is(.moba-player,.moba-skill,.moba-hud){filter:none!important}
 @media(max-width:1100px){.moba-hud,.moba-expanded .moba-hud{grid-template-columns:minmax(0,1fr)!important}.moba-summoners{grid-column:auto!important}}
 @media(max-width:600px){.moba-hud{padding:12px!important}.moba-skill-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}.moba-skill{padding:6px!important;min-height:74px!important}.moba-skill b{font-size:10px!important}.moba-summoners button{min-height:46px!important}}
+
+
+/* Streak and weapons: one palette, clear hierarchy. */
+.arena-grid{gap:18px!important;align-items:stretch!important}
+.arena-grid .dash-panel{min-width:0!important}
+.chain-summary{margin:20px 0 14px!important;gap:14px!important}
+.chain-summary strong{color:var(--app-text)!important;font-size:30px!important}
+.chain-summary span,.arena-next,.arena-rule,.arena-equipped{color:var(--app-muted)!important;font-size:12px!important;line-height:1.75!important}
+.chain-meter{height:7px!important;background:var(--app-border)!important}
+.chain-meter i{background:var(--app-accent)!important}
+.weapon-cards{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+.weapon-card{display:flex!important;flex-direction:column!important;align-items:center!important;min-width:0!important;padding:17px 12px!important;background:var(--app-surface)!important;background-image:none!important;border:1px solid var(--app-border)!important;border-radius:15px!important;color:var(--app-text)!important;box-shadow:none!important}
+.weapon-card.unlocked{border-color:var(--app-accent)!important;background:var(--app-soft)!important;box-shadow:0 0 0 1px var(--app-accent)!important}
+.weapon-rarity{color:var(--app-accent)!important;font-size:11px!important;font-weight:700!important;letter-spacing:.04em!important}
+.weapon-card>svg{max-width:100%!important;filter:none!important}
+.weapon-card.locked>svg{opacity:.38!important;filter:grayscale(1)!important}
+.weapon-card h4{color:var(--app-text)!important;font-size:13px!important;line-height:1.5!important;margin:12px 0 6px!important}
+.weapon-card p{color:var(--app-muted)!important;font-size:11px!important;line-height:1.6!important;margin:0 0 13px!important}
+.weapon-card button{margin-top:auto!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;color:var(--app-accent)!important;border-radius:10px!important;padding:8px 11px!important;font-size:11px!important;box-shadow:none!important}
+.weapon-card button:disabled{color:var(--app-muted)!important;background:var(--app-soft)!important;opacity:.75!important}
+.weapon-card button:not(:disabled):hover{background:var(--app-accent)!important;color:var(--app-accent-ink)!important}
+@media(max-width:900px){.weapon-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:450px){.weapon-card{padding:13px 9px!important}.weapon-card h4{font-size:12px!important}}
