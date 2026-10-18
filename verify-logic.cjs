@@ -1,6 +1,6 @@
 const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
 const storage=new Map(),nodes=new Map();
-const node=key=>{if(!nodes.has(key))nodes.set(key,{value:key==='#quiz-category'||key==='#quiz-type'?'all':'',innerHTML:'',textContent:'',className:'',dataset:{},classList:{toggle(){},add(){},remove(){}},appendChild(){},insertAdjacentHTML(){},querySelectorAll(){return [];},querySelector(k){return node(k);},focus(){},setAttribute(){}});return nodes.get(key);};
+const node=key=>{if(!nodes.has(key))nodes.set(key,{value:key==='#quiz-category'||key==='#quiz-type'?'all':'',innerHTML:'',textContent:'',className:'',dataset:{},classList:{toggle(){},add(){},remove(){}},appendChild(){},before(){},after(){},insertAdjacentHTML(){},querySelectorAll(){return [];},querySelector(k){return node(k);},focus(){},setAttribute(){}});return nodes.get(key);};
 const context=vm.createContext({console,window:{},Date,Math,document:{querySelector:node,querySelectorAll:()=>[],createElement:()=>node(Math.random().toString()),head:{appendChild(){}}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},openOnlyModule(){},confirm:()=>true});
 vm.runInContext(fs.readFileSync(__dirname+'/data.js','utf8'),context);
 vm.runInContext('const d=window.CLOUD_SA_DATA;',context);
