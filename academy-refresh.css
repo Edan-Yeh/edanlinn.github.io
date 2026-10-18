@@ -1,0 +1,63 @@
+/* Academy Refresh · inspired by user-provided Cloud SA Academy screenshot.
+   One source of truth for color, typography, and responsive shell.
+   Core game viewport intentionally remains dark. */
+:root,[data-site-theme="light"]{--bg:#f5f7fb;--panel:#fff;--panel2:#f0f5fd;--line:#e0e6ef;--text:#182538;--muted:#5d6b80;--accent:#0865c9;--chip:#edf3fb;--shadow:0 10px 30px rgba(31,56,91,.05);--app-bg:#f5f7fb;--app-surface:#fff;--app-soft:#edf4ff;--app-text:#172437;--app-muted:#596a80;--app-border:#dde5f0;--app-accent:#0865c9;--app-accent-ink:#fff;color-scheme:light}
+[data-site-theme="dark"]{--bg:#111b2b;--panel:#1b2a3d;--panel2:#26374b;--line:#3e526a;--text:#f0f5fc;--muted:#b9c9dc;--accent:#87b9ff;--chip:#26374b;--shadow:0 12px 32px rgba(0,0,0,.14);--app-bg:#111b2b;--app-surface:#1b2a3d;--app-soft:#26374b;--app-text:#f0f5fc;--app-muted:#b9c9dc;--app-border:#3e526a;--app-accent:#87b9ff;--app-accent-ink:#102238;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{background:var(--app-bg)!important;color:var(--app-text)!important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif!important;font-size:15px;line-height:1.75;letter-spacing:0!important}
+body::before{display:none!important}
+.sidebar{background:var(--app-surface)!important;border-right:1px solid var(--app-border)!important;color:var(--app-text)!important;box-shadow:none!important}
+.top{background:color-mix(in srgb,var(--app-bg) 92%,transparent)!important;border-bottom:1px solid var(--app-border)!important;backdrop-filter:blur(16px)}
+.top .brand,.top .profile-name,.sidebar .side-brand b,.sidebar .side-bottom b{color:var(--app-text)!important}
+.top .brand small,.top .profile-name small,.sidebar .side-brand small,.sidebar .side-label,.sidebar .side-bottom p,.sidebar .side-bottom span{color:var(--app-muted)!important}
+.top .nav a,.sidebar .side-link{color:var(--app-muted)!important}
+.sidebar .side-link{border-radius:12px!important}
+.sidebar .side-link.active,.sidebar .side-link:hover,.guide-side-link{background:var(--app-soft)!important;color:var(--app-accent)!important;border-color:transparent!important}
+.shell{max-width:1440px}
+.hero,.visitor-guide,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro{background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important;border-radius:22px!important;box-shadow:var(--shadow)!important}
+.hero{background:linear-gradient(115deg,var(--app-surface) 55%,var(--app-soft))!important}
+:is(.hero h1,.visitor-guide h2,.portfolio-heading h2,.learning-method-panel h2,.ai-foundations h2,.lab-intro h2){color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important;letter-spacing:-.035em!important}
+.hero h1 span{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+:is(.hero-copy,.hero p,.visitor-guide p,.portfolio-heading p,.learning-method-panel p,.ai-foundations p,.lab-intro p){color:var(--app-muted)!important}
+:is(.section-kicker,.hero-eyebrow,.guide-eyebrow,.guide-number,.guide-bottom b){color:var(--app-accent)!important}
+:is(.rank-card,.stat,.overview-card,.dash-panel,.path-panel,.module-card,.skill-map-panel,.examples-panel,.glossary-panel,.quiz-panel,.concept-map,.day,.box,.module-togglebar,.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.guide-path,.moba-arena .moba-toolbar,.moba-arena .moba-scoreboard,.moba-arena .campaign-panel){background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important;border-radius:18px!important;box-shadow:var(--shadow)!important}
+:is(.portfolio-project h3,.ai-feature h3,.ai-architecture h3,.method-grid b,.guide-path strong,.rank-card .rank-title,.rank-card .rank-level,.stat b,.day h2,.day h3){color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+:is(.guide-desc,.guide-bottom,.portfolio-project p,.ai-feature p,.ai-architecture p,.method-grid p,.rank-card .rank-subtitle,.rank-card .rank-foot,.rank-card .rank-top,.stat small){color:var(--app-muted)!important}
+:is(.portfolio-status,.portfolio-tags span,.portfolio-principles strong,.guide-time,.ai-method span,.ai-code-path,.ai-arch-flow span){background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+:is(.portfolio-text-link,.portfolio-project-links a,.lab-intro a,.guide-bottom a,.guide-cta){color:var(--app-accent)!important}
+:is(.primary-action,.mission-action){background:var(--app-accent)!important;color:var(--app-accent-ink)!important;border:1px solid var(--app-accent)!important;box-shadow:none!important}
+:is(.quiet-action,.top .nav button,.filter button,.moba-arena .moba-toolbar button){background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important}
+.visitor-guide{padding:28px!important;margin:24px 0!important}
+.visitor-guide-top{display:flex;justify-content:space-between;gap:20px;align-items:start}
+.visitor-guide h2{font-size:clamp(26px,3vw,36px);margin:10px 0}
+.visitor-guide-top p{max-width:750px}
+.guide-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:24px}
+.guide-path{display:flex;flex-direction:column;gap:10px;padding:22px;text-decoration:none!important;transition:transform .2s ease,border-color .2s ease}
+.guide-path:hover{transform:translateY(-2px);border-color:var(--app-accent)!important}
+.guide-path strong{font-size:18px}
+.guide-path .guide-cta{margin-top:auto;font-weight:700}
+.guide-bottom{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:20px}
+#daily .day,#daily .day-head,#daily .day-body{background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+#daily :is(h2,h3,b,.day-head h2,.day-body>h3){color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily :is(.day-num,.muted,.day-head .muted){color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important}
+#daily :is(.score,.score.high,.score.mid){color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#daily .correction .box{background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+#daily .correction .box.good{border-left:4px solid #288968!important}
+#daily .correction .box.bad{border-left:4px solid #c27739!important}
+#daily .correction .box :is(div,li,b,p){color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily .chips .chip,#daily .memory,#daily .archive-link{background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily .archive-link a{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#daily .filter button.active{background:var(--app-accent)!important;color:var(--app-accent-ink)!important;-webkit-text-fill-color:var(--app-accent-ink)!important}
+:is(input,select,textarea,#daily .toolbar .search){background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important}
+:is(input,textarea)::placeholder{color:var(--app-muted)!important;opacity:1}
+.appearance-control{display:flex;align-items:center;gap:8px}
+.appearance-control label{font-size:12px;color:var(--app-muted)}
+.appearance-control select{border-radius:12px;min-height:36px;padding:6px 12px;font-size:13px}
+.moba-arena{background:var(--app-surface)!important;border:1px solid var(--app-border)!important}
+.moba-arena .moba-viewport{background:#101d30!important;color:#f5f8ff!important}
+.moba-arena .moba-viewport :is(h2,h3,p,b,strong,span){color:#f5f8ff!important}
+:focus-visible{outline:3px solid var(--app-accent)!important;outline-offset:3px}
+@media(max-width:1024px){.guide-paths{grid-template-columns:1fr}.guide-path{padding:18px}.visitor-guide-top{display:block}.guide-time{display:inline-block;margin-top:12px}}
+@media(max-width:700px){.visitor-guide{padding:18px!important;margin:12px 0!important}.visitor-guide h2{font-size:27px}.guide-bottom{display:block}.guide-bottom a{display:block;margin-top:8px}.top .shell{gap:8px}.appearance-control label{display:none}.appearance-control select{max-width:115px}}
+@media(prefers-reduced-motion:reduce){.guide-path{transition:none}.guide-path:hover{transform:none}}
