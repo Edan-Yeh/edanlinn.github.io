@@ -1,5 +1,5 @@
 const vm=require('vm'),fs=require('fs'),assert=require('assert');
-const src=fs.readFileSync('site/moba.js','utf8'),ctx=vm.createContext({});vm.runInContext(src+';this.Sim=MobaSimulation;this.path=mobaPath;this.walkable=mobaWalkable;this.direction=mobaDirection;',ctx);const Sim=ctx.Sim;let n=0;const check=(v,m)=>{assert(v,m);n++;};
+const src=fs.readFileSync('moba.js','utf8'),ctx=vm.createContext({});vm.runInContext(src+';this.Sim=MobaSimulation;this.path=mobaPath;this.walkable=mobaWalkable;this.direction=mobaDirection;',ctx);const Sim=ctx.Sim;let n=0;const check=(v,m)=>{assert(v,m);n++;};
 function run(s,t){for(let i=0;i<Math.ceil(t/.025);i++)s.step(.025);}
 function setup(champion='Zed'){const s=new Sim(champion);s.start();s.nextWave=999;s.heroes[1].aiAt=999;for(const u of s.units.filter(u=>u.type==='hound'))u.hp=0;s.heroes[0].x=480;s.heroes[0].y=360;s.heroes[1].x=700;s.heroes[1].y=360;return s;}
 let s=setup();check(s.heroes[0].champion==='Zed'&&s.heroes[1].champion==='Naafiri','correct bodies');let hp=s.heroes[1].hp;check(s.cast(0,{x:1000,y:360}),'Q cast');run(s,.7);check(s.heroes[1].hp<hp,'Q real collision');check(!s.cast(0,{x:1000,y:360}),'Q cooldown');
