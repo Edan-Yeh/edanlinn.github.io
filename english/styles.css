@@ -1177,3 +1177,71 @@ body.auth-locked .little-e-panel{display:none!important}
     animation:none!important;
   }
 }
+
+
+/* Little E head interaction menu v32 */
+.little-e-head-interaction{position:relative;flex:0 0 auto}
+.little-e-head-button{
+  padding:0;appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;
+  transform-origin:50% 78%;animation:littleEHeadIdle 3.4s ease-in-out infinite;
+  box-shadow:0 6px 16px rgba(35,66,145,.10);
+  transition:box-shadow .16s ease,transform .16s ease,border-color .16s ease;
+}
+.little-e-head-button:hover{box-shadow:0 8px 20px rgba(35,66,145,.16);border-color:#cbd8ff}
+.little-e-head-button:focus-visible{outline:3px solid rgba(55,87,219,.24);outline-offset:3px}
+.little-e-head-button.is-pressing::before{
+  content:"";position:absolute;inset:-4px;border-radius:18px;
+  border:2px solid rgba(53,83,211,.22);border-top-color:#3657d6;z-index:4;pointer-events:none;
+  animation:littleEPressRing .56s linear forwards
+}
+.little-e-head-button.menu-open{box-shadow:0 8px 24px rgba(35,66,145,.20)}
+.little-e-head-mascot{transition:opacity .14s ease,transform .18s ease}
+.little-e-head-mascot.is-swapping{opacity:.20;transform:translateY(3px) scale(.92)}
+.little-e-head-status-dot{
+  position:absolute;width:8px;height:8px;right:3px;bottom:3px;border:2px solid #fff;border-radius:50%;
+  background:#38b878;box-shadow:0 1px 3px rgba(0,0,0,.12)
+}
+.little-e-head-hint{display:block;margin-top:2px;color:#8a94aa;font-size:8px;font-weight:500;line-height:1.2}
+.little-e-pet-menu{
+  position:absolute;z-index:210;left:0;top:56px;width:226px;padding:10px;border:1px solid #dfe5f3;
+  border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 18px 46px rgba(25,43,91,.18);
+  backdrop-filter:blur(14px)
+}
+.little-e-pet-menu-title{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:2px 3px 9px;color:#253250}
+.little-e-pet-menu-title b{font-size:11px}.little-e-pet-menu-title small{font-size:8px;color:#8a94a8}
+.little-e-pet-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.little-e-pet-menu-grid button{
+  min-height:38px;border:1px solid #e2e7f2;border-radius:11px;background:#f8faff;color:#33415f;
+  font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:flex-start;
+  gap:7px;padding:7px 9px;transition:.14s ease
+}
+.little-e-pet-menu-grid button:hover,.little-e-pet-menu-grid button:focus-visible{
+  background:#eef3ff;border-color:#cbd8ff;color:#2447d8;transform:translateY(-1px)
+}
+.little-e-pet-menu-grid button span{font-size:14px;line-height:1}
+.little-e-food-box{
+  position:absolute;z-index:5;left:4px;bottom:-4px;width:28px;height:18px;border-radius:5px 5px 7px 7px;
+  background:linear-gradient(145deg,#6c4327,#3e2618);border:1px solid #c8a36b;
+  box-shadow:0 4px 8px rgba(52,31,17,.20);opacity:0;transform:translateY(7px) scale(.75);
+  pointer-events:none;overflow:hidden
+}
+.little-e-food-box::before{content:"";position:absolute;inset:3px;border:1px dashed rgba(231,201,137,.55);border-radius:3px}
+.little-e-food-box b{position:absolute;left:7px;top:2px;color:#f0d79d;font-size:8px;z-index:2}
+.little-e-food-box i{position:absolute;right:4px;top:2px;color:#f0d79d;font-size:7px;font-style:normal;z-index:2}
+.little-e-head-button.is-eating{animation:none}
+.little-e-head-button.is-eating .little-e-head-mascot{animation:littleEEatBob .48s ease-in-out infinite alternate}
+.little-e-head-button.is-eating .little-e-food-box{animation:littleEFoodIn .24s ease forwards,littleEFoodBounce .56s .24s ease-in-out infinite alternate}
+@keyframes littleEHeadIdle{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2px) rotate(1deg)}}
+@keyframes littleEPressRing{0%{transform:rotate(0deg);opacity:.3}100%{transform:rotate(360deg);opacity:1}}
+@keyframes littleEEatBob{0%{transform:translateY(3px) rotate(-2deg) scale(1)}100%{transform:translateY(6px) rotate(2deg) scale(.96)}}
+@keyframes littleEFoodIn{to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes littleEFoodBounce{0%{transform:translateY(0) rotate(-2deg)}100%{transform:translateY(-1px) rotate(2deg)}}
+@media(max-width:700px){
+  .little-e-pet-menu{left:0;top:52px;width:210px;max-width:min(210px,calc(100vw - 42px))}
+  .little-e-pet-menu-grid button{min-height:36px;font-size:9px}
+  .little-e-head-hint{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+  .little-e-head-button,.little-e-head-button.is-eating .little-e-head-mascot,
+  .little-e-head-button.is-eating .little-e-food-box,.little-e-head-button.is-pressing::before{animation:none!important}
+}
