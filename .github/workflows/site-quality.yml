@@ -1,0 +1,27 @@
+name: Site quality gates
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-and-logic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static assets, IDs, theme audit
+        run: node verify-site.cjs
+      - name: Learning logic regression
+        run: node verify-logic.cjs
+      - name: MOBA gameplay regression
+        run: node verify-moba.cjs
+      - name: Campaign regression
+        run: node verify-campaign.cjs
+      - name: Hero identity regression
+        run: node verify-hero-identity.cjs
