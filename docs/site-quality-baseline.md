@@ -12,6 +12,12 @@
 - Most repeated targets include `body`, `.sidebar`, `.hero`, `.rank-card`, and other shared containers.
 - A safe refactor needs a before/after browser screenshot baseline. No mass deletion or stylesheet merging until then.
 
+## Automated CSS overlap findings (2026-10-18)
+- Exact selector/property declarations found across multiple files: **854** (heuristic, not 854 confirmed visible bugs).
+- Highest-risk repeated targets: `body` background/color, `.hero` background/padding, `.sidebar` background, `.rank-card` background, `.hero-main` grid/gap, and `.quiz-option .letter` color.
+- This scanner does not resolve specificity, media queries, CSS layers or runtime states; use it to prioritize visual checks, not to delete declarations automatically.
+- Quality gates passed all five suites in [GitHub Actions run 39142504964](https://github.com/Edan-Yeh/edanlinn.github.io/actions/runs/39142504964).
+
 ## Visual regression matrix
 Capture full-page and component screenshots at widths:
 - Mobile: 390 × 844 and 430 × 932
