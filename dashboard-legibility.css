@@ -1,0 +1,40 @@
+/* Readability corrections for dashboard states and learning feedback. */
+:root{--ui-success:#187653;--ui-warning:#946017}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Noto Sans TC","Microsoft JhengHei",sans-serif!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.dash-panel :is(h3,b,strong),.mission b,.achievement b{color:var(--app-text)!important}
+.dash-panel :is(p,small,em),.coverage-row,.coverage-note,.weak-row span,.dashboard-empty p,.dashboard-empty small,.achievement small,.achievement em{color:var(--app-muted)!important}
+.dash-panel :is(p,small),.coverage-note,.dashboard-empty small{font-size:12px!important;line-height:1.7!important}
+.coverage-row{display:flex!important;justify-content:space-between!important;gap:12px!important;align-items:center!important;font-size:13px!important;margin:20px 0 10px!important}
+.coverage-row b{color:var(--app-text)!important;font-size:14px!important;font-variant-numeric:tabular-nums!important}
+.coverage-track,.weak-track{height:7px!important;background:var(--app-border)!important;border-radius:20px!important;overflow:hidden!important}
+.coverage-track i{display:block!important;height:100%!important;background:var(--app-accent)!important}
+.weak-track i{background:var(--app-accent)!important}
+.coverage-note{margin:10px 0 18px!important}
+.weak-row{margin-top:16px!important}
+.weak-row>div:first-child{font-size:12px!important;line-height:1.6!important}
+.weak-row b{font-size:12px!important;font-weight:650!important;color:var(--app-text)!important}
+.dashboard-empty{padding:30px 18px!important;min-height:155px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:8px!important}
+.dashboard-empty svg{height:32px!important;width:32px!important;color:var(--app-accent)!important;stroke:currentColor!important;opacity:1!important}
+.dashboard-empty p{color:var(--app-text)!important;font-size:14px!important;font-weight:650!important;margin:4px 0 0!important}
+.dashboard-empty small{color:var(--app-muted)!important;font-size:12px!important}
+.achievement{display:flex!important;gap:12px!important;align-items:center!important;padding:13px 0!important;border-bottom:1px solid var(--app-border)!important}
+.achievement>span{display:grid!important;place-items:center!important;flex:0 0 38px!important;width:38px!important;height:38px!important;background:var(--app-soft)!important;border-radius:12px!important;color:var(--app-accent)!important}
+.achievement svg{height:19px!important;width:19px!important;stroke:currentColor!important;opacity:1!important}
+.achievement b{font-size:13px!important;line-height:1.5!important}
+.achievement small{font-size:12px!important}
+.achievement em{font-size:12px!important;white-space:nowrap!important;font-style:normal!important}
+.achievement.unlocked>span{background:var(--app-soft)!important;color:var(--app-accent)!important}
+.achievement.unlocked b{color:var(--app-text)!important}
+.achievement.unlocked em{color:var(--app-accent)!important;font-weight:700!important}
+.mission-done{border-color:var(--app-border)!important;background:var(--app-surface)!important}
+.mission-done .mission-num{background:var(--app-soft)!important;color:var(--app-accent)!important}
+.mission-done .mission-action{background:var(--app-soft)!important;color:var(--app-accent)!important;border-color:var(--app-border)!important}
+.mission-done .mission-action:disabled{opacity:.8!important}
+.mission-done :is(small,em,span){color:var(--app-muted)!important}
+.mission-num{font-size:12px!important}
+.mission-action{font-size:12px!important}
+:is(.campaign-panel,.learning-campaign,.moba-arena) :is(.correct,.success,.is-correct,.answer-correct){color:var(--ui-success)!important}
+:is(.campaign-panel,.learning-campaign) :is(.feedback,.answer-feedback,.campaign-feedback){font-size:13px!important;line-height:1.8!important}
+:is(.campaign-panel,.learning-campaign) :is(.feedback,.answer-feedback,.campaign-feedback) :is(p,span,strong){color:var(--app-text)!important}
+:is(.campaign-panel,.learning-campaign) :is(.feedback,.answer-feedback,.campaign-feedback) a{color:var(--app-accent)!important;text-decoration:underline!important}
+@media(max-width:550px){.achievement{flex-wrap:wrap!important}.achievement em{margin-left:auto!important}.coverage-row{flex-wrap:wrap!important}}
