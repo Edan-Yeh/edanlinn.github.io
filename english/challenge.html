@@ -12,7 +12,7 @@
   <meta name="copyright" content="© 2026 Edan Yeh. Little E original character design and website implementation. All rights reserved.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261018v32-1">
+  <link rel="stylesheet" href="styles.css?v=20261018v33-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -326,15 +326,33 @@
   <span class="little-e-pet-bubble"><b>小E</b><small>找我嗎？</small></span>
   <span class="little-e-pet-zzz" aria-hidden="true">Zzz</span>
 </button>
+<div class="little-e-pet-menu little-e-pet-menu-fab hidden" id="littleEPetMenuFab" role="menu" aria-label="小E互動選單">
+  <div class="little-e-pet-menu-title"><b>跟小E互動</b><small>長按選動作</small></div>
+  <div class="little-e-pet-menu-grid">
+    <button type="button" role="menuitem" data-pet-action="feed"><span>🍱</span>吃飯</button>
+    <button type="button" role="menuitem" data-pet-action="sit"><span>🐾</span>坐下</button>
+    <button type="button" role="menuitem" data-pet-action="sleep"><span>💤</span>睡覺</button>
+    <button type="button" role="menuitem" data-pet-action="wave"><span>👋</span>揮手</button>
+    <button type="button" role="menuitem" data-pet-action="read"><span>📖</span>看書</button>
+    <button type="button" role="menuitem" data-pet-action="think"><span>💭</span>思考</button>
+    <button type="button" role="menuitem" data-pet-action="happy"><span>✨</span>開心</button>
+    <button type="button" role="menuitem" data-pet-action="random"><span>🎲</span>隨機</button>
+  </div>
+</div>
 
 <aside class="little-e-panel hidden" id="littleEPanel" aria-label="小E 英文小幫手">
   <div class="little-e-head">
     <div class="little-e-title">
       <div class="little-e-head-interaction" id="littleEHeadInteraction">
-        <button class="little-e-head-mascot-wrap little-e-head-button" id="littleEHeadButton" type="button" aria-label="小E互動；長按開啟互動選單" aria-haspopup="menu" aria-expanded="false" title="點一下跟小E打招呼；長按可互動">
-          <img class="little-e-head-mascot little-e-protected-art" id="littleEHeadMascot" src="assets/little-e-mascot-v30.webp" alt="小E" draggable="false">
+        <button class="little-e-head-mascot-wrap little-e-head-button little-e-head-25d" id="littleEHeadButton" type="button" aria-label="小E互動；長按開啟互動選單" aria-haspopup="menu" aria-expanded="false" title="點一下跟小E打招呼；長按可互動">
+          <span class="little-e-head-25d-stage" aria-hidden="true">
+            <span class="little-e-head-sparkles"><i>✦</i><i>✧</i></span>
+            <img class="little-e-head-mascot little-e-protected-art" id="littleEHeadMascot" src="assets/little-e-mascot-v30.webp" alt="" draggable="false">
+            <span class="little-e-head-shadow"></span>
+          </span>
           <span class="little-e-head-status-dot" aria-hidden="true"></span>
           <span class="little-e-food-box" aria-hidden="true"><b>E</b><i>♥</i></span>
+          <span class="little-e-head-zzz" aria-hidden="true">Zzz</span>
         </button>
         <div class="little-e-pet-menu hidden" id="littleEPetMenu" role="menu" aria-label="小E互動選單">
           <div class="little-e-pet-menu-title"><b>跟小E互動</b><small>點一下選動作</small></div>
@@ -421,10 +439,10 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261018v32-1"></script>
-<script src="auth.js?v=20261018v32-1"></script>
-<script src="question-bank.js?v=20261018v32-1"></script>
-<script src="app.js?v=20261018v32-1"></script>
-<script src="little-e.js?v=20261018v32-1"></script>
+<script src="supabase-config.js?v=20261018v33-1"></script>
+<script src="auth.js?v=20261018v33-1"></script>
+<script src="question-bank.js?v=20261018v33-1"></script>
+<script src="app.js?v=20261018v33-1"></script>
+<script src="little-e.js?v=20261018v33-1"></script>
 </body>
 </html>
