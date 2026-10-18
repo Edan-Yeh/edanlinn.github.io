@@ -36,7 +36,9 @@
     happy:'assets/little-e-happy-v31.webp',
     thinking:'assets/little-e-thinking-v31.webp',
     reading:'assets/little-e-reading-v31.webp',
-    sleep:'assets/little-e-sleep-v31.webp'
+    eat:'assets/little-e-eat-v34.webp',
+    sit:'assets/little-e-sit-v34.webp',
+    sleep:'assets/little-e-sleep-v34.webp'
   };
 
   const SCENARIOS={
@@ -162,6 +164,8 @@
   }
 
   function petPoseForState(state=''){
+    if(state==='is-eating')return 'eat';
+    if(state==='is-sitting')return 'sit';
     if(state==='is-thinking')return 'thinking';
     if(state==='is-reading')return 'reading';
     if(state==='is-sleeping')return 'sleep';
@@ -177,9 +181,12 @@
       blink:'嘿嘿',
       wave:'嗨 👋',
       happy:'做得好！',
+      eating:'好吃！',
+      eat:'好吃！',
+      sit:'坐好囉',
       thinking:'讓我想想…',
       reading:'一起看一下',
-      sleep:'休息一下'
+      sleep:'晚安 Zzz'
     }[pose]||'找我嗎？';
   }
 
@@ -236,14 +243,7 @@
 
   function feedLittleE(){
     clearTimeout(headEatTimer);
-    const targets=[headButton(),mascotButton()].filter(Boolean);
-    targets.forEach(btn=>btn.classList.add('is-eating'));
-    swapPetAsset('happy');
-    updatePetBubble('happy');
-    headEatTimer=setTimeout(()=>{
-      targets.forEach(btn=>btn.classList.remove('is-eating'));
-      setPetState('is-celebrate',850);
-    },2300);
+    setPetState('is-eating',3200);
   }
 
   function runPetInteraction(action){
@@ -251,7 +251,7 @@
     markPetActivity();
     switch(action){
       case 'feed': feedLittleE(); break;
-      case 'sit': setPetState('',0); updatePetBubble('idle'); break;
+      case 'sit': setPetState('is-sitting',3600); break;
       case 'sleep': setPetState('is-sleeping'); break;
       case 'wave': setPetState('is-wiggle',900); break;
       case 'read': setPetState('is-reading',2600); break;
@@ -322,7 +322,7 @@
     if(!pet)return;
     const head=headButton();
     clearTimeout(petActionTimer);
-    const classes=['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-blinking'];
+    const classes=['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-blinking','is-eating','is-sitting'];
     [pet,head].filter(Boolean).forEach(el=>classes.forEach(c=>el.classList.remove(c)));
     if(state)[pet,head].filter(Boolean).forEach(el=>el.classList.add(state));
     const pose=petPoseForState(state);
@@ -353,7 +353,7 @@
     if(reducedMotion()||document.hidden)return;
     petBlinkTimer=setTimeout(()=>{
       const pet=mascotButton();
-      const hasAction=pet&&['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping'].some(c=>pet.classList.contains(c));
+      const hasAction=pet&&['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-eating','is-sitting'].some(c=>pet.classList.contains(c));
       if(!busy&&!hasAction)setPetState('is-blinking',360);
       schedulePetBlink();
     },4500+Math.random()*5000);
@@ -375,10 +375,11 @@
     clearTimeout(petIdleTimer);
     if(reducedMotion()||document.hidden)return;
     petIdleTimer=setTimeout(()=>{
-      const sleeping=mascotButton()?.classList.contains('is-sleeping');
-      if(!busy&&!panelOpen()&&!sleeping){
+      const pet=mascotButton();
+      const blocking=pet&&['is-sleeping','is-eating','is-sitting','is-thinking','is-reading','is-celebrate','is-hop','is-wiggle'].some(c=>pet.classList.contains(c));
+      if(!busy&&!panelOpen()&&!blocking){
         setPetState(Math.random()<.55?'is-wiggle':'is-hop',Math.random()<.5?850:720);
-      }else if(!sleeping){
+      }else if(!pet?.classList.contains('is-sleeping')){
         schedulePetIdle();
       }
     },6500+Math.random()*7500);
