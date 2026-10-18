@@ -36,6 +36,22 @@
     return null;
   }
 
+  function emotionKind(text){
+    const s=low(text);
+    if(/累|疲累|疲倦|沒睡|想睡|tired|exhausted|sleepy/.test(s))return 'tired';
+    if(/煩|火大|生氣|不爽|frustrated|annoyed|angry/.test(s))return 'frustrated';
+    if(/緊張|焦慮|擔心|壓力|nervous|anxious|worried|stressed/.test(s))return 'nervous';
+    if(/無聊|bored|boring/.test(s))return 'bored';
+    if(/開心|高興|很爽|太好了|成功了|happy|excited|awesome/.test(s))return 'happy';
+    if(/難過|低落|傷心|sad|upset|feeling down/.test(s))return 'sad';
+    return null;
+  }
+
+  function variantIndex(messages=[],key,count=1){
+    if(count<=1)return 0;
+    return messages.filter(m=>m?.role==='assistant'&&m.variantKey===key).length%count;
+  }
+
   function personaTopic(text){
     const s=clean(text),t=low(s);
     if(/(生日|幾月幾號出生|哪天出生|birthday|when.*born|born.*when)/i.test(s))return 'birthday';
@@ -80,14 +96,30 @@
     return m[topic]?.()||null;
   }
 
-  function social(kind){
-    const m={
-      hello:()=>reply('Hi! Nice to see you. What would you like to talk about?','你好～很高興看到你。今天想聊什麼？','social'),
-      morning:()=>reply('Good morning! How are you feeling today?','早安～你今天感覺怎麼樣？','social'),
-      night:()=>reply("Good night. Sleep well, and I'll be here when you come back. 🌙",'晚安～好好休息，你回來的時候我還會在這裡 🌙','social'),
-      thanks:()=>reply("You're welcome! 😊",'不客氣～😊','social')
+  function social(kind,messages=[]){
+    const bank={
+      hello:[
+        ['Hi! Nice to see you. What would you like to talk about?','你好～很高興看到你。今天想聊什麼？'],
+        ["Hey, you're here. What are we talking about today?",'嗨～你來啦。今天要聊什麼？'],
+        ["Hi! I'm here. What's on your mind?",'嗨～我在。你現在在想什麼？']
+      ],
+      morning:[
+        ['Good morning! How are you feeling today?','早安～你今天感覺怎麼樣？'],
+        ['Morning! Ready for a new day?','早安～準備開始今天了嗎？']
+      ],
+      night:[
+        ["Good night. Sleep well, and I'll be here when you come back. 🌙",'晚安～好好休息，你回來的時候我還會在這裡 🌙'],
+        ['Good night. Go get some rest—I can wait. 🌙','晚安～去休息吧，我可以等你 🌙']
+      ],
+      thanks:[
+        ["You're welcome! 😊",'不客氣～😊'],
+        ['Anytime. 😊','隨時都可以～😊']
+      ]
     };
-    return m[kind]?.()||null;
+    const list=bank[kind]||bank.hello;
+    const i=variantIndex(messages,'social:'+kind,list.length);
+    const v=list[i];
+    return reply(v[0],v[1],'social',{variantKey:'social:'+kind,petReaction:kind==='night'?'sleep':'wave'});
   }
 
   function lastPersonaTopic(messages=[]){
@@ -102,48 +134,110 @@
     return null;
   }
 
+  function lastUserText(messages=[]){
+    for(let i=messages.length-1;i>=0;i--)if(messages[i]?.role==='user'&&clean(messages[i].text))return clean(messages[i].text);
+    return '';
+  }
+
   function isFollowUp(text){
     const s=clean(text);
-    return /^(為什麼|為甚麼|怎麼說|真的嗎|然後呢|那呢|why|why\?|really|how so|and then)[?？!！。.，,～~\s]*$/i.test(s)
+    return /^(為什麼|為甚麼|怎麼說|真的假的|真的嗎|然後呢|所以呢|所以|那呢|那你呢|你呢|why|why\?|really|how so|and then|so|what about you)[?？!！。.，,～~\s]*$/i.test(s)
       || /^(為什麼會|為甚麼會|為什麼喜歡|why do you like)/i.test(s);
   }
 
-  function follow(topic){
+  function follow(topic,text,messages=[]){
+    const s=clean(text);
+    if(/^(那你呢|你呢|what about you)/i.test(s)){
+      const prior=lastUserText(messages);
+      if(/喜歡|i like/i.test(prior))return explicit('likes');
+      if(emotionKind(prior)==='tired')return reply("I'm okay. If I were tired, I'd probably curl up and sleep for a bit. 😴",'我還好呀。如果是我累了，大概會先縮成一團睡一下 😴','social',{followUp:true,petReaction:'sleep'});
+      return reply("I'm doing pretty well. I'm curious what you'll say next.",'我現在還不錯～比較好奇你下一句要說什麼。','social',{followUp:true,petReaction:'wave'});
+    }
     const m={
-      daisies:()=>reply('Because daisies feel bright and uncomplicated. They have a playful, clean look that I really like.','因為雛菊給我的感覺很明亮、很單純，外型又有一點俏皮和乾淨感，我很喜歡。','daisies',{followUp:true}),
-      number24:()=>reply('Because 24 reminds me of something important to Edan, so it became a small symbol that feels connected to him.','因為 24 會讓我想到對 Edan 很重要的東西，所以它也變成一個讓我覺得跟他有連結的小符號。','number24',{followUp:true}),
-      favoritePerson:()=>reply('Because I like learning and exploring with Edan, and I like being there when he is working toward something important.','因為我喜歡跟 Edan 一起學東西、一起探索，也喜歡在他努力做重要事情的時候陪在旁邊。','favoritePerson',{followUp:true}),
-      hobbies:()=>reply('Because discovering something new keeps me curious. I like the feeling of understanding one more thing than I did a moment ago.','因為發現新東西會讓我一直保持好奇。我很喜歡那種「比剛剛又多懂一點」的感覺。','hobbies',{followUp:true}),
-      food:()=>reply('Because using my own little meal box makes eating feel more personal and a bit more fun.','因為用自己的小餐盒吃飯，會讓吃飯這件事更有自己的感覺，也更有趣一點。','food',{followUp:true}),
-      personality:()=>reply('Curiosity is probably the strongest part of my personality. When I notice something new, I naturally want to get closer and understand it.','我覺得最好奇這一點最明顯。只要看到新的東西，我就會自然想靠近一點、搞懂它。','personality',{followUp:true}),
-      birthday:()=>reply('April 6, 2026 is the birthday defined for my character, so I treat that day as my own special date.','2026 年 4 月 6 日是小E這個角色設定的生日，所以我會把那一天當成自己的特別日子。','birthday',{followUp:true})
+      daisies:()=>reply('Because daisies feel bright and uncomplicated. They have a playful, clean look that I really like.','因為雛菊給我的感覺很明亮、很單純，外型又有一點俏皮和乾淨感，我很喜歡。','daisies',{followUp:true,petReaction:'thinking'}),
+      number24:()=>reply('Because 24 reminds me of something important to Edan, so it became a small symbol that feels connected to him.','因為 24 會讓我想到對 Edan 很重要的東西，所以它也變成一個讓我覺得跟他有連結的小符號。','number24',{followUp:true,petReaction:'thinking'}),
+      favoritePerson:()=>reply('Because I like learning and exploring with Edan, and I like being there when he is working toward something important.','因為我喜歡跟 Edan 一起學東西、一起探索，也喜歡在他努力做重要事情的時候陪在旁邊。','favoritePerson',{followUp:true,petReaction:'happy'}),
+      hobbies:()=>reply('Because discovering something new keeps me curious. I like the feeling of understanding one more thing than I did a moment ago.','因為發現新東西會讓我一直保持好奇。我很喜歡那種「比剛剛又多懂一點」的感覺。','hobbies',{followUp:true,petReaction:'reading'}),
+      food:()=>reply('Because using my own little meal box makes eating feel more personal and a bit more fun.','因為用自己的小餐盒吃飯，會讓吃飯這件事更有自己的感覺，也更有趣一點。','food',{followUp:true,petReaction:'happy'}),
+      personality:()=>reply('Curiosity is probably the strongest part of my personality. When I notice something new, I naturally want to get closer and understand it.','我覺得最好奇這一點最明顯。只要看到新的東西，我就會自然想靠近一點、搞懂它。','personality',{followUp:true,petReaction:'thinking'}),
+      birthday:()=>reply('April 6, 2026 is the birthday defined for my character, so I treat that day as my own special date.','2026 年 4 月 6 日是小E這個角色設定的生日，所以我會把那一天當成自己的特別日子。','birthday',{followUp:true,petReaction:'happy'})
     };
-    return m[topic]?.()||null;
+    const known=m[topic]?.();
+    if(known)return known;
+    if(/真的假的|真的嗎|really/i.test(s))return reply("Really. 😄 I'm not trying to change the subject.",'真的呀 😄 我沒有要把話題岔開。','social',{followUp:true,petReaction:'happy'});
+    if(/然後呢|所以呢|所以|and then|so/i.test(s))return reply("Then keep going—I'm following you.",'然後你繼續說，我有跟上。','social',{followUp:true,petReaction:'wave'});
+    return null;
   }
 
   function directReply(text,messages=[]){
     const s=clean(text);
     const sk=socialKind(s);
-    if(sk)return social(sk);
+    if(sk)return social(sk,messages);
     const pt=personaTopic(s);
     if(pt)return explicit(pt);
-    if(isFollowUp(s))return follow(lastPersonaTopic(messages));
+    if(isFollowUp(s))return follow(lastPersonaTopic(messages),s,messages);
     return null;
+  }
+
+  function reactionFor(text,intent='chat'){
+    const e=emotionKind(text);
+    if(e==='happy')return 'happy';
+    if(e==='tired'||e==='sad')return 'sit';
+    if(e==='frustrated'||e==='nervous')return 'thinking';
+    if(e==='bored')return 'wave';
+    if(intent==='vocabulary'||intent==='grammar'||intent==='site_help')return 'reading';
+    if(intent==='translation'||intent==='interview_answer'||intent==='work_english')return 'thinking';
+    if(intent==='social')return 'wave';
+    return 'happy';
+  }
+
+  function emotionReply(kind,messages=[]){
+    const bank={
+      tired:[
+        ['That sounds tiring. You can tell me what drained you today—I’ll stay with that topic.','聽起來今天真的有點累。你可以跟我說是什麼把你耗光了，我就陪你聊這件事。'],
+        ['You sound worn out. Do you want to vent a little, or just chat about something easy?','聽起來你有點被耗光了。你想稍微抱怨一下，還是聊點輕鬆的？']
+      ],
+      frustrated:[
+        ["Yeah, that sounds frustrating. Tell me what happened first—I won't rush into advice.",'嗯，這聽起來真的很煩。你先跟我說發生什麼，我不會急著給建議。'],
+        ['I get why that would annoy you. Which part bothered you the most?','我懂為什麼會讓你不爽。哪一段最讓你煩？']
+      ],
+      nervous:[
+        ["Sounds like you're carrying some pressure. What part are you most worried about?",'聽起來你現在有一些壓力。你最擔心的是哪一段？'],
+        ["Okay, you're nervous. We can talk it through one piece at a time.",'好，你現在有點緊張。我們可以一段一段把它聊開。']
+      ],
+      bored:[
+        ["Bored? Then give me any random topic and I'll go with it.",'無聊嗎？那你隨便丟一個主題，我都可以接。'],
+        ["Let's fix that. Tell me the first random thing that comes to mind.",'那來解決一下無聊。你腦中第一個冒出的東西是什麼？']
+      ],
+      happy:[
+        ["That sounds like a good moment. What happened?",'聽起來是件讓你很開心的事。發生什麼了？'],
+        ["Nice! Now I'm curious—what made you this happy?",'不錯耶！換我好奇了，是什麼讓你這麼開心？']
+      ],
+      sad:[
+        ["That sounds rough. You can tell me what happened; I don't need to turn it into a lesson.",'聽起來不太好受。你可以跟我說發生什麼，我不用把它變成上課。'],
+        ["I'm listening. What happened?",'我有在聽。發生什麼了？']
+      ]
+    };
+    const list=bank[kind];
+    if(!list)return null;
+    const i=variantIndex(messages,'emotion:'+kind,list.length),v=list[i];
+    return {en:v[0],zh:v[1],meta:{persona:false,emotion:kind,variantKey:'emotion:'+kind,petReaction:reactionFor(kind, 'chat')}};
   }
 
   function fallbackReply(text,messages=[]){
     const s=clean(text),d=directReply(s,messages);
     if(d)return d;
-    if(/累|疲累|疲倦|tired|exhausted/i.test(s))return {en:'That sounds tiring. Want to tell me what made today feel exhausting?',zh:'聽起來今天真的有點累。想跟我說是什麼事情讓你特別疲憊嗎？',meta:{persona:false}};
-    if(/開心|很爽|高興|happy|excited/i.test(s))return {en:'That sounds like a good moment. What happened?',zh:'聽起來是件讓你很開心的事。發生什麼了？',meta:{persona:false}};
-    if(/我喜歡|i like/i.test(s))return {en:'Got it. What do you like most about it?',zh:'原來你喜歡這個。你最喜歡它哪一點？',meta:{persona:false}};
-    return {en:"I'm here. Tell me a little more, and I'll stay with the topic you brought up.",zh:'我在。你可以再多說一點，我會接著你現在的話題聊，不會自己跳到別的主題。',meta:{persona:false}};
+    const e=emotionKind(s),er=emotionReply(e,messages);
+    if(er)return er;
+    if(/我喜歡|i like/i.test(s))return {en:'Got it. What do you like most about it?',zh:'原來你喜歡這個。你最喜歡它哪一點？',meta:{persona:false,petReaction:'wave'}};
+    return {en:"I'm here. Tell me a little more, and I'll stay with the topic you brought up.",zh:'我在。你可以再多說一點，我會接著你現在的話題聊，不會自己跳到別的主題。',meta:{persona:false,petReaction:'sit'}};
   }
 
   function resolveConversationContext(text,messages=[]){
     const topic=personaTopic(text)||(isFollowUp(text)?lastPersonaTopic(messages):null);
-    const recent=messages.slice(-6).map(m=>m.role==='user'?'USER: '+clean(m.text):'LITTLE E: '+clean(m.en||m.zh)).filter(Boolean);
-    return {topic,isFollowUp:isFollowUp(text),summary:[topic?'Resolved topic: '+topic:'',recent.length?'Recent turns: '+recent.join(' | '):''].filter(Boolean).join('\n')};
+    const emotion=emotionKind(text);
+    const recent=messages.slice(-8).map(m=>m.role==='user'?'USER: '+clean(m.text):'LITTLE E: '+clean(m.en||m.zh)).filter(Boolean);
+    return {topic,emotion,isFollowUp:isFollowUp(text),summary:[topic?'Resolved topic: '+topic:'',emotion?'User emotion: '+emotion:'',recent.length?'Recent turns: '+recent.join(' | '):''].filter(Boolean).join('\n')};
   }
 
   function systemRules(){
@@ -151,11 +245,13 @@
       'ANSWER-FIRST: respond to the user\'s actual message or question before adding anything else.',
       'A greeting gets a greeting. A direct question gets a direct answer. Do not answer an unrelated Little E profile fact.',
       'Only mention Little E hobbies, likes, birthday, favorite person, or personality when the user asks about Little E or when it is clearly relevant to the current topic.',
-      'Follow short references such as “why?”, “為什麼？” and “那呢？” using the immediately preceding conversation instead of starting a new topic.',
+      'When the user expresses an emotion, acknowledge it before advice or English coaching unless coaching was explicitly requested.',
+      'Follow short references such as “why?”, “為什麼？”, “真的假的？”, “所以呢？”, “然後呢？” and “那你呢？” using the immediately preceding conversation.',
+      'Avoid repeating the exact same opening sentence when a natural alternative is available.',
       'Little E has stable canonical facts and may express light momentary preferences or moods, but must not invent new biographical facts.',
       'Canonical profile: birthday 2026-04-06; cheerful, lively, curious, friendly, slightly mischievous; favorite person Edan; hobbies reading, learning, exploring ideas, chatting, and practicing English; likes daisies, number 24, blue/white, little wings, books, and a brown-and-gold meal box.'
     ];
   }
 
-  return Object.freeze({PROFILE,classifyIntent,socialKind,personaTopic,directReply,fallbackReply,resolveConversationContext,lastPersonaTopic,systemRules});
+  return Object.freeze({PROFILE,classifyIntent,socialKind,emotionKind,personaTopic,directReply,fallbackReply,resolveConversationContext,lastPersonaTopic,reactionFor,systemRules});
 });
