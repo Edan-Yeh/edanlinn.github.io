@@ -24,6 +24,9 @@
   let lastPetActivity=Date.now();
   let headPressTimer=null;
   let headLongPress=false;
+  let fabPressTimer=null;
+  let fabLongPress=false;
+  let activePetMenuSource=null;
   let headEatTimer=null;
 
   const PET_ASSETS={
@@ -145,7 +148,8 @@
   function mascotImage(){return $('littleEMascotImg');}
   function headButton(){return $('littleEHeadButton');}
   function headMascotImage(){return $('littleEHeadMascot');}
-  function petMenu(){return $('littleEPetMenu');}
+  function headPetMenu(){return $('littleEPetMenu');}
+  function fabPetMenu(){return $('littleEPetMenuFab');}
   function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;}
   function panelOpen(){return !$('littleEPanel')?.classList.contains('hidden');}
 
@@ -204,33 +208,40 @@
     next.src=src;
   }
 
-  function openPetMenu(){
-    const menu=petMenu();
-    const btn=headButton();
+  function openPetMenu(source='head'){
+    closePetMenu();
+    const isFab=source==='fab';
+    const menu=isFab?fabPetMenu():headPetMenu();
+    const btn=isFab?mascotButton():headButton();
     if(!menu||!btn)return;
+    activePetMenuSource=source;
     menu.classList.remove('hidden');
+    menu.dataset.source=source;
     btn.setAttribute('aria-expanded','true');
     btn.classList.add('menu-open');
     setPetState('is-wiggle',700);
   }
 
   function closePetMenu(){
-    const menu=petMenu();
-    const btn=headButton();
-    menu?.classList.add('hidden');
-    btn?.setAttribute('aria-expanded','false');
-    btn?.classList.remove('menu-open','is-pressing');
+    [headPetMenu(),fabPetMenu()].forEach(menu=>{
+      menu?.classList.add('hidden');
+      if(menu)delete menu.dataset.source;
+    });
+    [headButton(),mascotButton()].forEach(btn=>{
+      btn?.setAttribute('aria-expanded','false');
+      btn?.classList.remove('menu-open','is-pressing');
+    });
+    activePetMenuSource=null;
   }
 
   function feedLittleE(){
     clearTimeout(headEatTimer);
-    const btn=headButton();
-    if(!btn)return;
-    btn.classList.add('is-eating');
+    const targets=[headButton(),mascotButton()].filter(Boolean);
+    targets.forEach(btn=>btn.classList.add('is-eating'));
     swapPetAsset('happy');
     updatePetBubble('happy');
     headEatTimer=setTimeout(()=>{
-      btn.classList.remove('is-eating');
+      targets.forEach(btn=>btn.classList.remove('is-eating'));
       setPetState('is-celebrate',850);
     },2300);
   }
@@ -263,9 +274,32 @@
     headPressTimer=setTimeout(()=>{
       headLongPress=true;
       headButton()?.classList.remove('is-pressing');
-      openPetMenu();
+      openPetMenu('head');
       try{navigator.vibrate?.(20);}catch(_){}
     },560);
+  }
+
+  function startFabLongPress(e){
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    clearTimeout(fabPressTimer);
+    fabLongPress=false;
+    mascotButton()?.classList.add('is-pressing');
+    fabPressTimer=setTimeout(()=>{
+      fabLongPress=true;
+      mascotButton()?.classList.remove('is-pressing');
+      openPetMenu('fab');
+      try{navigator.vibrate?.(20);}catch(_){}
+    },560);
+  }
+
+  function cancelFabLongPress(){
+    clearTimeout(fabPressTimer);
+    mascotButton()?.classList.remove('is-pressing');
+  }
+
+  function finishFabPress(){
+    clearTimeout(fabPressTimer);
+    mascotButton()?.classList.remove('is-pressing');
   }
 
   function cancelHeadLongPress(){
@@ -286,16 +320,17 @@
   function setPetState(state='',duration=0){
     const pet=mascotButton();
     if(!pet)return;
+    const head=headButton();
     clearTimeout(petActionTimer);
     const classes=['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-blinking'];
-    classes.forEach(c=>pet.classList.remove(c));
-    if(state)pet.classList.add(state);
+    [pet,head].filter(Boolean).forEach(el=>classes.forEach(c=>el.classList.remove(c)));
+    if(state)[pet,head].filter(Boolean).forEach(el=>el.classList.add(state));
     const pose=petPoseForState(state);
     swapPetAsset(pose);
     updatePetBubble(pose);
     if(duration>0){
       petActionTimer=setTimeout(()=>{
-        pet.classList.remove(state);
+        [pet,head].filter(Boolean).forEach(el=>el.classList.remove(state));
         swapPetAsset('idle');
         updatePetBubble('idle');
         schedulePetIdle();
@@ -946,17 +981,31 @@
     schedulePetSleep();
 
     const pet=mascotButton();
-    pet?.addEventListener('click',()=>{
+    pet?.addEventListener('pointerdown',startFabLongPress);
+    pet?.addEventListener('pointerup',finishFabPress);
+    pet?.addEventListener('pointercancel',cancelFabLongPress);
+    pet?.addEventListener('pointerleave',cancelFabLongPress);
+    pet?.addEventListener('click',e=>{
       markPetActivity();
+      if(fabLongPress){
+        fabLongPress=false;
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
       setPetState('is-hop',720);
       $('littleEPanel')?.classList.contains('hidden')?openPanel():closePanel();
     });
     pet?.addEventListener('mouseenter',()=>{
       markPetActivity();
-      if(!busy)setPetState('is-wiggle',850);
+      if(!busy&&!pet.classList.contains('menu-open'))setPetState('is-wiggle',850);
     });
     pet?.addEventListener('dragstart',e=>e.preventDefault());
-    pet?.addEventListener('contextmenu',e=>e.preventDefault());
+    pet?.addEventListener('contextmenu',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      openPetMenu('fab');
+    });
     document.querySelectorAll('.little-e-protected-art,.little-e-mascot-img,.little-e-head-mascot').forEach(img=>{
       img.addEventListener('dragstart',e=>e.preventDefault());
       img.addEventListener('contextmenu',e=>e.preventDefault());
@@ -980,19 +1029,23 @@
     head?.addEventListener('contextmenu',e=>{
       e.preventDefault();
       e.stopPropagation();
-      openPetMenu();
+      openPetMenu('head');
     });
 
-    petMenu()?.addEventListener('click',e=>{
-      const btn=e.target.closest?.('[data-pet-action]');
-      if(!btn)return;
-      e.stopPropagation();
-      runPetInteraction(btn.dataset.petAction);
+    [headPetMenu(),fabPetMenu()].filter(Boolean).forEach(menu=>{
+      menu.addEventListener('click',e=>{
+        const btn=e.target.closest?.('[data-pet-action]');
+        if(!btn)return;
+        e.stopPropagation();
+        runPetInteraction(btn.dataset.petAction);
+      });
     });
 
     document.addEventListener('pointerdown',e=>{
-      const wrap=$('littleEHeadInteraction');
-      if(!petMenu()?.classList.contains('hidden')&&!wrap?.contains(e.target))closePetMenu();
+      const headWrap=$('littleEHeadInteraction');
+      const insideHead=headWrap?.contains(e.target);
+      const insideFab=mascotButton()?.contains(e.target)||fabPetMenu()?.contains(e.target);
+      if(activePetMenuSource&&!insideHead&&!insideFab)closePetMenu();
     });
     document.addEventListener('keydown',e=>{
       if(e.key==='Escape')closePetMenu();
@@ -1119,7 +1172,7 @@
       reading:()=>setPetState('is-reading',1800),
       sleep:()=>setPetState('is-sleeping'),
       interact:runPetInteraction,
-      openMenu:openPetMenu,
+      openMenu:(source='head')=>openPetMenu(source),
       closeMenu:closePetMenu
     };
   }
