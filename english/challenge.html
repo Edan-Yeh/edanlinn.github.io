@@ -8,9 +8,11 @@
   <meta name="apple-mobile-web-app-title" content="Edan English">
   <meta name="theme-color" content="#2447d8">
   <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
+  <meta name="author" content="Edan Yeh">
+  <meta name="copyright" content="© 2026 Edan Yeh. Little E original character design and website implementation. All rights reserved.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261018v27-1">
+  <link rel="stylesheet" href="styles.css?v=20261018v28-1">
   <title>Edan's English Coach｜Career English</title>
 </head>
 <body class="auth-locked">
@@ -315,13 +317,18 @@
   </aside>
 </div>
 
-<button class="little-e-fab" id="littleEButton" type="button" aria-expanded="false" aria-controls="littleEPanel">
-  <span class="little-e-avatar">E</span><span class="little-e-fab-label">小E</span>
+<button class="little-e-fab little-e-pet" id="littleEButton" type="button" aria-expanded="false" aria-controls="littleEPanel" aria-label="開啟小E英文小幫手" title="小E · 你的英文寵物精靈">
+  <span class="little-e-pet-sparkles" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i></span>
+  <span class="little-e-pet-stage">
+    <img class="little-e-mascot-img" id="littleEMascotImg" src="assets/little-e-mascot-v28.webp" alt="小E，藍白色有天使翅膀的柴犬系英文小幫手" draggable="false">
+    <span class="little-e-pet-shadow" aria-hidden="true"></span>
+  </span>
+  <span class="little-e-pet-bubble"><b>小E</b><small>找我嗎？</small></span>
 </button>
 
 <aside class="little-e-panel hidden" id="littleEPanel" aria-label="小E 英文小幫手">
   <div class="little-e-head">
-    <div class="little-e-title"><span class="little-e-avatar">E</span><div><b>小E</b><span>陪你學、陪你聊、陪你練</span></div></div>
+    <div class="little-e-title"><span class="little-e-head-mascot-wrap"><img class="little-e-head-mascot little-e-protected-art" src="assets/little-e-mascot-v28.webp" alt="" draggable="false"></span><div><b>小E</b><span>陪你學、陪你聊、陪你練</span></div></div>
     <div class="little-e-head-actions"><button class="btn ghost hidden" id="littleEAdminBtn" type="button">Admin</button><button class="btn ghost" id="littleEClear" type="button">清除對話</button><button class="btn ghost" id="littleEClose" type="button">關閉</button></div>
   </div>
 
@@ -381,7 +388,7 @@
     <div class="little-e-admin-list" id="littleEAdminList"></div>
   </section>
 
-  <div class="little-e-foot">小E會參考目前／最近題目、Answer Map、最近口說狀況，以及你過去常問的主題。聊天內容會保留到你登出；登出後清除當次對話，但「你常問什麼」會留下做個人化。</div>
+  <div class="little-e-foot">小E會參考目前／最近題目、Answer Map、最近口說狀況，以及你過去常問的主題。聊天內容會保留到你登出；登出後清除當次對話，但「你常問什麼」會留下做個人化。<span class="little-e-copyright">© 2026 Edan Yeh · Little E original character & site art · All rights reserved.</span></div>
 </aside>
 
 <nav class="mobile-dock" aria-label="手機快速練習">
@@ -391,10 +398,10 @@
   <button class="mobile-dock-btn" id="mobileChunksBtn" data-nav="chunks" type="button"><span>💬</span>Chunks</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=20261018v27-1"></script>
-<script src="auth.js?v=20261018v27-1"></script>
-<script src="question-bank.js?v=20261018v27-1"></script>
-<script src="app.js?v=20261018v27-1"></script>
-<script src="little-e.js?v=20261018v27-1"></script>
+<script src="supabase-config.js?v=20261018v28-1"></script>
+<script src="auth.js?v=20261018v28-1"></script>
+<script src="question-bank.js?v=20261018v28-1"></script>
+<script src="app.js?v=20261018v28-1"></script>
+<script src="little-e.js?v=20261018v28-1"></script>
 </body>
 </html>
