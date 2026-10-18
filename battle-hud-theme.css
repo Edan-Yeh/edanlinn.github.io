@@ -1,0 +1,40 @@
+/* Battle and progression visual alignment. */
+.moba-hud{display:grid!important;grid-template-columns:minmax(205px,270px) minmax(0,1fr) auto!important;gap:14px!important;align-items:center!important;margin:0 0 12px!important;padding:15px!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;border-radius:15px!important;color:var(--app-text)!important;box-shadow:none!important}
+.moba-player{position:relative!important;min-height:74px!important;padding-left:70px!important;display:block!important}
+.moba-portrait{position:absolute!important;top:4px!important;left:0!important;width:56px!important;height:56px!important;object-fit:cover!important;border:2px solid var(--app-surface)!important;border-radius:15px!important;box-shadow:0 0 0 1px var(--app-border)!important}
+.moba-player h3{color:var(--app-text)!important;font-size:14px!important;line-height:1.45!important;margin:0 0 4px!important}
+.moba-stats{color:var(--app-muted)!important;font-size:11px!important;line-height:1.55!important;white-space:pre-line!important}
+.moba-meter{height:8px!important;margin:7px 0 0!important;border:0!important;border-radius:8px!important;background:#d7e2ee!important;box-shadow:none!important;overflow:hidden!important}
+.moba-meter i{display:block!important;height:100%!important;background:#16866c!important;box-shadow:none!important}
+.moba-meter.resource{height:6px!important;margin-top:4px!important}
+.moba-meter.resource i{background:#1474c8!important}
+.moba-skill-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+.moba-skill{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;min-width:0!important;min-height:78px!important;padding:10px!important;border:1px solid var(--app-border)!important;border-radius:12px!important;background:var(--app-surface)!important;background-image:none!important;color:var(--app-text)!important;box-shadow:none!important}
+.moba-skill[aria-pressed=true]{border:2px solid var(--app-accent)!important;background:var(--app-soft)!important;box-shadow:none!important}
+.moba-skill-icon{border:0!important;box-shadow:none!important;border-radius:7px!important}
+.moba-skill kbd,.moba-summoners kbd{color:var(--app-accent)!important;text-shadow:none!important}
+.moba-skill b{color:var(--app-text)!important;font-size:11px!important}
+.moba-skill small,.moba-skill .moba-cd{color:var(--app-muted)!important;font-size:10px!important}
+.moba-summoners{display:flex!important;flex-wrap:wrap!important;gap:7px!important}
+.moba-summoners button{min-width:58px!important;min-height:62px!important;background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important;box-shadow:none!important;border-radius:11px!important}
+.moba-summoners small{color:var(--app-muted)!important}
+.moba-tip,.moba-help,.moba-note,.moba-shop span,.moba-shop small{color:var(--app-muted)!important}
+.moba-help kbd{background:var(--app-soft)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important}
+.moba-shop{border-color:var(--app-border)!important}
+.campaign-panel :is(.campaign-label,.campaign-step,.campaign-brief,.campaign-note,.campaign-source){color:var(--app-muted)!important}
+.campaign-panel :is(.campaign-feedback,.campaign-result,.campaign-explanation,.campaign-answer,.campaign-brief strong){color:var(--app-text)!important}
+.campaign-panel .campaign-feedback,.campaign-panel .campaign-result{background:var(--app-soft)!important;border-color:var(--app-border)!important;border-radius:12px!important;padding:14px!important}
+.campaign-panel :is(.campaign-result,.campaign-feedback) :is(p,small,span){color:var(--app-text)!important;line-height:1.8!important}
+.campaign-panel :is(a,button):not(:disabled){color:var(--app-accent)!important}
+.campaign-panel :is(.campaign-next,.campaign-primary){background:var(--app-accent)!important;color:var(--app-accent-ink)!important}
+#game-score-chart .score-chart{color:var(--app-text)!important}
+#game-score-chart .score-chart polyline{stroke:#1474c8!important;stroke-width:2.8px!important}
+#game-score-chart .score-chart circle{stroke:#1474c8!important;fill:#fff!important}
+#game-score-chart .score-chart text{fill:var(--app-muted)!important;font-size:10px!important}
+#game-score-chart .score-chart path:not([fill]){stroke:var(--app-border)!important}
+#game-trend-change,.panel-head small{color:var(--app-muted)!important}
+#game-score-chart{min-width:0!important;overflow-x:auto!important}
+#game-score-chart .score-chart{min-width:420px!important}
+.moba-arena :is(.moba-player,.moba-skill,.moba-hud){filter:none!important}
+@media(max-width:1100px){.moba-hud,.moba-expanded .moba-hud{grid-template-columns:minmax(0,1fr)!important}.moba-summoners{grid-column:auto!important}}
+@media(max-width:600px){.moba-hud{padding:12px!important}.moba-skill-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}.moba-skill{padding:6px!important;min-height:74px!important}.moba-skill b{font-size:10px!important}.moba-summoners button{min-height:46px!important}}
