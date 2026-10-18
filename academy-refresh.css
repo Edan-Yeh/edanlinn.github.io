@@ -115,3 +115,7 @@ main.shell{padding-top:0!important}
 @media(max-width:1190px){.top .nav>a{display:none!important}.hero{padding:28px!important}.rank-card{transform:none!important}.hero h1{font-size:34px!important}}
 @media(max-width:899px){body{padding-left:0!important}.sidebar{width:auto!important;padding:10px!important}.side-brand{padding:6px!important}.top .shell{padding:15px 18px!important}.hero{min-height:0!important}.hero-main{display:grid!important;grid-template-columns:1fr!important}.rank-card{max-width:none!important}.stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}.guide-paths{grid-template-columns:1fr!important}}
 @media(max-width:550px){.top .brand strong{font-size:24px!important}.top-profile{display:none!important}.hero{padding:22px!important}.hero h1{font-size:30px!important}.visitor-guide{padding:18px!important}.stats{gap:10px!important}.stat{padding:16px!important;min-height:110px!important}.guide-path{padding:14px!important}}
+
+/* Respect the existing workspace offset instead of double-indenting the page. */
+@media(min-width:900px){body{padding-left:0!important}.top,main.shell{margin-left:210px!important}}
+@media(max-width:899px){.top,main.shell{margin-left:0!important}}
