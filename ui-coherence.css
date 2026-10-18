@@ -1,0 +1,53 @@
+/* UI coherence pass: October 2026 — accessible blue/slate, no gameplay data changes */
+:root{--ui-accent:#075fbd;--ui-text:#172232;--ui-muted:#526174;--ui-line:#dce3ed;--ui-surface:#fff}
+.moba-toolbar{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:12px!important;padding:14px 18px!important}
+.moba-toolbar label{display:inline-flex!important;align-items:center!important;gap:8px!important;min-width:0!important;font-size:12px!important;color:var(--app-muted)!important;white-space:normal!important}
+.moba-toolbar select{min-width:0!important;max-width:100%!important;min-height:38px!important;padding:7px 11px!important}
+.moba-toolbar :is(span,small){color:var(--app-muted)!important;line-height:1.55!important}
+.moba-toolbar .moba-mode-note{color:var(--app-muted)!important}
+.moba-scoreboard{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;gap:14px!important;align-items:center!important;padding:14px 18px!important}
+.moba-scoreboard :is(b,strong){color:var(--app-text)!important}
+.moba-scoreboard :is(span,small){color:var(--app-muted)!important}
+.moba-scoreboard .score-center{font-weight:700!important;color:var(--app-accent)!important}
+.moba-arena .moba-head :is(h2,h3){color:var(--app-text)!important}
+.moba-arena .moba-head :is(p,small){color:var(--app-muted)!important}
+.moba-arena .moba-head button{min-height:36px!important;padding:8px 13px!important}
+.moba-arena .moba-head button:disabled{color:var(--app-muted)!important}
+.moba-arena .moba-head button:not(:disabled):hover{color:var(--app-accent)!important}
+.score-chart{display:block!important;width:100%!important;max-width:100%!important;overflow:visible!important}
+.score-chart :is(text,tspan){fill:var(--app-muted)!important;font-family:inherit!important;font-size:11px!important}
+.score-chart :is(path,line){stroke-linecap:round!important;stroke-linejoin:round!important}
+.score-chart circle{stroke-width:2.5px!important}
+.score-source,.score-table,.score-table summary{color:var(--app-muted)!important;font-size:12px!important;line-height:1.7!important}
+.score-table{border-color:var(--app-border)!important}
+.score-values{grid-template-columns:repeat(auto-fit,minmax(68px,1fr))!important}
+.score-values span{color:var(--app-muted)!important;font-size:11px!important}
+.score-values b{color:var(--app-text)!important;font-size:14px!important}
+.mission-list{display:grid!important;gap:10px!important;margin-top:16px!important}
+.mission{display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;gap:12px!important;align-items:center!important;min-width:0!important;padding:15px!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;border-radius:13px!important;color:var(--app-text)!important}
+.mission-num{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-accent)!important;font-size:12px!important;font-weight:750!important}
+.mission b{color:var(--app-text)!important;font-size:13px!important;line-height:1.55!important}
+.mission small{color:var(--app-muted)!important;font-size:11px!important;line-height:1.6!important}
+.mission-progress{height:5px!important;background:var(--app-border)!important;max-width:100%!important}
+.mission-progress i{background:var(--app-accent)!important}
+.mission-action{padding:8px 12px!important;min-height:34px!important;background:var(--app-accent)!important;border:1px solid var(--app-accent)!important;border-radius:9px!important;color:var(--app-accent-ink)!important;font-size:12px!important;font-weight:650!important;box-shadow:none!important}
+.mission-action:hover{filter:brightness(.94)!important}
+.mission-done{background:var(--app-surface)!important}
+.mission-done .mission-num{color:var(--app-muted)!important}
+.mission-summary,.mission-footer{color:var(--app-muted)!important;font-size:12px!important;line-height:1.7!important}
+.module-togglebar{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;margin:0!important;padding:14px 18px!important;background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:14px!important;box-shadow:none!important}
+.module-togglebar-left{display:flex!important;align-items:center!important;gap:12px!important;min-width:0!important}
+.module-togglemark{display:grid!important;place-items:center!important;flex:0 0 38px!important;width:38px!important;height:38px!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;border-radius:11px!important;color:var(--app-accent)!important;font-size:11px!important;font-weight:800!important;-webkit-text-fill-color:var(--app-accent)!important}
+.module-togglecopy{min-width:0!important}
+.module-togglecopy b{display:block!important;color:var(--app-text)!important;font-size:14px!important;line-height:1.45!important}
+.module-togglecopy span{display:block!important;color:var(--app-muted)!important;font-size:11px!important;line-height:1.6!important;white-space:normal!important}
+.module-togglebtn{min-width:65px!important;min-height:36px!important;padding:8px 12px!important;background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:10px!important;color:var(--app-text)!important;font-size:12px!important;font-weight:650!important;box-shadow:none!important}
+.module-togglebtn:hover{background:var(--app-soft)!important;border-color:var(--app-accent)!important}
+[data-module-section]{border-color:var(--app-border)!important}
+[data-module-section]:focus-within{outline-color:var(--app-accent)!important}
+.module-card .module-code,.module-togglemark{background:var(--app-soft)!important;color:var(--app-accent)!important}
+body :is(.weapon-card,.armory-card,.reward-card,.streak-card,.inventory-card){border-color:var(--app-border)!important;background:var(--app-surface)!important;color:var(--app-text)!important;box-shadow:none!important}
+body :is(.weapon-card,.armory-card,.reward-card,.streak-card,.inventory-card) :is(h3,h4,b,strong){color:var(--app-text)!important}
+body :is(.weapon-card,.armory-card,.reward-card,.streak-card,.inventory-card) :is(p,small,span){color:var(--app-muted)!important}
+@media(max-width:850px){.moba-toolbar{gap:10px!important}.module-togglebar{padding:12px!important}.score-source{flex-wrap:wrap!important;gap:6px!important}}
+@media(max-width:550px){.moba-toolbar{flex-direction:column!important;align-items:stretch!important}.moba-toolbar label{display:flex!important;justify-content:space-between!important}.moba-scoreboard{padding:10px!important;gap:6px!important}.mission{grid-template-columns:28px minmax(0,1fr)!important}.mission-action{grid-column:2!important;justify-self:start!important}.module-togglebar{gap:8px!important}.module-togglemark{width:32px!important;height:32px!important;flex-basis:32px!important}.module-togglebtn{min-width:56px!important}.score-chart :is(text,tspan){font-size:10px!important}}
