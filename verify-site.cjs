@@ -13,7 +13,7 @@ for(const [name,ext] of [['CSS','.css'],['JavaScript','.js']]){const list=refs.f
 for(const ref of refs.filter(x=>x.split('?')[0].endsWith('.js'))){const src=fs.readFileSync(path.join(root,ref.split('?')[0]),'utf8');check(!/\b(?:eval|new Function)\s*\(/.test(src),'Dynamic code execution pattern: '+ref)}
 const data=fs.readFileSync(path.join(root,'data.js'),'utf8');
 check(data.includes('CLOUD_SA_DATA'),'Learning history source missing');
-const completed=/completedDays\\s*:\\s*(\\d+)/.exec(data);check(!!completed&&Number(completed[1])>=23,'Learning history dropped below established 23 completed days');
+const completed=/completedDays\s*:\s*(\d+)/.exec(data);check(!!completed&&Number(completed[1])>=23,'Learning history dropped below established 23 completed days');
 const css=refs.filter(x=>x.split('?')[0].endsWith('.css')).map(x=>x.split('?')[0]);
 const declarations=new Map();
 for(const file of css){const src=fs.readFileSync(path.join(root,file),'utf8');const rules=[...src.matchAll(/([^{}]+)\{([^{}]+)\}/g)];for(const [,selector,body] of rules){const normalized=selector.replace(/\/\*[\s\S]*?\*\//g,'').trim();if(!normalized||normalized.startsWith('@'))continue;const props=[...body.matchAll(/(?:^|;)\s*([\w-]+)\s*:/g)].map(m=>m[1]);for(const prop of props){const key=normalized+' | '+prop;const old=declarations.get(key)||new Set();old.add(file);declarations.set(key,old)}}}
