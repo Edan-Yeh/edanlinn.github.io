@@ -1,0 +1,51 @@
+/* Apple-inspired 2026 visual system. Original palette, not an official iPhone 18 colorway.
+   Keep learning/game behavior unchanged. Built-in system typography, no external fonts. */
+:root,[data-site-theme="light"]{
+ --bg:#f5f5f7;--panel:#ffffff;--panel2:#f2f2f7;--line:#d9d9e0;--text:#1d1d1f;--muted:#56565c;--accent:#0066cc;--chip:#eaf2fc;
+ --app-bg:#f5f5f7;--app-surface:#ffffff;--app-soft:#eaf2fc;--app-text:#1d1d1f;--app-muted:#56565c;--app-border:#d9d9e0;--app-accent:#0066cc;--app-accent-ink:#fff;--shadow:0 5px 20px rgba(0,0,0,.035);color-scheme:light;
+}
+[data-site-theme="dark"]{
+ --bg:#111113;--panel:#1c1c1e;--panel2:#29292c;--line:#494950;--text:#f5f5f7;--muted:#c1c1c8;--accent:#76b6ff;--chip:#25354a;
+ --app-bg:#111113;--app-surface:#1c1c1e;--app-soft:#25354a;--app-text:#f5f5f7;--app-muted:#c1c1c8;--app-border:#494950;--app-accent:#76b6ff;--app-accent-ink:#0a2038;--shadow:0 8px 28px rgba(0,0,0,.16);color-scheme:dark;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif!important;font-size:15px!important;font-weight:400!important;line-height:1.7!important;-webkit-font-smoothing:antialiased!important;background:var(--app-bg)!important;color:var(--app-text)!important}
+.sidebar,.top,.hero,.visitor-guide,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro,.stat,.rank-card,.guide-path,.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.dash-panel,.module-card,.day{box-shadow:var(--shadow)!important}
+.sidebar{background:var(--app-surface)!important;border-color:var(--app-border)!important}
+.top{background:transparent!important}
+.top .brand strong{font-weight:750!important;letter-spacing:-.045em!important}
+.top .brand .academy-overline{color:var(--app-muted)!important}
+.top .nav a{color:var(--app-muted)!important}
+.sidebar .side-link{font-weight:550!important;border-radius:11px!important;color:var(--app-muted)!important}
+.sidebar .side-link.active,.sidebar .side-link:hover,.guide-side-link{background:var(--app-soft)!important;color:var(--app-accent)!important}
+.side-brand .brand-mark{background:var(--app-soft)!important;border:1px solid var(--app-border)!important;color:var(--app-accent)!important}
+.hero{background:linear-gradient(110deg,var(--app-surface) 46%,var(--app-soft) 100%)!important;border:1px solid var(--app-border)!important;border-radius:24px!important}
+.hero h1{font-weight:760!important;letter-spacing:-.052em!important;line-height:1.2!important}
+.hero h1 span{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+.hero-eyebrow,.section-kicker,.guide-eyebrow{color:var(--app-accent)!important;letter-spacing:.12em!important}
+.hero-copy,.visitor-guide-top p,.portfolio-heading p,.ai-foundations p,.learning-method-panel p{color:var(--app-muted)!important}
+:is(.visitor-guide,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro,.stat,.rank-card,.guide-path,.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.dash-panel,.module-card){background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important;border-radius:20px!important}
+:is(.guide-path strong,.portfolio-project h3,.ai-feature h3,.method-grid b,.stat b,.rank-card .rank-title){color:var(--app-text)!important}
+:is(.guide-desc,.portfolio-project p,.ai-feature p,.method-grid p,.stat small,.rank-card .rank-subtitle){color:var(--app-muted)!important}
+.guide-path:hover{border-color:var(--app-accent)!important}
+.guide-primary{background:var(--app-soft)!important}
+:is(.primary-action,.mission-action){background:var(--app-accent)!important;border:1px solid var(--app-accent)!important;color:var(--app-accent-ink)!important;border-radius:12px!important;font-weight:650!important}
+:is(.quiet-action,.filter button,.top .nav button){background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important;border-radius:12px!important}
+:is(.portfolio-status,.portfolio-tags span,.portfolio-principles strong,.ai-method span,.ai-code-path,.ai-arch-flow span,.guide-time){background:var(--app-soft)!important;color:var(--app-text)!important;border-color:var(--app-border)!important}
+:is(.portfolio-text-link,.portfolio-project-links a,.lab-intro a,.guide-bottom a,.guide-cta){color:var(--app-accent)!important}
+#daily .day,#daily .day-head,#daily .day-body{background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+#daily :is(.day-head h2,.day-body>h3,.day h2,.day h3,.correction .box b){color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily :is(.muted,.day-num,.day-head .muted){color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important}
+#daily :is(.score,.score.mid,.score.high){color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#daily .correction .box{background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+#daily .chips .chip,#daily .memory,#daily .archive-link{background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily .archive-link a{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#daily .filter button.active{background:var(--app-accent)!important;color:var(--app-accent-ink)!important;-webkit-text-fill-color:var(--app-accent-ink)!important}
+:is(input,select,textarea){background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important;border-radius:11px!important}
+.appearance-control select{min-height:40px!important;padding:8px 13px!important}
+.moba-arena{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:20px!important}
+.moba-arena .moba-viewport{background:#111827!important;color:#f5f5f7!important}
+.moba-arena .moba-viewport :is(h2,h3,p,b,span,strong){color:#f5f5f7!important}
+:focus-visible{outline:3px solid var(--app-accent)!important;outline-offset:3px!important}
+@media(max-width:899px){.top .shell{align-items:center!important}.hero{border-radius:20px!important}.rank-card{transform:none!important}}
+@media(max-width:550px){body{font-size:14px!important}.hero{padding:20px!important}.hero h1{font-size:29px!important}.visitor-guide{border-radius:18px!important}.stat{border-radius:16px!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
