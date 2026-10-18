@@ -1551,3 +1551,17 @@ body.auth-locked .little-e-panel{display:none!important}
     transform:scale(2.56)!important;
   }
 }
+
+
+/* Little E sit size normalization v36 */
+.little-e-pet.is-sitting .little-e-mascot-img,
+.little-e-head-25d.is-sitting .little-e-head-mascot{
+  transform:scale(2.82)!important;
+  transform-origin:50% 54%!important;
+}
+@media(max-width:700px){
+  .little-e-pet.is-sitting .little-e-mascot-img,
+  .little-e-head-25d.is-sitting .little-e-head-mascot{
+    transform:scale(2.76)!important;
+  }
+}
