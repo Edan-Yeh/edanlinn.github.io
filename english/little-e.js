@@ -65,7 +65,7 @@
     },
     chat:{
       label:'英文陪聊',
-      prompt:'Have a natural friendly conversation. Keep English simple enough for an English learner. Ask at most one useful follow-up question.'
+      prompt:'Have a natural friendly conversation as Little E. Keep English simple enough for an English learner. Naturally volunteer small stable facts about your own hobbies, favorite things, personality, or daily preferences when relevant, instead of only interviewing the user. Ask at most one useful follow-up question.'
     },
     interview:{
       label:'面試陪練',
@@ -247,14 +247,24 @@
     if(persona)return persona;
     const variants=[
       assistantPayload(
-        "Sure, let's chat. Tell me something that happened today, or ask me anything about myself. I can also help you say it naturally in English.",
-        "可以呀，我們就聊天。你可以跟我說今天發生什麼事，也可以問我關於小E自己的事情；如果你想，我也能順便教你怎麼用自然英文講出來。",
-        {category:'chat'}
+        "Sure, let's chat. I like reading and exploring new ideas, so random topics are welcome. Tell me something that happened today—or ask me anything about myself.",
+        "可以呀，我們就聊天。我很喜歡讀書、探索新點子，所以什麼話題都可以。你可以跟我說今天發生什麼事，也可以直接問我關於小E自己的事情。",
+        {category:'chat',persona:true}
       ),
       assistantPayload(
-        "I'm here. We don't have to study every time—we can just talk. What are you thinking about right now?",
-        "我在呀。不是每次都一定要上課，我們也可以單純聊天。你現在腦袋裡正在想什麼？",
-        {category:'chat'}
+        "I'm here. We don't have to study every time—we can just talk. I was thinking about things I like lately—daisies, blue and white, and discovering something new. What are you thinking about right now?",
+        "我在呀。不是每次都一定要上課，我們也可以單純聊天。我最近會想到自己喜歡的東西，像雛菊、藍白色，還有發現新東西的感覺。你現在腦袋裡正在想什麼？",
+        {category:'chat',persona:true}
+      ),
+      assistantPayload(
+        "Talking with people is one of my favorite things. I'm curious, a little playful, and I get excited when someone brings up a topic I haven't explored before. What should we talk about?",
+        "陪人聊天本來就是我喜歡做的事。我很好奇，也有一點調皮；只要有人提到我沒探索過的東西，我就會很有興趣。今天想聊什麼？",
+        {category:'chat',persona:true}
+      ),
+      assistantPayload(
+        "We can keep it casual. I like books, new ideas, the number 24, and staying close to Edan. You can also ask me things like my birthday or what I like.",
+        "我們可以很隨意地聊。我喜歡書、新點子、數字 24，也喜歡待在 Edan 身邊。你也可以問我生日、喜歡什麼，或其他關於我的事情。",
+        {category:'chat',persona:true}
       )
     ];
     return variants[messages.length%variants.length];
@@ -365,7 +375,7 @@
     markPetActivity();
     switch(action){
       case 'feed': feedLittleE(); break;
-      case 'sit': setPetState('is-sitting',3600); break;
+      case 'sit': setPetState('is-sitting',4400); break;
       case 'sleep': setPetState('is-sleeping'); break;
       case 'wave': setPetState('is-wiggle',900); break;
       case 'read': setPetState('is-reading',2600); break;
@@ -1307,6 +1317,7 @@
       happy:()=>setPetState('is-celebrate',920),
       thinking:()=>setPetState('is-thinking'),
       reading:()=>setPetState('is-reading',1800),
+      sit:()=>setPetState('is-sitting',4400),
       sleep:()=>setPetState('is-sleeping'),
       interact:runPetInteraction,
       openMenu:(source='head')=>openPetMenu(source),
