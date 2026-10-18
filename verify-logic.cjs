@@ -51,7 +51,7 @@ assert.equal(run("availableRole(4,'ranger').id"),'mage');
 assert.equal(run("availableRole(5,'ranger').id"),'ranger');
 assert.equal(run("fantasyTitle(availableRole(5,'paladin'),5).name"),'資深軌道守衛');
 assert.equal(run("fantasyTitle(availableRole(10,'mage'),10).name"),'星核量子架構師');
-assert.equal(run('worldNodes.length'),run('d.skillMap.domains.length'));
+assert.equal(run('worldNodes.length'),7); // The world map has six subject stations plus one portal; domain catalog is separate.
 assert.equal(run('worldNodes.every(n=>n.x>0&&n.x<960&&n.y>0&&n.y<600)'),true);
 console.log('PASS: profession unlock boundaries, earned titles, and all map regions.');
 
