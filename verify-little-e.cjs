@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.18-v38');
-assert.equal(version.cache,'edan-english-coach-20261018-v38');
+assert.equal(version.release,'2026.10.18-v39');
+assert.equal(version.cache,'edan-english-coach-20261018-v39');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -21,6 +21,28 @@ const daisy=core.directReply('你喜歡雛菊嗎？',[]);
 const why=core.directReply('為什麼？',[{role:'assistant',en:daisy.en,zh:daisy.zh,...daisy.meta}]);
 assert.equal(daisy.meta.personaTopic,'daisies');assert.ok(why);assert.equal(why.meta.personaTopic,'daisies');assert.match(why.zh,/雛菊/);
 assert.match(core.fallbackReply('我今天很累',[]).zh,/累|疲/);
+assert.equal(core.emotionKind('我今天真的很累'),'tired');
+assert.equal(core.emotionKind('這件事超煩'),'frustrated');
+assert.equal(core.emotionKind('明天面試我有點緊張'),'nervous');
+assert.equal(core.reactionFor('我今天真的很累','chat'),'sit');
+assert.equal(core.reactionFor('這句文法對嗎','grammar'),'reading');
+
+const hiA=core.directReply('你好',[]);
+const hiB=core.directReply('你好',[{role:'assistant',variantKey:'social:hello'}]);
+assert.notEqual(hiA.en,hiB.en);
+
+const soReply=core.directReply('所以呢？',[{role:'assistant',en:'ok',zh:'好'}]);
+assert.ok(soReply);assert.match(soReply.zh,/繼續|跟上/);
+
+const youReply=core.directReply('那你呢？',[{role:'user',text:'我今天很累'}]);
+assert.ok(youReply);assert.match(youReply.zh,/我還好|睡/);
+
+const frustrated=core.fallbackReply('這件事真的很煩',[]);
+assert.equal(frustrated.meta.emotion,'frustrated');
+assert.match(frustrated.zh,/煩|不爽|發生/);
+
+const happy=core.fallbackReply('我今天超開心',[]);
+assert.equal(happy.meta.petReaction,'happy');
 
 const html=fs.readFileSync(path.join(root,'english/challenge.html'),'utf8');
 const qb=fs.readFileSync(path.join(root,'english/question-bank.js'),'utf8');
@@ -39,4 +61,4 @@ assert.match(le,/normalizePetAsset/);
 assert.match(le,/CORE\.directReply/);
 assert.doesNotMatch(css,/transform:scale\([23]\./);
 assert.ok(html.includes('appUpdateBanner'));
-console.log('PASS: Little E v38 routing, persona, context, versioning, update UX, mobile UX and pose normalization.');
+console.log('PASS: Little E v39 natural conversation, emotion routing, varied replies, multi-turn context, pet reactions and v38 regressions.');
