@@ -1,0 +1,90 @@
+/* Cohesive component system v4. Fixes visible screenshot defects without touching data or gameplay. */
+:root{--ui-radius:18px}
+body{overflow-x:hidden!important}
+body>main.shell>section,body>main.shell>div{min-width:0!important}
+.hero{display:block!important;overflow:visible!important}
+.hero-main{min-height:0!important;align-items:center!important}
+.hero-main>div:first-child{align-self:center!important}
+.rank-card{position:relative!important;top:auto!important;right:auto!important;height:auto!important;min-height:0!important;max-height:none!important;padding:18px!important;overflow:hidden!important}
+.rank-card .rank-emblem{height:66px!important;min-height:66px!important;max-height:66px!important;background:var(--app-soft)!important;box-shadow:none!important;filter:none!important}
+.rank-card .rank-emblem :is(img,svg){max-height:62px!important;object-fit:contain!important}
+.rank-card .rank-title{font-size:15px!important;font-weight:700!important}
+.rank-card .rank-subtitle,.rank-card .rank-foot,.rank-card .rank-top,.rank-card .xp-labels{color:var(--app-muted)!important}
+.rank-card button,.rank-card a{border-radius:10px!important;max-width:100%!important;white-space:normal!important}
+.hero .season-tag{color:var(--app-accent)!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important}
+.hero .hero-eyebrow{color:var(--app-accent)!important}
+/* AI lessons: prevent legacy negative margins and nested outlines from merging cards. */
+.ai-foundations{display:block!important;padding:30px!important;overflow:visible!important}
+.ai-foundations-head{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:18px!important;margin:0 0 24px!important;padding:0!important}
+.ai-foundations-head>div{min-width:0!important}
+.ai-foundations-head h2{font-size:clamp(23px,2vw,30px)!important;line-height:1.35!important;color:var(--app-text)!important;margin:8px 0!important}
+.ai-foundations-head p{color:var(--app-muted)!important;line-height:1.8!important}
+.ai-lesson-label{color:var(--app-accent)!important;background:var(--app-soft)!important;padding:7px 12px!important;border-radius:9px!important;white-space:nowrap!important}
+.ai-feature-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;align-items:stretch!important;margin:0!important;padding:0!important}
+.ai-feature{display:flex!important;flex-direction:column!important;gap:10px!important;min-width:0!important;margin:0!important;padding:22px!important;border:1px solid var(--app-border)!important;border-radius:16px!important;background:var(--app-surface)!important;color:var(--app-text)!important;box-shadow:none!important;transform:none!important}
+.ai-feature-index{color:var(--app-accent)!important;font-size:11px!important;font-weight:700!important}
+.ai-feature h3{font-size:17px!important;line-height:1.55!important;color:var(--app-text)!important;margin:0!important}
+.ai-feature p,.ai-feature-note{font-size:13px!important;line-height:1.85!important;color:var(--app-muted)!important;margin:0!important}
+.ai-feature-note b{color:var(--app-text)!important}
+.ai-code-path{margin-top:auto!important;padding:12px!important;border-radius:10px!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important;overflow-wrap:anywhere!important;font-size:12px!important}
+.ai-feature-grid>*{min-width:0!important}
+.ai-foundations .ai-architecture,.ai-foundations .ai-detail{margin-top:16px!important;padding:20px!important;border:1px solid var(--app-border)!important;border-radius:16px!important;background:var(--app-surface)!important;color:var(--app-text)!important}
+/* The game is a learning exercise, not a black-framed separate website. */
+.moba-arena,.moba-learning{background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important;border-radius:20px!important;box-shadow:none!important;outline:none!important;padding:22px!important;min-width:0!important}
+.moba-arena{margin:22px 0 0!important}
+.moba-arena :is(.moba-head,.moba-toolbar,.moba-scoreboard,.campaign-panel,.moba-hud){min-width:0!important}
+.moba-head{border-bottom:1px solid var(--app-border)!important;padding-bottom:16px!important}
+.moba-head .moba-kicker,.campaign-label{color:var(--app-accent)!important;letter-spacing:.12em!important;font-weight:700!important}
+.moba-head h2{color:var(--app-text)!important;font-size:22px!important;letter-spacing:-.02em!important}
+.moba-head p,.moba-toolbar label,.moba-toolbar #moba-roster-note{color:var(--app-muted)!important}
+.moba-arena button,.moba-arena select{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important;border-radius:10px!important;box-shadow:none!important;font-size:12px!important}
+.moba-arena button:hover:not(:disabled){background:var(--app-soft)!important;border-color:var(--app-accent)!important}
+.moba-arena button:disabled{opacity:.55!important}
+.moba-arena .moba-primary{background:var(--app-accent)!important;color:var(--app-accent-ink)!important;border-color:var(--app-accent)!important}
+.moba-toolbar,.moba-scoreboard{background:var(--app-soft)!important;border:1px solid var(--app-border)!important;border-radius:14px!important;box-shadow:none!important}
+.moba-scoreboard .red,.moba-scoreboard .blue,.moba-scoreboard .score-center{color:var(--app-text)!important}
+.moba-scoreboard small,.moba-scoreboard .score-center::before{color:var(--app-muted)!important}
+.moba-viewport{border:1px solid var(--app-border)!important;border-radius:14px!important;box-shadow:none!important;overflow:hidden!important}
+.campaign-panel{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:16px!important;box-shadow:none!important;color:var(--app-text)!important;padding:20px!important}
+.campaign-panel h3,.campaign-panel h4,.campaign-panel .campaign-brief b{color:var(--app-text)!important}
+.campaign-brief,.campaign-note,.campaign-source,.campaign-panel #campaign-feedback,.campaign-panel #campaign-feedback small,.campaign-recap{color:var(--app-muted)!important}
+.campaign-road>span{color:var(--app-muted)!important;border-color:var(--app-border)!important}
+.campaign-road .current{color:var(--app-accent)!important;border-color:var(--app-accent)!important;text-shadow:none!important}
+.campaign-road .done{color:#24765b!important;border-color:#24765b!important}
+.campaign-objective,.campaign-answer>label,.campaign-order-row{background:var(--app-soft)!important;border:1px solid var(--app-border)!important;border-radius:11px!important;color:var(--app-text)!important}
+.campaign-answer>label:has(input:checked){background:var(--app-soft)!important;border:2px solid var(--app-accent)!important}
+.campaign-answer input{accent-color:var(--app-accent)!important}
+.campaign-answer .campaign-field,.campaign-answer select{color:var(--app-text)!important}
+.campaign-cards p,.campaign-cards p small{color:var(--app-muted)!important}
+.campaign-cards button{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important;border-radius:12px!important;box-shadow:none!important}
+.campaign-cards button b{color:var(--app-text)!important}
+.campaign-cards button small{color:var(--app-muted)!important}
+.campaign-cards button[aria-pressed=true]{background:var(--app-soft)!important;border:2px solid var(--app-accent)!important;box-shadow:none!important}
+.campaign-correct{background:var(--app-soft)!important;border-color:var(--app-accent)!important;color:var(--app-text)!important}
+.campaign-victory{background:var(--app-soft)!important;border-color:var(--app-accent)!important;color:var(--app-text)!important}
+/* Quiz/challenge — all states share the same surface and readable type. */
+.quiz-panel{background:var(--app-surface)!important;background-image:none!important;border:1px solid var(--app-border)!important;border-radius:20px!important;color:var(--app-text)!important;box-shadow:none!important}
+.quiz-panel :is(h2,h3,h4){color:var(--app-text)!important}
+.quiz-panel .muted,.quiz-meta,.quiz-stats span{color:var(--app-muted)!important}
+.quiz-bank-count,.quiz-stats>div,.quiz-card,.quiz-result,.quiz-option{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:13px!important;color:var(--app-text)!important;box-shadow:none!important}
+.quiz-card{padding:22px!important}
+.quiz-card h3{color:var(--app-text)!important}
+.quiz-option{font-size:14px!important;line-height:1.65!important;min-height:48px!important;text-align:left!important}
+.quiz-option .letter{color:var(--app-accent)!important}
+.quiz-option:hover:not(:disabled){background:var(--app-soft)!important;border-color:var(--app-accent)!important}
+.quiz-option:focus-visible{outline:3px solid var(--app-accent)!important;outline-offset:2px!important}
+.quiz-option.correct,.quiz-result.correct{background:#e5f5ed!important;border-color:#28724d!important;color:#144c30!important}
+.quiz-option.wrong,.quiz-result.wrong{background:#fff0f0!important;border-color:#a43c46!important;color:#78242d!important}
+.quiz-result.show{display:block!important}
+.quiz-panel :is(input,select,textarea){background:var(--app-surface)!important;border:1px solid var(--app-border)!important;color:var(--app-text)!important}
+.quiz-panel button:not(.quiz-option){border-radius:11px!important}
+.quiz-panel button:disabled{opacity:.6!important}
+/* General panels and expanders: no cramped edge-to-edge copy. */
+body :is(.module-card,.ai-detail,.path-panel,.overview-card,.dash-panel,.glossary-panel,.examples-panel,.skill-map-panel){color:var(--app-text)!important;border-color:var(--app-border)!important}
+body :is(.module-card,.ai-detail,.path-panel,.overview-card,.dash-panel,.glossary-panel,.examples-panel,.skill-map-panel) :is(p,small){color:var(--app-muted)!important}
+body :is(.module-card,.ai-detail,.path-panel,.overview-card,.dash-panel,.glossary-panel,.examples-panel,.skill-map-panel) :is(h2,h3,h4,b,strong){color:var(--app-text)!important}
+body .module-togglebar{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:16px!important}
+body .module-togglebar button{background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important;border-radius:10px!important}
+@media(max-width:1100px){.ai-feature-grid{grid-template-columns:1fr!important}.moba-learning,.moba-learning.moba-expanded{grid-template-columns:1fr!important}.moba-learning .moba-viewport,.moba-learning .campaign-panel{grid-column:1!important;grid-row:auto!important}}
+@media(max-width:850px){.ai-foundations{padding:22px!important}.hero-main{gap:22px!important}.moba-arena,.moba-learning{padding:14px!important}.moba-head{flex-direction:column!important;align-items:flex-start!important}}
+@media(max-width:550px){.ai-foundations-head{flex-direction:column!important}.ai-feature{padding:16px!important}.moba-learning .campaign-road small{font-size:9px!important;white-space:normal!important}.campaign-cards{grid-template-columns:1fr!important}.moba-scoreboard{grid-template-columns:1fr auto 1fr!important;gap:5px!important;padding:10px!important}.quiz-card{padding:16px!important}.quiz-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
