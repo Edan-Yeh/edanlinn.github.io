@@ -8,7 +8,7 @@ const app=fs.readFileSync(__dirname+'/app.js','utf8'),a=app.indexOf('// Mixed pr
 vm.runInContext(fs.readFileSync(__dirname+'/drag-quiz.js','utf8'),context);
 const escapeHelper=app.match(/^const escapeQuiz=.*;$/m);
 if(!escapeHelper)throw Error('escapeQuiz helper missing from app.js');
-vm.runInContext(escapeHelper[0]+'\\n'+app.slice(a,b),context);
+vm.runInContext(escapeHelper[0]+String.fromCharCode(10)+app.slice(a,b),context);
 const run=s=>vm.runInContext(s,context);
 assert.equal(run('extendedQuizBank.length'),14);
 assert.equal(run('new Set(quizBank.map(q=>q.id)).size===quizBank.length'),true);
