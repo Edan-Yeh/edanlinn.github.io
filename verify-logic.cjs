@@ -56,6 +56,7 @@ assert.equal(run('worldNodes.every(n=>n.x>0&&n.x<960&&n.y>0&&n.y<600)'),true);
 console.log('PASS: profession unlock boundaries, earned titles, and all map regions.');
 
 vm.runInContext(fs.readFileSync(__dirname+'/arena.js','utf8').replace(/initArena\(\);\s*$/,''),context);
+// The logic VM has no real DOM/avatar assets; keep battle rendering out of scoring tests.\nrun('renderArena=()=>{}');
 run("const cg={xp:200,days:{},rewarded:{}};");
 run("trackCorrectChain(cg,{id:'a'},true,false,'2026-10-01');trackCorrectChain(cg,{id:'a'},true,false,'2026-10-01')");
 assert.equal(run('cg.chain'),1);
