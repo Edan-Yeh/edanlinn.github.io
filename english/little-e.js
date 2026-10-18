@@ -16,6 +16,8 @@
   let currentFeedbackMessageId=null;
   let langPrefs={en:true,zh:false};
   let scenario='coach';
+  let petIdleTimer=null;
+  let petActionTimer=null;
 
   const SCENARIOS={
     coach:{
@@ -122,11 +124,47 @@
     if(compact)remember(kind,compact);
   }
 
+  function mascotButton(){return $('littleEButton');}
+  function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;}
+
+  function setPetState(state='',duration=0){
+    const pet=mascotButton();
+    if(!pet)return;
+    clearTimeout(petActionTimer);
+    ['is-hop','is-wiggle','is-celebrate','is-thinking'].forEach(c=>pet.classList.remove(c));
+    if(state)pet.classList.add(state);
+    if(duration>0){
+      petActionTimer=setTimeout(()=>{
+        pet.classList.remove(state);
+        schedulePetIdle();
+      },duration);
+    }
+  }
+
+  function schedulePetIdle(){
+    clearTimeout(petIdleTimer);
+    if(reducedMotion()||document.hidden)return;
+    petIdleTimer=setTimeout(()=>{
+      const panelOpen=!$('littleEPanel')?.classList.contains('hidden');
+      if(!busy&&!panelOpen){
+        setPetState(Math.random()<.55?'is-wiggle':'is-hop',Math.random()<.5?850:720);
+      }else{
+        schedulePetIdle();
+      }
+    },6500+Math.random()*7500);
+  }
+
   function setStatus(text,tone='neutral'){
     const el=$('littleEStatus');
-    if(!el)return;
-    el.textContent=text;
-    el.dataset.tone=tone;
+    if(el){
+      el.textContent=text;
+      el.dataset.tone=tone;
+    }
+    if(tone==='loading')setPetState('is-thinking');
+    else if(mascotButton()?.classList.contains('is-thinking')){
+      setPetState('',0);
+      schedulePetIdle();
+    }
   }
 
   function currentQuestionLabel(){
@@ -164,6 +202,7 @@
     messages=messages.slice(-40);
     saveChat();
     renderMessages();
+    setPetState('is-celebrate',920);
   }
 
   function renderMessages(){
@@ -255,6 +294,7 @@
   function openPanel(){
     $('littleEPanel')?.classList.remove('hidden');
     $('littleEButton')?.setAttribute('aria-expanded','true');
+    setPetState('is-hop',720);
     updateContextBar();
     updateAdminVisibility();
     warmStatus();
@@ -264,6 +304,7 @@
   function closePanel(){
     $('littleEPanel')?.classList.add('hidden');
     $('littleEButton')?.setAttribute('aria-expanded','false');
+    setPetState('is-wiggle',850);
   }
 
   function warmStatus(){
@@ -693,9 +734,23 @@
     updateContextBar();
     updateAdminVisibility();
     warmStatus();
+    schedulePetIdle();
 
-    $('littleEButton')?.addEventListener('click',()=>{
+    const pet=mascotButton();
+    pet?.addEventListener('click',()=>{
+      setPetState('is-hop',720);
       $('littleEPanel')?.classList.contains('hidden')?openPanel():closePanel();
+    });
+    pet?.addEventListener('mouseenter',()=>{if(!busy)setPetState('is-wiggle',850);});
+    pet?.addEventListener('dragstart',e=>e.preventDefault());
+    pet?.addEventListener('contextmenu',e=>e.preventDefault());
+    document.querySelectorAll('.little-e-protected-art,.little-e-mascot-img,.little-e-head-mascot').forEach(img=>{
+      img.addEventListener('dragstart',e=>e.preventDefault());
+      img.addEventListener('contextmenu',e=>e.preventDefault());
+    });
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden){clearTimeout(petIdleTimer);}
+      else schedulePetIdle();
     });
     $('littleEClose')?.addEventListener('click',closePanel);
     $('littleEClear')?.addEventListener('click',clearVisibleChat);
