@@ -875,3 +875,226 @@ body.auth-locked .little-e-panel{display:none!important}
   .little-e-lang-actions{gap:6px}
   .little-e-lang-actions button{min-height:32px}
 }
+
+
+/* Little E animated mascot v28 */
+.little-e-fab.little-e-pet{
+  width:118px;
+  height:118px;
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  overflow:visible;
+  display:block;
+  isolation:isolate;
+  transform:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.little-e-fab.little-e-pet:hover{transform:none}
+.little-e-pet-stage{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:102px;
+  height:104px;
+  display:block;
+  transform-origin:50% 90%;
+  animation:littleEFloat 3.6s ease-in-out infinite;
+}
+.little-e-mascot-img,
+.little-e-head-mascot{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-user-drag:none;
+}
+.little-e-mascot-img{
+  position:relative;
+  z-index:2;
+  filter:drop-shadow(0 10px 11px rgba(28,45,96,.20));
+  transform-origin:50% 82%;
+  transition:filter .2s ease;
+}
+.little-e-pet-shadow{
+  position:absolute;
+  z-index:1;
+  left:24%;
+  right:16%;
+  bottom:4px;
+  height:11px;
+  border-radius:50%;
+  background:rgba(38,54,96,.16);
+  filter:blur(4px);
+  animation:littleEShadow 3.6s ease-in-out infinite;
+}
+.little-e-pet-bubble{
+  position:absolute;
+  z-index:4;
+  right:78px;
+  bottom:72px;
+  min-width:70px;
+  padding:7px 10px;
+  border:1px solid rgba(211,221,255,.95);
+  border-radius:14px 14px 4px 14px;
+  background:rgba(255,255,255,.96);
+  color:#273557;
+  box-shadow:0 9px 24px rgba(25,42,86,.12);
+  opacity:0;
+  transform:translate(5px,5px) scale(.94);
+  transition:.18s ease;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.little-e-pet-bubble b{display:block;font-size:11px;line-height:1.15}
+.little-e-pet-bubble small{display:block;margin-top:2px;color:#6a7692;font-size:9px}
+.little-e-pet:hover .little-e-pet-bubble,
+.little-e-pet:focus-visible .little-e-pet-bubble{
+  opacity:1;
+  transform:translate(0,0) scale(1);
+}
+.little-e-pet:focus-visible{
+  outline:3px solid rgba(59,91,219,.26);
+  outline-offset:4px;
+  border-radius:28px;
+}
+.little-e-pet-sparkles{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+}
+.little-e-pet-sparkles i{
+  position:absolute;
+  color:#f0b84c;
+  font-style:normal;
+  opacity:.62;
+  text-shadow:0 2px 5px rgba(240,184,76,.18);
+  animation:littleESpark 2.8s ease-in-out infinite;
+}
+.little-e-pet-sparkles i:nth-child(1){right:3px;top:8px;font-size:15px}
+.little-e-pet-sparkles i:nth-child(2){left:8px;top:29px;font-size:11px;animation-delay:.8s}
+.little-e-pet-sparkles i:nth-child(3){right:16px;bottom:4px;font-size:9px;animation-delay:1.55s}
+
+.little-e-pet.is-hop .little-e-mascot-img{animation:littleEHop .72s cubic-bezier(.2,.8,.25,1)}
+.little-e-pet.is-wiggle .little-e-mascot-img{animation:littleEWiggle .85s ease}
+.little-e-pet.is-celebrate .little-e-mascot-img{animation:littleECelebrate .9s cubic-bezier(.18,.75,.24,1)}
+.little-e-pet.is-celebrate .little-e-pet-sparkles i{animation:littleEBurst .75s ease both}
+.little-e-pet.is-thinking .little-e-mascot-img{animation:littleEThinking 1.25s ease-in-out infinite}
+.little-e-pet.is-thinking .little-e-pet-bubble{
+  opacity:1;
+  transform:translate(0,0) scale(1);
+}
+.little-e-pet.is-thinking .little-e-pet-bubble small::after{
+  content:" ···";
+  animation:littleEDots 1.15s steps(3,end) infinite;
+}
+.little-e-panel:not(.hidden) ~ .mobile-dock + *{}
+.little-e-head-mascot-wrap{
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(145deg,#eef4ff,#fff);
+  border:1px solid #dce5ff;
+  overflow:hidden;
+}
+.little-e-head-mascot{
+  width:54px;
+  height:54px;
+  object-fit:contain;
+  transform:translateY(3px);
+}
+.little-e-copyright{
+  display:block;
+  margin-top:6px;
+  color:#8791a7;
+  font-size:8px;
+  line-height:1.4;
+}
+.little-e-protected-art{
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-user-drag:none;
+}
+
+@keyframes littleEFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg)}
+  50%{transform:translate3d(0,-7px,0) rotate(1deg)}
+}
+@keyframes littleEShadow{
+  0%,100%{transform:scaleX(1);opacity:.16}
+  50%{transform:scaleX(.82);opacity:.10}
+}
+@keyframes littleESpark{
+  0%,100%{transform:translateY(2px) scale(.75) rotate(0deg);opacity:.25}
+  50%{transform:translateY(-4px) scale(1.15) rotate(18deg);opacity:.9}
+}
+@keyframes littleEHop{
+  0%,100%{transform:translateY(0) scale(1) rotate(0)}
+  24%{transform:translateY(-18px) scale(1.03,.97) rotate(-4deg)}
+  48%{transform:translateY(-7px) scale(.98,1.03) rotate(3deg)}
+  70%{transform:translateY(-12px) scale(1.01,.99) rotate(-2deg)}
+}
+@keyframes littleEWiggle{
+  0%,100%{transform:rotate(0)}
+  18%{transform:rotate(-7deg)}
+  36%{transform:rotate(7deg)}
+  54%{transform:rotate(-5deg)}
+  72%{transform:rotate(4deg)}
+}
+@keyframes littleECelebrate{
+  0%,100%{transform:translateY(0) rotate(0) scale(1)}
+  22%{transform:translateY(-17px) rotate(-7deg) scale(1.04)}
+  45%{transform:translateY(-5px) rotate(7deg) scale(1.02)}
+  67%{transform:translateY(-12px) rotate(-4deg) scale(1.04)}
+}
+@keyframes littleEBurst{
+  0%{transform:scale(.3);opacity:0}
+  45%{transform:scale(1.7) rotate(25deg);opacity:1}
+  100%{transform:scale(.9) translateY(-8px);opacity:0}
+}
+@keyframes littleEThinking{
+  0%,100%{transform:translateY(0) rotate(-1.5deg)}
+  50%{transform:translateY(-4px) rotate(1.5deg)}
+}
+@keyframes littleEDots{
+  0%{opacity:.25}
+  50%{opacity:1}
+  100%{opacity:.25}
+}
+
+@media(max-width:700px){
+  .little-e-fab.little-e-pet{
+    right:8px;
+    bottom:70px;
+    width:92px;
+    height:92px;
+  }
+  .little-e-pet-stage{width:82px;height:84px}
+  .little-e-pet-bubble{
+    right:61px;
+    bottom:59px;
+    min-width:62px;
+    padding:6px 8px;
+  }
+  .little-e-pet-bubble b{font-size:10px}
+  .little-e-pet-bubble small{font-size:8px}
+  .little-e-head-mascot-wrap{width:44px;height:44px;flex-basis:44px}
+  .little-e-head-mascot{width:50px;height:50px}
+}
+@media(prefers-reduced-motion:reduce){
+  .little-e-pet-stage,
+  .little-e-pet-shadow,
+  .little-e-pet-sparkles i,
+  .little-e-pet.is-thinking .little-e-mascot-img{animation:none!important}
+  .little-e-mascot-img{transition:none}
+}
