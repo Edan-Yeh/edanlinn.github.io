@@ -444,13 +444,26 @@
     renderMessages();
   }
 
+  function playPetReaction(reaction='happy'){
+    const map={
+      happy:['is-celebrate',920],
+      wave:['is-wiggle',900],
+      thinking:['is-thinking',1500],
+      reading:['is-reading',1800],
+      sit:['is-sitting',2200],
+      sleep:['is-sleeping',2200]
+    };
+    const [state,duration]=map[reaction]||map.happy;
+    setPetState(state,duration);
+  }
+
   function addAssistantMessage(payload){
     const p=payload?.role==='assistant'?payload:assistantPayload(payload?.en||'',payload?.zh||'',payload||{});
     messages.push(p);
     messages=messages.slice(-40);
     saveChat();
     renderMessages();
-    setPetState('is-celebrate',920);
+    playPetReaction(p.petReaction||CORE.reactionFor?.('',p.category||'chat')||'happy');
   }
 
   function renderMessages(){
@@ -849,10 +862,10 @@
       const intent=classifyIntent(text),direct=CORE.directReply(text,messages.slice(0,-1));
       if(direct){addAssistantMessage(assistantPayload(direct.en,direct.zh,{category:intent,...(direct.meta||{})}));return}
       const translation=extractTranslationPayload(text);
-      if(intent==='translation'&&translation){const r=await translateSentence(translation);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'translation'}):fallback('help'));return}
-      if(intent==='site_help'){const r=await askAI(text);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'site_help'}):fallback('site'));return}
+      if(intent==='translation'&&translation){const r=await translateSentence(translation);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'translation',petReaction:'thinking'}):fallback('help'));return}
+      if(intent==='site_help'){const r=await askAI(text);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'site_help',petReaction:'reading'}):fallback('site'));return}
       const r=await askAI(text);
-      if(r)addAssistantMessage(assistantPayload(r.en,r.zh,{category:intent}));
+      if(r)addAssistantMessage(assistantPayload(r.en,r.zh,{category:intent,petReaction:CORE.reactionFor(text,intent)}));
       else addAssistantMessage(['chat','persona','social'].includes(intent)?fallbackChat(text):fallback('help'));
     }finally{busy=false;resizeLittleEInput();scrollChatToEnd()}
   }
