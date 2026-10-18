@@ -1446,3 +1446,82 @@ body.auth-locked .little-e-panel{display:none!important}
   .little-e-pet.is-eating .little-e-food-box-fab,
   .little-e-pet-menu-fab{animation:none!important}
 }
+
+
+/* Little E action fixes v34 */
+.little-e-pet.is-eating .little-e-food-box,
+.little-e-head-25d.is-eating .little-e-food-box{
+  opacity:0!important;
+  animation:none!important;
+}
+.little-e-pet.is-eating .little-e-pet-stage{
+  animation:littleEEatMotion 520ms ease-in-out infinite alternate!important;
+}
+.little-e-head-25d.is-eating .little-e-head-25d-stage{
+  animation:littleEHeadEatMotion 520ms ease-in-out infinite alternate!important;
+}
+.little-e-pet.is-sitting .little-e-pet-stage{
+  animation:littleESitSettle .72s cubic-bezier(.2,.8,.25,1),littleESitBreath 2.4s .72s ease-in-out infinite!important;
+}
+.little-e-head-25d.is-sitting .little-e-head-25d-stage{
+  animation:littleEHeadSitSettle .72s cubic-bezier(.2,.8,.25,1),littleEHeadSitBreath 2.4s .72s ease-in-out infinite!important;
+}
+.little-e-pet.is-sleeping .little-e-pet-stage{
+  animation:littleESleepBreath 3.6s ease-in-out infinite!important;
+}
+.little-e-head-25d.is-sleeping .little-e-head-25d-stage{
+  animation:littleEHeadSleepBreath 3.6s ease-in-out infinite!important;
+}
+.little-e-pet.is-sleeping .little-e-pet-zzz,
+.little-e-head-25d.is-sleeping .little-e-head-zzz{
+  opacity:1;
+  animation:littleEZzz 2s ease-in-out infinite!important;
+}
+
+@keyframes littleEEatMotion{
+  0%{transform:translateY(0) scale(1) rotate(-1deg)}
+  50%{transform:translateY(2px) scale(1.015,.985) rotate(1deg)}
+  100%{transform:translateY(-1px) scale(.995,1.01) rotate(-1deg)}
+}
+@keyframes littleEHeadEatMotion{
+  0%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(2px) scale(1.025,.975)}
+  100%{transform:translateY(-1px) scale(.99,1.015)}
+}
+@keyframes littleESitSettle{
+  0%{transform:translateY(-12px) scale(1.03,.96)}
+  58%{transform:translateY(3px) scale(.98,1.03)}
+  100%{transform:translateY(0) scale(1)}
+}
+@keyframes littleESitBreath{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-2px) scale(1.01)}
+}
+@keyframes littleEHeadSitSettle{
+  0%{transform:translateY(-7px) scale(1.04,.96)}
+  58%{transform:translateY(2px) scale(.98,1.03)}
+  100%{transform:translateY(0) scale(1)}
+}
+@keyframes littleEHeadSitBreath{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-1px) scale(1.015)}
+}
+@keyframes littleESleepBreath{
+  0%,100%{transform:translateY(1px) scale(1)}
+  50%{transform:translateY(-1px) scale(1.018,.985)}
+}
+@keyframes littleEHeadSleepBreath{
+  0%,100%{transform:translateY(1px) scale(1)}
+  50%{transform:translateY(-1px) scale(1.02,.98)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .little-e-pet.is-eating .little-e-pet-stage,
+  .little-e-head-25d.is-eating .little-e-head-25d-stage,
+  .little-e-pet.is-sitting .little-e-pet-stage,
+  .little-e-head-25d.is-sitting .little-e-head-25d-stage,
+  .little-e-pet.is-sleeping .little-e-pet-stage,
+  .little-e-head-25d.is-sleeping .little-e-head-25d-stage{
+    animation:none!important;
+  }
+}
