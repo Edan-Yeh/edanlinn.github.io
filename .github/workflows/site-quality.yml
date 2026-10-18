@@ -18,10 +18,14 @@ jobs:
       - name: Static assets, IDs, theme audit
         run: node verify-site.cjs
       - name: Learning logic regression
+        if: success() || failure()
         run: node verify-logic.cjs
       - name: MOBA gameplay regression
+        if: success() || failure()
         run: node verify-moba.cjs
       - name: Campaign regression
+        if: success() || failure()
         run: node verify-campaign.cjs
       - name: Hero identity regression
+        if: success() || failure()
         run: node verify-hero-identity.cjs
