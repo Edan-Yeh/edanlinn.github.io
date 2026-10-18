@@ -22,6 +22,9 @@
   let petSleepTimer=null;
   let petSwapToken=0;
   let lastPetActivity=Date.now();
+  let headPressTimer=null;
+  let headLongPress=false;
+  let headEatTimer=null;
 
   const PET_ASSETS={
     idle:'assets/little-e-mascot-v30.webp',
@@ -140,6 +143,9 @@
 
   function mascotButton(){return $('littleEButton');}
   function mascotImage(){return $('littleEMascotImg');}
+  function headButton(){return $('littleEHeadButton');}
+  function headMascotImage(){return $('littleEHeadMascot');}
+  function petMenu(){return $('littleEPetMenu');}
   function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;}
   function panelOpen(){return !$('littleEPanel')?.classList.contains('hidden');}
 
@@ -174,24 +180,102 @@
   }
 
   function swapPetAsset(pose='idle'){
-    const img=mascotImage();
+    const imgs=[mascotImage(),headMascotImage()].filter(Boolean);
     const src=PET_ASSETS[pose]||PET_ASSETS.idle;
-    if(!img||img.dataset.pose===pose)return;
+    if(!imgs.length||imgs.every(img=>img.dataset.pose===pose))return;
     const token=++petSwapToken;
-    img.classList.add('is-swapping');
+    imgs.forEach(img=>img.classList.add('is-swapping'));
     const next=new Image();
     next.decoding='async';
     next.onload=()=>{
       if(token!==petSwapToken)return;
-      img.src=src;
-      img.dataset.pose=pose;
-      requestAnimationFrame(()=>img.classList.remove('is-swapping'));
+      imgs.forEach(img=>{
+        img.src=src;
+        img.dataset.pose=pose;
+        requestAnimationFrame(()=>img.classList.remove('is-swapping'));
+      });
+      const hb=headButton();
+      if(hb)hb.dataset.pose=pose;
     };
     next.onerror=()=>{
       if(token!==petSwapToken)return;
-      img.classList.remove('is-swapping');
+      imgs.forEach(img=>img.classList.remove('is-swapping'));
     };
     next.src=src;
+  }
+
+  function openPetMenu(){
+    const menu=petMenu();
+    const btn=headButton();
+    if(!menu||!btn)return;
+    menu.classList.remove('hidden');
+    btn.setAttribute('aria-expanded','true');
+    btn.classList.add('menu-open');
+    setPetState('is-wiggle',700);
+  }
+
+  function closePetMenu(){
+    const menu=petMenu();
+    const btn=headButton();
+    menu?.classList.add('hidden');
+    btn?.setAttribute('aria-expanded','false');
+    btn?.classList.remove('menu-open','is-pressing');
+  }
+
+  function feedLittleE(){
+    clearTimeout(headEatTimer);
+    const btn=headButton();
+    if(!btn)return;
+    btn.classList.add('is-eating');
+    swapPetAsset('happy');
+    updatePetBubble('happy');
+    headEatTimer=setTimeout(()=>{
+      btn.classList.remove('is-eating');
+      setPetState('is-celebrate',850);
+    },2300);
+  }
+
+  function runPetInteraction(action){
+    closePetMenu();
+    markPetActivity();
+    switch(action){
+      case 'feed': feedLittleE(); break;
+      case 'sit': setPetState('',0); updatePetBubble('idle'); break;
+      case 'sleep': setPetState('is-sleeping'); break;
+      case 'wave': setPetState('is-wiggle',900); break;
+      case 'read': setPetState('is-reading',2600); break;
+      case 'think': setPetState('is-thinking',2100); break;
+      case 'happy': setPetState('is-celebrate',1100); break;
+      case 'random':{
+        const actions=['feed','sit','sleep','wave','read','think','happy'];
+        runPetInteraction(actions[Math.floor(Math.random()*actions.length)]);
+        break;
+      }
+      default: setPetState('is-wiggle',850);
+    }
+  }
+
+  function startHeadLongPress(e){
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    clearTimeout(headPressTimer);
+    headLongPress=false;
+    headButton()?.classList.add('is-pressing');
+    headPressTimer=setTimeout(()=>{
+      headLongPress=true;
+      headButton()?.classList.remove('is-pressing');
+      openPetMenu();
+      try{navigator.vibrate?.(20);}catch(_){}
+    },560);
+  }
+
+  function cancelHeadLongPress(){
+    clearTimeout(headPressTimer);
+    headButton()?.classList.remove('is-pressing');
+  }
+
+  function finishHeadPress(){
+    clearTimeout(headPressTimer);
+    headButton()?.classList.remove('is-pressing');
   }
 
   function updatePetBubble(pose){
@@ -415,6 +499,7 @@
   }
 
   function closePanel(){
+    closePetMenu();
     $('littleEPanel')?.classList.add('hidden');
     $('littleEButton')?.setAttribute('aria-expanded','false');
     markPetActivity();
@@ -850,10 +935,12 @@
     warmStatus();
     preloadPetAssets();
     const heroImg=mascotImage();
-    if(heroImg){
-      heroImg.dataset.pose='idle';
-      heroImg.src=PET_ASSETS.idle;
-    }
+    const headImg=headMascotImage();
+    [heroImg,headImg].filter(Boolean).forEach(img=>{
+      img.dataset.pose='idle';
+      img.src=PET_ASSETS.idle;
+    });
+    if(headButton())headButton().dataset.pose='idle';
     schedulePetIdle();
     schedulePetBlink();
     schedulePetSleep();
@@ -873,6 +960,42 @@
     document.querySelectorAll('.little-e-protected-art,.little-e-mascot-img,.little-e-head-mascot').forEach(img=>{
       img.addEventListener('dragstart',e=>e.preventDefault());
       img.addEventListener('contextmenu',e=>e.preventDefault());
+    });
+
+    const head=headButton();
+    head?.addEventListener('pointerdown',startHeadLongPress);
+    head?.addEventListener('pointerup',finishHeadPress);
+    head?.addEventListener('pointercancel',cancelHeadLongPress);
+    head?.addEventListener('pointerleave',cancelHeadLongPress);
+    head?.addEventListener('click',e=>{
+      e.stopPropagation();
+      markPetActivity();
+      if(headLongPress){
+        headLongPress=false;
+        e.preventDefault();
+        return;
+      }
+      setPetState('is-wiggle',850);
+    });
+    head?.addEventListener('contextmenu',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      openPetMenu();
+    });
+
+    petMenu()?.addEventListener('click',e=>{
+      const btn=e.target.closest?.('[data-pet-action]');
+      if(!btn)return;
+      e.stopPropagation();
+      runPetInteraction(btn.dataset.petAction);
+    });
+
+    document.addEventListener('pointerdown',e=>{
+      const wrap=$('littleEHeadInteraction');
+      if(!petMenu()?.classList.contains('hidden')&&!wrap?.contains(e.target))closePetMenu();
+    });
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape')closePetMenu();
     });
     ['keydown','pointerdown','touchstart','scroll'].forEach(evt=>{
       window.addEventListener(evt,markPetActivity,{passive:true});
@@ -994,7 +1117,10 @@
       happy:()=>setPetState('is-celebrate',920),
       thinking:()=>setPetState('is-thinking'),
       reading:()=>setPetState('is-reading',1800),
-      sleep:()=>setPetState('is-sleeping')
+      sleep:()=>setPetState('is-sleeping'),
+      interact:runPetInteraction,
+      openMenu:openPetMenu,
+      closeMenu:closePetMenu
     };
   }
 
