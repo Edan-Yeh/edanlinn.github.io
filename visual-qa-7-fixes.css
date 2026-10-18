@@ -1,0 +1,37 @@
+/* Visual QA corrections — seven screenshot issues. Theme-token driven. */
+.guide-time{display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;min-width:105px!important;min-height:32px!important;padding:6px 12px!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;border-radius:999px!important;color:var(--app-accent)!important;font-size:11px!important;letter-spacing:.08em!important;font-weight:750!important}
+.moba-head button,.moba-arena .moba-head button{background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important;box-shadow:none!important;opacity:1!important;font-size:12px!important}
+.moba-arena .moba-head button:disabled{background:var(--app-soft)!important;color:var(--app-muted)!important;border:1px solid var(--app-border)!important;opacity:1!important;cursor:not-allowed!important}
+.moba-arena .moba-head button:not(:disabled):hover{border-color:var(--app-accent)!important;color:var(--app-accent)!important}
+.moba-arena .moba-head button:focus-visible{outline:2px solid var(--app-accent)!important;outline-offset:2px!important}
+.rank-card{transform:none!important;min-height:0!important;max-width:320px!important;border:1px solid var(--app-border)!important;border-radius:22px!important;background:var(--app-surface)!important;background-image:none!important;box-shadow:0 10px 28px rgba(25,57,99,.06)!important;padding:22px!important;color:var(--app-text)!important}
+.rank-card::before{display:none!important}
+.rank-card :is(.rank-top,.rank-level,.rank-title,.rank-subtitle,.xp-labels,.rank-foot,.next-title,.arena-equipped){color:var(--app-text)!important;text-shadow:none!important}
+.rank-card :is(.rank-subtitle,.xp-labels,.rank-foot){color:var(--app-muted)!important}
+.rank-card .rank-emblem{width:84px!important;height:84px!important;min-height:84px!important;max-height:84px!important;margin:22px auto 14px!important;clip-path:none!important;border-radius:22px!important;background:var(--app-soft)!important;border:1px solid var(--app-border)!important;overflow:hidden!important}
+.rank-card .rank-emblem :is(img,svg){display:block!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;filter:none!important}
+.rank-card .xp-meter{height:8px!important;background:var(--app-border)!important}
+.rank-card .xp-meter i{background:var(--app-accent)!important}
+.rank-card button,.rank-card a{color:var(--app-accent)!important;background:var(--app-surface)!important;border:1px solid var(--app-border)!important;text-shadow:none!important;box-shadow:none!important}
+.rank-card .rank-title{font-size:16px!important;line-height:1.5!important}
+.rank-card .rank-subtitle{font-size:12px!important;line-height:1.7!important}
+.campaign-correct{color:var(--app-text)!important;background:var(--app-soft)!important;border-left:3px solid var(--app-accent)!important;padding:12px 14px!important;font-size:13px!important;line-height:1.8!important}
+.campaign-panel :is(.campaign-correct,#campaign-feedback,#campaign-feedback b,#campaign-feedback strong){color:var(--app-text)!important;text-shadow:none!important}
+.campaign-panel #campaign-feedback .campaign-correct{color:var(--app-text)!important}
+.moba-learning .moba-scoreboard{margin-bottom:0!important}
+.moba-learning .moba-hud{order:0!important;grid-column:1/-1!important;width:100%!important;margin:0 0 12px!important;min-width:0!important}
+.moba-learning .moba-viewport{order:1!important}
+.moba-learning .moba-player{color:var(--app-text)!important}
+.achievement.unlocked>span,.achievement.unlocked>span svg{color:var(--app-accent)!important;stroke:currentColor!important;opacity:1!important;filter:none!important}
+.achievement.unlocked em{color:var(--app-accent)!important}
+.domain-path{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+.path-node,.path-node.stable,.path-node.current,.path-node.strengthen{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:13px!important;color:var(--app-text)!important;box-shadow:none!important;min-height:75px!important;padding:15px!important}
+.path-node.current{background:var(--app-soft)!important;border-color:var(--app-accent)!important}
+.path-node.stable{border-left:3px solid #21866b!important}
+.path-node.strengthen{border-left:3px solid var(--app-accent)!important}
+.path-node :is(span,b,small,svg){color:var(--app-text)!important;text-shadow:none!important}
+.path-node small{color:var(--app-muted)!important;font-size:12px!important;line-height:1.6!important}
+.path-node b{font-size:13px!important}
+.path-node:hover{border-color:var(--app-accent)!important;background:var(--app-soft)!important}
+@media(max-width:900px){.domain-path{grid-template-columns:repeat(2,minmax(0,1fr))!important}.rank-card{max-width:100%!important}}
+@media(max-width:540px){.domain-path{grid-template-columns:minmax(0,1fr)!important}.rank-card{padding:18px!important}.moba-hud{margin-bottom:10px!important}}
