@@ -1,0 +1,48 @@
+/* Academy screenshot palette pack: Glacier Blue, Burgundy, Silver, Black.
+   Consistent light layout for first three; accessible dark layout for Black.
+   These are site themes, not claims about official iPhone device colors. */
+:root,[data-site-theme="glacier"]{
+ --bg:#f5f6f9;--panel:#fff;--panel2:#edf4ff;--line:#dfe5ee;--text:#1b2430;--muted:#5b697d;--accent:#0864c8;--chip:#eaf2ff;
+ --app-bg:#f5f6f9;--app-surface:#fff;--app-soft:#e9f3ff;--app-text:#1b2430;--app-muted:#5b697d;--app-border:#dfe5ee;--app-accent:#0864c8;--app-accent-ink:#fff;--shadow:0 8px 26px rgba(27,58,101,.045);
+ --theme-hero-end:#e8f2ff;--theme-icon:#0864c8;color-scheme:light;
+}
+[data-site-theme="burgundy"]{
+ --bg:#f8f5f6;--panel:#fff;--panel2:#f8edef;--line:#e9dce0;--text:#292026;--muted:#6b5961;--accent:#873c54;--chip:#f7e9ed;
+ --app-bg:#f8f5f6;--app-surface:#fff;--app-soft:#f7e9ed;--app-text:#292026;--app-muted:#6b5961;--app-border:#e9dce0;--app-accent:#873c54;--app-accent-ink:#fff;--shadow:0 8px 26px rgba(93,42,58,.04);
+ --theme-hero-end:#faedf1;--theme-icon:#873c54;color-scheme:light;
+}
+[data-site-theme="silver"]{
+ --bg:#f5f6f7;--panel:#fff;--panel2:#eff1f3;--line:#dce1e5;--text:#24282e;--muted:#59636e;--accent:#435e78;--chip:#edf1f5;
+ --app-bg:#f5f6f7;--app-surface:#fff;--app-soft:#edf1f5;--app-text:#24282e;--app-muted:#59636e;--app-border:#dce1e5;--app-accent:#435e78;--app-accent-ink:#fff;--shadow:0 8px 26px rgba(33,43,53,.04);
+ --theme-hero-end:#edf1f5;--theme-icon:#435e78;color-scheme:light;
+}
+[data-site-theme="black"]{
+ --bg:#111316;--panel:#1c1f24;--panel2:#282d34;--line:#434c56;--text:#f3f5f7;--muted:#c2cbd6;--accent:#91c0ff;--chip:#28394e;
+ --app-bg:#111316;--app-surface:#1c1f24;--app-soft:#28394e;--app-text:#f3f5f7;--app-muted:#c2cbd6;--app-border:#434c56;--app-accent:#91c0ff;--app-accent-ink:#0d243d;--shadow:0 10px 30px rgba(0,0,0,.17);
+ --theme-hero-end:#243345;--theme-icon:#91c0ff;color-scheme:dark;
+}
+body{background:var(--app-bg)!important;color:var(--app-text)!important}
+.sidebar{background:var(--app-surface)!important;border-color:var(--app-border)!important}
+.top .brand .academy-overline{color:var(--app-muted)!important}
+.sidebar .side-link.active,.sidebar .side-link:hover,.guide-side-link{background:var(--app-soft)!important;color:var(--app-accent)!important}
+.side-brand .brand-mark{background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-accent)!important}
+.hero{background:linear-gradient(108deg,var(--app-surface) 43%,var(--theme-hero-end) 100%)!important;border-color:var(--app-border)!important}
+.hero h1 span{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+:is(.hero-eyebrow,.section-kicker,.guide-eyebrow,.guide-number,.guide-bottom b,.guide-cta,.portfolio-text-link,.portfolio-project-links a){color:var(--app-accent)!important}
+:is(.visitor-guide,.portfolio-showcase,.learning-method-panel,.ai-foundations,.lab-intro,.stat,.rank-card,.guide-path,.portfolio-project,.ai-feature,.ai-architecture,.method-grid>div,.ai-detail,.dash-panel,.module-card){background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+:is(.guide-desc,.guide-bottom,.portfolio-project p,.ai-feature p,.method-grid p,.stat small,.rank-card .rank-subtitle){color:var(--app-muted)!important}
+:is(.primary-action,.mission-action){background:var(--app-accent)!important;border-color:var(--app-accent)!important;color:var(--app-accent-ink)!important}
+:is(.quiet-action,.filter button,.top .nav button){background:var(--app-surface)!important;color:var(--app-text)!important;border-color:var(--app-border)!important}
+:is(.portfolio-status,.portfolio-tags span,.portfolio-principles strong,.ai-method span,.ai-code-path,.ai-arch-flow span,.guide-time){background:var(--app-soft)!important;color:var(--app-text)!important;border-color:var(--app-border)!important}
+#daily .day,#daily .day-head,#daily .day-body{background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+#daily :is(.day-head h2,.day-body>h3,.day h2,.day h3,.correction .box b){color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily :is(.muted,.day-num,.day-head .muted){color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important}
+#daily :is(.score,.score.mid,.score.high){color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#daily .correction .box,#daily .chips .chip,#daily .memory,#daily .archive-link{background:var(--app-soft)!important;border-color:var(--app-border)!important;color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#daily .archive-link a{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#daily .filter button.active{background:var(--app-accent)!important;color:var(--app-accent-ink)!important;-webkit-text-fill-color:var(--app-accent-ink)!important}
+.appearance-control select{background:var(--app-surface)!important;color:var(--app-text)!important;border:1px solid var(--app-border)!important}
+[data-site-theme="black"] .rank-card{background:var(--app-surface)!important}
+[data-site-theme="black"] .top-profile .avatar{background:var(--app-soft)!important;color:var(--app-accent)!important}
+[data-site-theme="black"] .sidebar .side-link.active{background:var(--app-soft)!important;color:var(--app-accent)!important}
+[data-site-theme="black"] :is(.hero p,.hero-copy,.visitor-guide p){color:var(--app-muted)!important}
