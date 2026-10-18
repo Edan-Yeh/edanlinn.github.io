@@ -1,0 +1,30 @@
+/* Sidebar icon color alignment · 2026-10-18
+   Neutral navigation icons, blue selected state, no faded pink/orange.
+   Keep icon strokes in sync with text in every theme. */
+.sidebar .side-nav .side-link{
+  color:var(--app-muted)!important;
+}
+.sidebar .side-nav .side-link:is(.active,:hover,:focus-visible){
+  color:var(--app-accent)!important;
+}
+.sidebar .side-nav .side-link [data-icon],
+.sidebar .side-nav .side-link [data-icon] svg,
+.sidebar .side-nav .side-link > svg{
+  color:inherit!important;
+  opacity:1!important;
+  filter:none!important;
+}
+.sidebar .side-nav .side-link svg :is(path,circle,rect,line,polyline,polygon,ellipse){
+  stroke:currentColor!important;
+}
+.sidebar .side-nav .side-link svg [fill]:not([fill="none"]){
+  fill:currentColor!important;
+}
+.sidebar .side-nav .side-link:is(.active,:hover,:focus-visible) [data-icon],
+.sidebar .side-nav .side-link:is(.active,:hover,:focus-visible) svg{
+  color:var(--app-accent)!important;
+}
+.sidebar .side-nav .side-link:focus-visible{
+  outline:2px solid var(--app-accent)!important;
+  outline-offset:2px!important;
+}
