@@ -1,7 +1,8 @@
+if(!window.EDAN_APP_VERSION)throw new Error('version.js must load before question-bank.js');
 window.EDAN_ENGLISH_CONTENT = {
   schemaVersion: 1,
-  contentVersion: '2026.10.18-v37',
-  updatedAt: '2026-10-18',
+  contentVersion: window.EDAN_APP_VERSION.release,
+  updatedAt: window.EDAN_APP_VERSION.date,
   baseline: 'MongoDB recruiter interview 2026-10-12',
   skillLabels: {
     listening: '聽力 / Question Intent',

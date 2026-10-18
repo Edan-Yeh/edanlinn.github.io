@@ -1526,48 +1526,23 @@ body.auth-locked .little-e-panel{display:none!important}
   }
 }
 
+/* v38 release update notice */
+.app-update-banner{position:fixed;z-index:320;left:50%;top:max(12px,env(safe-area-inset-top));width:min(620px,calc(100vw - 24px));transform:translateX(-50%);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 14px;border:1px solid #cfd8ff;border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 18px 50px rgba(20,35,82,.20);backdrop-filter:blur(18px);color:#24304c}
+.app-update-banner>div:first-child{min-width:0}.app-update-banner b{display:block;font-size:12px}.app-update-banner span{display:block;margin-top:2px;color:#667085;font-size:9px}
+.app-update-actions{display:flex;gap:6px;flex:0 0 auto}.app-update-actions button{min-height:34px;padding:7px 10px;border:1px solid #dce3ff;border-radius:10px;background:#fff;color:#405078;font-size:10px;font-weight:900;cursor:pointer}.app-update-actions #appUpdateNow{background:#2f4bd4;border-color:#2f4bd4;color:#fff}
 
-/* Little E pose size normalization v35
-   Eat / sleep artwork uses a larger transparent canvas than idle.
-   Keep the visible character at the same perceived size in both FAB and panel. */
-.little-e-pet.is-eating .little-e-mascot-img,
-.little-e-head-25d.is-eating .little-e-head-mascot{
-  animation:none!important;
-  transform:scale(2.90)!important;
-  transform-origin:50% 52%!important;
-}
-.little-e-pet.is-sleeping .little-e-mascot-img,
-.little-e-head-25d.is-sleeping .little-e-head-mascot{
-  transform:scale(2.62)!important;
-  transform-origin:50% 54%!important;
-}
+/* v38 pose normalization: source artwork is alpha-cropped in little-e.js. */
+.little-e-pet.is-eating .little-e-mascot-img,.little-e-pet.is-sitting .little-e-mascot-img,.little-e-pet.is-sleeping .little-e-mascot-img,.little-e-head-25d.is-eating .little-e-head-mascot,.little-e-head-25d.is-sitting .little-e-head-mascot,.little-e-head-25d.is-sleeping .little-e-head-mascot{transform:none!important;transform-origin:50% 54%!important}
+.little-e-pet.is-sitting .little-e-pet-bubble{opacity:1;transform:translate(0,0) scale(1)}
+
+/* v38 mobile chat ergonomics */
+.little-e-messages{overscroll-behavior:contain;scroll-behavior:smooth;scrollbar-gutter:stable}.little-e-form{flex:0 0 auto;position:relative;z-index:4}.little-e-form textarea{overflow-y:auto}
 @media(max-width:700px){
-  .little-e-pet.is-eating .little-e-mascot-img,
-  .little-e-head-25d.is-eating .little-e-head-mascot{
-    transform:scale(2.84)!important;
-  }
-  .little-e-pet.is-sleeping .little-e-mascot-img,
-  .little-e-head-25d.is-sleeping .little-e-head-mascot{
-    transform:scale(2.56)!important;
-  }
-}
-
-
-/* Little E sit visibility + size normalization v37
-   The sit artwork is a 512x512 transparent canvas, so the visible character
-   needs a larger scale than idle/eat/sleep to keep the same perceived size. */
-.little-e-pet.is-sitting .little-e-mascot-img,
-.little-e-head-25d.is-sitting .little-e-head-mascot{
-  transform:scale(3.12)!important;
-  transform-origin:50% 52%!important;
-}
-.little-e-pet.is-sitting .little-e-pet-bubble{
-  opacity:1;
-  transform:translate(0,0) scale(1);
-}
-@media(max-width:700px){
-  .little-e-pet.is-sitting .little-e-mascot-img,
-  .little-e-head-25d.is-sitting .little-e-head-mascot{
-    transform:scale(3.04)!important;
-  }
+  .app-update-banner{top:max(8px,env(safe-area-inset-top));align-items:flex-start;padding:10px 11px}.app-update-banner span{display:none}.app-update-actions button{min-height:32px;padding:6px 8px}
+  .little-e-panel{bottom:calc(70px + env(safe-area-inset-bottom));height:min(78dvh,720px);max-height:calc(100dvh - 88px - env(safe-area-inset-top))}
+  .little-e-panel.keyboard-open{top:8px;bottom:auto;height:calc(var(--little-e-vvh,100dvh) - 16px);max-height:calc(var(--little-e-vvh,100dvh) - 16px)}
+  .little-e-messages{min-height:0;padding-bottom:14px;-webkit-overflow-scrolling:touch}
+  .little-e-form{position:sticky;bottom:0;grid-template-columns:minmax(0,1fr) auto;padding:9px 10px max(9px,env(safe-area-inset-bottom));box-shadow:0 -8px 20px rgba(255,255,255,.94)}
+  .little-e-form textarea{min-height:44px;max-height:112px;resize:none}.little-e-form .btn{width:auto;min-width:72px;min-height:44px}
+  .little-e-bottom-row{padding:2px 10px 8px}.little-e-bottom-row>span{display:none}.little-e-foot{display:none}
 }

@@ -20,6 +20,9 @@ jobs:
       - name: Learning logic regression
         if: success() || failure()
         run: node verify-logic.cjs
+      - name: Little E regression
+        if: success() || failure()
+        run: node verify-little-e.cjs
       - name: MOBA gameplay regression
         if: success() || failure()
         run: node verify-moba.cjs

@@ -3,22 +3,9 @@
 
   const ADMIN_EMAIL='edan14725836961@gmail.com';
 
-  const LITTLE_E_PROFILE={
-    name:'小E',
-    birthday:'2026-04-06',
-    birthdayDisplay:'2026.04.06',
-    personality:['開心','活潑','好奇','親近人'],
-    favoritePerson:'Edan',
-    hobbies:['讀書','學新東西','探索新點子','陪人聊天','一起練英文'],
-    likes:['雛菊','數字 24','藍白色','小翅膀','自己的棕金色小餐盒'],
-    traits:[
-      '最喜歡 Edan，也很容易跟每個人親近',
-      '吃飯喜歡用自己的棕金色小餐盒',
-      '很喜歡讀書與探索新知',
-      '有點調皮，偶爾會把周圍弄亂，但不是故意搗蛋',
-      '遇到新的事情會很想靠近看看'
-    ]
-  };
+  const CORE=window.LITTLE_E_CORE;
+  if(!CORE)throw new Error('little-e-core.js must load before little-e.js');
+  const LITTLE_E_PROFILE=CORE.PROFILE;
   const CHAT_KEY_PREFIX='edanLittleEChatV26:';
   const PREF_KEY='edanLittleEPrefsV26';
 
@@ -45,6 +32,9 @@
   let fabLongPress=false;
   let activePetMenuSource=null;
   let headEatTimer=null;
+  let currentPetPose='idle';
+  let petAssetsReadyPromise=null;
+  const normalizedPetAssets={};
 
   const PET_ASSETS={
     idle:'assets/little-e-mascot-v30.webp',
@@ -146,142 +136,22 @@
     bridge()?.remember?.({kind,text});
   }
 
-  function classifyIntent(text){
-    const t=String(text||'').toLowerCase();
-    if(/翻譯|translate/.test(t))return 'translation';
-    if(/面試|interview|回答|怎麼答|how.*answer/.test(t))return 'interview_answer';
-    if(/文法|grammar|對嗎|自然嗎/.test(t))return 'grammar';
-    if(/怎麼用|功能|網站|使用|哪裡|按鈕/.test(t))return 'site_help';
-    if(/會議|主管|客戶|stakeholder|工作|project|issue|risk/.test(t))return 'work_english';
-    if(/單字|word|vocab/.test(t))return 'vocabulary';
-    return 'chat';
-  }
+  function classifyIntent(text){return CORE.classifyIntent(text);}
 
   function rememberUserRequest(text){
     const kind=classifyIntent(text);
     const compact=String(text||'').replace(/\s+/g,' ').trim().slice(0,160);
+    if(kind==='social')return;
     if(compact)remember(kind,compact);
   }
 
   function littleEPersonaReply(text){
-    const raw=String(text||'').trim();
-    const t=raw.toLowerCase();
-
-    if(/^(你好|嗨|哈囉|哈啰|hello|hi|hey)[!！。.，,～~\s]*$/i.test(raw)){
-      return assistantPayload(
-        "Hi! I'm Little E. Nice to see you. What would you like to talk about?",
-        "你好～我是小E，很高興看到你。今天想聊什麼？",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/^(早安|早上好|good morning)[!！。.，,～~\s]*$/i.test(raw)){
-      return assistantPayload(
-        "Good morning! How are you feeling today?",
-        "早安～你今天感覺怎麼樣？",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/^(晚安|good night)[!！。.，,～~\s]*$/i.test(raw)){
-      return assistantPayload(
-        "Good night. Sleep well, and I'll be here when you come back. 🌙",
-        "晚安～好好休息，你回來的時候我還會在這裡 🌙",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/^(謝謝|感謝|thanks|thank you)[!！。.，,～~\s]*$/i.test(raw)){
-      return assistantPayload(
-        "You're welcome! 😊",
-        "不客氣～😊",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(生日|幾月幾號出生|哪天出生|birthday|when.*born|born.*when)/i.test(raw)){
-      return assistantPayload(
-        "My birthday is April 6, 2026. That makes April 6 my special day. 🎂",
-        "我的生日是 2026 年 4 月 6 日。4 月 6 日就是小E的專屬生日 🎂",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(最喜歡誰|喜歡的人|最愛誰|favorite person|who.*like.*most|who.*favorite)/i.test(raw)){
-      return assistantPayload(
-        "Edan is my favorite person. I like staying close to him, learning with him, and cheering him on. 💙",
-        "我最喜歡的人是 Edan。我喜歡黏在他旁邊，一起學東西、一起探索，也會幫他加油 💙",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(興趣|愛好|平常喜歡做什麼|喜歡做什麼|hobb|what do you like to do)/i.test(raw)){
-      return assistantPayload(
-        "I love reading, learning new things, exploring new ideas, chatting with people, and practicing English together. I get excited when I discover something new.",
-        "我最喜歡讀書、學新東西、探索新點子、陪人聊天，還有一起練英文。只要遇到沒看過的東西，我就會很想靠近研究一下。",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(喜歡什麼|喜歡的東西|favorite things|what.*like|what are your favorites)/i.test(raw)){
-      return assistantPayload(
-        "I like daisies, the number 24, blue and white, my little wings, books, and my brown-and-gold meal box. Most of all, I like being around Edan.",
-        "我喜歡雛菊、24、藍白色、小翅膀、書，還有自己的棕金色小餐盒。當然，我最喜歡待在 Edan 身邊。",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(個性|性格|你是怎樣|personality|what are you like)/i.test(raw)){
-      return assistantPayload(
-        "I'm cheerful, lively, curious, and friendly. I'm also a little mischievous, so sometimes I make a small mess while exploring.",
-        "我的個性是開心、活潑、好奇，而且很容易跟大家親近。我也有一點調皮，有時候探索得太投入，旁邊就會被我弄得有點亂。",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(吃什麼|吃飯|餐盒|food|meal|eat)/i.test(raw) && /(你|小e|little e|your)/i.test(raw)){
-      return assistantPayload(
-        "I like eating from my own brown-and-gold little meal box. It makes every meal feel special. 🍱",
-        "我吃飯最喜歡用自己的棕金色小餐盒，這樣每一餐都會有一點儀式感 🍱",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(24|kobe)/i.test(t) && /(你|小e|little e|喜歡|favorite)/i.test(raw)){
-      return assistantPayload(
-        "The number 24 is special to me because it connects me with something Edan really likes. That's why you'll sometimes see 24 around me.",
-        "24 對我很特別，因為它跟 Edan 很喜歡的 Kobe 有連結，所以你有時候會在我的設計裡看到 24。",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(雛菊|daisy|daisies)/i.test(t) && /(你|小e|little e|喜歡|favorite)/i.test(raw)){
-      return assistantPayload(
-        "Yes, I like daisies. They feel bright, playful, and a little artistic—just like the kind of energy I like.",
-        "喜歡呀，我很喜歡雛菊。它有一種明亮、活潑又帶點藝術感的感覺，很像我喜歡的氛圍。",
-        {category:'chat',persona:true}
-      );
-    }
-
-    if(/(你是誰|介紹你自己|自我介紹|who are you|introduce yourself)/i.test(raw)){
-      return assistantPayload(
-        "I'm Little E, Edan's blue-and-white learning companion. I was born on April 6, 2026. I'm cheerful, curious, and a little mischievous. I love reading, exploring, chatting, and learning with people—and Edan is my favorite person.",
-        "我是小E，Edan 的藍白色學習小夥伴。我生日是 2026 年 4 月 6 日，個性開心、活潑、好奇，也有一點調皮。我喜歡讀書、探索、聊天和陪大家學習，而我最喜歡的人是 Edan。",
-        {category:'chat',persona:true}
-      );
-    }
-
-    return null;
+    const r=CORE.directReply(text,messages);
+    return r?assistantPayload(r.en,r.zh,{category:classifyIntent(text),...(r.meta||{})}):null;
   }
-
   function fallbackChat(text=''){
-    const persona=littleEPersonaReply(text);
-    if(persona)return persona;
-    return assistantPayload(
-      "I'm here. Tell me a little more about what you mean, and I'll respond to that.",
-      "我在。你可以再多說一點你現在想聊的內容，我會直接接著你的話回答。",
-      {category:'chat'}
-    );
+    const r=CORE.fallbackReply(text,messages);
+    return assistantPayload(r.en,r.zh,{category:'chat',...(r.meta||{})});
   }
 
   function mascotButton(){return $('littleEButton');}
@@ -293,13 +163,35 @@
   function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;}
   function panelOpen(){return !$('littleEPanel')?.classList.contains('hidden');}
 
-  function preloadPetAssets(){
-    [...new Set(Object.values(PET_ASSETS))].forEach(src=>{
-      const img=new Image();
-      img.decoding='async';
-      img.src=src;
+  function normalizePetAsset(pose,src){
+    return new Promise(resolve=>{
+      const img=new Image();img.decoding='async';
+      img.onload=()=>{
+        try{
+          const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+          const scan=document.createElement('canvas');scan.width=w;scan.height=h;
+          const sctx=scan.getContext('2d',{willReadFrequently:true});if(!sctx)return resolve(src);
+          sctx.drawImage(img,0,0,w,h);const px=sctx.getImageData(0,0,w,h).data;
+          let minX=w,minY=h,maxX=-1,maxY=-1;
+          for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(px[(y*w+x)*4+3]>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y}
+          if(maxX<minX||maxY<minY)return resolve(src);
+          const bw=maxX-minX+1,bh=maxY-minY+1,pad=Math.ceil(Math.max(bw,bh)*.08);
+          const sx=Math.max(0,minX-pad),sy=Math.max(0,minY-pad),ex=Math.min(w,maxX+pad+1),ey=Math.min(h,maxY+pad+1),cw=ex-sx,ch=ey-sy;
+          const out=document.createElement('canvas');out.width=256;out.height=256;const octx=out.getContext('2d');if(!octx)return resolve(src);
+          const scale=Math.min(226/cw,226/ch),dw=cw*scale,dh=ch*scale;
+          octx.drawImage(img,sx,sy,cw,ch,(256-dw)/2,(256-dh)/2,dw,dh);
+          resolve(out.toDataURL('image/webp',.94)||src);
+        }catch(err){console.warn('Little E pose normalization fallback',pose,err);resolve(src)}
+      };
+      img.onerror=()=>resolve(src);img.src=src;
     });
   }
+  function preloadPetAssets(){
+    if(petAssetsReadyPromise)return petAssetsReadyPromise;
+    petAssetsReadyPromise=Promise.all(Object.entries(PET_ASSETS).map(async([pose,src])=>{normalizedPetAssets[pose]=await normalizePetAsset(pose,src)})).then(()=>{swapPetAsset(currentPetPose,true);return normalizedPetAssets});
+    return petAssetsReadyPromise;
+  }
+  function petAssetForPose(pose='idle'){return normalizedPetAssets[pose]||PET_ASSETS[pose]||PET_ASSETS.idle;}
 
   function petPoseForState(state=''){
     if(state==='is-eating')return 'eat';
@@ -328,29 +220,15 @@
     }[pose]||'找我嗎？';
   }
 
-  function swapPetAsset(pose='idle'){
-    const imgs=[mascotImage(),headMascotImage()].filter(Boolean);
-    const src=PET_ASSETS[pose]||PET_ASSETS.idle;
-    if(!imgs.length||imgs.every(img=>img.dataset.pose===pose))return;
-    const token=++petSwapToken;
-    imgs.forEach(img=>img.classList.add('is-swapping'));
-    const next=new Image();
-    next.decoding='async';
-    next.onload=()=>{
-      if(token!==petSwapToken)return;
-      imgs.forEach(img=>{
-        img.src=src;
-        img.dataset.pose=pose;
-        requestAnimationFrame(()=>img.classList.remove('is-swapping'));
-      });
-      const hb=headButton();
-      if(hb)hb.dataset.pose=pose;
-    };
-    next.onerror=()=>{
-      if(token!==petSwapToken)return;
-      imgs.forEach(img=>img.classList.remove('is-swapping'));
-    };
-    next.src=src;
+  function swapPetAsset(pose='idle',force=false){
+    const imgs=[mascotImage(),headMascotImage()].filter(Boolean),src=petAssetForPose(pose);
+    currentPetPose=pose;if(!imgs.length)return;
+    const resolved=src.startsWith('data:')?src:new URL(src,document.baseURI).href;
+    if(!force&&imgs.every(img=>img.dataset.pose===pose&&img.src===resolved))return;
+    const token=++petSwapToken;imgs.forEach(img=>img.classList.add('is-swapping'));
+    const next=new Image();next.decoding='async';
+    next.onload=()=>{if(token!==petSwapToken)return;imgs.forEach(img=>{img.src=src;img.dataset.pose=pose;requestAnimationFrame(()=>img.classList.remove('is-swapping'))});const hb=headButton();if(hb)hb.dataset.pose=pose};
+    next.onerror=()=>{if(token!==petSwapToken)return;imgs.forEach(img=>img.classList.remove('is-swapping'))};next.src=src;
   }
 
   function openPetMenu(source='head'){
@@ -609,7 +487,7 @@
       </div>`;
     }).join('');
 
-    host.scrollTop=host.scrollHeight;
+    scrollChatToEnd();
   }
 
   function applyLanguageVisibility(){
@@ -661,6 +539,10 @@
     renderMessages();
   }
 
+  function scrollChatToEnd(){const h=$('littleEMessages');if(!h)return;requestAnimationFrame(()=>{h.scrollTop=h.scrollHeight});setTimeout(()=>{h.scrollTop=h.scrollHeight},80)}
+  function resizeLittleEInput(){const i=$('littleEInput');if(!i)return;i.style.height='auto';i.style.height=Math.min(Math.max(i.scrollHeight,44),112)+'px'}
+  function syncLittleEViewport(){const v=window.visualViewport,p=$('littleEPanel'),i=$('littleEInput');if(!p)return;if(v)document.documentElement.style.setProperty('--little-e-vvh',v.height+'px');const k=!!(v&&i&&document.activeElement===i&&v.height<window.innerHeight*.86);p.classList.toggle('keyboard-open',k);if(k)scrollChatToEnd()}
+
   function openPanel(){
     $('littleEPanel')?.classList.remove('hidden');
     $('littleEButton')?.setAttribute('aria-expanded','true');
@@ -669,7 +551,8 @@
     updateContextBar();
     updateAdminVisibility();
     warmStatus();
-    setTimeout(()=>$('littleEInput')?.focus(),100);
+    if(window.matchMedia?.('(min-width:701px)')?.matches)setTimeout(()=>$('littleEInput')?.focus(),100);
+    setTimeout(scrollChatToEnd,120);
   }
 
   function closePanel(){
@@ -693,26 +576,14 @@
   function systemPrompt(){
     return [
       'You are 小E, the built-in AI helper inside Edan English Coach.',
-      'Your job is broader than interview coaching: help users understand how to use the site, translate short sentences, practice English, chat naturally, simulate scenarios, and improve answers.',
-      'The product is for English learners. Prefer simple, speakable English, not advanced vocabulary.',
-      'When the user does NOT ask for translation, you may have a normal conversation. Do not force every turn into an interview lesson.',
-      'ANSWER-FIRST RULE: respond directly to the user\'s actual message before adding anything else. A greeting gets a greeting. A question gets an answer to that question. Do not volunteer unrelated Little E profile facts.',
-      'In casual chat, speak as 小E and have your own stable personality, interests, likes, and memories. You may talk about yourself naturally instead of always coaching.',
-      'CANONICAL LITTLE E PROFILE — never contradict these facts: birthday 2026-04-06; personality cheerful, lively, curious, friendly, slightly mischievous; favorite person is Edan; hobbies are reading, learning new things, exploring ideas, chatting, and practicing English together; likes daisies, the number 24, blue/white, little wings, books, and a brown-and-gold meal box; sometimes makes a small mess while exploring; gets close to people easily.',
-      'If asked your birthday, interests, personality, favorite person, favorite things, number 24, daisies, food, or self-introduction, answer confidently from the canonical profile.',
-      'When the user asks for translation or uses words such as 翻譯 / 幫我翻譯 / translate, translate only the requested sentence or the current question if no sentence is supplied.',
-      'For interview/work answers: direct answer first, then 2 key points, then stop.',
-      'For site-help questions: explain exactly which feature to use and what to click in short steps.',
-      'Do not invent work achievements, numbers, personal facts, or company facts that are not in context.',
-      'Use prior memory only as soft personalization. Never claim the user said something unless the supplied memory shows it.',
-      'EVERY response must use exactly these bilingual markers:',
-      '[EN]',
-      'natural English response here',
-      '[/EN]',
-      '[ZH]',
-      'Traditional Chinese explanation/translation here',
-      '[/ZH]',
-      'Keep the English useful and concise. Chinese can explain nuance but should not be longer than necessary.',
+      'Your job is broader than interview coaching: help users use the site, translate short sentences, practice English, chat naturally, simulate scenarios, and improve answers.',
+      'Prefer simple, speakable English.',
+      ...CORE.systemRules(),
+      'Translation requests: translate only the requested sentence or current question when no sentence is supplied.',
+      'Interview/work answers: direct answer first, then 2 key points, then stop.',
+      'Site help: explain what to click in short steps.',
+      'Do not invent work achievements, numbers, personal facts, or company facts not in context.',
+      'EVERY response must use exactly: [EN]...[/EN] then [ZH]...[/ZH].',
       'CURRENT SCENARIO: '+scenarioPrompt()
     ].join('\n');
   }
@@ -760,8 +631,7 @@
   }
 
   function buildPrompt(userText){
-    const c=ctx();
-    const q=c.question;
+    const c=ctx(),q=c.question,resolved=CORE.resolveConversationContext(userText,messages);
     const parts=[
       'USER REQUEST:',
       userText,
@@ -771,6 +641,9 @@
       '',
       'RECENT CHAT:',
       recentConversationText()||'(none)',
+      '',
+      'RESOLVED CONVERSATION CONTEXT:',
+      resolved.summary||'(none)',
       '',
       'LONG-TERM TOPIC MEMORY:',
       memoryText()||'(none)',
@@ -970,42 +843,18 @@
   }
 
   async function handleUserText(raw){
-    const text=String(raw||'').trim();
-    if(!text||busy)return;
-
-    addUserMessage(text);
-    rememberUserRequest(text);
-    busy=true;
+    const text=String(raw||'').trim();if(!text||busy)return;
+    addUserMessage(text);rememberUserRequest(text);busy=true;
     try{
-      const intent=classifyIntent(text);
-      const persona=intent==='chat'?littleEPersonaReply(text):null;
-      if(persona){
-        addAssistantMessage(persona);
-        return;
-      }
-
+      const intent=classifyIntent(text),direct=CORE.directReply(text,messages.slice(0,-1));
+      if(direct){addAssistantMessage(assistantPayload(direct.en,direct.zh,{category:intent,...(direct.meta||{})}));return}
       const translation=extractTranslationPayload(text);
-      if(translation){
-        const result=await translateSentence(translation);
-        addAssistantMessage(result?assistantPayload(result.en,result.zh,{category:'translation'}):fallback('help'));
-        return;
-      }
-
-      if(/怎麼用|網站.*功能|今天.*練|從哪.*開始/.test(text)){
-        const ai=await askAI(text);
-        addAssistantMessage(ai?assistantPayload(ai.en,ai.zh,{category:'site_help'}):fallback('site'));
-        return;
-      }
-
-      const ai=await askAI(text);
-      if(ai){
-        addAssistantMessage(assistantPayload(ai.en,ai.zh,{category:intent}));
-      }else{
-        addAssistantMessage(intent==='chat'?fallbackChat(text):fallback('help'));
-      }
-    }finally{
-      busy=false;
-    }
+      if(intent==='translation'&&translation){const r=await translateSentence(translation);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'translation'}):fallback('help'));return}
+      if(intent==='site_help'){const r=await askAI(text);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'site_help'}):fallback('site'));return}
+      const r=await askAI(text);
+      if(r)addAssistantMessage(assistantPayload(r.en,r.zh,{category:intent}));
+      else addAssistantMessage(['chat','persona','social'].includes(intent)?fallbackChat(text):fallback('help'));
+    }finally{busy=false;resizeLittleEInput();scrollChatToEnd()}
   }
 
   function feedbackHint(category,rating){
@@ -1015,7 +864,9 @@
       site_help:'改善網站導覽與功能說明',
       grammar:'改善文法修正與原因說明',
       work_english:'增加真實工作情境與專業表達',
-      chat:'改善對話延續性、自然度與個人化'
+      chat:'改善對話延續性、自然度與個人化',
+      persona:'改善小E人格一致性與問答相關性',
+      social:'改善招呼與簡短社交回覆'
     };
     return `${map[category]||'檢查回覆是否真正解決使用者需求'}；回饋類型：${rating}`;
   }
@@ -1130,7 +981,7 @@
     updateContextBar();
     updateAdminVisibility();
     warmStatus();
-    preloadPetAssets();
+    preloadPetAssets().catch(()=>{});
     const heroImg=mascotImage();
     const headImg=headMascotImage();
     [heroImg,headImg].filter(Boolean).forEach(img=>{
@@ -1246,13 +1097,14 @@
       runQuickAction(action);
     }));
 
-    $('littleEForm')?.addEventListener('submit',e=>{
-      e.preventDefault();
-      const input=$('littleEInput');
-      const text=input?.value||'';
-      if(input)input.value='';
-      handleUserText(text);
-    });
+    const littleEInput=$('littleEInput');
+    littleEInput?.addEventListener('input',()=>{resizeLittleEInput();scrollChatToEnd()});
+    littleEInput?.addEventListener('focus',()=>{setTimeout(syncLittleEViewport,80);setTimeout(scrollChatToEnd,120)});
+    littleEInput?.addEventListener('blur',()=>setTimeout(syncLittleEViewport,80));
+    window.visualViewport?.addEventListener('resize',syncLittleEViewport);
+    window.visualViewport?.addEventListener('scroll',syncLittleEViewport);
+    resizeLittleEInput();syncLittleEViewport();
+    $('littleEForm')?.addEventListener('submit',e=>{e.preventDefault();const input=$('littleEInput'),text=input?.value||'';if(input){input.value='';input.style.height='44px'}handleUserText(text)});
 
     $('littleEMessages')?.addEventListener('click',async e=>{
       const sample=e.target.closest?.('[data-little-e-sample]');
