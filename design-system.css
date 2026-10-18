@@ -58,3 +58,10 @@ body::before{opacity:.025!important;pointer-events:none}
 @media(max-width:1050px){.appearance-control label{display:none}.appearance-control select{max-width:130px}}
 @media(max-width:750px){.appearance-control{width:100%;justify-content:flex-end}.appearance-control select{max-width:190px}.visitor-guide{padding:20px!important}.guide-paths{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){.guide-path,.portfolio-project{transition:none!important}}
+
+/* 2026 curated themes: inspired by Apple HIG and Google Material 3 principles;
+   original palettes, not official device finishes or measured popularity. */
+[data-site-theme="apple-frost"]{--ui-bg:#f5f7fa;--ui-side:#fff;--ui-panel:#fff;--ui-panel-alt:#edf2f8;--ui-input:#fff;--ui-border:#d5dfec;--ui-text:#19253a;--ui-muted:#52657f;--ui-accent:#3769cb;--ui-accent-ink:#fff;--ui-accent-soft:#e6efff;--ui-hero:#fff;--ui-shadow:0 12px 32px rgba(27,56,98,.06);color-scheme:light}
+[data-site-theme="pixel-dynamic"]{--ui-bg:#f2f0f8;--ui-side:#fbfaff;--ui-panel:#fff;--ui-panel-alt:#ebe6f5;--ui-input:#fff;--ui-border:#d6cde6;--ui-text:#242039;--ui-muted:#625c70;--ui-accent:#6750a4;--ui-accent-ink:#fff;--ui-accent-soft:#e7def6;--ui-hero:#fbfaff;--ui-shadow:0 12px 32px rgba(61,44,95,.06);color-scheme:light}
+[data-site-theme="future-titanium"]{--ui-bg:#181b20;--ui-side:#20242a;--ui-panel:#282d35;--ui-panel-alt:#313844;--ui-input:#20252d;--ui-border:#505b6a;--ui-text:#f2f5fa;--ui-muted:#c4ccda;--ui-accent:#b9c9e8;--ui-accent-ink:#182333;--ui-accent-soft:#37445b;--ui-hero:#282d35;--ui-shadow:0 15px 42px rgba(0,0,0,.17);color-scheme:dark}
+[data-site-theme="ai-aurora"]{--ui-bg:#0b1724;--ui-side:#112333;--ui-panel:#182d3b;--ui-panel-alt:#224052;--ui-input:#112838;--ui-border:#416478;--ui-text:#f0f9fc;--ui-muted:#b7cfd9;--ui-accent:#68d8d0;--ui-accent-ink:#082b33;--ui-accent-soft:#28515b;--ui-hero:#182d3b;--ui-shadow:0 16px 44px rgba(0,10,22,.22);color-scheme:dark}
