@@ -23,6 +23,10 @@
   let petIdleTimer=null;
   let petActionTimer=null;
   let petBlinkTimer=null;
+  let petExpressionTimer=null;
+  let petExpressionResetTimer=null;
+  let petExpressionActive=false;
+  let lastIdleExpression='';
   let petSleepTimer=null;
   let petSwapToken=0;
   let lastPetActivity=Date.now();
@@ -47,6 +51,14 @@
     sit:'assets/little-e-sit-v34.webp',
     sleep:'assets/little-e-sleep-v34.webp'
   };
+
+  // v40: subtle random facial expressions while Little E is collapsed and idle.
+  // Only facial poses live here; full interactions such as eat / sit / sleep stay manual/contextual.
+  const IDLE_EXPRESSIONS=[
+    {pose:'blink',weight:46,minMs:320,maxMs:500},
+    {pose:'happy',weight:34,minMs:780,maxMs:1250},
+    {pose:'thinking',weight:20,minMs:820,maxMs:1350}
+  ];
 
   const SCENARIOS={
     coach:{
@@ -338,6 +350,9 @@
     if(!pet)return;
     const head=headButton();
     clearTimeout(petActionTimer);
+    clearTimeout(petExpressionTimer);
+    clearTimeout(petExpressionResetTimer);
+    petExpressionActive=false;
     const classes=['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-blinking','is-eating','is-sitting'];
     [pet,head].filter(Boolean).forEach(el=>classes.forEach(c=>el.classList.remove(c)));
     if(state)[pet,head].filter(Boolean).forEach(el=>el.classList.add(state));
@@ -350,7 +365,7 @@
         swapPetAsset('idle');
         updatePetBubble('idle');
         schedulePetIdle();
-        schedulePetBlink();
+        schedulePetExpression();
       },duration);
     }
   }
@@ -364,15 +379,55 @@
     schedulePetSleep();
   }
 
-  function schedulePetBlink(){
+  function petHasBlockingAction(){
+    const pet=mascotButton();
+    return !!pet&&['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-eating','is-sitting'].some(c=>pet.classList.contains(c));
+  }
+
+  function chooseIdleExpression(){
+    const choices=IDLE_EXPRESSIONS.filter(x=>x.pose!==lastIdleExpression);
+    const pool=choices.length?choices:IDLE_EXPRESSIONS;
+    const total=pool.reduce((sum,x)=>sum+x.weight,0);
+    let roll=Math.random()*total;
+    for(const item of pool){
+      roll-=item.weight;
+      if(roll<=0)return item;
+    }
+    return pool[pool.length-1];
+  }
+
+  function schedulePetExpression(){
     clearTimeout(petBlinkTimer);
-    if(reducedMotion()||document.hidden)return;
-    petBlinkTimer=setTimeout(()=>{
-      const pet=mascotButton();
-      const hasAction=pet&&['is-hop','is-wiggle','is-celebrate','is-thinking','is-reading','is-sleeping','is-eating','is-sitting'].some(c=>pet.classList.contains(c));
-      if(!busy&&!hasAction)setPetState('is-blinking',360);
-      schedulePetBlink();
-    },4500+Math.random()*5000);
+    clearTimeout(petExpressionTimer);
+    if(reducedMotion()||document.hidden||panelOpen())return;
+
+    const delay=6200+Math.random()*9200;
+    petExpressionTimer=setTimeout(()=>{
+      if(busy||panelOpen()||petHasBlockingAction()||petExpressionActive){
+        schedulePetExpression();
+        return;
+      }
+
+      const expression=chooseIdleExpression();
+      lastIdleExpression=expression.pose;
+      petExpressionActive=true;
+      swapPetAsset(expression.pose);
+
+      const duration=expression.minMs+Math.random()*(expression.maxMs-expression.minMs);
+      clearTimeout(petExpressionResetTimer);
+      petExpressionResetTimer=setTimeout(()=>{
+        petExpressionActive=false;
+        if(!busy&&!panelOpen()&&!petHasBlockingAction()){
+          swapPetAsset('idle');
+        }
+        schedulePetExpression();
+      },duration);
+    },delay);
+  }
+
+  // Compatibility alias for older call sites; blinking is now part of the random expression scheduler.
+  function schedulePetBlink(){
+    schedulePetExpression();
   }
 
   function schedulePetSleep(){
@@ -393,7 +448,7 @@
     petIdleTimer=setTimeout(()=>{
       const pet=mascotButton();
       const blocking=pet&&['is-sleeping','is-eating','is-sitting','is-thinking','is-reading','is-celebrate','is-hop','is-wiggle'].some(c=>pet.classList.contains(c));
-      if(!busy&&!panelOpen()&&!blocking){
+      if(!busy&&!panelOpen()&&!blocking&&!petExpressionActive){
         setPetState(Math.random()<.55?'is-wiggle':'is-hop',Math.random()<.5?850:720);
       }else if(!pet?.classList.contains('is-sleeping')){
         schedulePetIdle();
@@ -411,7 +466,7 @@
     else if(mascotButton()?.classList.contains('is-thinking')){
       setPetState('',0);
       schedulePetIdle();
-      schedulePetBlink();
+      schedulePetExpression();
     }
   }
 
@@ -557,6 +612,9 @@
   function syncLittleEViewport(){const v=window.visualViewport,p=$('littleEPanel'),i=$('littleEInput');if(!p)return;if(v)document.documentElement.style.setProperty('--little-e-vvh',v.height+'px');const k=!!(v&&i&&document.activeElement===i&&v.height<window.innerHeight*.86);p.classList.toggle('keyboard-open',k);if(k)scrollChatToEnd()}
 
   function openPanel(){
+    clearTimeout(petExpressionTimer);
+    clearTimeout(petExpressionResetTimer);
+    petExpressionActive=false;
     $('littleEPanel')?.classList.remove('hidden');
     $('littleEButton')?.setAttribute('aria-expanded','true');
     markPetActivity();
@@ -1003,7 +1061,7 @@
     });
     if(headButton())headButton().dataset.pose='idle';
     schedulePetIdle();
-    schedulePetBlink();
+    schedulePetExpression();
     schedulePetSleep();
 
     const pet=mascotButton();
@@ -1083,11 +1141,14 @@
       if(document.hidden){
         clearTimeout(petIdleTimer);
         clearTimeout(petBlinkTimer);
+        clearTimeout(petExpressionTimer);
+        clearTimeout(petExpressionResetTimer);
+        petExpressionActive=false;
         clearTimeout(petSleepTimer);
       }else{
         markPetActivity();
         schedulePetIdle();
-        schedulePetBlink();
+        schedulePetExpression();
       }
     });
     $('littleEClose')?.addEventListener('click',closePanel);
@@ -1199,6 +1260,7 @@
       reading:()=>setPetState('is-reading',1800),
       sit:()=>setPetState('is-sitting',4400),
       sleep:()=>setPetState('is-sleeping'),
+      expression:()=>{clearTimeout(petExpressionTimer);petExpressionTimer=setTimeout(()=>{if(!panelOpen()&&!busy&&!petHasBlockingAction()){const x=chooseIdleExpression();lastIdleExpression=x.pose;swapPetAsset(x.pose);petExpressionActive=true;petExpressionResetTimer=setTimeout(()=>{petExpressionActive=false;swapPetAsset('idle');schedulePetExpression()},x.minMs)}},0)},
       interact:runPetInteraction,
       openMenu:(source='head')=>openPetMenu(source),
       closeMenu:closePetMenu
