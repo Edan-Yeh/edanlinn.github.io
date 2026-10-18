@@ -76,7 +76,7 @@ run("recordQuizResult(extendedQuizBank[0],false)");assert.equal(run('quizState()
 assert.equal(run('rankingConfigured()'),false);
 run("window.CLOUD_RANKING_CONFIG={url:'https://project.supabase.co',publishableKey:'sb_publishable_test'}");assert.equal(run('rankingConfigured()'),true);
 run("window.CLOUD_RANKING_CONFIG.publishableKey='sb_secret_invalid'");assert.equal(run('rankingConfigured()'),false);
-assert.ok(run("weaponArt('paladin',weaponTiers[0]).includes('晨霧長劍')"));
+assert.ok(run("weaponArt('paladin',weaponTiers[0]).includes('星塵光刃')"));
 console.log('PASS: unique-question correct chains, wrong reset, self-assessment excluded, cross-day persistence, all weapon thresholds and retention, reward integration, offline leaderboard and public-key-only config.');
 
 assert.equal(run("quizBank.some(q=>q.type==='short')"),false);
