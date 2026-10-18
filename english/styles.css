@@ -1098,3 +1098,82 @@ body.auth-locked .little-e-panel{display:none!important}
   .little-e-pet.is-thinking .little-e-mascot-img{animation:none!important}
   .little-e-mascot-img{transition:none}
 }
+
+
+/* Little E 2.5D pose system v31 */
+.little-e-mascot-img{
+  transition:opacity .16s ease,filter .16s ease;
+}
+.little-e-mascot-img.is-swapping{
+  opacity:.16;
+  filter:drop-shadow(0 7px 8px rgba(28,45,96,.14)) saturate(.92);
+}
+.little-e-pet.is-blinking .little-e-mascot-img{
+  animation:littleEBlinkPose .36s ease;
+}
+.little-e-pet.is-reading .little-e-mascot-img{
+  animation:littleEReadingPose 2.15s ease-in-out infinite;
+}
+.little-e-pet.is-reading .little-e-pet-bubble,
+.little-e-pet.is-sleeping .little-e-pet-bubble{
+  opacity:1;
+  transform:translate(0,0) scale(1);
+}
+.little-e-pet.is-sleeping .little-e-pet-stage{
+  animation:littleESleepFloat 5.4s ease-in-out infinite;
+}
+.little-e-pet.is-sleeping .little-e-pet-shadow{
+  animation:littleESleepShadow 5.4s ease-in-out infinite;
+}
+.little-e-pet.is-sleeping .little-e-pet-sparkles{
+  opacity:.32;
+}
+.little-e-pet-zzz{
+  position:absolute;
+  z-index:5;
+  right:2px;
+  top:4px;
+  color:#536fd4;
+  font-weight:900;
+  font-size:12px;
+  letter-spacing:.03em;
+  opacity:0;
+  transform:translateY(5px);
+  pointer-events:none;
+}
+.little-e-pet.is-sleeping .little-e-pet-zzz{
+  animation:littleEZzz 2s ease-in-out infinite;
+}
+@keyframes littleEBlinkPose{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(.985,1.012)}
+}
+@keyframes littleEReadingPose{
+  0%,100%{transform:translateY(0) rotate(-.5deg)}
+  50%{transform:translateY(-3px) rotate(.5deg)}
+}
+@keyframes littleESleepFloat{
+  0%,100%{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(0,-2px,0)}
+}
+@keyframes littleESleepShadow{
+  0%,100%{transform:scaleX(1);opacity:.12}
+  50%{transform:scaleX(.96);opacity:.09}
+}
+@keyframes littleEZzz{
+  0%{opacity:0;transform:translate(0,6px) scale(.85)}
+  45%{opacity:.85;transform:translate(-2px,-4px) scale(1)}
+  100%{opacity:0;transform:translate(-5px,-13px) scale(1.08)}
+}
+@media(max-width:700px){
+  .little-e-pet-zzz{right:0;top:0;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .little-e-pet.is-blinking .little-e-mascot-img,
+  .little-e-pet.is-reading .little-e-mascot-img,
+  .little-e-pet.is-sleeping .little-e-pet-stage,
+  .little-e-pet.is-sleeping .little-e-pet-shadow,
+  .little-e-pet.is-sleeping .little-e-pet-zzz{
+    animation:none!important;
+  }
+}
