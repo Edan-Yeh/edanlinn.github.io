@@ -1525,3 +1525,29 @@ body.auth-locked .little-e-panel{display:none!important}
     animation:none!important;
   }
 }
+
+
+/* Little E pose size normalization v35
+   Eat / sleep artwork uses a larger transparent canvas than idle.
+   Keep the visible character at the same perceived size in both FAB and panel. */
+.little-e-pet.is-eating .little-e-mascot-img,
+.little-e-head-25d.is-eating .little-e-head-mascot{
+  animation:none!important;
+  transform:scale(2.90)!important;
+  transform-origin:50% 52%!important;
+}
+.little-e-pet.is-sleeping .little-e-mascot-img,
+.little-e-head-25d.is-sleeping .little-e-head-mascot{
+  transform:scale(2.62)!important;
+  transform-origin:50% 54%!important;
+}
+@media(max-width:700px){
+  .little-e-pet.is-eating .little-e-mascot-img,
+  .little-e-head-25d.is-eating .little-e-head-mascot{
+    transform:scale(2.84)!important;
+  }
+  .little-e-pet.is-sleeping .little-e-mascot-img,
+  .little-e-head-25d.is-sleeping .little-e-head-mascot{
+    transform:scale(2.56)!important;
+  }
+}
