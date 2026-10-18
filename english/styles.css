@@ -1553,15 +1553,21 @@ body.auth-locked .little-e-panel{display:none!important}
 }
 
 
-/* Little E sit size normalization v36 */
+/* Little E sit visibility + size normalization v37
+   The sit artwork is a 512x512 transparent canvas, so the visible character
+   needs a larger scale than idle/eat/sleep to keep the same perceived size. */
 .little-e-pet.is-sitting .little-e-mascot-img,
 .little-e-head-25d.is-sitting .little-e-head-mascot{
-  transform:scale(2.82)!important;
-  transform-origin:50% 54%!important;
+  transform:scale(3.12)!important;
+  transform-origin:50% 52%!important;
+}
+.little-e-pet.is-sitting .little-e-pet-bubble{
+  opacity:1;
+  transform:translate(0,0) scale(1);
 }
 @media(max-width:700px){
   .little-e-pet.is-sitting .little-e-mascot-img,
   .little-e-head-25d.is-sitting .little-e-head-mascot{
-    transform:scale(2.76)!important;
+    transform:scale(3.04)!important;
   }
 }
