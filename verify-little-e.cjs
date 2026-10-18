@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.18-v39');
-assert.equal(version.cache,'edan-english-coach-20261018-v39');
+assert.equal(version.release,'2026.10.19-v40');
+assert.equal(version.cache,'edan-english-coach-20261019-v40');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -59,6 +59,14 @@ assert.match(sw,/importScripts\('\.\/version\.js'\)/);
 assert.match(sw,/EDAN_APP_VERSION\.cache/);
 assert.match(le,/normalizePetAsset/);
 assert.match(le,/CORE\.directReply/);
+assert.match(le,/const IDLE_EXPRESSIONS=/);
+assert.match(le,/function schedulePetExpression\(/);
+assert.match(le,/pose:'blink'/);
+assert.match(le,/pose:'happy'/);
+assert.match(le,/pose:'thinking'/);
+assert.doesNotMatch(le,/IDLE_EXPRESSIONS=[\s\S]{0,600}pose:'(?:eat|sit|sleep)'/);
+assert.match(le,/panelOpen\(\)/);
+assert.match(le,/petExpressionActive/);
 assert.doesNotMatch(css,/transform:scale\([23]\./);
 assert.ok(html.includes('appUpdateBanner'));
-console.log('PASS: Little E v39 natural conversation, emotion routing, varied replies, multi-turn context, pet reactions and v38 regressions.');
+console.log('PASS: Little E v40 idle random expressions, v39 conversation behavior, pet reactions and previous regressions.');
