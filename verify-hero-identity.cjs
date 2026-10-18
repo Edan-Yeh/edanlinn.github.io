@@ -3,7 +3,7 @@ let checks=0;const check=x=>{assert(x);checks++};
 class Image{set src(url){this.url=url;}}
 const canvas={attributes:{},setAttribute(k,v){this.attributes[k]=v;}};
 const ctx=vm.createContext({Image,leagueArt:(c,s)=>`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${c.id}_${s.num}.jpg`});
-vm.runInContext(fs.readFileSync('site/battle.js','utf8')+';this.Renderer=BattleCanvas;',ctx);
+vm.runInContext(fs.readFileSync('battle.js','utf8')+';this.Renderer=BattleCanvas;',ctx);
 const renderer=Object.create(ctx.Renderer.prototype);renderer.canvas=canvas;
 renderer.setArtwork([{id:'Zed',name:'劫'},{id:'Naafiri',name:'娜菲芮'}],[{num:0,name:'經典劫'},{num:0,name:'經典娜菲芮'}]);
 check(renderer.artwork[0].image.url.endsWith('/Zed_0.jpg'));check(renderer.artwork[1].image.url.endsWith('/Naafiri_0.jpg'));
@@ -15,7 +15,7 @@ renderer.artwork[0].image.onerror();check(renderer.artwork[0].failed);check(!ren
 check(!ctx.Renderer.prototype.drawActor.toString().includes('this.atlas'));
 const elements={};const element=id=>elements[id]||=( {innerHTML:'',textContent:'',hidden:false} );
 const rankctx=vm.createContext({document:{querySelector:element},leagueChampions:[{id:'Zed',name:'劫'},{id:'Naafiri',name:'娜菲芮'}],escapeQuiz:s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')});
-vm.runInContext(fs.readFileSync('site/arena.js','utf8').replace(/initArena\(\);\s*$/,''),rankctx);
+vm.runInContext(fs.readFileSync('arena.js','utf8').replace(/initArena\(\);\s*$/,''),rankctx);
 vm.runInContext(`renderRankingRows([{id:'me',rank:1,nickname:'<img src=x>',champion_id:'Zed',xp:500,best_chain:25},{id:'other',rank:2,nickname:'舊玩家',role:'mage',xp:240,best_chain:12}], 'me', 1)`,rankctx);
 check(element('#ranking-rows').innerHTML.includes('劫'));check(element('#ranking-rows').innerHTML.includes('尚未設定英雄'));check(!element('#ranking-rows').innerHTML.includes('量子工程師'));check(element('#ranking-rows').innerHTML.includes('&lt;img src=x&gt;'));check(element('#ranking-rows').innerHTML.includes('500'));check(element('#ranking-mine').textContent.includes('第 1 名'));
 console.log(checks+' hero identity checks passed: player/opponent, skin URL, stale image load, failure state, no generic sprite, server hero label, missing legacy hero, escaping and scores.');
