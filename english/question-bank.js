@@ -1,7 +1,7 @@
 window.EDAN_ENGLISH_CONTENT = {
   schemaVersion: 1,
-  contentVersion: '2026.10.18-v36',
-  updatedAt: '2026-10-16',
+  contentVersion: '2026.10.18-v37',
+  updatedAt: '2026-10-18',
   baseline: 'MongoDB recruiter interview 2026-10-12',
   skillLabels: {
     listening: '聽力 / Question Intent',
