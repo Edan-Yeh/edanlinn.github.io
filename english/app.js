@@ -328,16 +328,14 @@
     if(fixedIds) arr=fixedIds.map(id=>CONTENT.chunks.find(c=>c.id===id)).filter(Boolean);
     else if(limit) arr = [...arr].sort(()=>Math.random()-.5).slice(0,limit);
     $('chunkGrid').innerHTML = arr.map(c => `<article class="panel"><span class="badge">L${c.level}</span><h3 style="margin:10px 0 5px">${esc(c.en)}</h3><div class="support">${esc(c.zh)}</div><p style="line-height:1.6;margin:12px 0">${esc(c.example)}</p><div class="btn-row"><button class="btn ghost chunk-listen-na" data-id="${c.id}" type="button">▶ 北美</button><button class="btn ghost chunk-listen-in" data-id="${c.id}" type="button">▶ 印度</button><button class="btn ${state.chunkKnown[c.id]?'good':'secondary'} chunk-known" data-id="${c.id}" type="button">${state.chunkKnown[c.id]?'✓ 已熟':'我會用了'}</button></div><div class="support chunk-audio-status" data-status-id="${c.id}" style="margin-top:8px">北美＋印度雙口音</div></article>`).join('');
-    document.querySelectorAll('.chunk-listen-na').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.chunk-listen-na').forEach(b => b.addEventListener('click', async () => {
       const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
       if(!c) return;
-      const lang=chooseVoiceLang(c.level);
-      const resolved=speak(c.example, playbackRate(c.level,'chunk'), lang);
+      const rate=playbackRate(c.level,'chunk');
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
-      if(status){
-        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.unavailable ? ' · ⚠ 未安裝原生 en-IN voice（未播放）' : (resolved?.voiceName ? ` · ${resolved.voiceName}` : '');
-        status.textContent=`本次：${accentLabel(lang)}${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
-      }
+      if(status)status.textContent='North American English · 正在準備語音…';
+      const resolved=await speakNorthAmerican(c.example,rate,p=>{if(status)status.textContent=northAmericanProgressText(p);});
+      if(status)status.textContent='本次：'+northAmericanPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.chunk-listen-in').forEach(b => b.addEventListener('click', async () => {
       const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
@@ -398,12 +396,13 @@
       box.classList.toggle('hidden');
       b.textContent=box.classList.contains('hidden')?'看意思':'收起意思';
     }));
-    document.querySelectorAll('.vocab-listen-na').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.vocab-listen-na').forEach(b=>b.addEventListener('click',async()=>{
       const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
-      const lang=chooseVoiceLang(1);
-      const resolved=speak(`${v.word}. ${v.example}`,playbackRate(1,'chunk'),lang);
+      const rate=playbackRate(1,'chunk');
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
-      if(status) status.textContent=`${accentLabel(lang)} · ${resolved?.voiceName||'System voice'} · ${playbackRate(1,'chunk').toFixed(2)}x`;
+      if(status)status.textContent='North American English · 正在準備語音…';
+      const resolved=await speakNorthAmerican(`${v.word}. ${v.example}`,rate,p=>{if(status)status.textContent=northAmericanProgressText(p);});
+      if(status)status.textContent=northAmericanPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.vocab-listen-in').forEach(b=>b.addEventListener('click',async()=>{
       const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
@@ -621,9 +620,11 @@
     }
 
     if(s.mode==='listening'){
-      $('vocabListenNA').addEventListener('click',()=>{
-        const lang=chooseVoiceLang(1); const r=speak(v.word,playbackRate(1,'chunk'),lang);
-        $('vocabListenStatus').textContent=`${accentLabel(lang)} · ${r?.voiceName||'System voice'}`;
+      $('vocabListenNA').addEventListener('click',async()=>{
+        const rate=playbackRate(1,'chunk');
+        $('vocabListenStatus').textContent='North American English · 正在準備語音…';
+        const r=await speakNorthAmerican(v.word,rate,p=>{$('vocabListenStatus').textContent=northAmericanProgressText(p);});
+        $('vocabListenStatus').textContent=northAmericanPlaybackStatus(r,rate);
       });
       $('vocabListenIN').addEventListener('click',async()=>{
         const rate=playbackRate(1,'chunk');
@@ -649,7 +650,7 @@
       fb.innerHTML=`<strong>${correct?'答對了':'再記一次'}</strong>${s.mode==='sentence'?`答案：${esc(v.word)}`:`答案：${esc(v.zh)}`}`;
       $('vocabAnswerDetail').classList.remove('hidden');
       $('vocabNextBtn').classList.remove('hidden');
-      $('vocabAnswerNA').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),chooseVoiceLang(1)));
+      $('vocabAnswerNA').addEventListener('click',async()=>{await speakNorthAmerican(v.example,playbackRate(1,'chunk'));});
       $('vocabAnswerIN').addEventListener('click',async()=>{await speakIndian(v.example,playbackRate(1,'chunk'));});
       if(correct){
         const guessBtn=$('vocabGuessBtn');
@@ -965,11 +966,14 @@
     const rate=playbackRate(q.level,'question');
     const status=$(statusId);
     if(key==='india'&&status)status.textContent='Indian English · 正在準備語音…';
-    const resolved=key==='india'?await speakIndian(q.text,rate,p=>{if(status)status.textContent=indianProgressText(p);}):speak(q.text,rate,lang);
+    if(key!=='india'&&status)status.textContent='North American English · 正在準備語音…';
+    const resolved=key==='india'
+      ? await speakIndian(q.text,rate,p=>{if(status)status.textContent=indianProgressText(p);})
+      : await speakNorthAmerican(q.text,rate,p=>{if(status)status.textContent=northAmericanProgressText(p);});
     const c=session.currentMeta.accentCounts;
     const current=key==='india'
       ? indianPlaybackStatus(resolved,rate,'Indian English')
-      : accentLabel(lang)+(resolved?.voiceName?' · '+resolved.voiceName:'')+' · '+rate.toFixed(2)+'x';
+      : northAmericanPlaybackStatus(resolved,rate,'North American English');
     if(status)status.textContent=`北美 ${c.northAmerica||0} 次 · 印度 ${c.india||0} 次 · 本次 ${current}`;
     save();
   }
@@ -1387,8 +1391,8 @@
     $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(transcript)}<br><span class="support">關鍵內容覆蓋：約 ${analysis.keywordRatio}% · ${analysis.wordCount} words</span>`;
     $('feedbackTitle').textContent='系統已完成比對';
     $('feedbackNote').textContent='分數會直接納入這一題的訓練紀錄；Model answer 是參考，不需要逐字一樣。';
-    $('playCorrectedBtn')?.addEventListener('click',()=>speak(correction.corrected,1.0,chooseVoiceLang(q.level||1)));
-    $('playNaturalBtn')?.addEventListener('click',()=>speak(correction.natural,1.0,chooseVoiceLang(q.level||1)));
+    $('playCorrectedBtn')?.addEventListener('click',async()=>{await speakNorthAmerican(correction.corrected,1.0);});
+    $('playNaturalBtn')?.addEventListener('click',async()=>{await speakNorthAmerican(correction.natural,1.0);});
     const self=$('selfRateBlock'); if(self)self.classList.add('hidden');
   }
 
@@ -1806,6 +1810,10 @@
     try{window.EDAN_INDIAN_TTS?.stop?.();}catch(e){}
   }
 
+  function stopNorthAmericanLocalAiAudio(){
+    try{window.EDAN_NORTH_AMERICA_TTS?.stop?.();}catch(e){}
+  }
+
   function indianProgressText(info,prefix='Indian English'){
     if(!info)return prefix+' · Local AI 正在準備…';
     if(info.phase==='engine')return prefix+' · 正在載入 Local AI 語音引擎…';
@@ -1815,6 +1823,83 @@
     }
     if(info.phase==='synth')return prefix+' · Local AI 正在即時產生語音…';
     return prefix+' · Local AI 正在準備…';
+  }
+
+  function northAmericanProgressText(info,prefix='North American English'){
+    if(!info)return prefix+' · Local AI 正在準備…';
+    if(info.phase==='engine')return prefix+' · 正在載入 Local AI 語音引擎…';
+    if(info.phase==='model'){
+      const pct=Number.isFinite(info.percent)?' '+info.percent+'%':'';
+      return prefix+' · 首次下載 North American AI 模型'+pct+'…';
+    }
+    if(info.phase==='synth')return prefix+' · Local AI 正在即時產生語音…';
+    return prefix+' · Local AI 正在準備…';
+  }
+
+  async function speakNorthAmerican(text,rate=1,onProgress=null){
+    speechSynthesis?.cancel?.();
+    stopIndianLocalAiAudio();
+    stopNorthAmericanLocalAiAudio();
+    const normalized=normalizeTtsText(text);
+    const safeRate=clamp(Number(rate)||1,.72,1.22);
+    const engine=window.EDAN_NORTH_AMERICA_TTS;
+
+    if(engine?.speak){
+      try{
+        const result=await engine.speak(normalized,{rate:safeRate,onStatus:onProgress});
+        return {
+          ...result,
+          voice:null,
+          actualLang:'en-US',
+          actualLabel:'North American English',
+          voiceName:result?.voiceName||'Piper · Lessac US English',
+          naturalLike:true,
+          fallback:false,
+          unavailable:false,
+          played:result?.played!==false,
+          localAi:true,
+          source:'local-ai'
+        };
+      }catch(error){
+        const code=error?.code||error?.message||'local_ai_failed';
+        const played=speak(normalized,safeRate,'en-US');
+        return {
+          ...played,
+          actualLang:'en-US',
+          actualLabel:'North American English',
+          source:'device-fallback',
+          localAi:false,
+          fallback:true,
+          errorCode:code,
+          errorMessage:error?.message||''
+        };
+      }
+    }
+
+    const played=speak(normalized,safeRate,'en-US');
+    return {
+      ...played,
+      actualLang:'en-US',
+      actualLabel:'North American English',
+      source:'device-fallback',
+      localAi:false,
+      fallback:true,
+      errorCode:'local_ai_engine_missing'
+    };
+  }
+
+  function northAmericanPlaybackStatus(resolved,rate,prefix='North American English'){
+    const speed=Number(rate||1).toFixed(2)+'x';
+    if(resolved?.played&&resolved?.source==='local-ai'){
+      return prefix+' · Local AI · '+(resolved.voiceName||'Piper Lessac')+(resolved.cachedModel?' · 模型已快取':'')+' · '+speed;
+    }
+    if(resolved?.played&&resolved?.source==='device-fallback'){
+      return prefix+' · 系統語音備援 · '+(resolved.voiceName||'US English voice')+' · '+speed;
+    }
+    if(resolved?.errorCode==='model_download_failed')return prefix+' · ⚠ North American AI 模型下載失敗，請確認網路後重試 · '+speed;
+    if(resolved?.errorCode==='ort_load_failed')return prefix+' · ⚠ Local AI 引擎載入失敗，請重新整理後重試 · '+speed;
+    if(resolved?.errorCode==='phonemizer_failed')return prefix+' · ⚠ 英文發音引擎載入失敗，請重新整理後重試 · '+speed;
+    return prefix+' · ⚠ Local AI 北美語音暫不可用'+(resolved?.errorCode?' ('+resolved.errorCode+')':'')+' · '+speed;
   }
 
   async function speakIndian(text,rate=1,onProgress=null){
@@ -1923,6 +2008,7 @@
   function speak(text,rate=1,lang='en-US'){
     if(!('speechSynthesis' in window))return null;
     stopIndianLocalAiAudio();
+    stopNorthAmericanLocalAiAudio();
     speechSynthesis.cancel();
     const resolved=resolveVoice(lang);
     const spokenText=normalizeTtsText(text);
@@ -2212,11 +2298,14 @@
         const rate=playbackRate(q.level||1,'question');
         const status=audioBtn.closest('.model-answer')?.querySelector('[data-model-audio-status]');
         if(kind==='india'&&status)status.textContent='Indian English · 正在準備語音…';
-        const resolved=kind==='india'?await speakIndian(q.model,rate,p=>{if(status)status.textContent=indianProgressText(p);}):speak(q.model,rate,lang);
+        if(kind!=='india'&&status)status.textContent='North American English · 正在準備語音…';
+        const resolved=kind==='india'
+          ? await speakIndian(q.model,rate,p=>{if(status)status.textContent=indianProgressText(p);})
+          : await speakNorthAmerican(q.model,rate,p=>{if(status)status.textContent=northAmericanProgressText(p);});
         if(status){
           status.textContent=kind==='india'
             ? indianPlaybackStatus(resolved,rate)
-            : accentLabel(lang)+(resolved?.voiceName?' · '+resolved.voiceName:'')+' · '+rate.toFixed(2)+'x';
+            : northAmericanPlaybackStatus(resolved,rate);
         }
         return;
       }
@@ -2224,22 +2313,24 @@
       const wordBtn=e.target.closest?.('[data-pronounce-word]');
       if(wordBtn){
         const word=wordBtn.dataset.pronounceWord;
-        const resolved=speak(word,.84,chooseVoiceLang(q.level||1));
+        const status=wordBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
+        if(status)status.textContent='North American English · 正在準備單字發音…';
+        const resolved=await speakNorthAmerican(word,.84,p=>{if(status)status.textContent=northAmericanProgressText(p,'North American English');});
         wordBtn.classList.add('pronounce-word-active');
         setTimeout(()=>wordBtn.classList.remove('pronounce-word-active'),550);
-        const status=wordBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
-        if(status)status.textContent=`🔊 ${word} · ${resolved?.voiceName||'System voice'}。可重複點擊再聽一次。`;
+        if(status)status.textContent=`🔊 ${word} · ${resolved?.voiceName||'Piper · Lessac US English'}。可重複點擊再聽一次。`;
         return;
       }
 
       const cueBtn=e.target.closest?.('[data-pronounce-cue]');
       if(cueBtn){
         const cue=cueBtn.dataset.pronounceCue;
-        const resolved=speak(cue,.88,chooseVoiceLang(q.level||1));
+        const status=cueBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
+        if(status)status.textContent='North American English · 正在準備 Cue 發音…';
+        const resolved=await speakNorthAmerican(cue,.88,p=>{if(status)status.textContent=northAmericanProgressText(p,'North American English');});
         cueBtn.classList.add('model-cue-active');
         setTimeout(()=>cueBtn.classList.remove('model-cue-active'),650);
-        const status=cueBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
-        if(status)status.textContent=`🔊 Cue: ${cue} · ${resolved?.voiceName||'System voice'}`;
+        if(status)status.textContent=`🔊 Cue: ${cue} · ${resolved?.voiceName||'Piper · Lessac US English'}`;
         return;
       }
 
@@ -2253,8 +2344,9 @@
       const stopBtn=model?.querySelector('[data-model-practice="stop"]');
 
       if(action==='slow'){
-        const resolved=speak(q.model,.88,chooseVoiceLang(q.level||1));
-        if(status)status.textContent=`0.88x 跟讀中 · ${resolved?.voiceName||'System voice'}。先模仿節奏，不要急著背。`;
+        if(status)status.textContent='North American English · 正在準備 0.88x 跟讀…';
+        const resolved=await speakNorthAmerican(q.model,.88,p=>{if(status)status.textContent=northAmericanProgressText(p,'North American English');});
+        if(status)status.textContent=`0.88x 跟讀中 · ${resolved?.voiceName||'Piper · Lessac US English'}。先模仿節奏，不要急著背。`;
       }else if(action==='hide'){
         const hidden=answer?.classList.toggle('model-answer-hidden');
         practiceBtn.textContent=hidden?'👁 顯示英文':'🙈 遮住英文';
@@ -2359,7 +2451,7 @@
     },
     getHistory(){return [];},
     saveHistory(){},
-    speakEnglish(text,rate=.94){return speak(text,rate,chooseVoiceLang(1));},
+    speakEnglish(text,rate=.94){return speakNorthAmerican(text,rate);},
     clearHistory(){},
     clearCurrentQuestion(){lastLittleEQuestion=null;}
   };
