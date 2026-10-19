@@ -1,16 +1,11 @@
 (() => {
   'use strict';
 
-  // Zero-cost browser TTS: the Indian English model is downloaded on first use
-  // and cached by the Piper library in Origin Private File System (OPFS).
-  // Runtime package: @the-vedantic-coder/piper-tts-web 1.0.10
-  // Voice: en_IN-spicor-medium (NavGurukul / SPICOR Indian English).
   const VOICE_ID='en_IN-spicor-medium';
-  const LIB_URL='https://cdn.jsdelivr.net/npm/@the-vedantic-coder/piper-tts-web@1.0.10/+esm';
   const ENGINE_LABEL='Piper · SPICOR Indian English';
+  const WORKER_URL='indian-tts-worker.js';
 
   let worker=null;
-  let workerObjectUrl='';
   let sequence=0;
   let currentAudio=null;
   let currentAudioUrl='';
@@ -21,13 +16,7 @@
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 
   function supportsLocalAi(){
-    return !!(
-      window.Worker &&
-      window.WebAssembly &&
-      window.Blob &&
-      window.URL?.createObjectURL &&
-      navigator.storage?.getDirectory
-    );
+    return !!(window.Worker&&window.WebAssembly&&window.Blob&&window.URL?.createObjectURL);
   }
 
   function emit(fn,data){
@@ -59,87 +48,23 @@
       if(!audioContext)audioContext=new Ctx();
       if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});
       return audioContext;
-    }catch(e){
-      return null;
-    }
+    }catch(e){return null;}
   }
 
   function rejectPending(code='cancelled'){
     for(const [,entry] of pending){
-      const err=new Error(code);
-      err.code=code;
-      entry.reject(err);
+      const err=new Error(code);err.code=code;entry.reject(err);
     }
     pending.clear();
   }
 
   function destroyWorker(code='worker_reset'){
     rejectPending(code);
-    if(worker){
-      try{worker.terminate();}catch(e){}
-      worker=null;
-    }
-    if(workerObjectUrl){
-      try{URL.revokeObjectURL(workerObjectUrl);}catch(e){}
-      workerObjectUrl='';
-    }
+    if(worker){try{worker.terminate();}catch(e){} worker=null;}
   }
 
   function makeWorker(){
-    const source=`
-const LIB_URL=${JSON.stringify(LIB_URL)};
-const VOICE_ID=${JSON.stringify(VOICE_ID)};
-let ttsPromise=null;
-let queue=Promise.resolve();
-
-function loadTts(){
-  if(!ttsPromise)ttsPromise=import(LIB_URL);
-  return ttsPromise;
-}
-
-async function synthesize(job){
-  const {requestId,text}=job;
-  try{
-    self.postMessage({type:'state',requestId,phase:'engine'});
-    const tts=await loadTts();
-    let cachedModel=false;
-    try{
-      const stored=await tts.stored();
-      cachedModel=Array.isArray(stored)&&stored.includes(VOICE_ID);
-    }catch(e){}
-
-    if(cachedModel)self.postMessage({type:'state',requestId,phase:'synth'});
-    else self.postMessage({type:'state',requestId,phase:'model'});
-
-    const audio=await tts.predict(
-      {text,voiceId:VOICE_ID},
-      progress=>self.postMessage({
-        type:'progress',
-        requestId,
-        loaded:Number(progress?.loaded)||0,
-        total:Number(progress?.total)||0
-      })
-    );
-    self.postMessage({type:'result',requestId,audio,cachedModel});
-  }catch(error){
-    self.postMessage({
-      type:'error',
-      requestId,
-      code:error?.code||'local_ai_failed',
-      message:error?.message||String(error)
-    });
-  }
-}
-
-self.addEventListener('message',event=>{
-  if(event.data?.type!=='synthesize')return;
-  const job=event.data;
-  queue=queue.then(()=>synthesize(job)).catch(()=>{});
-});
-`;
-    const blob=new Blob([source],{type:'text/javascript'});
-    workerObjectUrl=URL.createObjectURL(blob);
-    const w=new Worker(workerObjectUrl,{type:'module',name:'edan-indian-tts'});
+    const w=new Worker(WORKER_URL,{name:'edan-indian-tts'});
     w.addEventListener('message',event=>{
       const data=event.data||{};
       const entry=pending.get(data.requestId);
@@ -150,8 +75,12 @@ self.addEventListener('message',event=>{
         return;
       }
       if(data.type==='progress'){
-        const percent=data.total>0?Math.max(0,Math.min(100,Math.round(data.loaded*100/data.total))):null;
-        emit(entry.onStatus,{phase:'model',percent,loaded:data.loaded,total:data.total});
+        emit(entry.onStatus,{
+          phase:data.phase||'model',
+          percent:Number.isFinite(data.percent)?data.percent:null,
+          loaded:data.loaded,
+          total:data.total
+        });
         return;
       }
       if(data.type==='result'){
@@ -163,6 +92,7 @@ self.addEventListener('message',event=>{
         pending.delete(data.requestId);
         const err=new Error(data.message||'local_ai_failed');
         err.code=data.code||'local_ai_failed';
+        err.stage=data.stage||'';
         entry.reject(err);
       }
     });
@@ -171,7 +101,7 @@ self.addEventListener('message',event=>{
       err.code='local_ai_worker_failed';
       for(const [,entry] of pending)entry.reject(err);
       pending.clear();
-      destroyWorker('local_ai_worker_failed');
+      if(worker===w){try{w.terminate();}catch(e){} worker=null;}
     });
     return w;
   }
@@ -207,10 +137,7 @@ self.addEventListener('message',event=>{
     const cleanup=()=>{
       if(currentAudio!==audio)return;
       currentAudio=null;
-      if(currentAudioUrl===url){
-        URL.revokeObjectURL(url);
-        currentAudioUrl='';
-      }
+      if(currentAudioUrl===url){URL.revokeObjectURL(url);currentAudioUrl='';}
     };
     audio.addEventListener('ended',cleanup,{once:true});
     audio.addEventListener('error',cleanup,{once:true});
@@ -237,47 +164,23 @@ self.addEventListener('message',event=>{
 
   async function speak(text,{rate=1,onStatus=null}={}){
     const value=String(text||'').trim();
-    if(!value){
-      const err=new Error('empty_text');
-      err.code='empty_text';
-      throw err;
-    }
-    if(!supportsLocalAi()){
-      const err=new Error('local_ai_unsupported');
-      err.code='local_ai_unsupported';
-      throw err;
-    }
+    if(!value){const err=new Error('empty_text');err.code='empty_text';throw err;}
+    if(!supportsLocalAi()){const err=new Error('local_ai_unsupported');err.code='local_ai_unsupported';throw err;}
 
-    // Prime Web Audio while the click still has user activation. The actual
-    // WAV arrives later after local inference.
     primeAudio();
     stopAudio();
-
-    // A second click while inference is running should cancel stale work
-    // rather than make the user wait for two generations.
     if(pending.size)destroyWorker('superseded');
 
     emit(onStatus,{phase:'engine'});
     const {blob,cachedModel}=await synthesize(value,onStatus);
     emit(onStatus,{phase:'synth'});
     const playback=await playBlob(blob,rate);
-    return {
-      played:true,
-      source:'local-ai',
-      voiceName:ENGINE_LABEL,
-      voiceId:VOICE_ID,
-      cachedModel,
-      playback
-    };
-  }
-
-  function stop(){
-    stopAudio();
+    return {played:true,source:'local-ai',voiceName:ENGINE_LABEL,voiceId:VOICE_ID,cachedModel,playback};
   }
 
   window.EDAN_INDIAN_TTS=Object.freeze({
     speak,
-    stop,
+    stop:stopAudio,
     supported:supportsLocalAi,
     voiceId:VOICE_ID,
     engineLabel:ENGINE_LABEL

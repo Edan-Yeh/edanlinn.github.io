@@ -1867,6 +1867,7 @@
           played:false,
           localAi:true,
           errorCode:code,
+          errorMessage:error?.message||'',
           source:'local-ai'
         };
       }
@@ -1902,7 +1903,10 @@
       return prefix+' · 本機 en-IN 備援 · '+(resolved.voiceName||'Indian English voice')+' · '+speed;
     }
     if(resolved?.errorCode==='local_ai_unsupported')return prefix+' · ⚠ 此瀏覽器不支援 Local AI，且沒有 en-IN voice · '+speed;
-    return prefix+' · ⚠ Local AI 印度語音暫不可用 · '+speed;
+    if(resolved?.errorCode==='model_download_failed')return prefix+' · ⚠ Indian AI 模型下載失敗，請確認網路後重試 · '+speed;
+    if(resolved?.errorCode==='ort_load_failed')return prefix+' · ⚠ Local AI 引擎載入失敗，請重新整理後重試 · '+speed;
+    if(resolved?.errorCode==='phonemizer_failed')return prefix+' · ⚠ Indian 發音引擎載入失敗，請重新整理後重試 · '+speed;
+    return prefix+' · ⚠ Local AI 印度語音暫不可用'+(resolved?.errorCode?' ('+resolved.errorCode+')':'')+' · '+speed;
   }
 
   function normalizeTtsText(text){
