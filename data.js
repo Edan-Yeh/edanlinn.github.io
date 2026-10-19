@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-16",
-  "completedDays": 23,
-  "currentTrack": "Cloud × AI Solutions Architect / AI Tutor Reliability",
+  "updatedAt": "2026-10-20",
+  "completedDays": 24,
+  "currentTrack": "Cloud × AI Solutions Architect / Day 24 AI Tutor Async Reliability",
   "scores": [
     {
       "day": 1,
@@ -94,6 +94,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 23,
       "score": 58
+    },
+    {
+      "day": 24,
+      "score": 50
     }
   ],
   "roadmap": [
@@ -3870,6 +3874,126 @@ window.CLOUD_SA_DATA = {
         "Application Rollback 不會自動修正既有錯誤業務資料；依 Key、稽核紀錄及審核流程補正。"
       ],
       "archive": "docs/cloud-ai-day23-2026-10-16.md"
+    },
+    {
+      "day": 24,
+      "date": "2026-10-19",
+      "topic": "Cloud Architecture / AI Tutor Sync-Async / Failure Isolation / Multi-cloud Deployment",
+      "score": 50,
+      "status": "completed",
+      "gradedAt": "2026-10-20T01:09:00+08:00",
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "100 題 AI 錯題分析可能耗時 60 秒，網站要求 5 秒內回應，如何設計？",
+          "options": [
+            "A. HTTP Timeout 180秒同步等待",
+            "B. 背景工作及 Job ID",
+            "C. Vue 直連 Postgres",
+            "D. AI Tutor 與正式考試不可分離"
+          ],
+          "correct": "B",
+          "answer": "B",
+          "earned": 15
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "AI Worker 當機應採哪些可靠性機制？",
+          "options": [
+            "A. 有限 Retry",
+            "B. Job ID/Idempotency Key",
+            "C. 清除成績",
+            "D. DLQ",
+            "E. AI Worker 管理正式成績",
+            "F. Request ID及工作狀態"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "AWS ECS 失敗回復、Azure Container Apps 10%流量、GCP Cloud Run 指定版本測試及遷移，配對機制",
+          "options": [
+            "A. Deployment Circuit Breaker",
+            "B. Multiple Revisions + Traffic Weights",
+            "C. Revision Tags + Traffic Migration"
+          ],
+          "correct": "1→A、2→B、3→C",
+          "answer": "1→B、2→C、3→A",
+          "earned": 0
+        }
+      ],
+      "answers": {
+        "Q1": "B",
+        "Q2": "A、B、D、F",
+        "Q3": "1→B、2→C、3→A",
+        "practice": "Vue 放款畫面> Spring Boot 交易key值> Python FastAPI AI Tutor 非同步 AI欄位檢核服務; Spring Boot 檢查結果; Vue顯示結果; Postgres 正式交易寫入"
+      },
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 0,
+          "max": 20
+        },
+        "practice": {
+          "earned": 15,
+          "max": 45,
+          "note": "描述元件分工與非同步，但缺 Job ID/Timeout/Retry/Idempotency/權限/Rollback 詳細設計"
+        }
+      },
+      "mastered": [
+        "非同步背景工作與 Job ID 選型",
+        "有限 Retry、DLQ、Idempotency 與追蹤概念"
+      ],
+      "corrections": [
+        [
+          "跨雲部署機制三項配對錯誤",
+          "AWS ECS Circuit Breaker；Azure Container Apps Multiple Revisions/Traffic Weights；GCP Cloud Run Revision Tags/Traffic Migration"
+        ],
+        [
+          "缺少 Job ID 與結果狀態",
+          "建立 pending/running/completed/failed 狀態及查詢端點"
+        ],
+        [
+          "缺少 Timeout/Retry/DLQ 與冪等細節",
+          "隔離 AI 故障，有限重試、死信與去重"
+        ],
+        [
+          "AI 與正式交易寫入界線不明",
+          "Spring Boot 授權與確定性業務規則控制正式交易及成績寫入；AI 僅輔助"
+        ],
+        [
+          "未區分應用程式回復與資料修復",
+          "程式回復不等於 DB rollback 或交易補正；查明影響並經審核補正"
+        ]
+      ],
+      "memory": [
+        "AI Tutor 不應直接寫入正式交易或正式成績",
+        "Application Rollback ≠ DB Recovery ≠ Business Transaction Correction",
+        "部署機制需區分 ECS、Container Apps、Cloud Run"
+      ],
+      "archive": "docs/cloud-ai-day24-2026-10-19.md"
     }
   ],
   "cloudComparison": {
