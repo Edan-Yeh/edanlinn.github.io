@@ -140,3 +140,42 @@ body .module-togglebar button{background:var(--app-surface)!important;color:var(
 @media(max-width:1100px){#learning-method .method-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#portfolio .portfolio-grid{grid-template-columns:1fr!important}}
 @media(max-width:700px){#portfolio .portfolio-heading{flex-direction:column!important}#learning-lab.lab-intro{align-items:flex-start!important;flex-direction:column!important}#learning-method .method-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:450px){#learning-method .method-grid{grid-template-columns:1fr!important}#portfolio .portfolio-metric-grid{grid-template-columns:1fr!important}}
+
+/* Quiz readability: align metrics and controls to the active theme (2026-10-20). */
+.quiz-panel .quiz-bank-count b,
+.quiz-panel .quiz-stats b,
+.quiz-panel #quiz-bank-count,
+.quiz-panel #quiz-attempts,
+.quiz-panel #quiz-accuracy,
+.quiz-panel #quiz-missed,
+.quiz-panel #quiz-difficulty {
+  color:var(--app-accent)!important;
+  -webkit-text-fill-color:var(--app-accent)!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+.quiz-panel .quiz-controls :is(button,select),
+.quiz-panel .quiz-action {
+  color:var(--app-text)!important;
+  -webkit-text-fill-color:var(--app-text)!important;
+  background:var(--app-surface)!important;
+  border:1px solid var(--app-border)!important;
+  opacity:1!important;
+}
+.quiz-panel .quiz-action.active,
+.quiz-panel .quiz-controls button[aria-pressed="true"] {
+  color:var(--app-accent)!important;
+  -webkit-text-fill-color:var(--app-accent)!important;
+  background:var(--app-soft)!important;
+  border-color:var(--app-accent)!important;
+}
+.quiz-panel .quiz-controls button:disabled {
+  color:var(--app-muted)!important;
+  -webkit-text-fill-color:var(--app-muted)!important;
+  opacity:.65!important;
+  cursor:not-allowed!important;
+}
+.quiz-panel .quiz-device-note,
+.quiz-panel .quiz-bank-count span,
+.quiz-panel .quiz-stats span {color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important;}
+.quiz-panel .quiz-controls :is(button,select):focus-visible {outline:2px solid var(--app-accent)!important;outline-offset:2px!important;}
