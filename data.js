@@ -3964,7 +3964,8 @@ window.CLOUD_SA_DATA = {
       },
       "mastered": [
         "非同步背景工作與 Job ID 選型",
-        "有限 Retry、DLQ、Idempotency 與追蹤概念"
+        "有限 Retry、DLQ、Idempotency 與追蹤概念",
+        "補強通過：金融交易復原基本判斷（放款錯誤計息案例）"
       ],
       "corrections": [
         [
@@ -3991,9 +3992,38 @@ window.CLOUD_SA_DATA = {
       "memory": [
         "AI Tutor 不應直接寫入正式交易或正式成績",
         "Application Rollback ≠ DB Recovery ≠ Business Transaction Correction",
-        "部署機制需區分 ECS、Container Apps、Cloud Run"
+        "部署機制需區分 ECS、Container Apps、Cloud Run",
+        "Day 24 補強題 C 正確：停止影響→回復穩定程式→查明 100 筆異常→核准補正→對帳；不修改正式 50 分。"
       ],
-      "archive": "docs/cloud-ai-day24-2026-10-19.md"
+      "archive": "docs/cloud-ai-day24-2026-10-19.md",
+      "reinforcement": {
+        "title": "放款計息錯誤交易復原",
+        "type": "unscored-practice",
+        "status": "passed",
+        "score": "1/1 正確（補強練習，不計入正式成績）",
+        "question": "銀行有 1,000 筆放款交易，其中 100 筆因新版計息程式錯誤而產生不正確的利息，另外 900 筆正常。最合理的處理方式？",
+        "options": [
+          "A. 直接將整個 DB 還原到昨天，再重新執行 1,000 筆",
+          "B. 只要回復舊版程式，100 筆利息就會自動修正",
+          "C. 先停止錯誤影響、回復穩定程式，追查 100 筆異常交易，再經核准補正與對帳",
+          "D. 讓 AI 自動修改 100 筆正式利息資料，不需要人工覆核"
+        ],
+        "answer": "C",
+        "correct": "C",
+        "explanation": "先阻止更多錯誤、回復穩定應用程式，再依交易流水與 Log 定位異常 100 筆，經授權沖正、重算或補正並對帳；整庫 PITR 可能倒退正常交易，Application Rollback 不能自動修正既有錯誤利息，AI 不得未經授權直接修改正式帳務。",
+        "steps": [
+          "停止受影響功能及錯誤擴散",
+          "回復經驗證的穩定應用版本",
+          "使用交易流水、Request ID 與 Log 分析影響",
+          "經核准沖正、重算或補正",
+          "對帳、稽核與驗證正常交易"
+        ],
+        "concepts": [
+          "Application Rollback ≠ Database Recovery ≠ Business Transaction Correction",
+          "PITR 不適合預設用於少量業務錯帳補正",
+          "正式帳務變更需授權、覆核、稽核"
+        ]
+      }
     }
   ],
   "cloudComparison": {
