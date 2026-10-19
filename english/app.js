@@ -335,7 +335,7 @@
       const resolved=speak(c.example, playbackRate(c.level,'chunk'), lang);
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
       if(status){
-        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.voiceName ? ` · ${resolved.voiceName}` : '';
+        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.unavailable ? ' · ⚠ 未安裝原生 en-IN voice（未播放）' : (resolved?.voiceName ? ` · ${resolved.voiceName}` : '');
         status.textContent=`本次：${accentLabel(lang)}${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
       }
     }));
@@ -345,7 +345,7 @@
       const resolved=speak(c.example, playbackRate(c.level,'chunk'), 'en-IN');
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
       if(status){
-        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.voiceName ? ` · ${resolved.voiceName}` : '';
+        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.unavailable ? ' · ⚠ 未安裝原生 en-IN voice（未播放）' : (resolved?.voiceName ? ` · ${resolved.voiceName}` : '');
         status.textContent=`本次：Indian English${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
       }
     }));
@@ -412,7 +412,7 @@
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
       if(status){
         const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
-        status.textContent=`Indian English${fallback} · ${resolved?.voiceName||'System voice'} · ${playbackRate(1,'chunk').toFixed(2)}x`;
+        status.textContent=`Indian English${resolved?.unavailable?' · ⚠ 未安裝原生 en-IN voice（未播放）':fallback+' · '+(resolved?.voiceName||'System voice')} · ${playbackRate(1,'chunk').toFixed(2)}x`;
       }
     }));
     document.querySelectorAll('.vocab-known').forEach(b=>b.addEventListener('click',()=>{
@@ -1699,42 +1699,90 @@
     if(voices.length) englishVoiceCache=voices.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
     return englishVoiceCache;
   }
+  function indianVoiceIdentity(v){
+    const name=(v?.name||'').toLowerCase();
+    const lang=(v?.lang||'').toLowerCase().replace('_','-');
+    return lang==='en-in'
+      || /english\s*\(india\)|english[- ]india|india[- ]english|indian english|\ben-in\b/.test(name)
+      || /\b(neerja|prabhat|heera|ravi|rishi|veena)\b/.test(name);
+  }
+
   function voiceScore(v,targetLang){
     const name=(v.name||'').toLowerCase();
-    const lang=(v.lang||'').toLowerCase();
-    const target=targetLang.toLowerCase();
+    const lang=(v.lang||'').toLowerCase().replace('_','-');
+    const target=String(targetLang||'en-US').toLowerCase();
     let score=0;
-    if(lang===target)score+=150;
-    else if(target==='en-US' && lang==='en-CA')score+=55;
-    else if(lang.startsWith('en'))score+=30;
+
+    if(target==='en-in'){
+      if(!indianVoiceIdentity(v))return -10000;
+      if(lang==='en-in')score+=500;
+      if(/neerja|prabhat|heera|ravi|rishi|veena/.test(name))score+=180;
+      if(/english\s*\(india\)|english[- ]india|indian english/.test(name))score+=130;
+    }else{
+      if(lang===target.toLowerCase())score+=150;
+      else if(target.toLowerCase()==='en-us' && lang==='en-ca')score+=55;
+      else if(lang.startsWith('en'))score+=30;
+    }
+
     if(/natural|neural|premium|enhanced|online/.test(name))score+=130;
-    if(/aria|jenny|guy|ava|andrew|emma|brian|sonia|ryan/.test(name))score+=70;
-    if(/google.*us english|google us english/.test(name))score+=60;
+    if(target!=='en-in' && /aria|jenny|guy|ava|andrew|emma|brian|sonia|ryan/.test(name))score+=70;
+    if(target!=='en-in' && /google.*us english|google us english/.test(name))score+=60;
     if(/microsoft/.test(name))score+=38;
     if(/google/.test(name))score+=28;
     if(v.localService===false)score+=18;
     if(/compact|espeak|eloquence|classic|default/.test(name))score-=90;
     return score;
   }
+
   function bestVoice(candidates,targetLang){
     if(!candidates.length)return null;
     if((state.settings.voiceQuality||'natural')==='system')return candidates[0];
     return [...candidates].sort((a,b)=>voiceScore(b,targetLang)-voiceScore(a,targetLang))[0];
   }
+
   function resolveVoice(lang){
-    let voices=refreshVoiceCache();
-    const requested=(lang||'en-US').toLowerCase();
-    let candidates=voices.filter(v=>(v.lang||'').toLowerCase()===requested);
-    if(!candidates.length && lang==='en-IN') candidates=voices.filter(v=>/india|indian/i.test(v.name||'') || (v.lang||'').toLowerCase()==='en-in');
-    if(!candidates.length && lang==='en-US') candidates=voices.filter(v=>{
-      const l=(v.lang||'').toLowerCase();
-      return l==='en-us' || l==='en-ca' || l==='en-gb' || l.startsWith('en');
+    const voices=refreshVoiceCache();
+    const requested=String(lang||'en-US').toLowerCase().replace('_','-');
+
+    if(requested==='en-in'){
+      const indianCandidates=voices.filter(indianVoiceIdentity);
+      const voice=bestVoice(indianCandidates,'en-IN');
+      if(!voice){
+        return {
+          voice:null,
+          actualLang:'en-IN',
+          actualLabel:'Indian English',
+          voiceName:'原生 en-IN voice 未安裝',
+          naturalLike:false,
+          fallback:false,
+          strictIndian:true,
+          unavailable:true
+        };
+      }
+      const qualityName=(voice.name||'').toLowerCase();
+      return {
+        voice,
+        actualLang:voice.lang||'en-IN',
+        actualLabel:'Indian English',
+        voiceName:voice.name||'Indian English voice',
+        naturalLike:/natural|neural|premium|enhanced|online/.test(qualityName),
+        fallback:false,
+        strictIndian:true,
+        unavailable:false
+      };
+    }
+
+    let candidates=voices.filter(v=>(v.lang||'').toLowerCase().replace('_','-')===requested);
+    if(!candidates.length && requested==='en-us') candidates=voices.filter(v=>{
+      const l=(v.lang||'').toLowerCase().replace('_','-');
+      return l==='en-us'||l==='en-ca'||l==='en-gb'||l.startsWith('en');
     });
-    if(!candidates.length && lang==='en-CA') candidates=voices.filter(v=>{
-      const l=(v.lang||'').toLowerCase();
-      return l==='en-ca' || l==='en-us' || l.startsWith('en');
+    if(!candidates.length && requested==='en-ca') candidates=voices.filter(v=>{
+      const l=(v.lang||'').toLowerCase().replace('_','-');
+      return l==='en-ca'||l==='en-us'||l.startsWith('en');
     });
     if(!candidates.length)candidates=voices;
+
     const voice=bestVoice(candidates,lang);
     const actualLang=voice?.lang||lang;
     const qualityName=(voice?.name||'').toLowerCase();
@@ -1745,9 +1793,11 @@
       actualLabel:accentLabel(actualLang),
       voiceName:voice?.name||'System default',
       naturalLike,
-      fallback:!!voice && actualLang.toLowerCase()!==lang.toLowerCase()
+      fallback:!!voice && actualLang.toLowerCase()!==String(lang).toLowerCase(),
+      unavailable:false
     };
   }
+
   function normalizeTtsText(text){
     return String(text||'')
       .normalize('NFKC')
@@ -1764,14 +1814,20 @@
     speechSynthesis.cancel();
     const resolved=resolveVoice(lang);
     const spokenText=normalizeTtsText(text);
+
+    // Indian English is strict: never let Web Speech silently reuse a US/Canadian voice.
+    if(String(lang).toLowerCase().replace('_','-')==='en-in' && resolved.unavailable){
+      return {...resolved,spokenText,played:false};
+    }
+
     const u=new SpeechSynthesisUtterance(spokenText);
     u.lang=resolved.voice?.lang||lang;
     u.rate=clamp(Number(rate)||1,0.70,1.25);
-    u.pitch=.98;
+    u.pitch=String(lang).toLowerCase().replace('_','-')==='en-in'?1:.98;
     u.volume=1;
     if(resolved.voice)u.voice=resolved.voice;
     speechSynthesis.speak(u);
-    return {...resolved,spokenText};
+    return {...resolved,spokenText,played:true};
   }
 
   function exportProgress(){

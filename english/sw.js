@@ -1,4 +1,5 @@
 importScripts('./version.js');
+// Refresh shell when navigation or locale-sensitive speech behavior changes.
 const CACHE=self.EDAN_APP_VERSION.cache;
 const ASSETS=['./','./index.html','./challenge.html','./version.js','./styles.css','./app.js','./little-e-core.js','./little-e.js','./question-bank.js','./supabase-config.js','./auth.js','./manifest.webmanifest','./icon.svg','./assets/little-e-mascot-v30.webp','./assets/little-e-blink-v31.webp','./assets/little-e-happy-v31.webp','./assets/little-e-thinking-v31.webp','./assets/little-e-reading-v31.webp','./assets/little-e-eat-v34.webp','./assets/little-e-sit-v34.webp','./assets/little-e-sleep-v34.webp'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));

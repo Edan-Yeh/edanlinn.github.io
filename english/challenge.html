@@ -35,6 +35,15 @@
         <button class="btn ghost" id="accountBtn" type="button">登入</button>
       </div>
     </div>
+    <nav class="web-jump-nav" aria-label="網頁版快速選單">
+      <div class="web-jump-nav-inner">
+        <span class="web-jump-nav-label">快速前往</span>
+        <a href="#overviewSection">總覽</a>
+        <a href="#modesSection">今日訓練</a>
+        <a href="#vocabularySection">單字</a>
+        <a href="#chunksSection">自然口說</a>
+      </div>
+    </nav>
   </header>
 
   <main class="shell">
@@ -185,7 +194,7 @@
       <div class="grid grid-4" id="vocabGrid"></div>
     </section>
 
-    <section class="section">
+    <section class="section" id="chunksSection">
       <div class="section-head"><div><h2>Active Chunks｜自然口說</h2><p>把單字放進真正會說出口的句型裡，練習自然反應、連接與面試表達。</p></div><div class="filters"><select id="chunkLevelFilter" aria-label="Chunk 難度"><option value="all">全部難度</option><option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option></select><button class="btn ghost" id="randomChunksBtn" type="button">隨機 3 個</button></div></div>
       <div class="grid grid-3" id="chunkGrid"></div>
     </section>
@@ -208,7 +217,7 @@
     </section>
 
     <section class="section hidden" id="settingsSection">
-      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>每一題固定提供「北美」與「印度」兩個播放按鈕。預設使用 1.00x 正常業界對話速度；需要時仍可手動放慢、加快或切回自適應。Natural / Neural 模式會優先挑選較自然的英文 voice；播放前也會自動把 I’ll / I’m / Let’s 這類智慧撇號轉成語音引擎較穩定的格式。</p></div></div>
+      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>每一題提供「北美」與「印度」兩個播放按鈕。印度版本現在只接受真正的 Indian English（en-IN）voice，不再用北美英文降速模擬；若裝置沒有安裝印度英文語音，系統會明確提示而不播放錯誤口音。預設使用 1.00x 正常業界對話速度；Natural / Neural 模式會優先挑選較自然的 voice。</p></div></div>
       <div class="panel settings-grid">
         <div class="field"><label for="accentSelect">北美版本偏好</label><select id="accentSelect"><option value="adaptive">北美自然語音優先（固定美式，推薦）</option><option value="en-US">North American / US English</option><option value="en-CA">Canadian English（若裝置支援）</option></select></div>
         <div class="field"><label for="speechRateSelect">播放語速</label><select id="speechRateSelect"><option value="adaptive">依難度自適應</option><option value="0.75">0.75x 很慢</option><option value="0.85">0.85x 慢</option><option value="0.90">0.90x</option><option value="0.95">0.95x</option><option value="1.00">1.00x 正常業界對話（預設）</option><option value="1.05">1.05x</option><option value="1.10">1.10x 快</option><option value="1.15">1.15x</option><option value="1.20">1.20x 很快</option></select></div>

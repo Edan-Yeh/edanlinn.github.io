@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.19-v40');
-assert.equal(version.cache,'edan-english-coach-20261019-v40');
+assert.equal(version.release,'2026.10.19-v41');
+assert.equal(version.cache,'edan-english-coach-20261019-v41');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -48,6 +48,7 @@ const html=fs.readFileSync(path.join(root,'english/challenge.html'),'utf8');
 const qb=fs.readFileSync(path.join(root,'english/question-bank.js'),'utf8');
 const sw=fs.readFileSync(path.join(root,'english/sw.js'),'utf8');
 const le=fs.readFileSync(path.join(root,'english/little-e.js'),'utf8');
+const app=fs.readFileSync(path.join(root,'english/app.js'),'utf8');
 const css=fs.readFileSync(path.join(root,'english/styles.css'),'utf8');
 
 assert.ok(html.includes('<script src="version.js"></script>'));
@@ -69,4 +70,14 @@ assert.match(le,/panelOpen\(\)/);
 assert.match(le,/petExpressionActive/);
 assert.doesNotMatch(css,/transform:scale\([23]\./);
 assert.ok(html.includes('appUpdateBanner'));
-console.log('PASS: Little E v40 idle random expressions, v39 conversation behavior, pet reactions and previous regressions.');
+assert.ok(html.includes('class="web-jump-nav"'));
+assert.ok(html.includes('href="#vocabularySection"'));
+assert.ok(html.includes('href="#chunksSection"'));
+assert.ok(html.includes('id="chunksSection"'));
+assert.match(app,/function indianVoiceIdentity\(/);
+assert.match(app,/requested==='en-in'/);
+assert.match(app,/indianCandidates=voices\.filter\(indianVoiceIdentity\)/);
+assert.match(app,/原生 en-IN voice 未安裝/);
+assert.match(app,/strictIndian:true/);
+assert.match(app,/resolved\.unavailable/);
+console.log('PASS: v41 web navigation, strict Indian English voice routing, Little E idle expressions and prior regressions.');
