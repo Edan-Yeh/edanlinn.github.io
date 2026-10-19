@@ -217,7 +217,7 @@
     </section>
 
     <section class="section hidden" id="settingsSection">
-      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>每一題提供「北美」與「印度」兩個播放按鈕。印度版本會先使用裝置真正的 Indian English（en-IN）voice；若裝置沒有，就自動改用網站內建的 Azure Indian English Neural TTS（Prabhat），產生後會在瀏覽器快取。系統不再用北美英文降速模擬印度腔。</p></div></div>
+      <div class="section-head"><div><h2>聽力 / 練習設定</h2><p>每一題提供「北美」與「印度」兩個播放按鈕。印度版本改由網站內建的 Local AI（Piper / SPICOR Indian English）在瀏覽器即時產生，不需要 Azure、API Key、信用卡，也不是預先錄好的 MP3。每台新裝置第一次使用會下載約 64 MB Indian English 模型與必要執行元件，之後模型保存在該瀏覽器本機；若 Local AI 無法執行，才嘗試裝置真正的 en-IN voice。</p></div></div>
       <div class="panel settings-grid">
         <div class="field"><label for="accentSelect">北美版本偏好</label><select id="accentSelect"><option value="adaptive">北美自然語音優先（固定美式，推薦）</option><option value="en-US">North American / US English</option><option value="en-CA">Canadian English（若裝置支援）</option></select></div>
         <div class="field"><label for="speechRateSelect">播放語速</label><select id="speechRateSelect"><option value="adaptive">依難度自適應</option><option value="0.75">0.75x 很慢</option><option value="0.85">0.85x 慢</option><option value="0.90">0.90x</option><option value="0.95">0.95x</option><option value="1.00">1.00x 正常業界對話（預設）</option><option value="1.05">1.05x</option><option value="1.10">1.10x 快</option><option value="1.15">1.15x</option><option value="1.20">1.20x 很快</option></select></div>
@@ -457,6 +457,7 @@
 <script src="supabase-config.js"></script>
 <script src="auth.js"></script>
 <script src="question-bank.js"></script>
+<script src="indian-tts.js"></script>
 <script src="app.js"></script>
 <script src="little-e-core.js"></script>
 <script src="little-e.js"></script>

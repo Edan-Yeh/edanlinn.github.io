@@ -345,7 +345,7 @@
       const rate=playbackRate(c.level,'chunk');
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
       if(status)status.textContent='Indian English · 正在準備語音…';
-      const resolved=await speakIndian(c.example,rate);
+      const resolved=await speakIndian(c.example,rate,p=>{if(status)status.textContent=indianProgressText(p);});
       if(status)status.textContent='本次：'+indianPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
@@ -410,7 +410,7 @@
       const rate=playbackRate(1,'chunk');
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
       if(status)status.textContent='Indian English · 正在準備語音…';
-      const resolved=await speakIndian(`${v.word}. ${v.example}`,rate);
+      const resolved=await speakIndian(`${v.word}. ${v.example}`,rate,p=>{if(status)status.textContent=indianProgressText(p);});
       if(status)status.textContent=indianPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.vocab-known').forEach(b=>b.addEventListener('click',()=>{
@@ -628,7 +628,7 @@
       $('vocabListenIN').addEventListener('click',async()=>{
         const rate=playbackRate(1,'chunk');
         $('vocabListenStatus').textContent='Indian English · 正在準備語音…';
-        const r=await speakIndian(v.word,rate);
+        const r=await speakIndian(v.word,rate,p=>{$('vocabListenStatus').textContent=indianProgressText(p);});
         $('vocabListenStatus').textContent=indianPlaybackStatus(r,rate);
       });
     }
@@ -965,7 +965,7 @@
     const rate=playbackRate(q.level,'question');
     const status=$(statusId);
     if(key==='india'&&status)status.textContent='Indian English · 正在準備語音…';
-    const resolved=key==='india'?await speakIndian(q.text,rate):speak(q.text,rate,lang);
+    const resolved=key==='india'?await speakIndian(q.text,rate,p=>{if(status)status.textContent=indianProgressText(p);}):speak(q.text,rate,lang);
     const c=session.currentMeta.accentCounts;
     const current=key==='india'
       ? indianPlaybackStatus(resolved,rate,'Indian English')
@@ -1802,175 +1802,107 @@
     };
   }
 
-  let indianAudioContext=null;
-  let indianAudioSource=null;
-  const INDIAN_CLOUD_VOICE='en-IN-PrabhatNeural';
-  const INDIAN_TTS_CACHE='edan-indian-tts-v1';
+  function stopIndianLocalAiAudio(){
+    try{window.EDAN_INDIAN_TTS?.stop?.();}catch(e){}
+  }
 
-  function stopIndianCloudAudio(){
-    if(indianAudioSource){
-      try{indianAudioSource.stop();}catch(e){}
-      try{indianAudioSource.disconnect();}catch(e){}
-      indianAudioSource=null;
+  function indianProgressText(info,prefix='Indian English'){
+    if(!info)return prefix+' · Local AI 正在準備…';
+    if(info.phase==='engine')return prefix+' · 正在載入 Local AI 語音引擎…';
+    if(info.phase==='model'){
+      const pct=Number.isFinite(info.percent)?' '+info.percent+'%':'';
+      return prefix+' · 首次下載 Indian English AI 模型'+pct+'…';
     }
+    if(info.phase==='synth')return prefix+' · Local AI 正在即時產生語音…';
+    return prefix+' · Local AI 正在準備…';
   }
 
-  function primeIndianAudioContext(){
-    const Ctx=window.AudioContext||window.webkitAudioContext;
-    if(!Ctx)return null;
-    if(!indianAudioContext)indianAudioContext=new Ctx();
-    if(indianAudioContext.state==='suspended')indianAudioContext.resume().catch(()=>{});
-    return indianAudioContext;
-  }
-
-  function indianTtsHash(text,rate,voice=INDIAN_CLOUD_VOICE){
-    const input=voice+'|'+Number(rate||1).toFixed(2)+'|'+normalizeTtsText(text);
-    let h=2166136261;
-    for(let i=0;i<input.length;i++){
-      h^=input.charCodeAt(i);
-      h=Math.imul(h,16777619);
-    }
-    return (h>>>0).toString(36);
-  }
-
-  function indianTtsCacheRequest(text,rate,voice=INDIAN_CLOUD_VOICE){
-    return new Request(location.origin+'/__edan_indian_tts_cache__/'+indianTtsHash(text,rate,voice)+'.mp3');
-  }
-
-  async function readIndianTtsCache(text,rate,voice=INDIAN_CLOUD_VOICE){
-    if(!('caches' in window))return null;
-    try{
-      const cache=await caches.open(INDIAN_TTS_CACHE);
-      const hit=await cache.match(indianTtsCacheRequest(text,rate,voice));
-      return hit?await hit.blob():null;
-    }catch(e){return null;}
-  }
-
-  async function writeIndianTtsCache(text,rate,blob,voice=INDIAN_CLOUD_VOICE){
-    if(!('caches' in window)||!blob)return;
-    try{
-      const cache=await caches.open(INDIAN_TTS_CACHE);
-      await cache.put(
-        indianTtsCacheRequest(text,rate,voice),
-        new Response(blob,{headers:{'Content-Type':'audio/mpeg','Cache-Control':'max-age=31536000'}})
-      );
-    }catch(e){}
-  }
-
-  async function fetchCloudIndianTts(text,rate){
-    const cfg=window.EDAN_SUPABASE_CONFIG;
-    const client=window.EDAN_CLOUD?.client;
-    if(!cfg?.url||!cfg?.publishableKey||!client) {
-      const err=new Error('cloud_not_ready'); err.code='cloud_not_ready'; throw err;
-    }
-
-    const {data}=await client.auth.getSession();
-    const token=data?.session?.access_token;
-    if(!token){
-      const err=new Error('not_signed_in'); err.code='not_signed_in'; throw err;
-    }
-
-    const response=await fetch(cfg.url+'/functions/v1/indian-tts',{
-      method:'POST',
-      headers:{
-        'Authorization':'Bearer '+token,
-        'apikey':cfg.publishableKey,
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        text:normalizeTtsText(text),
-        rate:clamp(Number(rate)||1,.72,1.22),
-        voice:INDIAN_CLOUD_VOICE
-      })
-    });
-
-    if(!response.ok){
-      let detail={};
-      try{detail=await response.json();}catch(e){}
-      const err=new Error(detail?.error||('tts_http_'+response.status));
-      err.code=detail?.error||('tts_http_'+response.status);
-      err.status=response.status;
-      throw err;
-    }
-    return await response.blob();
-  }
-
-  async function playIndianCloudBlob(blob,audioContext){
-    const ctx=audioContext||primeIndianAudioContext();
-    if(!ctx)throw new Error('web_audio_unavailable');
-    if(ctx.state==='suspended')await ctx.resume();
-    const bytes=await blob.arrayBuffer();
-    const buffer=await ctx.decodeAudioData(bytes.slice(0));
-    stopIndianCloudAudio();
-    const source=ctx.createBufferSource();
-    source.buffer=buffer;
-    source.connect(ctx.destination);
-    source.onended=()=>{if(indianAudioSource===source)indianAudioSource=null;};
-    indianAudioSource=source;
-    source.start(0);
-  }
-
-  async function speakIndian(text,rate=1){
-    const local=resolveVoice('en-IN');
-    if(!local.unavailable){
-      const played=speak(text,rate,'en-IN');
-      return {...played,source:'device',cloud:false};
-    }
-
+  async function speakIndian(text,rate=1,onProgress=null){
     speechSynthesis?.cancel?.();
-    const audioContext=primeIndianAudioContext();
+    stopIndianLocalAiAudio();
     const normalized=normalizeTtsText(text);
     const safeRate=clamp(Number(rate)||1,.72,1.22);
+    const engine=window.EDAN_INDIAN_TTS;
 
-    try{
-      let blob=await readIndianTtsCache(normalized,safeRate,INDIAN_CLOUD_VOICE);
-      let cached=!!blob;
-      if(!blob){
-        blob=await fetchCloudIndianTts(normalized,safeRate);
-        await writeIndianTtsCache(normalized,safeRate,blob,INDIAN_CLOUD_VOICE);
+    if(engine?.speak){
+      try{
+        const result=await engine.speak(normalized,{rate:safeRate,onStatus:onProgress});
+        return {
+          ...result,
+          voice:null,
+          actualLang:'en-IN',
+          actualLabel:'Indian English',
+          voiceName:result?.voiceName||'Piper · SPICOR Indian English',
+          naturalLike:true,
+          fallback:false,
+          strictIndian:true,
+          unavailable:false,
+          played:result?.played!==false,
+          localAi:true,
+          source:'local-ai'
+        };
+      }catch(error){
+        const code=error?.code||error?.message||'local_ai_failed';
+        const local=resolveVoice('en-IN');
+        if(!local.unavailable){
+          const played=speak(normalized,safeRate,'en-IN');
+          return {
+            ...played,
+            source:'device-fallback',
+            localAi:false,
+            fallback:true,
+            strictIndian:true,
+            errorCode:code
+          };
+        }
+        return {
+          voice:null,
+          actualLang:'en-IN',
+          actualLabel:'Indian English',
+          voiceName:'Local AI 語音暫不可用',
+          naturalLike:false,
+          fallback:false,
+          strictIndian:true,
+          unavailable:true,
+          played:false,
+          localAi:true,
+          errorCode:code,
+          source:'local-ai'
+        };
       }
-      await playIndianCloudBlob(blob,audioContext);
-      return {
-        voice:null,
-        actualLang:'en-IN',
-        actualLabel:'Indian English',
-        voiceName:'Azure · Prabhat Neural',
-        naturalLike:true,
-        fallback:false,
-        strictIndian:true,
-        unavailable:false,
-        played:true,
-        cloud:true,
-        cached,
-        source:'cloud'
-      };
-    }catch(error){
-      const code=error?.code||error?.message||'cloud_tts_failed';
-      return {
-        voice:null,
-        actualLang:'en-IN',
-        actualLabel:'Indian English',
-        voiceName:code==='azure_speech_not_configured'?'Azure Speech 尚未設定':'雲端印度語音暫不可用',
-        naturalLike:false,
-        fallback:false,
-        strictIndian:true,
-        unavailable:true,
-        played:false,
-        cloud:true,
-        setupRequired:code==='azure_speech_not_configured',
-        errorCode:code,
-        source:'cloud'
-      };
     }
+
+    const local=resolveVoice('en-IN');
+    if(!local.unavailable){
+      const played=speak(normalized,safeRate,'en-IN');
+      return {...played,source:'device-fallback',localAi:false,fallback:true,strictIndian:true,errorCode:'local_ai_engine_missing'};
+    }
+    return {
+      voice:null,
+      actualLang:'en-IN',
+      actualLabel:'Indian English',
+      voiceName:'Local AI 引擎未載入',
+      naturalLike:false,
+      fallback:false,
+      strictIndian:true,
+      unavailable:true,
+      played:false,
+      localAi:true,
+      errorCode:'local_ai_engine_missing',
+      source:'local-ai'
+    };
   }
 
   function indianPlaybackStatus(resolved,rate,prefix='Indian English'){
     const speed=Number(rate||1).toFixed(2)+'x';
-    if(resolved?.played&&resolved?.source==='device')return prefix+' · 本機 '+(resolved.voiceName||'en-IN voice')+' · '+speed;
-    if(resolved?.played&&resolved?.source==='cloud')return prefix+' · ☁ '+(resolved.voiceName||'Azure Indian TTS')+(resolved.cached?' · 快取':'')+' · '+speed;
-    if(resolved?.setupRequired)return prefix+' · ☁ Azure Speech 尚未設定 · '+speed;
-    if(resolved?.errorCode==='not_signed_in')return prefix+' · 請先登入後再播放 · '+speed;
-    return prefix+' · ⚠ 雲端印度語音暫不可用 · '+speed;
+    if(resolved?.played&&resolved?.source==='local-ai'){
+      return prefix+' · Local AI · '+(resolved.voiceName||'Piper SPICOR')+(resolved.cachedModel?' · 模型已快取':'')+' · '+speed;
+    }
+    if(resolved?.played&&resolved?.source==='device-fallback'){
+      return prefix+' · 本機 en-IN 備援 · '+(resolved.voiceName||'Indian English voice')+' · '+speed;
+    }
+    if(resolved?.errorCode==='local_ai_unsupported')return prefix+' · ⚠ 此瀏覽器不支援 Local AI，且沒有 en-IN voice · '+speed;
+    return prefix+' · ⚠ Local AI 印度語音暫不可用 · '+speed;
   }
 
   function normalizeTtsText(text){
@@ -1986,7 +1918,7 @@
   }
   function speak(text,rate=1,lang='en-US'){
     if(!('speechSynthesis' in window))return null;
-    stopIndianCloudAudio();
+    stopIndianLocalAiAudio();
     speechSynthesis.cancel();
     const resolved=resolveVoice(lang);
     const spokenText=normalizeTtsText(text);
@@ -2276,7 +2208,7 @@
         const rate=playbackRate(q.level||1,'question');
         const status=audioBtn.closest('.model-answer')?.querySelector('[data-model-audio-status]');
         if(kind==='india'&&status)status.textContent='Indian English · 正在準備語音…';
-        const resolved=kind==='india'?await speakIndian(q.model,rate):speak(q.model,rate,lang);
+        const resolved=kind==='india'?await speakIndian(q.model,rate,p=>{if(status)status.textContent=indianProgressText(p);}):speak(q.model,rate,lang);
         if(status){
           status.textContent=kind==='india'
             ? indianPlaybackStatus(resolved,rate)
