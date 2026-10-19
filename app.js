@@ -357,6 +357,7 @@ function render(filter='all',q=''){
       </div>
       <div class="day-body">
         <div class="chips">${day.mastered.map(x=>`<span class="chip">已掌握 · ${x}</span>`).join('')}</div>
+        ${day.reinforcement?`<section class="reinforcement-panel" style="margin:16px 0;padding:16px;border:1px solid #b9d8c4;border-radius:12px;background:#f1faf4;color:#193e2b"><h3 style="margin:0 0 8px;color:#17623c">補強練習 · ${day.reinforcement.status==='passed'?'已通過':'待完成'}</h3><p><b>${day.reinforcement.title}</b> · ${day.reinforcement.score}</p><p><b>情境：</b>${day.reinforcement.question}</p><ul>${day.reinforcement.options.map(v=>`<li>${v}</li>`).join('')}</ul><p><b>你的答案：</b>${day.reinforcement.answer}　<b>正解：</b>${day.reinforcement.correct}</p><p><b>解析：</b>${day.reinforcement.explanation}</p><p><b>處理步驟：</b></p><ol>${day.reinforcement.steps.map(v=>`<li>${v}</li>`).join('')}</ol><p><b>重點：</b>${day.reinforcement.concepts.join('；')}</p><small>補強練習不重新計入正式 Day 分數。</small></section>`:''}
         <h3>需要持續修正</h3>
         ${day.corrections.map(c=>`<div class="correction"><div class="box bad"><b>容易混淆</b><div>${c[0]}</div></div><div class="box good"><b>正確 SA 思維</b><div>${c[1]}</div></div></div>`).join('')}
         <div class="memory"><b>必背</b><ul>${day.memory.map(x=>`<li>${x}</li>`).join('')}</ul></div>
