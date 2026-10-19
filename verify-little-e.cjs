@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.19-v41');
-assert.equal(version.cache,'edan-english-coach-20261019-v41');
+assert.equal(version.release,'2026.10.19-v42');
+assert.equal(version.cache,'edan-english-coach-20261019-v42');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -75,9 +75,15 @@ assert.ok(html.includes('href="#vocabularySection"'));
 assert.ok(html.includes('href="#chunksSection"'));
 assert.ok(html.includes('id="chunksSection"'));
 assert.match(app,/function indianVoiceIdentity\(/);
+assert.match(app,/async function speakIndian\(/);
+assert.match(app,/functions\/v1\/indian-tts/);
+assert.match(app,/INDIAN_CLOUD_VOICE='en-IN-PrabhatNeural'/);
+assert.match(app,/edan-indian-tts-v1/);
+assert.match(app,/function indianPlaybackStatus\(/);
+assert.match(app,/Azure · Prabhat Neural/);
 assert.match(app,/requested==='en-in'/);
 assert.match(app,/indianCandidates=voices\.filter\(indianVoiceIdentity\)/);
 assert.match(app,/原生 en-IN voice 未安裝/);
 assert.match(app,/strictIndian:true/);
 assert.match(app,/resolved\.unavailable/);
-console.log('PASS: v41 web navigation, strict Indian English voice routing, Little E idle expressions and prior regressions.');
+console.log('PASS: v42 cloud Indian English TTS fallback, browser audio cache, v41 navigation and prior regressions.');

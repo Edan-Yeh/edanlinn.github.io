@@ -339,15 +339,14 @@
         status.textContent=`本次：${accentLabel(lang)}${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
       }
     }));
-    document.querySelectorAll('.chunk-listen-in').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.chunk-listen-in').forEach(b => b.addEventListener('click', async () => {
       const c = CONTENT.chunks.find(x=>x.id===b.dataset.id);
       if(!c) return;
-      const resolved=speak(c.example, playbackRate(c.level,'chunk'), 'en-IN');
+      const rate=playbackRate(c.level,'chunk');
       const status=document.querySelector(`.chunk-audio-status[data-status-id="${CSS.escape(c.id)}"]`);
-      if(status){
-        const fallback=resolved && resolved.fallback ? ` · fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.unavailable ? ' · ⚠ 未安裝原生 en-IN voice（未播放）' : (resolved?.voiceName ? ` · ${resolved.voiceName}` : '');
-        status.textContent=`本次：Indian English${fallback}${voiceName} · ${playbackRate(c.level,'chunk').toFixed(2)}x`;
-      }
+      if(status)status.textContent='Indian English · 正在準備語音…';
+      const resolved=await speakIndian(c.example,rate);
+      if(status)status.textContent='本次：'+indianPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.chunk-known').forEach(b => b.addEventListener('click', () => {
       state.chunkKnown[b.dataset.id] = !state.chunkKnown[b.dataset.id];
@@ -406,14 +405,13 @@
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
       if(status) status.textContent=`${accentLabel(lang)} · ${resolved?.voiceName||'System voice'} · ${playbackRate(1,'chunk').toFixed(2)}x`;
     }));
-    document.querySelectorAll('.vocab-listen-in').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.vocab-listen-in').forEach(b=>b.addEventListener('click',async()=>{
       const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
-      const resolved=speak(`${v.word}. ${v.example}`,playbackRate(1,'chunk'),'en-IN');
+      const rate=playbackRate(1,'chunk');
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
-      if(status){
-        const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
-        status.textContent=`Indian English${resolved?.unavailable?' · ⚠ 未安裝原生 en-IN voice（未播放）':fallback+' · '+(resolved?.voiceName||'System voice')} · ${playbackRate(1,'chunk').toFixed(2)}x`;
-      }
+      if(status)status.textContent='Indian English · 正在準備語音…';
+      const resolved=await speakIndian(`${v.word}. ${v.example}`,rate);
+      if(status)status.textContent=indianPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.vocab-known').forEach(b=>b.addEventListener('click',()=>{
       const id=b.dataset.id;
@@ -627,9 +625,11 @@
         const lang=chooseVoiceLang(1); const r=speak(v.word,playbackRate(1,'chunk'),lang);
         $('vocabListenStatus').textContent=`${accentLabel(lang)} · ${r?.voiceName||'System voice'}`;
       });
-      $('vocabListenIN').addEventListener('click',()=>{
-        const r=speak(v.word,playbackRate(1,'chunk'),'en-IN');
-        $('vocabListenStatus').textContent=`Indian English${r?.fallback?` · fallback: ${r.actualLabel}`:''} · ${r?.voiceName||'System voice'}`;
+      $('vocabListenIN').addEventListener('click',async()=>{
+        const rate=playbackRate(1,'chunk');
+        $('vocabListenStatus').textContent='Indian English · 正在準備語音…';
+        const r=await speakIndian(v.word,rate);
+        $('vocabListenStatus').textContent=indianPlaybackStatus(r,rate);
       });
     }
     document.querySelectorAll('.vocab-option').forEach(btn=>btn.addEventListener('click',()=>{
@@ -650,7 +650,7 @@
       $('vocabAnswerDetail').classList.remove('hidden');
       $('vocabNextBtn').classList.remove('hidden');
       $('vocabAnswerNA').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),chooseVoiceLang(1)));
-      $('vocabAnswerIN').addEventListener('click',()=>speak(v.example,playbackRate(1,'chunk'),'en-IN'));
+      $('vocabAnswerIN').addEventListener('click',async()=>{await speakIndian(v.example,playbackRate(1,'chunk'));});
       if(correct){
         const guessBtn=$('vocabGuessBtn');
         guessBtn?.classList.remove('hidden');
@@ -957,16 +957,20 @@
     bindOptionButtons(q,true);
   }
 
-  function playQuestionAccent(q,key,lang,statusId){
+  async function playQuestionAccent(q,key,lang,statusId){
     session.currentMeta.listens++;
     session.currentMeta.accentCounts=session.currentMeta.accentCounts||{northAmerica:0,india:0};
     session.currentMeta.accentCounts[key]=(session.currentMeta.accentCounts[key]||0)+1;
     qstat(q.id).listens++;
-    const resolved=speak(q.text,playbackRate(q.level,'question'),lang);
+    const rate=playbackRate(q.level,'question');
+    const status=$(statusId);
+    if(key==='india'&&status)status.textContent='Indian English · 正在準備語音…';
+    const resolved=key==='india'?await speakIndian(q.text,rate):speak(q.text,rate,lang);
     const c=session.currentMeta.accentCounts;
-    const requested=key==='india'?'Indian English':accentLabel(lang);
-    const fallback=resolved && resolved.fallback ? ` · 裝置 fallback: ${resolved.actualLabel}` : ''; const voiceName=resolved?.voiceName ? ` · ${resolved.voiceName}` : '';
-    $(statusId).textContent=`北美 ${c.northAmerica||0} 次 · 印度 ${c.india||0} 次 · 本次 ${requested}${fallback}${voiceName} · ${playbackRate(q.level,'question').toFixed(2)}x`;
+    const current=key==='india'
+      ? indianPlaybackStatus(resolved,rate,'Indian English')
+      : accentLabel(lang)+(resolved?.voiceName?' · '+resolved.voiceName:'')+' · '+rate.toFixed(2)+'x';
+    if(status)status.textContent=`北美 ${c.northAmerica||0} 次 · 印度 ${c.india||0} 次 · 本次 ${current}`;
     save();
   }
 
@@ -1798,6 +1802,177 @@
     };
   }
 
+  let indianAudioContext=null;
+  let indianAudioSource=null;
+  const INDIAN_CLOUD_VOICE='en-IN-PrabhatNeural';
+  const INDIAN_TTS_CACHE='edan-indian-tts-v1';
+
+  function stopIndianCloudAudio(){
+    if(indianAudioSource){
+      try{indianAudioSource.stop();}catch(e){}
+      try{indianAudioSource.disconnect();}catch(e){}
+      indianAudioSource=null;
+    }
+  }
+
+  function primeIndianAudioContext(){
+    const Ctx=window.AudioContext||window.webkitAudioContext;
+    if(!Ctx)return null;
+    if(!indianAudioContext)indianAudioContext=new Ctx();
+    if(indianAudioContext.state==='suspended')indianAudioContext.resume().catch(()=>{});
+    return indianAudioContext;
+  }
+
+  function indianTtsHash(text,rate,voice=INDIAN_CLOUD_VOICE){
+    const input=voice+'|'+Number(rate||1).toFixed(2)+'|'+normalizeTtsText(text);
+    let h=2166136261;
+    for(let i=0;i<input.length;i++){
+      h^=input.charCodeAt(i);
+      h=Math.imul(h,16777619);
+    }
+    return (h>>>0).toString(36);
+  }
+
+  function indianTtsCacheRequest(text,rate,voice=INDIAN_CLOUD_VOICE){
+    return new Request(location.origin+'/__edan_indian_tts_cache__/'+indianTtsHash(text,rate,voice)+'.mp3');
+  }
+
+  async function readIndianTtsCache(text,rate,voice=INDIAN_CLOUD_VOICE){
+    if(!('caches' in window))return null;
+    try{
+      const cache=await caches.open(INDIAN_TTS_CACHE);
+      const hit=await cache.match(indianTtsCacheRequest(text,rate,voice));
+      return hit?await hit.blob():null;
+    }catch(e){return null;}
+  }
+
+  async function writeIndianTtsCache(text,rate,blob,voice=INDIAN_CLOUD_VOICE){
+    if(!('caches' in window)||!blob)return;
+    try{
+      const cache=await caches.open(INDIAN_TTS_CACHE);
+      await cache.put(
+        indianTtsCacheRequest(text,rate,voice),
+        new Response(blob,{headers:{'Content-Type':'audio/mpeg','Cache-Control':'max-age=31536000'}})
+      );
+    }catch(e){}
+  }
+
+  async function fetchCloudIndianTts(text,rate){
+    const cfg=window.EDAN_SUPABASE_CONFIG;
+    const client=window.EDAN_CLOUD?.client;
+    if(!cfg?.url||!cfg?.publishableKey||!client) {
+      const err=new Error('cloud_not_ready'); err.code='cloud_not_ready'; throw err;
+    }
+
+    const {data}=await client.auth.getSession();
+    const token=data?.session?.access_token;
+    if(!token){
+      const err=new Error('not_signed_in'); err.code='not_signed_in'; throw err;
+    }
+
+    const response=await fetch(cfg.url+'/functions/v1/indian-tts',{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+token,
+        'apikey':cfg.publishableKey,
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        text:normalizeTtsText(text),
+        rate:clamp(Number(rate)||1,.72,1.22),
+        voice:INDIAN_CLOUD_VOICE
+      })
+    });
+
+    if(!response.ok){
+      let detail={};
+      try{detail=await response.json();}catch(e){}
+      const err=new Error(detail?.error||('tts_http_'+response.status));
+      err.code=detail?.error||('tts_http_'+response.status);
+      err.status=response.status;
+      throw err;
+    }
+    return await response.blob();
+  }
+
+  async function playIndianCloudBlob(blob,audioContext){
+    const ctx=audioContext||primeIndianAudioContext();
+    if(!ctx)throw new Error('web_audio_unavailable');
+    if(ctx.state==='suspended')await ctx.resume();
+    const bytes=await blob.arrayBuffer();
+    const buffer=await ctx.decodeAudioData(bytes.slice(0));
+    stopIndianCloudAudio();
+    const source=ctx.createBufferSource();
+    source.buffer=buffer;
+    source.connect(ctx.destination);
+    source.onended=()=>{if(indianAudioSource===source)indianAudioSource=null;};
+    indianAudioSource=source;
+    source.start(0);
+  }
+
+  async function speakIndian(text,rate=1){
+    const local=resolveVoice('en-IN');
+    if(!local.unavailable){
+      const played=speak(text,rate,'en-IN');
+      return {...played,source:'device',cloud:false};
+    }
+
+    speechSynthesis?.cancel?.();
+    const audioContext=primeIndianAudioContext();
+    const normalized=normalizeTtsText(text);
+    const safeRate=clamp(Number(rate)||1,.72,1.22);
+
+    try{
+      let blob=await readIndianTtsCache(normalized,safeRate,INDIAN_CLOUD_VOICE);
+      let cached=!!blob;
+      if(!blob){
+        blob=await fetchCloudIndianTts(normalized,safeRate);
+        await writeIndianTtsCache(normalized,safeRate,blob,INDIAN_CLOUD_VOICE);
+      }
+      await playIndianCloudBlob(blob,audioContext);
+      return {
+        voice:null,
+        actualLang:'en-IN',
+        actualLabel:'Indian English',
+        voiceName:'Azure · Prabhat Neural',
+        naturalLike:true,
+        fallback:false,
+        strictIndian:true,
+        unavailable:false,
+        played:true,
+        cloud:true,
+        cached,
+        source:'cloud'
+      };
+    }catch(error){
+      const code=error?.code||error?.message||'cloud_tts_failed';
+      return {
+        voice:null,
+        actualLang:'en-IN',
+        actualLabel:'Indian English',
+        voiceName:code==='azure_speech_not_configured'?'Azure Speech 尚未設定':'雲端印度語音暫不可用',
+        naturalLike:false,
+        fallback:false,
+        strictIndian:true,
+        unavailable:true,
+        played:false,
+        cloud:true,
+        setupRequired:code==='azure_speech_not_configured',
+        errorCode:code,
+        source:'cloud'
+      };
+    }
+  }
+
+  function indianPlaybackStatus(resolved,rate,prefix='Indian English'){
+    const speed=Number(rate||1).toFixed(2)+'x';
+    if(resolved?.played&&resolved?.source==='device')return prefix+' · 本機 '+(resolved.voiceName||'en-IN voice')+' · '+speed;
+    if(resolved?.played&&resolved?.source==='cloud')return prefix+' · ☁ '+(resolved.voiceName||'Azure Indian TTS')+(resolved.cached?' · 快取':'')+' · '+speed;
+    if(resolved?.setupRequired)return prefix+' · ☁ Azure Speech 尚未設定 · '+speed;
+    if(resolved?.errorCode==='not_signed_in')return prefix+' · 請先登入後再播放 · '+speed;
+    return prefix+' · ⚠ 雲端印度語音暫不可用 · '+speed;
+  }
+
   function normalizeTtsText(text){
     return String(text||'')
       .normalize('NFKC')
@@ -1811,6 +1986,7 @@
   }
   function speak(text,rate=1,lang='en-US'){
     if(!('speechSynthesis' in window))return null;
+    stopIndianCloudAudio();
     speechSynthesis.cancel();
     const resolved=resolveVoice(lang);
     const spokenText=normalizeTtsText(text);
@@ -2098,13 +2274,13 @@
         const kind=audioBtn.dataset.modelAudio;
         const lang=kind==='india'?'en-IN':chooseVoiceLang(q.level||1);
         const rate=playbackRate(q.level||1,'question');
-        const resolved=speak(q.model,rate,lang);
         const status=audioBtn.closest('.model-answer')?.querySelector('[data-model-audio-status]');
+        if(kind==='india'&&status)status.textContent='Indian English · 正在準備語音…';
+        const resolved=kind==='india'?await speakIndian(q.model,rate):speak(q.model,rate,lang);
         if(status){
-          const requested=kind==='india'?'Indian English':accentLabel(lang);
-          const fallback=resolved?.fallback?` · fallback: ${resolved.actualLabel}`:'';
-          const voice=resolved?.voiceName?` · ${resolved.voiceName}`:'';
-          status.textContent=`${requested}${fallback}${voice} · ${rate.toFixed(2)}x`;
+          status.textContent=kind==='india'
+            ? indianPlaybackStatus(resolved,rate)
+            : accentLabel(lang)+(resolved?.voiceName?' · '+resolved.voiceName:'')+' · '+rate.toFixed(2)+'x';
         }
         return;
       }
