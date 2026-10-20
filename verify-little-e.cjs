@@ -65,7 +65,7 @@ assert.ok(html.indexOf('north-american-tts.js')<html.indexOf('app.js'));
 assert.ok(html.indexOf('indian-tts.js')<html.indexOf('app.js'));
 assert.doesNotMatch(html,/20261018v\d+/);
 assert.doesNotMatch(html,/Azure Indian English|Prabhat/);
-assert.match(html,/Local AI（Piper \/ SPICOR Indian English）/);
+assert.match(html,/Local AI[^<]*Piper Lessac US English[^<]*Piper SPICOR Indian English/);
 assert.match(qb,/contentVersion:\s*window\.EDAN_APP_VERSION\.release/);
 assert.match(sw,/importScripts\('\.\/version\.js'\)/);
 assert.match(sw,/EDAN_APP_VERSION\.cache/);
