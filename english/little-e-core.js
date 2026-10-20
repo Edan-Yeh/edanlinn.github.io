@@ -179,6 +179,57 @@
     return null;
   }
 
+  function isCurrentQuestionAnswerRequest(text){
+    const s=clean(text).replace(/\s+/g,' ');
+    return /^(?:這題|這個問題|目前這題|目前題目)?\s*(?:怎麼答|怎麼回答|如何回答|怎麼說)(?:比較好|會比較好|才好)?[?？!！。.，,\s]*$/i.test(s)
+      || /(?:這題|這個問題|目前這題|目前題目).*(?:怎麼答|怎麼回答|如何回答|給.*範例|常用.*範例)/i.test(s)
+      || /^(?:how (?:should|can|would) i answer (?:this|this question|the question)|how do i answer this)[?!.\s]*$/i.test(s);
+  }
+
+  function reusableAnswerTemplate(question={}){
+    const text=low(question.text||'');
+    if(/why should .*choose|why .*hire|choose you|hire you/.test(text)){
+      return {
+        en:'My advantage is [strength A] plus [strength B]. I can [key action], understand [business or customer need], and turn that into [result]. That is where I can add value compared with a more traditional candidate.',
+        zh:'通用骨架：先說你的差異化優勢 A＋B，再說你能做什麼，最後收在對客戶、團隊或專案帶來的結果。'
+      };
+    }
+    if(/^(how would|what would you do|how do you)|how would you/.test(text)){
+      return {
+        en:'I would first [step 1]. Then I would [step 2]. Finally, I would [step 3]. This helps us [business or customer outcome].',
+        zh:'通用骨架：先做什麼 → 接著做什麼 → 最後怎麼收斂 → 為什麼這樣做能帶來結果。'
+      };
+    }
+    if(/tell me about|describe|give me an example|example of/.test(text)){
+      return {
+        en:'One example is [situation]. My responsibility was [role]. I [action 1] and [action 2]. As a result, [outcome].',
+        zh:'通用骨架：情境 → 你的責任 → 兩個主要行動 → 結果。'
+      };
+    }
+    if(/strength|specific skills|what skills|strongest/.test(text)){
+      return {
+        en:'My main strength is [strength]. I use it to [action]. For example, [short example], which helped [result].',
+        zh:'通用骨架：先講一個核心優勢，再說怎麼用，最後補一個短例子與結果。'
+      };
+    }
+    if(/weakness|weaker|gap|improv/.test(text)){
+      return {
+        en:"One area I'm still strengthening is [gap]. I already have [related strength], and I'm improving it by [specific action].",
+        zh:'通用骨架：誠實說一個可控的 gap，再補你已有的相關能力，以及你正在怎麼補強。'
+      };
+    }
+    if(/why .*role|why .*company|why do you want|interested in this role/.test(text)){
+      return {
+        en:"I'm interested in this role because [reason 1] and [reason 2]. It matches my experience in [area], and it gives me the chance to [value or goal].",
+        zh:'通用骨架：兩個動機 → 連回你的既有經驗 → 說你能創造什麼價值或想發展什麼。'
+      };
+    }
+    return {
+      en:'My direct answer is [answer]. The two main points are [point 1] and [point 2]. For example, [short example or result].',
+      zh:'通用骨架：先直接回答，再補兩個重點，最後用一個短例子或結果收尾。'
+    };
+  }
+
   function reactionFor(text,intent='chat'){
     const e=emotionKind(text);
     if(e==='happy')return 'happy';
@@ -244,6 +295,8 @@
     return [
       'ANSWER-FIRST: respond to the user\'s actual message or question before adding anything else.',
       'A greeting gets a greeting. A direct question gets a direct answer. Do not answer an unrelated Little E profile fact.',
+      'When the user asks how to answer the current interview question, give a complete ready-to-say answer first. Never give only a framework, mnemonic, or coaching instructions.',
+      'If personal evidence is unavailable, give a realistic common sample and clearly treat it as an example instead of inventing user achievements.',
       'Only mention Little E hobbies, likes, birthday, favorite person, or personality when the user asks about Little E or when it is clearly relevant to the current topic.',
       'When the user expresses an emotion, acknowledge it before advice or English coaching unless coaching was explicitly requested.',
       'Follow short references such as “why?”, “為什麼？”, “真的假的？”, “所以呢？”, “然後呢？” and “那你呢？” using the immediately preceding conversation.',
@@ -253,5 +306,5 @@
     ];
   }
 
-  return Object.freeze({PROFILE,classifyIntent,socialKind,emotionKind,personaTopic,directReply,fallbackReply,resolveConversationContext,lastPersonaTopic,reactionFor,systemRules});
+  return Object.freeze({PROFILE,classifyIntent,socialKind,emotionKind,personaTopic,directReply,fallbackReply,resolveConversationContext,lastPersonaTopic,isCurrentQuestionAnswerRequest,reusableAnswerTemplate,reactionFor,systemRules});
 });

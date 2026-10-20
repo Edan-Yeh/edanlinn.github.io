@@ -652,6 +652,9 @@
       ...CORE.systemRules(),
       'Translation requests: translate only the requested sentence or current question when no sentence is supplied.',
       'Interview/work answers: direct answer first, then 2 key points, then stop.',
+      'If the user asks “這題怎麼回答 / how should I answer this?”, use the CURRENT LEARNING CONTEXT question and write an actual ready-to-say answer first. NEVER reply with only an answer framework or mnemonic.',
+      'Prefer the current question Reference answer when it exists. You may simplify or naturalize it, but do not ignore it.',
+      'If there is not enough personal evidence, give a common realistic sample answer and label it as a sample. Never invent the user\'s achievements or numbers.',
       'Site help: explain what to click in short steps.',
       'Do not invent work achievements, numbers, personal facts, or company facts not in context.',
       'EVERY response must use exactly: [EN]...[/EN] then [ZH]...[/ZH].',
@@ -826,6 +829,36 @@
     return after||ctx().question?.text||'';
   }
 
+  function currentQuestionAnswerPayload(q,{exampleOnly=false}={}){
+    if(!q)return null;
+    const template=CORE.reusableAnswerTemplate(q);
+    const ready=String(q.model||'').trim();
+    const intent=String(q.intent||'').trim();
+    const en=exampleOnly
+      ? [
+          'Common example:',
+          ready||template.en,
+          '',
+          'Reusable template:',
+          template.en
+        ].join('\n')
+      : [
+          'You can answer this question like this:',
+          '',
+          ready||template.en,
+          '',
+          'Reusable template:',
+          template.en
+        ].join('\n');
+    const zh=[
+      intent?('這題主要在問：'+intent):'這題先直接回答，再補最重要的理由或例子。',
+      '',
+      exampleOnly?'上面先給你一個常用範例；如果要換成自己的版本，可以套下面的通用骨架。':'上面第一段就是可以直接講出口的版本，不只給回答架構。',
+      template.zh
+    ].join('\n');
+    return assistantPayload(en,zh,{category:'interview_answer',petReaction:'thinking',answerFirst:true});
+  }
+
   function fallback(action='help'){
     const c=ctx();
     const q=c.question;
@@ -838,22 +871,20 @@
     }
 
     if(!q){
+      if(action==='answer'||action==='example'){
+        return assistantPayload(
+          'Paste the interview question and I will give you a ready-to-say answer. If your personal details are not available, I will give you a common sample instead of making facts up.',
+          '把面試題目貼給我，我會直接給你可以講出口的回答；如果沒有你的個人細節，我就給常用範例，不會亂編你的經歷。'
+        );
+      }
       return assistantPayload(
         'We can just chat. You can also paste one sentence and say “translate this,” or ask me how to use the site.',
         '現在沒有題目也沒關係，可以直接聊天。你也可以貼一句話叫我翻譯，或問我網站怎麼用。'
       );
     }
 
-    if(action==='answer'){
-      const fw=q.framework;
-      const en=fw
-        ? `Use this order: ${fw.mnemonic}. Start with: ${fw.steps.map(x=>x[3]).join(' → ')}\n\nReference: ${q.model}`
-        : `Give a direct answer, add two key points, then stop.\n\nReference: ${q.model}`;
-      const zh=fw
-        ? `先用這個順序聯想：${fw.mnemonic}。不要背整段，先記每一格的起手式再自己組句。`
-        : '先直接回答，再補兩個重點就停。';
-      return assistantPayload(en,zh);
-    }
+    if(action==='answer')return currentQuestionAnswerPayload(q);
+    if(action==='example')return currentQuestionAnswerPayload(q,{exampleOnly:true});
 
     if(action==='simple'){
       const sentences=String(q.model||'').split(/(?<=[.!?])\s+/).filter(Boolean);
@@ -895,8 +926,17 @@
         return;
       }
 
+      if((action==='answer'||action==='example')&&q){
+        const text=action==='answer'?'這題怎麼回答':'給我這題的常用範例';
+        addUserMessage(text);
+        rememberUserRequest(text);
+        addAssistantMessage(currentQuestionAnswerPayload(q,{exampleOnly:action==='example'}));
+        return;
+      }
+
       const prompts={
-        answer:'依據目前題目，建議我怎麼回答。先給我可以直接講出口的英文，再用中文解釋聯想架構。',
+        answer:'依據目前題目，直接給我一個可以講出口的完整英文回答；如果沒有我的個人資料，就給常用範例，不要只給架構。',
+        example:'給我目前題目一個常見、自然、可以直接講出口的英文範例，再補一個可重複使用的模板。',
         simple:'把目前題目的回答改成更簡單、更好說、更好記的版本。',
         keywords:'只整理目前題目的 cue words，並告訴我怎麼用它們聯想回答。',
         explain:'解釋目前題目真正想問什麼，以及面試官想聽什麼。',
@@ -919,6 +959,11 @@
     try{
       const intent=classifyIntent(text),direct=CORE.directReply(text,messages.slice(0,-1));
       if(direct){addAssistantMessage(assistantPayload(direct.en,direct.zh,{category:intent,...(direct.meta||{})}));return}
+      const currentQuestion=ctx().question;
+      if(currentQuestion&&CORE.isCurrentQuestionAnswerRequest(text)){
+        addAssistantMessage(currentQuestionAnswerPayload(currentQuestion));
+        return;
+      }
       const translation=extractTranslationPayload(text);
       if(intent==='translation'&&translation){const r=await translateSentence(translation);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'translation',petReaction:'thinking'}):fallback('help'));return}
       if(intent==='site_help'){const r=await askAI(text);addAssistantMessage(r?assistantPayload(r.en,r.zh,{category:'site_help',petReaction:'reading'}):fallback('site'));return}
