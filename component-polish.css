@@ -179,3 +179,88 @@ body .module-togglebar button{background:var(--app-surface)!important;color:var(
 .quiz-panel .quiz-bank-count span,
 .quiz-panel .quiz-stats span {color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important;}
 .quiz-panel .quiz-controls :is(button,select):focus-visible {outline:2px solid var(--app-accent)!important;outline-offset:2px!important;}
+
+/* Daily training theme consistency (2026-10-20): scoped to the daily module. */
+#daily .daily-controls{
+  background:var(--app-soft)!important;
+  border:1px solid var(--app-border)!important;
+  border-radius:16px!important;
+  box-shadow:none!important;
+  color:var(--app-text)!important;
+}
+#daily .daily-controls label{
+  color:var(--app-text)!important;
+  -webkit-text-fill-color:var(--app-text)!important;
+  opacity:1!important;
+}
+#daily .daily-controls select{
+  color:var(--app-text)!important;
+  -webkit-text-fill-color:var(--app-text)!important;
+  background:var(--app-surface)!important;
+  border:1px solid var(--app-border)!important;
+  border-radius:10px!important;
+  opacity:1!important;
+}
+#daily .daily-controls select:focus-visible{
+  outline:2px solid var(--app-accent)!important;
+  outline-offset:2px!important;
+}
+#daily #daily-count,
+#daily .quiz-device-note{
+  color:var(--app-muted)!important;
+  -webkit-text-fill-color:var(--app-muted)!important;
+  opacity:1!important;
+  font-size:12px!important;
+  line-height:1.7!important;
+}
+#daily #daily-practice,
+#daily #daily-show-all{
+  min-height:42px!important;
+  padding:10px 14px!important;
+  border-radius:11px!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  opacity:1!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+#daily #daily-practice{
+  color:var(--app-accent-ink)!important;
+  -webkit-text-fill-color:var(--app-accent-ink)!important;
+  background:var(--app-accent)!important;
+  border:1px solid var(--app-accent)!important;
+}
+#daily #daily-show-all{
+  color:var(--app-text)!important;
+  -webkit-text-fill-color:var(--app-text)!important;
+  background:var(--app-surface)!important;
+  border:1px solid var(--app-border)!important;
+}
+#daily #daily-show-all:hover:not(:disabled){
+  background:var(--app-soft)!important;
+  border-color:var(--app-accent)!important;
+  color:var(--app-accent)!important;
+  -webkit-text-fill-color:var(--app-accent)!important;
+}
+#daily #daily-practice:hover:not(:disabled){filter:brightness(.92)!important}
+#daily :is(#daily-practice,#daily-show-all):focus-visible{
+  outline:2px solid var(--app-accent)!important;
+  outline-offset:2px!important;
+}
+#daily .reinforcement-panel{
+  background:var(--app-soft)!important;
+  border-color:var(--app-border)!important;
+  color:var(--app-text)!important;
+}
+#daily .reinforcement-panel h3{
+  color:var(--app-accent)!important;
+  -webkit-text-fill-color:var(--app-accent)!important;
+}
+#daily .reinforcement-panel :is(p,li,b,strong){
+  color:var(--app-text)!important;
+  -webkit-text-fill-color:var(--app-text)!important;
+}
+#daily .reinforcement-panel small{
+  color:var(--app-muted)!important;
+  -webkit-text-fill-color:var(--app-muted)!important;
+}
