@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-10-20",
-  "completedDays": 24,
+  "completedDays": 25,
   "currentTrack": "Cloud × AI Solutions Architect / Day 24 AI Tutor Async Reliability",
   "scores": [
     {
@@ -98,6 +98,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 24,
       "score": 50
+    },
+    {
+      "day": 25,
+      "score": 72
     }
   ],
   "roadmap": [
@@ -4024,6 +4028,127 @@ window.CLOUD_SA_DATA = {
           "正式帳務變更需授權、覆核、稽核"
         ]
       }
+    },
+    {
+      "day": 25,
+      "date": "2026-10-20",
+      "topic": "AI Programming / Python async-await / Durable Job Queue / Loan AI Worker",
+      "score": 72,
+      "status": "completed",
+      "answers": {
+        "Q1": "B",
+        "Q2": "A、B、D、F",
+        "Q3": "1→A、2→B、3→C",
+        "practice": "1.Vue送出錯誤分析\n2.spring boot建立job Id，回傳200\n3.Postgres 存取交易資料)(交易編號,交易狀態,...等)\n4.ython Worker 領取，分析提示,檢核欄位，AI Timeout=2秒，Retry=3次，Idempotency=trade_Id(防止重複交易)\n5.Vue 查詢結果\n\n如果Retry失敗三次後，會將記錄寫入Postgres ，要復原前需要確認原因"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI 放款欄位分析耗時 60 秒，關閉 Vue 仍需完成並保留結果，何種設計符合需求？",
+          "options": [
+            "A. Vue setTimeout 等待",
+            "B. FastAPI async def 保證不遺失",
+            "C. Postgres 持久化 Job + 獨立 Worker",
+            "D. Vue 直接寫 Loan DB"
+          ],
+          "answer": "B",
+          "correct": "C",
+          "earned": 0
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "兩個 Worker 同時領取工作且其中一個當機，哪些做法合理？",
+          "options": [
+            "A. FOR UPDATE SKIP LOCKED",
+            "B. 持久化 Idempotency Key 與唯一約束",
+            "C. 無限制重試",
+            "D. 有限 Retry + Backoff + 失敗隔離",
+            "E. AI Worker 修改正式放款",
+            "F. Job 狀態、Request ID 與錯誤版本紀錄"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "1 等待外部 AI HTTP；2 可靠長時間報告；3 PyTorch 大量運算，配對 A async/await、B 持久化 Job/Worker、C Process/GPU Worker",
+          "answer": "1→A、2→B、3→C",
+          "correct": "1→A、2→B、3→C",
+          "earned": 20
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 0,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 32,
+          "max": 45,
+          "breakdown": {
+            "Flow": 8,
+            "Persistence": 5,
+            "Reliability": 13,
+            "Result and data protection": 6
+          }
+        }
+      },
+      "mastered": [
+        "Worker 領取的併發控制 FOR UPDATE SKIP LOCKED",
+        "Retry、Backoff、Idempotency、追蹤紀錄",
+        "Python async I/O、持久化 Job、CPU/GPU Worker 配對"
+      ],
+      "corrections": [
+        [
+          "Q1 誤認 async def 保證工作不遺失",
+          "async/await 提升 I/O 等待效率；持久化 Job Table 與 Worker 才能支援故障後恢復"
+        ],
+        [
+          "非同步建立工作回傳 200",
+          "通常回傳 202 Accepted 與 Job ID，讓 Vue 查詢工作狀態"
+        ],
+        [
+          "未定義 Job 狀態",
+          "Postgres Job Table 應追蹤 Pending/Running/Completed/Failed、重試與逾時回收"
+        ],
+        [
+          "trade_Id 作為冪等鍵過於粗略",
+          "可依 tradeId + jobType + requestVersion 建立唯一約束，防止不同任務互相覆蓋"
+        ],
+        [
+          "未明確保護正式交易與成績",
+          "AI Worker 僅寫授權分析結果；正式交易/成績由 Spring Boot 控制"
+        ]
+      ],
+      "memory": [
+        "async/await 不等於可靠持久化背景工作",
+        "HTTP 202 Accepted + Job ID + 狀態查詢",
+        "Application Rollback 不等於交易補正",
+        "AI Worker 不得直接寫正式放款交易或成績"
+      ],
+      "archive": "docs/cloud-ai-day25-2026-10-20.md"
     }
   ],
   "cloudComparison": {
