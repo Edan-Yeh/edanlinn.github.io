@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-20",
-  "completedDays": 25,
+  "updatedAt": "2026-10-21",
+  "completedDays": 26,
   "currentTrack": "Cloud × AI Solutions Architect / Day 24 AI Tutor Async Reliability",
   "scores": [
     {
@@ -102,6 +102,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 25,
       "score": 72
+    },
+    {
+      "day": 26,
+      "score": 92
     }
   ],
   "roadmap": [
@@ -4149,6 +4153,146 @@ window.CLOUD_SA_DATA = {
         "AI Worker 不得直接寫正式放款交易或成績"
       ],
       "archive": "docs/cloud-ai-day25-2026-10-20.md"
+    },
+    {
+      "day": 26,
+      "date": "2026-10-21",
+      "topic": "Cloud × AI / RAG Architecture / Loan SOP Knowledge Retrieval",
+      "score": 92,
+      "status": "completed",
+      "answers": {
+        "Q1": "B",
+        "Q2": "A、B、C、D、F",
+        "Q3": "A",
+        "practice": "1.Vue 上傳放款SOP\n2.Spring Boot 登入驗證、RBAC、文件存取權限\n3.FastAPI RAG檢索授權文件與現行有效版本，先將SOP Chunking，Embedding文字轉換向量，\n4..Postgres / Search Index尋找相關 SOP 段落，Grounding 比對出版本差異及生效日，以及回答引用的可追溯性\n5.LLM 依檢索內容產生回答，附文件引用\n\n如果查無相關資訊，或是版本過其AI 應明確說明限制"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "合成放款 SOP 有 v1（舊版）及 v2（現行），不同角色可查閱不同文件。行員詢問「展期需要哪些覆核？」最合適的設計是哪一項？",
+          "options": [
+            "A. 把所有版本及所有角色的文件交給 LLM，自行判斷",
+            "B. 檢索前套用角色、文件生效日期及版本條件，回覆引用 SOP ID、版本與段落",
+            "C. 只依 Embedding 相似度，最高分就是正式規則",
+            "D. 讓 AI 直接修改 Loan DB 補上覆核狀態"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "檢索前授權與版本過濾、可追溯引用；相似度不代表授權或有效性。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "哪些設計適合 Cloud SA Academy AI Tutor？",
+          "options": [
+            "A. Spring Boot 先驗證登入與 RBAC，再限制可檢索文件集合",
+            "B. 保存 source_id、version、section、effective_date，方便引用與追查",
+            "C. 將檢索到的文件視為不可信資料，防止 Prompt Injection 指示越權",
+            "D. 依查詢型態評估 Chunk 大小、Keyword、Vector、Hybrid 的檢索效果",
+            "E. Embedding 相似度高，就代表使用者有權讀取該文件",
+            "F. 金融範例只使用合成或經授權去識別資料，不上傳 IBM／CTBC 機密"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "權限、文件引用、注入防護、檢索評估、資料保護均必要；E 混淆語意相似度與存取授權。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "Cloud SA Academy 在 NAS Docker 上運作，文件量不大，希望先不增加額外費用。哪一種 V1 → V2 策略最合理？",
+          "options": [
+            "A. 先以 Postgres Full-Text Search 加上權限及版本過濾建立基準，驗證後再評估 pgvector 或託管 RAG",
+            "B. 直接同時開啟 AWS、Azure、GCP 全部託管搜尋服務，不需考慮預算",
+            "C. 把所有文件及向量只放在 Vue localStorage，作為正式知識庫",
+            "D. 必須先租 GPU 訓練大型語言模型，才能開始 RAG"
+          ],
+          "answer": "A",
+          "correct": "A",
+          "earned": 20,
+          "explanation": "使用既有 Postgres 與 NAS 建立低成本可測量基準，必要時再擴充。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 37,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "Vue 上傳、Spring Boot 驗證與 RBAC",
+              "earned": 9,
+              "max": 10
+            },
+            {
+              "item": "Chunking、Embedding、檢索流程",
+              "earned": 9,
+              "max": 10
+            },
+            {
+              "item": "版本、生效日、Grounding 與引用",
+              "earned": 9,
+              "max": 10
+            },
+            {
+              "item": "查無資料、Prompt Injection、正式資料保護",
+              "earned": 10,
+              "max": 15
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "RAG RBAC 與檢索前文件版本、生效日過濾",
+        "Grounding 文件引用及可追溯性",
+        "Keyword/Vector/Hybrid 與零成本優先架構選型"
+      ],
+      "corrections": [
+        [
+          "索引生命週期未明確",
+          "持久化 Job 並在索引完成驗證後發布"
+        ],
+        [
+          "Prompt Injection 防護未明確",
+          "檢索文件是不可信資料，不允許覆蓋權限"
+        ],
+        [
+          "正式資料隔離未明確",
+          "AI 最小權限，不能寫正式 Loan DB 或成績"
+        ]
+      ],
+      "memory": [
+        "RAG 相似度不代表授權",
+        "SOP 版本與生效日檢索前過濾",
+        "AI 無依據時拒絕猜測",
+        "文件索引需可靠 Job"
+      ],
+      "archive": "docs/cloud-ai-day26-2026-10-21.md"
     }
   ],
   "cloudComparison": {
