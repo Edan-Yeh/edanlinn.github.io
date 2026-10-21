@@ -264,3 +264,16 @@ body .module-togglebar button{background:var(--app-surface)!important;color:var(
   color:var(--app-muted)!important;
   -webkit-text-fill-color:var(--app-muted)!important;
 }
+
+/* Quiz challenge: ensure all question and navigation colors follow active theme. */
+#quiz .quiz-card{background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
+#quiz .quiz-meta,#quiz .quiz-device-note{color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important}
+#quiz .quiz-option{background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important}
+#quiz .quiz-option .letter{color:var(--app-accent)!important;-webkit-text-fill-color:var(--app-accent)!important}
+#quiz .quiz-option:hover:not(:disabled),#quiz .quiz-option:focus-visible{background:var(--app-soft)!important;border-color:var(--app-accent)!important}
+#quiz .quiz-option.correct,#quiz .quiz-result.correct{background:#e5f5ed!important;border-color:#28724d!important;color:#144c30!important;-webkit-text-fill-color:#144c30!important}
+#quiz .quiz-option.wrong,#quiz .quiz-result.wrong{background:#fff0f0!important;border-color:#a43c46!important;color:#78242d!important;-webkit-text-fill-color:#78242d!important}
+#quiz .quiz-next{background:var(--app-accent)!important;border:1px solid var(--app-accent)!important;color:var(--app-accent-ink)!important;-webkit-text-fill-color:var(--app-accent-ink)!important;box-shadow:none!important}
+#quiz .quiz-next:hover:not(:disabled){filter:brightness(.94)!important}
+#quiz .quiz-next:disabled{opacity:.55!important;cursor:not-allowed!important;box-shadow:none!important}
+#quiz .quiz-next:focus-visible{outline:2px solid var(--app-accent)!important;outline-offset:3px!important}
