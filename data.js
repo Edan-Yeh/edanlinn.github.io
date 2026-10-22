@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-21",
-  "completedDays": 26,
+  "updatedAt": "2026-10-22",
+  "completedDays": 27,
   "currentTrack": "Cloud × AI Solutions Architect / Day 24 AI Tutor Async Reliability",
   "scores": [
     {
@@ -106,6 +106,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 26,
       "score": 92
+    },
+    {
+      "day": 27,
+      "score": 78
     }
   ],
   "roadmap": [
@@ -4293,6 +4297,129 @@ window.CLOUD_SA_DATA = {
         "文件索引需可靠 Job"
       ],
       "archive": "docs/cloud-ai-day26-2026-10-21.md"
+    },
+    {
+      "day": 27,
+      "date": "2026-10-22",
+      "topic": "AI Deep Dive: Training, Inference, Overfitting, Evaluation and AI Tutor Model Architecture",
+      "status": "completed",
+      "score": 78,
+      "answers": {
+        "Q1": "B",
+        "Q2": "A、C、D、F",
+        "Q3": "1→C、2→B、3→A、4→D",
+        "practice": "1. Vue 傳入一筆新練習紀錄，Spring Boot 驗證身分及上傳權限。\n2. Spring Boot 建立資料與索引 Job，保存 Pending 狀態。\n3. FastAPI 已部署模型推論(Inference)\n4. ML Model 預測弱點或難易度\n5. 傳回Spring Boot=>Vue 顯示最後結果\n6.Timeout設定30秒，失敗紀錄後Rollback\n\nData Leakage、防止過度擬合、模型選型與評估、權限分工、Timeout、Rollback我不知道要填甚麼\n雲端託管服務我不知道要用甚麼角度去填寫"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "新練習紀錄輸入已訓練模型，回傳補強機率 0.82 是什麼？",
+          "options": [
+            "A Training",
+            "B Inference",
+            "C Backpropagation",
+            "D Validation"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "Inference 使用已訓練模型預測，不更新權重。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "合成學生資料訓練模型哪些做法合理？",
+          "options": [
+            "A 切分 Train/Validation/Test",
+            "B 使用未來正式考試成績當輸入",
+            "C 檢查 Precision/Recall/Confusion Matrix",
+            "D 檢查類別不平衡",
+            "E AI 覆寫正式成績",
+            "F 保留版本、指標與授權紀錄"
+          ],
+          "answer": [
+            "A",
+            "C",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "C",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "B 造成 Data Leakage；E 破壞權限。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "1 更新模型參數、2 訓練99%新資料61%、3 FastAPI 模型預測、4 保留資料最終評估；配對 A Inference B Overfitting C Training D Held-out Test",
+          "answer": "1→C、2→B、3→A、4→D",
+          "correct": "1→C、2→B、3→A、4→D",
+          "earned": 20,
+          "explanation": "Training、Overfitting、Inference、Held-out Test 四項配對正確。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 23,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "資料與 Data Leakage",
+              "earned": 2,
+              "max": 10
+            },
+            {
+              "item": "訓練、模型與評估",
+              "earned": 1,
+              "max": 10
+            },
+            {
+              "item": "系統分工與權限",
+              "earned": 9,
+              "max": 10
+            },
+            {
+              "item": "Timeout、降級與 Rollback",
+              "earned": 8,
+              "max": 10
+            },
+            {
+              "item": "雲端選型與成本",
+              "earned": 3,
+              "max": 5
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Training vs Inference",
+        "Overfitting 和 Held-out Test",
+        "Vue/Spring Boot/FastAPI/ML 推論分工"
+      ],
+      "corrections": [
+        "Data Leakage：只能用預測當下可得特徵；不得用未來成績",
+        "Train/Validation/Test 與 Logistic Regression baseline；類別不平衡需 Precision/Recall/F1",
+        "模型版本回退不等於 DB rollback；正式交易另需補償或沖正",
+        "NAS CPU 先行；SLA/負載/維運需求才比較 SageMaker AI/Azure ML/Vertex AI"
+      ],
+      "archive": "docs/cloud-ai-day27-2026-10-22.md"
     }
   ],
   "cloudComparison": {
