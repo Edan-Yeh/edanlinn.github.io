@@ -1,0 +1,66 @@
+/* Theme consistency audit 2026-10-22. Loaded LAST, intentionally scoped to page UI.
+   Preserve game viewport artwork, semantic correct/wrong colors and charts. */
+:root{
+  --audit-success-bg:#e5f5ed;--audit-success-border:#28724d;--audit-success-text:#144c30;
+  --audit-error-bg:#fff0f0;--audit-error-border:#a43c46;--audit-error-text:#78242d;
+  --audit-focus:var(--app-accent);
+}
+html[data-site-theme="black"]{
+  --audit-success-bg:#183b30;--audit-success-border:#66c7a0;--audit-success-text:#b3f3d5;
+  --audit-error-bg:#43252e;--audit-error-border:#ed8f9d;--audit-error-text:#ffd5dd;
+}
+:is(#start-here,#dashboard,#portfolio,#learning-method,#ai-foundations,#modules,#skill-map,#examples,#glossary,#quiz,#daily,#days) :is(input,textarea,select){
+  color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important;
+  background-color:var(--app-surface)!important;border-color:var(--app-border)!important;
+  caret-color:var(--app-accent)!important;
+}
+:is(#start-here,#dashboard,#portfolio,#learning-method,#ai-foundations,#modules,#skill-map,#examples,#glossary,#quiz,#daily,#days) :is(input,textarea,select)::placeholder{
+  color:var(--app-muted)!important;opacity:1!important;-webkit-text-fill-color:var(--app-muted)!important;
+}
+:is(#start-here,#dashboard,#portfolio,#learning-method,#ai-foundations,#modules,#skill-map,#examples,#glossary,#quiz,#daily,#days) :is(button,a,input,textarea,select):focus-visible{
+  outline:2px solid var(--audit-focus)!important;outline-offset:2px!important;
+}
+:is(#dashboard,#portfolio,#learning-method,#ai-foundations,#modules,#skill-map,#examples,#glossary,#quiz,#daily) :is(.muted,small,.hint,.subtitle,.description){
+  color:var(--app-muted)!important;-webkit-text-fill-color:var(--app-muted)!important;
+}
+#quiz :is(.quiz-panel,.quiz-card,.quiz-bank-count,.quiz-stats>div,.quiz-result){
+  color:var(--app-text)!important;border-color:var(--app-border)!important;
+}
+#quiz .quiz-option:not(.correct):not(.wrong){
+  color:var(--app-text)!important;-webkit-text-fill-color:var(--app-text)!important;
+  background:var(--app-surface)!important;border-color:var(--app-border)!important;
+}
+#quiz .quiz-option:not(.correct):not(.wrong):hover:not(:disabled){
+  background:var(--app-soft)!important;border-color:var(--app-accent)!important;
+}
+#quiz .quiz-option.correct,#quiz .quiz-result.correct{
+  background:var(--audit-success-bg)!important;border-color:var(--audit-success-border)!important;
+  color:var(--audit-success-text)!important;-webkit-text-fill-color:var(--audit-success-text)!important;
+}
+#quiz .quiz-option.wrong,#quiz .quiz-result.wrong{
+  background:var(--audit-error-bg)!important;border-color:var(--audit-error-border)!important;
+  color:var(--audit-error-text)!important;-webkit-text-fill-color:var(--audit-error-text)!important;
+}
+#quiz .quiz-option.correct :is(span,b,strong),#quiz .quiz-result.correct :is(span,b,strong){
+  color:var(--audit-success-text)!important;-webkit-text-fill-color:var(--audit-success-text)!important;
+}
+#quiz .quiz-option.wrong :is(span,b,strong),#quiz .quiz-result.wrong :is(span,b,strong){
+  color:var(--audit-error-text)!important;-webkit-text-fill-color:var(--audit-error-text)!important;
+}
+#quiz .quiz-next:not(:disabled),#daily #daily-practice:not(:disabled){
+  background:var(--app-accent)!important;border-color:var(--app-accent)!important;
+  color:var(--app-accent-ink)!important;-webkit-text-fill-color:var(--app-accent-ink)!important;
+}
+#quiz .quiz-next:disabled{opacity:.5!important;box-shadow:none!important;filter:none!important}
+#daily :is(.day,.day-head,.day-body,.reinforcement-panel){border-color:var(--app-border)!important;color:var(--app-text)!important}
+#daily :is(.day-head,.day-body){background:var(--app-surface)!important}
+#daily :is(.daily-controls,.reinforcement-panel){background:var(--app-soft)!important}
+#daily .filter button.active{background:var(--app-accent)!important;color:var(--app-accent-ink)!important;-webkit-text-fill-color:var(--app-accent-ink)!important}
+#glossary :is(.glossary-results,.glossary-hints,.glossary-result){color:var(--app-text)!important;border-color:var(--app-border)!important}
+#glossary .glossary-hints button{background:var(--app-soft)!important;color:var(--app-accent)!important;border-color:var(--app-border)!important}
+#glossary .glossary-hints button:hover{border-color:var(--app-accent)!important}
+:is(.sidebar,.top) :is(button,a,select):focus-visible{outline:2px solid var(--app-accent)!important;outline-offset:2px!important}
+@media(forced-colors:active){
+  #quiz .quiz-option.correct{outline:2px solid Highlight!important}
+  #quiz .quiz-option.wrong{outline:2px dashed Highlight!important}
+}
