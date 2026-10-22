@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.21-v46');
-assert.equal(version.cache,'edan-english-coach-20261021-v46');
+assert.equal(version.release,'2026.10.22-v47');
+assert.equal(version.cache,'edan-english-coach-20261022-v47');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -49,7 +49,8 @@ assert.equal(core.isCurrentQuestionAnswerRequest('這個問題要怎麼答？'),
 assert.equal(core.isCurrentQuestionAnswerRequest('how should I answer this?'),true);
 const chooseTemplate=core.reusableAnswerTemplate({text:'Why should we choose you over a candidate with more traditional project management experience?'});
 assert.match(chooseTemplate.en,/My advantage is/);
-assert.match(chooseTemplate.zh,/差異化/);
+assert.match(chooseTemplate.zh,/我的優勢是/);
+assert.match(chooseTemplate.zh,/較傳統的候選人/);
 
 const html=fs.readFileSync(path.join(root,'english/challenge.html'),'utf8');
 const qb=fs.readFileSync(path.join(root,'english/question-bank.js'),'utf8');
@@ -81,6 +82,13 @@ assert.match(sw,/url\.origin!==self\.location\.origin/);
 assert.match(le,/normalizePetAsset/);
 assert.match(le,/CORE\.directReply/);
 assert.match(le,/function currentQuestionAnswerPayload\(/);
+assert.match(le,/const readyZh=String\(q\.modelZh\|\|''\)/);
+assert.match(le,/可套用模板：/);
+assert.match(le,/function repairLegacyBilingualMessages\(/);
+assert.match(le,/repairedInV47=true/);
+assert.match(le,/targetLanguage:'zh-Hant'/);
+assert.match(le,/targetLanguage:'zh-TW'/);
+assert.doesNotMatch(le,/targetIsTraditional[\s\S]{0,500}targetLanguage:'zh'/);
 assert.match(le,/CORE\.isCurrentQuestionAnswerRequest\(text\)/);
 assert.match(le,/NEVER reply with only an answer framework or mnemonic/);
 assert.match(le,/Common example:/);
@@ -134,4 +142,4 @@ assert.match(indianWorker,/InferenceSession\.create/);
 assert.match(indianWorker,/MODEL_CACHE='edan-indian-piper-model-v2'/);
 assert.match(indianWorker,/piper-phonemize\.js/);
 assert.match(phonemizer,/self\.createPiperPhonemize=createPiperPhonemize/);
-console.log('PASS: v46 answer-first Little E interview helper, reusable examples, dual Local AI speech and prior regressions.');
+console.log('PASS: v47 aligned Traditional Chinese translations on desktop/mobile, legacy repair, answer-first Little E and prior regressions.');

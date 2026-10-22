@@ -191,42 +191,42 @@
     if(/why should .*choose|why .*hire|choose you|hire you/.test(text)){
       return {
         en:'My advantage is [strength A] plus [strength B]. I can [key action], understand [business or customer need], and turn that into [result]. That is where I can add value compared with a more traditional candidate.',
-        zh:'通用骨架：先說你的差異化優勢 A＋B，再說你能做什麼，最後收在對客戶、團隊或專案帶來的結果。'
+        zh:'我的優勢是［優勢 A］加上［優勢 B］。我能夠［關鍵行動］、理解［業務或客戶需求］，並把這些轉化成［結果］。相較於較傳統的候選人，這就是我能帶來的額外價值。'
       };
     }
     if(/^(how would|what would you do|how do you)|how would you/.test(text)){
       return {
         en:'I would first [step 1]. Then I would [step 2]. Finally, I would [step 3]. This helps us [business or customer outcome].',
-        zh:'通用骨架：先做什麼 → 接著做什麼 → 最後怎麼收斂 → 為什麼這樣做能帶來結果。'
+        zh:'我會先［步驟 1］。接著我會［步驟 2］。最後，我會［步驟 3］。這能幫助我們達成［業務或客戶成果］。'
       };
     }
     if(/tell me about|describe|give me an example|example of/.test(text)){
       return {
         en:'One example is [situation]. My responsibility was [role]. I [action 1] and [action 2]. As a result, [outcome].',
-        zh:'通用骨架：情境 → 你的責任 → 兩個主要行動 → 結果。'
+        zh:'有一個例子是［情境］。當時我的責任是［角色］。我做了［行動 1］和［行動 2］。最後帶來了［結果］。'
       };
     }
     if(/strength|specific skills|what skills|strongest/.test(text)){
       return {
         en:'My main strength is [strength]. I use it to [action]. For example, [short example], which helped [result].',
-        zh:'通用骨架：先講一個核心優勢，再說怎麼用，最後補一個短例子與結果。'
+        zh:'我的主要優勢是［優勢］。我會運用這項優勢來［行動］。例如，［簡短例子］，這幫助我們達成了［結果］。'
       };
     }
     if(/weakness|weaker|gap|improv/.test(text)){
       return {
         en:"One area I'm still strengthening is [gap]. I already have [related strength], and I'm improving it by [specific action].",
-        zh:'通用骨架：誠實說一個可控的 gap，再補你已有的相關能力，以及你正在怎麼補強。'
+        zh:'我目前仍在加強的一個領域是［能力缺口］。我已經具備［相關優勢］，也正透過［具體行動］持續補強。'
       };
     }
     if(/why .*role|why .*company|why do you want|interested in this role/.test(text)){
       return {
         en:"I'm interested in this role because [reason 1] and [reason 2]. It matches my experience in [area], and it gives me the chance to [value or goal].",
-        zh:'通用骨架：兩個動機 → 連回你的既有經驗 → 說你能創造什麼價值或想發展什麼。'
+        zh:'我對這個職位有興趣，主要是因為［原因 1］和［原因 2］。它與我在［領域］的經驗很契合，也讓我有機會［創造的價值或發展目標］。'
       };
     }
     return {
       en:'My direct answer is [answer]. The two main points are [point 1] and [point 2]. For example, [short example or result].',
-      zh:'通用骨架：先直接回答，再補兩個重點，最後用一個短例子或結果收尾。'
+      zh:'我的直接回答是［答案］。最重要的兩個重點是［重點 1］和［重點 2］。例如，［簡短例子或結果］。'
     };
   }
 
@@ -297,6 +297,7 @@
       'A greeting gets a greeting. A direct question gets a direct answer. Do not answer an unrelated Little E profile fact.',
       'When the user asks how to answer the current interview question, give a complete ready-to-say answer first. Never give only a framework, mnemonic, or coaching instructions.',
       'If personal evidence is unavailable, give a realistic common sample and clearly treat it as an example instead of inventing user achievements.',
+      'BILINGUAL ALIGNMENT: Traditional Chinese must translate the English answer faithfully. Never put coaching instructions, a framework, or different information in the Chinese translation block.',
       'Only mention Little E hobbies, likes, birthday, favorite person, or personality when the user asks about Little E or when it is clearly relevant to the current topic.',
       'When the user expresses an emotion, acknowledge it before advice or English coaching unless coaching was explicitly requested.',
       'Follow short references such as “why?”, “為什麼？”, “真的假的？”, “所以呢？”, “然後呢？” and “那你呢？” using the immediately preceding conversation.',

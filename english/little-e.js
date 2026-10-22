@@ -117,11 +117,36 @@
     localStorage.setItem(PREF_KEY,JSON.stringify({...langPrefs,scenario}));
   }
 
+  function repairLegacyBilingualMessages(list=[]){
+    let changed=false;
+    for(const m of list){
+      if(m?.role!=='assistant')continue;
+      const en=String(m.en||'');
+      const zh=String(m.zh||'');
+      if(!/Use this order:|Reference:/i.test(en))continue;
+      if(!/聯想|起手式|回答架構|兩個重點/.test(zh))continue;
+      const reference=en.match(/Reference:\s*([\s\S]+)$/i)?.[1]?.trim();
+      if(!reference)continue;
+      const q=(window.EDAN_ENGLISH_CONTENT?.questions||[]).find(x=>String(x.model||'').trim()===reference);
+      if(!q)continue;
+      const template=CORE.reusableAnswerTemplate(q);
+      const modelZh=String(q.modelZh||window.EDAN_ENGLISH_CONTENT?.answerTranslations?.[q.id]||'').trim();
+      m.en=['You can answer this question like this:','',q.model,'','Reusable template:',template.en].join('\n');
+      m.zh=['你可以這樣回答：','',modelZh||template.zh,'','可套用模板：',template.zh].join('\n');
+      m.category='interview_answer';
+      m.bilingualAligned=true;
+      m.repairedInV47=true;
+      changed=true;
+    }
+    return changed;
+  }
+
   function loadChat(){
     try{
       const raw=localStorage.getItem(chatStorageKey());
       const parsed=JSON.parse(raw||'[]');
       messages=Array.isArray(parsed)?parsed.filter(m=>m&&m.role).slice(-40):[];
+      if(repairLegacyBilingualMessages(messages))saveChat();
     }catch(e){messages=[];}
     renderMessages();
   }
@@ -658,6 +683,7 @@
       'Site help: explain what to click in short steps.',
       'Do not invent work achievements, numbers, personal facts, or company facts not in context.',
       'EVERY response must use exactly: [EN]...[/EN] then [ZH]...[/ZH].',
+      'The [ZH] block must be a faithful natural Traditional Chinese (Taiwan) translation of the [EN] block, preserving the same sections, examples, and meaning. Never use [ZH] for separate coaching notes that are absent from [EN].',
       'CURRENT SCENARIO: '+scenarioPrompt()
     ].join('\n');
   }
@@ -783,11 +809,27 @@
 
   async function makeTranslator(source,target){
     if(!('Translator' in window))return null;
-    const attempts=[
-      {sourceLanguage:source,targetLanguage:target},
-      {sourceLanguage:source.startsWith('zh')?'zh':source,targetLanguage:target.startsWith('zh')?'zh':target}
-    ];
+    const targetIsTraditional=/^zh-(?:Hant|TW)$/i.test(target);
+    const sourceIsChinese=/^zh/i.test(source);
+    const attempts=targetIsTraditional
+      ? [
+          {sourceLanguage:source,targetLanguage:'zh-Hant'},
+          {sourceLanguage:source,targetLanguage:'zh-TW'}
+        ]
+      : sourceIsChinese
+        ? [
+            {sourceLanguage:source,targetLanguage:target},
+            {sourceLanguage:'zh-Hant',targetLanguage:target},
+            {sourceLanguage:'zh-TW',targetLanguage:target},
+            {sourceLanguage:'zh',targetLanguage:target}
+          ]
+        : [{sourceLanguage:source,targetLanguage:target}];
+
+    const seen=new Set();
     for(const opts of attempts){
+      const key=opts.sourceLanguage+'>'+opts.targetLanguage;
+      if(seen.has(key))continue;
+      seen.add(key);
       try{
         return await Translator.create({
           ...opts,
@@ -818,7 +860,7 @@
       }catch(e){}
     }
 
-    const ai=await askAI(`Translate exactly this one sentence naturally. Do not add coaching unless necessary:\n${input}`);
+    const ai=await askAI(`Translate exactly this one sentence naturally. If translating English to Chinese, use natural Traditional Chinese as used in Taiwan (zh-TW), never Simplified Chinese. The Chinese must have the same meaning as the English and must not add coaching or extra information:\n${input}`);
     return ai;
   }
 
@@ -833,7 +875,7 @@
     if(!q)return null;
     const template=CORE.reusableAnswerTemplate(q);
     const ready=String(q.model||'').trim();
-    const intent=String(q.intent||'').trim();
+    const readyZh=String(q.modelZh||'').trim();
     const en=exampleOnly
       ? [
           'Common example:',
@@ -850,13 +892,23 @@
           'Reusable template:',
           template.en
         ].join('\n');
-    const zh=[
-      intent?('這題主要在問：'+intent):'這題先直接回答，再補最重要的理由或例子。',
-      '',
-      exampleOnly?'上面先給你一個常用範例；如果要換成自己的版本，可以套下面的通用骨架。':'上面第一段就是可以直接講出口的版本，不只給回答架構。',
-      template.zh
-    ].join('\n');
-    return assistantPayload(en,zh,{category:'interview_answer',petReaction:'thinking',answerFirst:true});
+    const zh=exampleOnly
+      ? [
+          '常用範例：',
+          readyZh||template.zh,
+          '',
+          '可套用模板：',
+          template.zh
+        ].join('\n')
+      : [
+          '你可以這樣回答：',
+          '',
+          readyZh||template.zh,
+          '',
+          '可套用模板：',
+          template.zh
+        ].join('\n');
+    return assistantPayload(en,zh,{category:'interview_answer',petReaction:'thinking',answerFirst:true,bilingualAligned:true});
   }
 
   function fallback(action='help'){
