@@ -11,7 +11,7 @@
   const skillLabels = CONTENT.skillLabels;
   const initialSkills = {listening:1.0,speaking:1.1,chunks:1.2,interview:1.2,rescue:1.0};
   const defaultState = () => ({
-    schemaVersion: 3,
+    schemaVersion: 4,
     xp: 0,
     skills: {...initialSkills},
     qstats: {},
@@ -24,6 +24,8 @@
     littleEMemory: [],
     sessions: [],
     completedDates: [],
+    streakRepairs: [],
+    clientUpdatedAt: null,
     settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
     lastContentVersion: CONTENT.contentVersion
   });
@@ -54,15 +56,32 @@
   let modelPracticeChunks = [];
   let modelPracticeAudioUrl = '';
   let lastLittleEQuestion = null;
+  let lastLittleEAnswer = null;
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
   const localDateKey = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const todayKey = () => localDateKey();
   const addDays = (days) => { const d = new Date(); d.setDate(d.getDate()+days); return localDateKey(d); };
+  const dateKeyDaysAgo = (days) => { const d=new Date(); d.setDate(d.getDate()-days); return localDateKey(d); };
+  function repairRecentStreakGap(){
+    const completed=new Set(Array.isArray(state.completedDates)?state.completedDates:[]);
+    const repairs=Array.isArray(state.streakRepairs)?state.streakRepairs:[];
+    const today=todayKey(),d1=dateKeyDaysAgo(1),d2=dateKeyDaysAgo(2),d3=dateKeyDaysAgo(3);
+    let missing=null;
+    if(completed.has(today)&&!completed.has(d1)&&completed.has(d2))missing=d1;
+    else if(completed.has(today)&&completed.has(d1)&&!completed.has(d2)&&completed.has(d3))missing=d2;
+    if(!missing||repairs.some(r=>r?.date===missing))return null;
+    completed.add(missing);
+    state.completedDates=[...completed].sort();
+    state.streakRepairs=[...repairs,{date:missing,sourceDate:today,repairedAt:new Date().toISOString(),reason:'two_day_grace'}].slice(-20);
+    return missing;
+  }
   function markPracticeDay(){
     const k=todayKey();
     if(!state.completedDates.includes(k)) state.completedDates.push(k);
+    const repaired=repairRecentStreakGap();
+    if(repaired)window.EDAN_CLOUD?.logEvent?.('streak_repaired',{date:repaired,sourceDate:k,policy:'single_gap_within_2_days'},'streak-repair-'+repaired);
   }
   const weaknessLabels={sound:'聽力辨音',intent:'問題意圖',output:'即時輸出',structure:'回答結構',fluency:'口說流暢度',usage:'句型／用法'};
   function topWeakness(){
@@ -179,7 +198,7 @@
       return {
         ...base,
         ...parsed,
-        schemaVersion:3,
+        schemaVersion:4,
         skills:{...base.skills,...(parsed.skills||{})},
         qstats: parsed.qstats||{},
         chunkKnown: parsed.chunkKnown||{},
@@ -191,12 +210,15 @@
         littleEMemory: Array.isArray(parsed.littleEMemory)?parsed.littleEMemory.slice(-60):[],
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
+        streakRepairs: Array.isArray(parsed.streakRepairs)?parsed.streakRepairs.slice(-20):[],
+        clientUpdatedAt: parsed.clientUpdatedAt||null,
         settings:migratedSettings,
         lastContentVersion:CONTENT.contentVersion
       };
     }catch(e){ return defaultState(); }
   }
   function save(){
+    state.clientUpdatedAt=new Date().toISOString();
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
     window.EDAN_CLOUD?.saveState?.(state);
   }
@@ -206,7 +228,7 @@
     state={
       ...base,
       ...incoming,
-      schemaVersion:3,
+      schemaVersion:4,
       skills:{...base.skills,...(incoming.skills||{})},
       qstats:incoming.qstats||{},
       chunkKnown:incoming.chunkKnown||{},
@@ -218,10 +240,17 @@
       littleEMemory:Array.isArray(incoming.littleEMemory)?incoming.littleEMemory.slice(-60):[],
       sessions:Array.isArray(incoming.sessions)?incoming.sessions:[],
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
+      streakRepairs:Array.isArray(incoming.streakRepairs)?incoming.streakRepairs.slice(-20):[],
+      clientUpdatedAt:incoming.clientUpdatedAt||null,
       settings:{...base.settings,...(incoming.settings||{})},
       lastContentVersion:CONTENT.contentVersion
     };
+    const repaired=repairRecentStreakGap();
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    if(repaired){
+      window.EDAN_CLOUD?.saveState?.(state);
+      window.EDAN_CLOUD?.logEvent?.('streak_repaired',{date:repaired,sourceDate:todayKey(),policy:'single_gap_within_2_days'},'streak-repair-'+repaired);
+    }
     renderOverview();
     renderChunks();
     renderVocabulary(12,true,false);
@@ -466,6 +495,13 @@
     $('rankValue').textContent = rank;
     $('xpSub').textContent = `${state.xp} XP`;
     $('streakValue').textContent = `${streak()} 天`;
+    const streakSub=$('streakSub');
+    if(streakSub){
+      const latest=[...(state.streakRepairs||[])].sort((a,b)=>String(b.repairedAt||'').localeCompare(String(a.repairedAt||'')))[0];
+      streakSub.textContent=latest&&[todayKey(),dateKeyDaysAgo(1),dateKeyDaysAgo(2)].includes(latest.date)
+        ? `已補回 ${latest.date} · 僅允許 2 天內單一斷點`
+        : '完成任一完整單元就記錄 1 天 · 單一斷點可在 2 天內補救';
+    }
     $('listeningLevelValue').textContent = `L${state.skills.listening.toFixed(1)}`;
     $('interviewLevelValue').textContent = `L${Math.max(state.skills.interview,state.skills.speaking).toFixed(1)}`;
     $('contentVersionBadge').textContent = `題庫 ${CONTENT.contentVersion}`;
@@ -1042,6 +1078,43 @@
     return (deliberateReview?review:normal)[Math.min(distance,5)]||1;
   }
 
+  function questionSemanticFamily(q){
+    const both=(String(q?.text||'')+' '+String(q?.intent||'')).toLowerCase();
+    const rules=[
+      ['value-proposition',/why should .*choose|why should .*hire|choose you|hire you|traditional project management/],
+      ['background',/tell me about yourself|walk me through your background|career background|other experience/],
+      ['responsibilities',/day-to-day|responsibilit|what do you (?:mainly )?handle|your role|pm scope/],
+      ['timeline',/how long|duration|timeframe|timeline|expected to run|delivery timeframe/],
+      ['english-usage',/english.*work|use english|spoken english|working language/],
+      ['compensation',/salary|compensation|bonus|equity|overall package|expected range/],
+      ['incident-escalation',/production issue|incident|escalat|recovery plan/],
+      ['ownership-decision',/unclear ownership|clear owner|decision owner|decision needed|ownership/],
+      ['tradeoff-risk',/trade-?off|technical risk|operational risk|residual risk|reversibility/],
+      ['scope-change',/change request|new scope|scope change|effort|commercial terms/],
+      ['stakeholder-communication',/stakeholder|customer communication|executive|audience|level of detail/],
+      ['motivation',/why .*role|why .*company|why do you want|next stage|interested in this role/],
+      ['delivery-management',/milestone|critical path|dependencies|resource constraints|project delivery/],
+      ['clarification',/clarify|confirm meaning|what do you mean|paraphrase|repeat|slower/]
+    ];
+    for(const [family,re] of rules)if(re.test(both))return family;
+    const keywords=(q?.keywords||[]).slice(0,2).map(x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'-')).filter(Boolean);
+    return keywords.length?'kw:'+keywords.join('|'):'id:'+String(q?.id||'');
+  }
+  function recentSemanticFamilies(sessionCount=2){
+    const families=new Set();
+    (state.sessions||[]).slice(-sessionCount).forEach(s=>(s.answers||[]).forEach(a=>{
+      const q=CONTENT.questions.find(x=>x.id===a?.id); if(q)families.add(questionSemanticFamily(q));
+    }));
+    return families;
+  }
+  function semanticExposurePenalty(q,mode){
+    if(mode==='wrong'||mode==='due')return 1;
+    const family=questionSemanticFamily(q);
+    if(recentSemanticFamilies(1).has(family))return .32;
+    if(recentSemanticFamilies(2).has(family))return .58;
+    return 1;
+  }
+
   function diversifyCandidatePool(pool,mode,size){
     if(mode==='wrong'||mode==='due')return pool;
     for(const count of [4,3,2,1]){
@@ -1053,12 +1126,17 @@
   }
 
   function withinSessionVarietyPenalty(q,selected,mode){
-    if(mode==='listening'||mode==='speaking'||mode==='wrong'||mode==='due')return 1;
-    const last=selected[selected.length-1];
-    const prev=selected[selected.length-2];
-    if(last?.skill===q.skill && prev?.skill===q.skill)return .38;
-    if(last?.skill===q.skill)return .68;
-    return 1;
+    if(mode==='wrong'||mode==='due')return 1;
+    const last=selected[selected.length-1],prev=selected[selected.length-2];
+    let penalty=1;
+    if(mode!=='listening'&&mode!=='speaking'){
+      if(last?.skill===q.skill&&prev?.skill===q.skill)penalty*=.38;
+      else if(last?.skill===q.skill)penalty*=.68;
+    }
+    const family=questionSemanticFamily(q);
+    if(last&&questionSemanticFamily(last)===family)penalty*=.20;
+    else if(selected.some(x=>questionSemanticFamily(x)===family))penalty*=.48;
+    return penalty;
   }
 
   function weightQuestion(q, mode){
@@ -1082,7 +1160,8 @@
     if((personalWeak==='output'||personalWeak==='structure'||personalWeak==='fluency') && q.type==='speaking')w*=1.08;
     if(personalWeak==='usage' && (q.skill==='chunks'||q.skill==='rescue'))w*=1.06;
     w*=recentExposurePenalty(q,mode);
-    return Math.max(.025,w);
+    w*=semanticExposurePenalty(q,mode);
+    return Math.max(.02,w);
   }
 
   function weightedPick(arr, mode, selected=[]){
@@ -1163,7 +1242,8 @@
     const q=session.questions[session.index];
     if(!q){ finishSession(true); return; }
     lastLittleEQuestion=q;
-    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0}};
+    lastLittleEAnswer=null;
+    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0},latestAnswer:null};
     $('questionCounter').textContent=`${session.index+1} / ${session.questions.length}`;
     $('questionLevelBadge').textContent=`L${q.level}`;
     $('questionSkillBadge').textContent=skillLabels[q.skill]||q.skill;
@@ -1224,6 +1304,8 @@
         else if(isListening && accentRepeats===1) quality=2;
         else quality=3;
       } else quality=0;
+      const answerSnapshot={kind:isListening?'listening_choice':'choice',selectedIndex:selected,selectedText:q.options?.[selected]||'',correct,correctText:q.options?.[q.answer]||'',quality,hint:!!session.currentMeta.hint,accentRepeats};
+      session.currentMeta.latestAnswer=answerSnapshot; lastLittleEAnswer=answerSnapshot;
       const feedback=$('feedbackBox');
       const marked=qstat(q.id).manualReview;
       const reviewLabel=marked?'✓ 已標註複習（點擊取消）':(correct?'🎯 我是猜的，加入複習':'☆ 加入複習');
@@ -1434,6 +1516,8 @@
     applyRecordingMetrics(analysis);
     const correction=buildSpokenCorrection(transcript,q);
     rememberSpeakingErrors(q,transcript,analysis,correction);
+    const answerSnapshot={kind:'speaking',transcript,score:analysis.score,corrected:correction.corrected||'',natural:correction.natural||'',notes:[...(correction.notes||[])],missing:[...(analysis.missing||[])],suggestions:[...(analysis.suggestions||[])],wordsPerMinute:analysis.wordsPerMinute||null};
+    session.currentMeta.latestAnswer=answerSnapshot; lastLittleEAnswer=answerSnapshot;
     save();
     $('modelAnswer')?.classList.add('show');
     renderSpeakingScore(analysis,q,transcript);
@@ -2652,6 +2736,7 @@
           active:!!active
         }:null,
         transcript:speechTranscript||'',
+        latestAnswer:session?.currentMeta?.latestAnswer||lastLittleEAnswer||null,
         lastSystemScore:stat?.lastSystemScore??null,
         topWeakness:topWeakness(),
         errorMemory:topErrorEntries(5).map(([key,val])=>({key,label:errorLabels[key]||key,count:val.count||0,note:val.note||''})),
@@ -2680,11 +2765,32 @@
     saveHistory(){},
     speakEnglish(text,rate=.94){return speakNorthAmerican(text,rate);},
     clearHistory(){},
-    clearCurrentQuestion(){lastLittleEQuestion=null;}
+    clearCurrentQuestion(){lastLittleEQuestion=null;lastLittleEAnswer=null;}
   };
 
+  function voiceModelStatusText(engine,label){
+    const s=engine?.getStatus?.()||{state:'idle'};
+    if(s.state==='ready')return label+'：✓ 已快取並預熱';
+    if(s.state==='not-cached')return label+'：首次播放時下載模型';
+    if(s.state==='loading'||s.state==='checking')return label+'：檢查 Local AI…';
+    if(s.state==='error')return label+'：⚠ Local AI 預熱失敗，播放時會重試';
+    return label+'：待檢查';
+  }
+  function renderVoiceModelStatus(){
+    const host=$('voiceModelStatus'); if(!host)return;
+    host.textContent=[voiceModelStatusText(window.EDAN_NORTH_AMERICA_TTS,'北美'),voiceModelStatusText(window.EDAN_INDIAN_TTS,'印度')].join(' · ');
+  }
+  async function warmCachedTtsModels(){
+    renderVoiceModelStatus();
+    const run=async engine=>{try{await engine?.warmup?.();}catch(e){}};
+    await Promise.all([run(window.EDAN_NORTH_AMERICA_TTS),run(window.EDAN_INDIAN_TTS)]);
+    renderVoiceModelStatus();
+  }
+
   function init(){
-    syncSettingsUI();bindStaticEvents();renderOverview();renderVocabulary(12);renderChunks();
+    syncSettingsUI();bindStaticEvents();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
+    window.addEventListener('edan:tts-status',renderVoiceModelStatus);
+    window.addEventListener('edan:auth-ready',()=>{const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);},{once:true});
     if('speechSynthesis' in window){
       refreshVoiceCache();
       window.speechSynthesis.onvoiceschanged=()=>refreshVoiceCache();

@@ -776,6 +776,20 @@
     }
 
     if(c.transcript)parts.push(`Latest transcript: ${c.transcript}`);
+    if(c.latestAnswer){
+      const a=c.latestAnswer;parts.push('LATEST USER ANSWER / RESULT:');
+      if(a.kind)parts.push(`Answer type: ${a.kind}`);
+      if(a.transcript)parts.push(`User said: ${a.transcript}`);
+      if(Number.isFinite(a.score))parts.push(`Current score: ${a.score}/100`);
+      if(a.corrected)parts.push(`Corrected version: ${a.corrected}`);
+      if(a.natural)parts.push(`Natural version: ${a.natural}`);
+      if(a.notes?.length)parts.push(`Correction notes: ${a.notes.join(' | ')}`);
+      if(a.missing?.length)parts.push(`Missing content: ${a.missing.join(' | ')}`);
+      if(a.suggestions?.length)parts.push(`Suggestions: ${a.suggestions.join(' | ')}`);
+      if(a.selectedText)parts.push(`Selected answer: ${a.selectedText}`);
+      if(a.correctText)parts.push(`Correct answer: ${a.correctText}`);
+      if(typeof a.correct==='boolean')parts.push(`Was correct: ${a.correct?'yes':'no'}`);
+    }
     if(Number.isFinite(c.lastSystemScore))parts.push(`Latest speaking score: ${c.lastSystemScore}/100`);
     if(c.topWeakness)parts.push(`Current weak area: ${c.topWeakness}`);
 

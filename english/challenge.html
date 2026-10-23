@@ -55,7 +55,7 @@
       </div>
       <div class="hero-stats">
         <div class="stat-card"><div class="stat-label">目前稱號</div><div class="stat-value" id="rankValue">English Starter</div><div class="stat-sub" id="xpSub">0 XP</div></div>
-        <div class="stat-card"><div class="stat-label">連續訓練</div><div class="stat-value" id="streakValue">0 天</div><div class="stat-sub">完成任一完整單元就記錄 1 天</div></div>
+        <div class="stat-card"><div class="stat-label">連續訓練</div><div class="stat-value" id="streakValue">0 天</div><div class="stat-sub" id="streakSub">完成任一完整單元就記錄 1 天 · 單一斷點可在 2 天內補救</div></div>
         <div class="stat-card"><div class="stat-label">聽力等級</div><div class="stat-value" id="listeningLevelValue">L1.0</div><div class="stat-sub">依「第一次聽懂」表現調整</div></div>
         <div class="stat-card"><div class="stat-label">專業面試等級</div><div class="stat-value" id="interviewLevelValue">L1.0</div><div class="stat-sub">依回答與自評逐步提升</div></div>
       </div>
@@ -225,6 +225,7 @@
         <div class="field"><label for="sessionSizeSelect">每回合題數</label><select id="sessionSizeSelect"><option value="10">10 題（推薦）</option><option value="5">5 題快速版</option><option value="15">15 題加強版</option></select></div>
         <div class="field"><label for="speechRecognitionSelect">錄音回答 / 自動分析</label><select id="speechRecognitionSelect"><option value="auto">錄音＋瀏覽器／本機 Whisper 自動評分</option><option value="off">只錄音回放，不做自動分析</option></select></div>
       </div>
+      <div class="callout" style="margin-top:12px"><strong>Local AI 語音：</strong><span id="voiceModelStatus">北美：待檢查 · 印度：待檢查</span>。已下載過的模型會在登入後利用瀏覽器閒置時間預熱；尚未下載的模型不會在背景偷跑流量，仍等你第一次按播放才下載。</div>
       <div class="callout" style="margin-top:12px"><strong>語音注意：</strong>錄音完成後會先使用瀏覽器即時轉文字；若不可用，就改用本機 Whisper。系統會先檢查轉錄可信度，可信度不足時先讓你確認或修正文字，再進行內容、完整度、結構、常見文法與語速評分。第一次使用本機 Whisper 需要下載模型，之後瀏覽器會快取。錄音本身仍只保留在目前頁面，不會自動上傳。</div>
     </section>
 

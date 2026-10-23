@@ -108,6 +108,7 @@
   async function upsertCloudState(state) {
     if (!currentUser || !state) return;
     const payload = JSON.parse(JSON.stringify(state));
+    if(!payload.clientUpdatedAt)payload.clientUpdatedAt=new Date().toISOString();
     const { error } = await client.from('learning_state').upsert({
       user_id: currentUser.id,
       state: payload,
@@ -118,29 +119,59 @@
     if (sync) sync.textContent = '已同步 ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
   }
 
+
+  function isoTime(value){const n=Date.parse(value||'');return Number.isFinite(n)?n:0;}
+  function uniqueStrings(a=[],b=[]){return [...new Set([...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].filter(Boolean))];}
+  function sessionKey(s){return [s?.date||'',s?.title||'',s?.count??'',s?.score??'',s?.completedUnit===false?'0':'1'].join('|');}
+  function mergeSessions(a=[],b=[]){const m=new Map();[...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(s=>{if(s&&typeof s==='object')m.set(sessionKey(s),s)});return [...m.values()].slice(-80);}
+  function statTimestamp(s){return Math.max(isoTime(s?.lastSeen),isoTime(s?.markedAt));}
+  function mergeStat(a,b){
+    if(!a)return b||{}; if(!b)return a||{};
+    const newer=statTimestamp(b)>=statTimestamp(a)?b:a,older=newer===b?a:b,out={...older,...newer};
+    ['seen','correct','wrong','hints','listens','guessCount','modelPracticeCount','speakingLowScoreCount','attempts','guessed','correctStreak'].forEach(k=>{const av=Number(a?.[k]),bv=Number(b?.[k]);if(Number.isFinite(av)||Number.isFinite(bv))out[k]=Math.max(Number.isFinite(av)?av:0,Number.isFinite(bv)?bv:0);});
+    return out;
+  }
+  function mergeStatMap(a={},b={}){const out={};new Set([...Object.keys(a||{}),...Object.keys(b||{})]).forEach(k=>out[k]=mergeStat(a?.[k],b?.[k]));return out;}
+  function mergeBoolMap(a={},b={}){const out={...a,...b};new Set([...Object.keys(a||{}),...Object.keys(b||{})]).forEach(k=>out[k]=!!(a?.[k]||b?.[k]));return out;}
+  function mergeCountMap(a={},b={}){const out={};new Set([...Object.keys(a||{}),...Object.keys(b||{})]).forEach(k=>out[k]=Math.max(Number(a?.[k])||0,Number(b?.[k])||0));return out;}
+  function mergeErrorMemory(a={},b={}){const out={};new Set([...Object.keys(a||{}),...Object.keys(b||{})]).forEach(k=>{const av=a?.[k],bv=b?.[k];if(!av)out[k]=bv;else if(!bv)out[k]=av;else{const newer=isoTime(bv.lastSeen)>=isoTime(av.lastSeen)?bv:av;out[k]={...newer,count:Math.max(Number(av.count)||0,Number(bv.count)||0)}}});return out;}
+  function mergeMemory(a=[],b=[],keyField='key',limit=60){const m=new Map();[...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(item=>{if(!item||typeof item!=='object')return;const key=String(item[keyField]||item.text||item.en||JSON.stringify(item)).slice(0,500),prev=m.get(key);m.set(key,prev?{...prev,...item,count:Math.max(Number(prev.count)||0,Number(item.count)||0)}:item)});return [...m.values()].slice(-limit);}
+  function mergeRepairs(a=[],b=[]){const m=new Map();[...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(r=>{if(r?.date)m.set(r.date,r)});return [...m.values()].sort((x,y)=>String(x.date).localeCompare(String(y.date))).slice(-20);}
+  function mergeLearningState(localState,cloudState,cloudUpdatedAt){
+    if(!localState||typeof localState!=='object')return cloudState||null;
+    if(!cloudState||typeof cloudState!=='object')return localState||null;
+    const lt=isoTime(localState.clientUpdatedAt),ct=Math.max(isoTime(cloudState.clientUpdatedAt),isoTime(cloudUpdatedAt)),localNewer=lt>ct,newer=localNewer?localState:cloudState,older=localNewer?cloudState:localState;
+    return {...older,...newer,schemaVersion:Math.max(Number(localState.schemaVersion)||0,Number(cloudState.schemaVersion)||0,4),xp:Math.max(Number(localState.xp)||0,Number(cloudState.xp)||0),skills:{...(older.skills||{}),...(newer.skills||{})},qstats:mergeStatMap(localState.qstats,cloudState.qstats),chunkKnown:mergeBoolMap(localState.chunkKnown,cloudState.chunkKnown),vocabKnown:mergeBoolMap(localState.vocabKnown,cloudState.vocabKnown),vocabStats:mergeStatMap(localState.vocabStats,cloudState.vocabStats),weaknessCounts:mergeCountMap(localState.weaknessCounts,cloudState.weaknessCounts),errorMemory:mergeErrorMemory(localState.errorMemory,cloudState.errorMemory),littleEHistory:mergeMemory(localState.littleEHistory,cloudState.littleEHistory,'id',40),littleEMemory:mergeMemory(localState.littleEMemory,cloudState.littleEMemory,'key',60),sessions:mergeSessions(localState.sessions,cloudState.sessions),completedDates:uniqueStrings(localState.completedDates,cloudState.completedDates).sort(),streakRepairs:mergeRepairs(localState.streakRepairs,cloudState.streakRepairs),settings:{...(older.settings||{}),...(newer.settings||{})},clientUpdatedAt:new Date(Math.max(lt,ct,Date.now())).toISOString()};
+  }
+  function browserDateKey(value){const d=value instanceof Date?value:new Date(value);if(Number.isNaN(d.getTime()))return null;return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+  async function fetchRecentCompletedSessionDates(){
+    if(!currentUser)return [];
+    const cutoff=new Date();cutoff.setDate(cutoff.getDate()-2);cutoff.setHours(0,0,0,0);
+    const {data,error}=await client.from('learning_events').select('occurred_at,payload').eq('user_id',currentUser.id).eq('event_type','session_completed').gte('occurred_at',cutoff.toISOString()).order('occurred_at',{ascending:true});
+    if(error){console.warn('Recent session recovery lookup failed',error);return [];}
+    return [...new Set((data||[]).filter(r=>r?.payload?.completedUnit!==false).map(r=>browserDateKey(r.occurred_at)).filter(Boolean))];
+  }
+  async function repairRecentDatesFromEvents(state){
+    if(!state||typeof state!=='object')return state;
+    const evidence=await fetchRecentCompletedSessionDates(); if(!evidence.length)return state;
+    const before=new Set(Array.isArray(state.completedDates)?state.completedDates:[]),recovered=evidence.filter(d=>!before.has(d));
+    state.completedDates=uniqueStrings([...before],evidence).sort();
+    if(recovered.length){state.clientUpdatedAt=new Date().toISOString();await logEvent('learning_state_recovered',{dates:recovered,source:'session_completed',maxAgeDays:2},'state-recovery-'+recovered.join('-'));}
+    return state;
+  }
+
   async function loadOrMigrateState() {
-    const cloud = await fetchCloudState();
-    const localRaw = localStorage.getItem(STORE_KEY);
-
-    if (cloud?.state && Object.keys(cloud.state).length) {
-      localStorage.setItem(STORE_KEY, JSON.stringify(cloud.state));
-      window.dispatchEvent(new CustomEvent('edan:cloud-state', { detail: { state: cloud.state } }));
-      return;
+    const cloud=await fetchCloudState(),localRaw=localStorage.getItem(STORE_KEY);
+    let localState=null;if(localRaw){try{localState=JSON.parse(localRaw)}catch(e){console.warn('Local state parse failed',e)}}
+    let resolved=null;
+    if(cloud?.state&&Object.keys(cloud.state).length)resolved=mergeLearningState(localState,cloud.state,cloud.updated_at);
+    else if(localState){resolved=localState;await logEvent('local_state_migrated',{source:'localStorage'},'migration-v1');}
+    if(resolved){
+      resolved=await repairRecentDatesFromEvents(resolved);resolved.clientUpdatedAt=new Date().toISOString();
+      localStorage.setItem(STORE_KEY,JSON.stringify(resolved));await upsertCloudState(resolved);
+      window.dispatchEvent(new CustomEvent('edan:cloud-state',{detail:{state:resolved}}));return;
     }
-
-    if (localRaw) {
-      try {
-        const localState = JSON.parse(localRaw);
-        await upsertCloudState(localState);
-        await logEvent('local_state_migrated', { source: 'localStorage' }, 'migration-v1');
-        window.dispatchEvent(new CustomEvent('edan:cloud-state', { detail: { state: localState } }));
-        return;
-      } catch (e) {
-        console.warn('Local migration failed', e);
-      }
-    }
-
-    window.dispatchEvent(new CustomEvent('edan:cloud-state', { detail: { state: null } }));
+    window.dispatchEvent(new CustomEvent('edan:cloud-state',{detail:{state:null}}));
   }
 
   async function logEvent(eventType, payload={}, eventKey=null) {
