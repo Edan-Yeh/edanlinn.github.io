@@ -1,8 +1,6 @@
 (() => {
   'use strict';
 
-  const ADMIN_EMAIL='edan14725836961@gmail.com';
-
   const CORE=window.LITTLE_E_CORE;
   if(!CORE)throw new Error('little-e-core.js must load before little-e.js');
   const LITTLE_E_PROFILE=CORE.PROFILE;
@@ -791,6 +789,12 @@
       if(a.correctText)parts.push(`Correct answer: ${a.correctText}`);
       if(typeof a.correct==='boolean')parts.push(`Was correct: ${a.correct?'yes':'no'}`);
     }
+    if(c.learnerProfile){
+      parts.push(`Learner goal: ${c.learnerProfile.goal||'unknown'}`);
+      parts.push(`Learner role type: ${c.learnerProfile.role_type||'other'}`);
+      parts.push(`Learner self level: ${c.learnerProfile.self_level||'unknown'}`);
+      if(c.learnerProfile.target_company)parts.push(`Target company or role: ${c.learnerProfile.target_company}`);
+    }
     if(Number.isFinite(c.lastSystemScore))parts.push(`Latest speaking score: ${c.lastSystemScore}/100`);
     if(c.topWeakness)parts.push(`Current weak area: ${c.topWeakness}`);
 
@@ -1206,7 +1210,7 @@
   }
 
   function updateAdminVisibility(){
-    const isAdmin=String(user()?.email||'').toLowerCase()===ADMIN_EMAIL && !!cloud()?.isAdmin;
+    const isAdmin=!!cloud()?.isAdmin;
     $('littleEAdminBtn')?.classList.toggle('hidden',!isAdmin);
   }
 

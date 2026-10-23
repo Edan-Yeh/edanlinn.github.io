@@ -195,7 +195,7 @@
     window.dispatchEvent(new CustomEvent('edan:auth-ready',{detail:{
       id:currentUser?.id||null,
       email:currentUser?.email||'',
-      isAdmin:String(currentUser?.email||'').toLowerCase()==='edan14725836961@gmail.com'
+      isAdmin:isAdminUser()
     }}));
     await logEvent('login_ready', { path: location.pathname }, 'login-' + new Date().toISOString().slice(0,10));
   }
@@ -350,7 +350,54 @@
   }
 
   function isAdminUser(){
-    return String(currentUser?.email||'').toLowerCase()==='edan14725836961@gmail.com';
+    return String(currentUser?.app_metadata?.role||'').toLowerCase()==='admin';
+  }
+
+  async function getLearnerProfile(){
+    if(!currentUser)return null;
+    const {data,error}=await client.from('learner_profiles')
+      .select('goal,role_type,self_level,daily_minutes,accents,target_company,onboarding_completed,diagnostic_completed,diagnostic,created_at,updated_at')
+      .eq('user_id',currentUser.id)
+      .maybeSingle();
+    if(error)throw error;
+    return data||null;
+  }
+
+  async function saveLearnerProfile(patch={}){
+    if(!currentUser)throw new Error('尚未登入');
+    const allowedGoal=new Set(['daily','work','interview']);
+    const allowedRole=new Set(['engineer','pm','consultant','other']);
+    const allowedLevel=new Set(['beginner','intermediate','advanced']);
+    const row={user_id:currentUser.id,updated_at:new Date().toISOString()};
+    if(allowedGoal.has(patch.goal))row.goal=patch.goal;
+    if(allowedRole.has(patch.role_type))row.role_type=patch.role_type;
+    if(allowedLevel.has(patch.self_level))row.self_level=patch.self_level;
+    if([15,30,60].includes(Number(patch.daily_minutes)))row.daily_minutes=Number(patch.daily_minutes);
+    if(Array.isArray(patch.accents)){
+      const accents=patch.accents.filter(x=>x==='northAmerica'||x==='india');
+      if(accents.length)row.accents=[...new Set(accents)];
+    }
+    if('target_company' in patch)row.target_company=String(patch.target_company||'').trim().slice(0,120)||null;
+    if(typeof patch.onboarding_completed==='boolean')row.onboarding_completed=patch.onboarding_completed;
+    if(typeof patch.diagnostic_completed==='boolean')row.diagnostic_completed=patch.diagnostic_completed;
+    if(patch.diagnostic&&typeof patch.diagnostic==='object')row.diagnostic=patch.diagnostic;
+    const {data,error}=await client.from('learner_profiles')
+      .upsert(row,{onConflict:'user_id'})
+      .select('goal,role_type,self_level,daily_minutes,accents,target_company,onboarding_completed,diagnostic_completed,diagnostic,created_at,updated_at')
+      .single();
+    if(error)throw error;
+    return data;
+  }
+
+  async function getPrivateQuestionPacks(){
+    if(!currentUser)return [];
+    const {data,error}=await client.from('private_question_packs')
+      .select('pack_key,label,questions,answer_translations,question_translations,updated_at')
+      .eq('user_id',currentUser.id)
+      .eq('enabled',true)
+      .order('updated_at',{ascending:false});
+    if(error)throw error;
+    return data||[];
   }
 
   async function submitLittleEFeedback(payload={}){
@@ -402,6 +449,9 @@
     submitLittleEFeedback,
     listLittleEFeedback,
     updateLittleEFeedbackStatus,
+    getLearnerProfile,
+    saveLearnerProfile,
+    getPrivateQuestionPacks,
     saveState(state) {
       pendingState = state;
       clearTimeout(saveTimer);
