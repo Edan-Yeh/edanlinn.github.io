@@ -23,6 +23,7 @@
     littleEHistory: [],
     littleEMemory: [],
     sessions: [],
+    retryHistory: [],
     completedDates: [],
     streakRepairs: [],
     clientUpdatedAt: null,
@@ -57,6 +58,7 @@
   let modelPracticeAudioUrl = '';
   let lastLittleEQuestion = null;
   let lastLittleEAnswer = null;
+  let speakingRetryCycle = null;
   let learnerProfile = null;
   const publicQuestionIds = new Set((CONTENT.questions||[]).map(q=>q.id));
   const privateQuestionIds = new Set();
@@ -326,6 +328,7 @@
         littleEHistory: Array.isArray(parsed.littleEHistory)?parsed.littleEHistory.slice(-30):[],
         littleEMemory: Array.isArray(parsed.littleEMemory)?parsed.littleEMemory.slice(-60):[],
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
+        retryHistory: Array.isArray(parsed.retryHistory)?parsed.retryHistory.slice(-80):[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         streakRepairs: Array.isArray(parsed.streakRepairs)?parsed.streakRepairs.slice(-20):[],
         clientUpdatedAt: parsed.clientUpdatedAt||null,
@@ -356,6 +359,7 @@
       littleEHistory:Array.isArray(incoming.littleEHistory)?incoming.littleEHistory.slice(-30):[],
       littleEMemory:Array.isArray(incoming.littleEMemory)?incoming.littleEMemory.slice(-60):[],
       sessions:Array.isArray(incoming.sessions)?incoming.sessions:[],
+      retryHistory:Array.isArray(incoming.retryHistory)?incoming.retryHistory.slice(-80):[],
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
       streakRepairs:Array.isArray(incoming.streakRepairs)?incoming.streakRepairs.slice(-20):[],
       clientUpdatedAt:incoming.clientUpdatedAt||null,
@@ -1730,7 +1734,45 @@
     });
   }
 
+  function speakingRetryAnswer(){
+    const active=session?.currentMeta?.latestAnswer;
+    if(active?.kind==='speaking'&&Number.isFinite(active.score))return active;
+    if(lastLittleEAnswer?.kind==='speaking'&&Number.isFinite(lastLittleEAnswer.score))return lastLittleEAnswer;
+    return null;
+  }
+
+  function beginSpeakingRetry(q,source='score_card'){
+    const current=session?.questions?.[session?.index];
+    const before=speakingRetryAnswer();
+    if(!session||!q||current?.id!==q.id||q.type!=='speaking')return {ok:false,reason:'請先回到剛才那一題口說，再使用重新回答。'};
+    if(!before)return {ok:false,reason:'目前還沒有可比較的口說分數；先完成一次錄音評分。'};
+    speakingRetryCycle={
+      questionId:q.id,source,startedAt:new Date().toISOString(),
+      before:{transcript:String(before.transcript||''),score:Number(before.score),corrected:String(before.corrected||''),natural:String(before.natural||''),wordsPerMinute:Number.isFinite(before.wordsPerMinute)?before.wordsPerMinute:null}
+    };
+    window.EDAN_CLOUD?.logEvent?.('speaking_retry_started',{questionId:q.id,beforeScore:speakingRetryCycle.before.score,source},'retry-start-'+q.id+'-'+Date.now());
+    renderCurrentQuestion();
+    return {ok:true,beforeScore:speakingRetryCycle.before.score};
+  }
+
+  function finalizeSpeakingRetry(q,retryBaseline,answerSnapshot){
+    if(!retryBaseline?.before||!Number.isFinite(retryBaseline.before.score)||!Number.isFinite(answerSnapshot?.score))return null;
+    const before=Math.round(retryBaseline.before.score),after=Math.round(answerSnapshot.score),delta=after-before;
+    const dueDays=after<60?0:after<80?1:3;
+    const reviewDue=dueDays===0?todayKey():addDays(dueDays);
+    const reviewLabel=dueDays===0?'今天會再排進複習':dueDays===1?'明天自動複習':'3 天後自動複習';
+    const stat=qstat(q.id);
+    stat.retryCount=(stat.retryCount||0)+1;stat.lastRetryDelta=delta;stat.lastRetryScore=after;stat.lastRetryAt=new Date().toISOString();
+    stat.autoReviewReason='speaking_retry';stat.interval=dueDays;stat.due=reviewDue;
+    const entry={questionId:q.id,question:q.text,beforeScore:before,afterScore:after,delta,source:retryBaseline.source||'score_card',reviewDue,reviewLabel,completedAt:new Date().toISOString()};
+    state.retryHistory=[...(state.retryHistory||[]),entry].slice(-80);
+    session.currentMeta.retryBaseline=null;speakingRetryCycle=null;save();
+    window.EDAN_CLOUD?.logEvent?.('speaking_retry_completed',{questionId:q.id,beforeScore:before,afterScore:after,delta,source:entry.source,reviewDue,reviewLabel},'retry-complete-'+q.id+'-'+Date.now());
+    return entry;
+  }
+
   function startSession(mode,sizeOverride=null){
+    speakingRetryCycle=null;
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
     setMobileDockActive(mode==='listening'?'listening':'challenge');
     const requestedSize=sizeOverride===null?(mode==='mock'?8:mode==='diagnostic'?5:state.settings.sessionSize):sizeOverride;
@@ -1747,9 +1789,10 @@
     stopSpeakingTimer(); stopRecognition(); stopMediaRecording(true); cleanupRecordedAudio(); stopModelPracticeRecording(false); cleanupModelPracticeAudio(); speechSynthesis.cancel(); speechTranscript='';
     const q=session.questions[session.index];
     if(!q){ finishSession(true); return; }
+    const retryBaseline=speakingRetryCycle?.questionId===q.id?speakingRetryCycle:null;
     lastLittleEQuestion=q;
-    lastLittleEAnswer=null;
-    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0},latestAnswer:null};
+    lastLittleEAnswer=retryBaseline?.before||null;
+    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0},latestAnswer:null,retryBaseline};
     $('questionCounter').textContent=`${session.index+1} / ${session.questions.length}`;
     $('questionLevelBadge').textContent=`L${q.level}`;
     $('questionSkillBadge').textContent=skillLabels[q.skill]||q.skill;
@@ -1915,7 +1958,7 @@
     const recorderAvailable=mediaRecorderAvailable();
     const recordLabel=recorderAvailable?'🎙 開始錄音回答':(recognitionAvailable?'🎙 開始語音辨識':'開始 45 秒');
     const recordClass=(recorderAvailable||recognitionAvailable)?'btn primary':'btn secondary';
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後會先嘗試瀏覽器轉文字；若不可用，改用本機 Whisper，再提供 0–100 分與修正建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage">${speakingFrameworkHtml(q)}<div class="timer" id="speakTimer">00:45</div><div class="support">先照上面的 Answer Map 聯想，再直接用簡單英文講。錄音與轉文字是兩個不同功能。即使瀏覽器即時轉文字不可用，仍會保留錄音，並在講完後嘗試本機 Whisper 分析。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若即時轉文字失敗，系統會再嘗試本機 Whisper。':'完成錄音後會嘗試本機 Whisper 轉文字與評分；若仍失敗才改用自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button></div></article>`;
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後會先嘗試瀏覽器轉文字；若不可用，改用本機 Whisper，再提供 0–100 分與修正建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage">${speakingFrameworkHtml(q)}<div class="timer" id="speakTimer">00:45</div><div class="support">先照上面的 Answer Map 聯想，再直接用簡單英文講。錄音與轉文字是兩個不同功能。即使瀏覽器即時轉文字不可用，仍會保留錄音，並在講完後嘗試本機 Whisper 分析。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若即時轉文字失敗，系統會再嘗試本機 Whisper。':'完成錄音後會嘗試本機 Whisper 轉文字與評分；若仍失敗才改用自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 套用修正再答一次</button></div></article>`;
     $('playSpeakNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'speakAudioStatus'));
     $('playSpeakIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','speakAudioStatus'));
     document.querySelector('[data-framework-toggle]')?.addEventListener('click',e=>{
@@ -2024,51 +2067,42 @@
 
   function scoreSpeakingTranscript(q,transcript,reliability,userConfirmed=false){
     if(!session || session.currentMeta.answered)return;
+    const retryBaseline=session.currentMeta.retryBaseline;
     const analysis=analyzeSpeakingAnswer(transcript,q);
-    analysis.transcriptReliability=reliability?.score??null;
-    analysis.transcriptConfirmed=!!userConfirmed;
+    analysis.transcriptReliability=reliability?.score??null;analysis.transcriptConfirmed=!!userConfirmed;
     applyRecordingMetrics(analysis);
     const correction=buildSpokenCorrection(transcript,q);
     rememberSpeakingErrors(q,transcript,analysis,correction);
     const answerSnapshot={kind:'speaking',transcript,score:analysis.score,corrected:correction.corrected||'',natural:correction.natural||'',notes:[...(correction.notes||[])],missing:[...(analysis.missing||[])],suggestions:[...(analysis.suggestions||[])],wordsPerMinute:analysis.wordsPerMinute||null};
-    session.currentMeta.latestAnswer=answerSnapshot; lastLittleEAnswer=answerSnapshot;
-    save();
-    $('modelAnswer')?.classList.add('show');
-    renderSpeakingScore(analysis,q,transcript);
-    session.currentMeta.answered=true;
-    session.currentMeta.scoringDone=true;
-    session.currentMeta.processingScore=false;
-    let quality=analysis.score>=80?3:analysis.score>=60?2:1;
-    if(session.currentMeta.hint && quality===3) quality=2;
+    session.currentMeta.latestAnswer=answerSnapshot;lastLittleEAnswer=answerSnapshot;
+    session.currentMeta.answered=true;session.currentMeta.scoringDone=true;session.currentMeta.processingScore=false;
+    let quality=analysis.score>=80?3:analysis.score>=60?2:1;if(session.currentMeta.hint&&quality===3)quality=2;
     recordAnswer(q,quality,analysis.score>=60,{
-      listens:session.currentMeta.listens,
-      hint:session.currentMeta.hint,
-      transcript,
-      systemScore:analysis.score,
-      scoreBreakdown:analysis.breakdown,
-      suggestions:analysis.suggestions,
-      recordedAudio:!!recordedAudioUrl,
-      recordingDurationSec,
-      wordsPerMinute:analysis.wordsPerMinute||null,
-      transcriptionSource:session.currentMeta.transcriptionSource||'browser',
-      transcriptReliability:reliability?.score??null,
-      transcriptConfirmed:!!userConfirmed
+      listens:session.currentMeta.listens,hint:session.currentMeta.hint,transcript,systemScore:analysis.score,scoreBreakdown:analysis.breakdown,
+      suggestions:analysis.suggestions,recordedAudio:!!recordedAudioUrl,recordingDurationSec,wordsPerMinute:analysis.wordsPerMinute||null,
+      transcriptionSource:session.currentMeta.transcriptionSource||'browser',transcriptReliability:reliability?.score??null,transcriptConfirmed:!!userConfirmed,
+      retrySource:retryBaseline?.source||null,retryBeforeScore:Number.isFinite(retryBaseline?.before?.score)?retryBaseline.before.score:null
     });
-    const nextBtn=$('nextBtn');
-    const retryBtn=$('retrySameSpeakingBtn');
-    nextBtn?.classList.remove('hidden');
-    if(nextBtn)nextBtn.textContent='下一題 →';
-    nextBtn?.addEventListener('click',nextQuestion,{once:true});
-    if(analysis.score<60){
-      retryBtn?.classList.remove('hidden');
-      retryBtn?.addEventListener('click',()=>renderCurrentQuestion(),{once:true});
-      $('feedbackTitle').textContent='這題會提高後續出現頻率';
-      $('feedbackNote').textContent='目前低於 60 分，但你可以直接下一題。系統已把這題標成高優先複習；也可以現在就按「再練這題」。';
+    const retryComparison=retryBaseline?finalizeSpeakingRetry(q,retryBaseline,answerSnapshot):null;
+    if(retryComparison)answerSnapshot.retryComparison=retryComparison;
+    save();$('modelAnswer')?.classList.add('show');renderSpeakingScore(analysis,q,transcript,retryComparison);
+    const nextBtn=$('nextBtn'),retryBtn=$('retrySameSpeakingBtn');
+    nextBtn?.classList.remove('hidden');if(nextBtn)nextBtn.textContent='下一題 →';nextBtn?.addEventListener('click',nextQuestion,{once:true});
+    if(analysis.score<80){
+      retryBtn?.classList.remove('hidden');if(retryBtn)retryBtn.textContent='↻ 套用修正再答一次';
+      retryBtn?.addEventListener('click',()=>beginSpeakingRetry(q,'score_card'),{once:true});
+      if(analysis.score<60){
+        $('feedbackTitle').textContent='這題會提高後續出現頻率';
+        $('feedbackNote').textContent='目前低於 60 分。你可以直接下一題，或套用修正版再答一次；重答後會顯示 Before / After，並自動安排下一次複習。';
+      }else{
+        $('feedbackTitle').textContent=retryComparison?'已完成重答比較':'已完成評分';
+        $('feedbackNote').textContent=retryComparison?retryComparison.reviewLabel+'。':'如果你想把 60–79 分的回答練穩，可以直接重答一次；系統會保留前後分數。';
+      }
     }else{
       retryBtn?.classList.add('hidden');
+      if(retryComparison){$('feedbackTitle').textContent='重答已達穩定標準';$('feedbackNote').textContent=retryComparison.reviewLabel+'。';}
     }
-    const recognitionBtn=$('recognitionBtn');
-    if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='✓ 已完成評分';}
+    const recognitionBtn=$('recognitionBtn');if(recognitionBtn){recognitionBtn.disabled=true;recognitionBtn.textContent='✓ 已完成評分';}
   }
 
   async function finishSpeakingStage(q){
@@ -2190,7 +2224,7 @@
       repeats
     };
   }
-  function renderSpeakingScore(analysis,q,transcript){
+  function renderSpeakingScore(analysis,q,transcript,retryComparison=null){
     const host=$('speakingScoreHost');
     if(!host)return;
     const b=analysis.breakdown;
@@ -2202,6 +2236,10 @@
       ? `<div class="transcript-score-note">${analysis.transcriptConfirmed?'✓ 轉錄已由你確認':`轉錄可信度 ${analysis.transcriptReliability}/100`}</div>`
       : '';
     const paceHtml=analysis.wordsPerMinute?`<div class="speaking-pace"><b>${analysis.wordsPerMinute} WPM</b><span>錄音 ${analysis.recordingDurationSec}s · 語速參考</span></div>`:'';
+    const retryHtml=retryComparison?(()=>{
+      const delta=Number(retryComparison.delta)||0,deltaLabel=(delta>0?'+':'')+delta,deltaTone=delta>0?'up':delta<0?'down':'flat';
+      return `<div class="speaking-retry-comparison ${deltaTone}"><div class="retry-comparison-head"><div><span class="badge good">RETRY LOOP</span><strong>重新回答成效</strong></div><span class="retry-review-label">${esc(retryComparison.reviewLabel)}</span></div><div class="retry-score-grid"><div><span>Before</span><b>${retryComparison.beforeScore}</b></div><div class="retry-arrow">→</div><div><span>After</span><b>${retryComparison.afterScore}</b></div><div class="retry-delta"><span>Δ</span><b>${deltaLabel}</b></div></div><p>${delta>0?'這次重答有進步，系統會保留前後分數並依新表現安排複習。':delta<0?'這次分數下降，系統會更快安排複習；先看修正再重組一次即可。':'分數持平，系統仍會依目前程度安排下一次複習。'}</p></div>`;
+    })():'';
     host.className=`speaking-score ${tone}`;
     host.innerHTML=`<div class="speaking-score-head"><div><div class="support">回答比對分數</div><div class="speaking-score-number">${analysis.score}<span>/100</span></div></div><div class="speaking-score-summary">${analysis.score>=80?'內容完整，可以往更自然的表達前進。':analysis.score>=60?'主要意思有說到，再補齊缺少內容會更穩。':'目前回答和題目重點有落差，先把核心內容講完整。'}</div></div>
       <div class="score-breakdown">
@@ -2210,7 +2248,7 @@
         <div><b>${b.structure}/20</b><span>回答結構</span></div>
         <div><b>${b.fluency}/15</b><span>流暢度線索</span></div>
       </div>
-      ${reliabilityHtml}${paceHtml}<div class="spoken-compare"><div><strong>你說的</strong><p>${esc(transcript)}</p></div><div><strong>需要調整</strong><ul>${analysis.suggestions.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div></div>
+      ${reliabilityHtml}${paceHtml}${retryHtml}<div class="spoken-compare"><div><strong>你說的</strong><p>${esc(transcript)}</p></div><div><strong>需要調整</strong><ul>${analysis.suggestions.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div></div>
       ${fixHtml}<div class="support score-disclaimer">此分數只會在轉錄可信度足夠，或你已確認／修正辨識文字後寫入紀錄；依內容、關鍵重點、長度、結構與 filler / 重複字計算。目前不評發音準確度或口音。</div>`;
     $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(transcript)}<br><span class="support">關鍵內容覆蓋：約 ${analysis.keywordRatio}% · ${analysis.wordCount} words</span>`;
     $('feedbackTitle').textContent='系統已完成比對';
@@ -2467,7 +2505,7 @@
     session.answers.push({id:q.id,skill:q.skill,level:q.level,quality,correct,extra:answerExtra,xp}); save(); renderOverview();
   }
 
-  function nextQuestion(){session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
+  function nextQuestion(){speakingRetryCycle=null;session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
 
   function finishSession(completedUnit=true){
     stopSpeakingTimer();stopRecognition();stopMediaRecording(true);cleanupRecordedAudio();stopModelPracticeRecording(false);cleanupModelPracticeAudio();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
@@ -3259,6 +3297,7 @@
         topWeakness:topWeakness(),
         errorMemory:topErrorEntries(5).map(([key,val])=>({key,label:errorLabels[key]||key,count:val.count||0,note:val.note||''})),
         interviewReadiness:interviewReadiness(),
+        retryComparison:session?.currentMeta?.latestAnswer?.retryComparison||lastLittleEAnswer?.retryComparison||null,
         learnerProfile:learnerProfile?{goal:learnerProfile.goal,role_type:learnerProfile.role_type,self_level:learnerProfile.self_level,daily_minutes:learnerProfile.daily_minutes,target_company:learnerProfile.target_company||''}:null
       };
     },
@@ -3283,6 +3322,10 @@
     getHistory(){return [];},
     saveHistory(){},
     speakEnglish(text,rate=.94){return speakNorthAmerican(text,rate);},
+    retryLatestSpeaking(source='little_e'){
+      const q=session?.questions?.[session.index]||lastLittleEQuestion;
+      return beginSpeakingRetry(q,source);
+    },
     clearHistory(){},
     clearCurrentQuestion(){lastLittleEQuestion=null;lastLittleEAnswer=null;}
   };
