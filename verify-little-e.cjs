@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v52');
-assert.equal(version.cache,'edan-english-coach-20261024-v52');
+assert.equal(version.release,'2026.10.24-v53');
+assert.equal(version.cache,'edan-english-coach-20261024-v53');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -64,6 +64,7 @@ const indian=fs.readFileSync(path.join(root,'english/indian-tts.js'),'utf8');
 const indianWorker=fs.readFileSync(path.join(root,'english/indian-tts-worker.js'),'utf8');
 const phonemizer=fs.readFileSync(path.join(root,'english/piper-phonemize.js'),'utf8');
 const auth=fs.readFileSync(path.join(root,'english/auth.js'),'utf8');
+const dailyQuotes=fs.readFileSync(path.join(root,'english/daily-quotes.js'),'utf8');
 
 assert.ok(html.includes('<script src="version.js"></script>'));
 assert.ok(html.includes('<script src="little-e-core.js"></script>'));
@@ -79,6 +80,7 @@ assert.match(qb,/contentVersion:\s*window\.EDAN_APP_VERSION\.release/);
 assert.match(sw,/importScripts\('\.\/version\.js'\)/);
 assert.match(sw,/EDAN_APP_VERSION\.cache/);
 assert.match(sw,/APP_CACHE_PREFIX='edan-english-coach-'/);
+assert.match(sw,/daily-quotes\.js/);
 assert.match(sw,/k\.startsWith\(APP_CACHE_PREFIX\)&&k!==CACHE/);
 assert.doesNotMatch(sw,/keys\.filter\(k=>k!==CACHE\)/);
 assert.match(sw,/\.\/indian-tts\.js/);
@@ -126,6 +128,12 @@ assert.ok(html.includes('data-little-e-action="natural-last"'));
 assert.ok(html.includes('data-little-e-action="simplify-last"'));
 assert.ok(html.includes('id="streakSub"'));
 assert.ok(html.includes('id="voiceModelStatus"'));
+assert.ok(html.includes('id="dailyQuoteEn"'));
+assert.ok(html.includes('id="dailyQuoteZh"'));
+assert.ok(html.includes('id="dailyQuoteSpeak"'));
+assert.ok(html.includes('daily-quotes.js'));
+assert.doesNotMatch(html,/Built for Edan · IBM \/ Core Banking \/ Global Tech/);
+assert.doesNotMatch(html,/不是學更多英文，是讓你的英文配得上你的實力/);
 assert.match(app,/function repairRecentStreakGap\(/);
 assert.match(app,/reason:'two_day_grace'/);
 assert.match(app,/function questionSemanticFamily\(/);
@@ -140,6 +148,9 @@ assert.match(app,/const anchorCount=Math\.min\(2/);
 assert.match(app,/sort\(\(a,b\)=>questionSessionDistance\(b\.id\)-questionSessionDistance\(a\.id\)\)/);
 assert.match(app,/下一輪會優先換新題/);
 assert.match(app,/const MODEL_CUE_ZH=Object\.freeze/);
+assert.match(app,/function renderDailyQuote\(/);
+assert.match(app,/function bindDailyQuote\(/);
+assert.match(app,/speakNorthAmerican\(text,\.9\)/);
 assert.match(app,/function questionTranslation\(/);
 assert.match(app,/function vocabExampleTranslation\(/);
 assert.match(app,/function modelWordMeaning\(/);
@@ -151,6 +162,8 @@ assert.match(app,/顯示文字＋繁中/);
 assert.match(app,/播放發音＋顯示中文意思/);
 assert.match(css,/\.vocab-example-zh/);
 assert.match(css,/\.transcript-zh/);
+assert.match(css,/\.daily-quote-meta/);
+assert.match(css,/\.daily-quote-speak/);
 assert.match(app,/"English at work": "工作中使用英文"/);
 assert.match(app,/"technical documents": "技術文件"/);
 assert.match(app,/"international vendors": "國際供應商"/);
@@ -230,4 +243,13 @@ for(const q of content.questions){
   for(const kw of (q.keywords||[]))assert.ok(String(cueMap[kw]||'').trim(),'Missing cue zh-TW for '+q.id+' / '+kw);
 }
 
-console.log('PASS: v52 preserved Local AI caches, single Service Worker owner, context-aware word meanings, latest-answer Little E coaching and prior regressions.');
+
+assert.match(dailyQuotes,/Steve Jobs/);
+assert.match(dailyQuotes,/Jensen Huang/);
+assert.match(dailyQuotes,/Elon Musk/);
+assert.match(dailyQuotes,/Albert Einstein/);
+assert.match(dailyQuotes,/J\. Robert Oppenheimer/);
+assert.match(dailyQuotes,/function indexForDate\(/);
+assert.match(dailyQuotes,/today\(d=new Date\(\)\)/);
+
+console.log('PASS: v53 public daily quote hero, deterministic daily rotation, source attribution, pronunciation and prior regressions.');

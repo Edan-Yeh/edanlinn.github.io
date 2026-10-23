@@ -1577,3 +1577,32 @@ body.auth-locked .little-e-panel{display:none!important}
   .vocab-example-zh{font-size:11px}
   .transcript-zh{font-size:12px}
 }
+
+/* v53 public daily quote hero */
+.daily-quote-main{display:flex;flex-direction:column;justify-content:center;min-height:288px}
+.daily-quote-topline{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.daily-quote-date{font-size:11px;font-weight:800;letter-spacing:.08em;color:rgba(255,255,255,.68);white-space:nowrap}
+.daily-quote-en{position:relative;z-index:1}
+.hero .daily-quote-zh{position:relative;z-index:1;margin-top:2px;color:rgba(255,255,255,.82);font-size:15px;line-height:1.7}
+.daily-quote-meta{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.18)}
+.daily-quote-credit{display:flex;flex-direction:column;gap:3px;min-width:0}
+.daily-quote-credit strong{font-size:13px;letter-spacing:.01em}
+.daily-quote-credit span{font-size:10px;color:rgba(255,255,255,.62);line-height:1.4}
+.daily-quote-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.daily-quote-speak,.daily-quote-source{
+  display:inline-flex;align-items:center;justify-content:center;min-height:38px;
+  padding:8px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.26);
+  background:rgba(255,255,255,.09);color:#fff;font-size:11px;font-weight:800;
+  text-decoration:none;cursor:pointer;backdrop-filter:blur(8px)
+}
+.daily-quote-speak:hover,.daily-quote-source:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.daily-quote-speak:disabled{opacity:.68;cursor:wait;transform:none}
+@media(max-width:620px){
+  .daily-quote-main{min-height:0}
+  .daily-quote-topline{align-items:flex-start}
+  .daily-quote-en{font-size:25px!important;line-height:1.14!important;margin-top:10px!important}
+  .hero .daily-quote-zh{font-size:12px;line-height:1.6}
+  .daily-quote-meta{align-items:flex-start;flex-direction:column;margin-top:16px;padding-top:13px}
+  .daily-quote-actions{justify-content:flex-start;width:100%}
+  .daily-quote-speak,.daily-quote-source{min-height:40px}
+}

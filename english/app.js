@@ -3163,6 +3163,57 @@
     clearCurrentQuestion(){lastLittleEQuestion=null;lastLittleEAnswer=null;}
   };
 
+  function renderDailyQuote(){
+    const deck=window.EDAN_DAILY_QUOTES;
+    if(!deck?.today)return;
+    const quote=deck.today(new Date());
+    if(!quote)return;
+
+    const d=new Date();
+    const dateLabel=new Intl.DateTimeFormat('zh-TW',{month:'2-digit',day:'2-digit',weekday:'short'}).format(d);
+    if($('dailyQuoteDate'))$('dailyQuoteDate').textContent=dateLabel;
+    if($('dailyQuoteKind'))$('dailyQuoteKind').textContent=quote.kind||'DAILY THOUGHT';
+    if($('dailyQuoteEn'))$('dailyQuoteEn').textContent=quote.en;
+    if($('dailyQuoteZh'))$('dailyQuoteZh').textContent=quote.zh;
+    if($('dailyQuoteAuthor'))$('dailyQuoteAuthor').textContent=quote.author;
+    if($('dailyQuoteSourceLabel'))$('dailyQuoteSourceLabel').textContent=quote.source||'';
+
+    const link=$('dailyQuoteSource');
+    if(link){
+      if(quote.sourceUrl){
+        link.href=quote.sourceUrl;
+        link.classList.remove('hidden');
+      }else{
+        link.removeAttribute('href');
+        link.classList.add('hidden');
+      }
+    }
+
+    const speak=$('dailyQuoteSpeak');
+    if(speak)speak.dataset.quoteText=quote.en;
+  }
+
+  function bindDailyQuote(){
+    const btn=$('dailyQuoteSpeak');
+    if(!btn)return;
+    btn.addEventListener('click',async()=>{
+      const text=btn.dataset.quoteText||$('dailyQuoteEn')?.textContent||'';
+      if(!text)return;
+      const original=btn.textContent;
+      btn.disabled=true;
+      btn.textContent='準備發音…';
+      try{
+        await speakNorthAmerican(text,.9);
+        btn.textContent='▶ 再聽一次';
+      }catch(e){
+        btn.textContent='播放失敗 · 重試';
+      }finally{
+        btn.disabled=false;
+        if(btn.textContent==='準備發音…')btn.textContent=original;
+      }
+    });
+  }
+
   function voiceModelStatusText(engine,label){
     const s=engine?.getStatus?.()||{state:'idle'};
     if(s.state==='ready')return label+'：✓ 已快取並預熱';
@@ -3183,7 +3234,7 @@
   }
 
   function init(){
-    syncSettingsUI();bindStaticEvents();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
+    syncSettingsUI();bindStaticEvents();renderDailyQuote();bindDailyQuote();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
     window.addEventListener('edan:tts-status',renderVoiceModelStatus);
     window.addEventListener('edan:auth-ready',()=>{const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);},{once:true});
     if('speechSynthesis' in window){

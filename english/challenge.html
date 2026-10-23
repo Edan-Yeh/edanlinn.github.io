@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Edan English">
   <meta name="theme-color" content="#2447d8">
-  <meta name="description" content="Edan 專屬 Career English Coach：依 IBM、核心銀行轉型、MongoDB 面試與個人口說錯誤，安排每天最值得練的英文。">
+  <meta name="description" content="Career English Coach：每日一句、聽力、單字、自然口說與專業面試練習，依學習表現安排下一輪最值得練的內容。">
   <meta name="author" content="Edan Yeh">
   <meta name="copyright" content="© 2026 Edan Yeh. Little E original character design and website implementation. All rights reserved.">
   <link rel="manifest" href="manifest.webmanifest">
@@ -47,11 +47,24 @@
   </header>
 
   <main class="shell">
-    <section class="hero" id="overviewSection">
-      <div class="hero-main">
-        <div class="eyebrow">Built for Edan · IBM / Core Banking / Global Tech</div>
-        <h1>不是學更多英文，是讓你的英文配得上你的實力。</h1>
-        <p>內容只圍繞你真正會遇到的情境：IBM 工作、核心銀行轉型、跨團隊協調、MongoDB／國際科技公司面試，以及你的日常口說弱點。系統會記住你真正犯過的錯，下一輪優先讓你把同一類問題練穩。</p>
+    <section class="hero daily-quote-hero" id="overviewSection">
+      <div class="hero-main daily-quote-main">
+        <div class="daily-quote-topline">
+          <div class="eyebrow"><span id="dailyQuoteKind">DAILY THOUGHT</span> · 每日一句</div>
+          <span class="daily-quote-date" id="dailyQuoteDate"></span>
+        </div>
+        <h1 class="daily-quote-en" id="dailyQuoteEn">Progress begins where certainty ends.</h1>
+        <p class="daily-quote-zh" id="dailyQuoteZh">真正的進步，往往從確定性結束的地方開始。</p>
+        <div class="daily-quote-meta">
+          <div class="daily-quote-credit">
+            <strong id="dailyQuoteAuthor">Daily Reflection</strong>
+            <span id="dailyQuoteSourceLabel">Edan's English Coach</span>
+          </div>
+          <div class="daily-quote-actions">
+            <button class="daily-quote-speak" id="dailyQuoteSpeak" type="button">▶ 聽英文</button>
+            <a class="daily-quote-source hidden" id="dailyQuoteSource" href="#" target="_blank" rel="noopener noreferrer">查看來源 ↗</a>
+          </div>
+        </div>
       </div>
       <div class="hero-stats">
         <div class="stat-card"><div class="stat-label">目前稱號</div><div class="stat-value" id="rankValue">English Starter</div><div class="stat-sub" id="xpSub">0 XP</div></div>
@@ -462,6 +475,7 @@
 <script src="supabase-config.js"></script>
 <script src="auth.js"></script>
 <script src="question-bank.js"></script>
+<script src="daily-quotes.js"></script>
 <script src="north-american-tts.js"></script>
 <script src="indian-tts.js"></script>
 <script src="app.js"></script>
