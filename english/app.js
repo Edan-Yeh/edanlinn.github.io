@@ -1690,7 +1690,9 @@
   function buildInterviewMock(size){
     const privateSpeaking=CONTENT.questions.filter(q=>privateQuestionIds.has(q.id)&&q.type==='speaking').sort((a,b)=>questionSessionDistance(b.id)-questionSessionDistance(a.id));
     const publicAnchors=GENERAL_MOCK_ANCHORS.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
-    const source=privateSpeaking.length?privateSpeaking:publicAnchors,anchorCount=Math.min(2,Math.max(1,Math.floor(size/4))),anchors=source.slice(0,anchorCount);
+    const source=privateSpeaking.length?privateSpeaking:publicAnchors;
+    const anchorCount=Math.min(2,Math.max(1,Math.floor(size/4)));
+    const anchors=source.slice(0,anchorCount);
     let pool=CONTENT.questions.filter(q=>q.type==='speaking'&&!q.diagnosticOnly&&!anchors.some(a=>a.id===q.id));
     pool=diversifyCandidatePool(pool,'mock',Math.max(0,size-anchors.length));const selected=[...anchors];
     while(selected.length<size&&pool.length){const q=weightedPick(pool,'mock',selected);selected.push(q);pool=pool.filter(x=>x.id!==q.id);}
