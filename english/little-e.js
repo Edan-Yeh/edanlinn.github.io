@@ -572,6 +572,7 @@
           <button type="button" class="${showEn?'active':''}" data-little-e-msg-lang="en" data-index="${i}">${showEn?'🙈 隱藏英文':'👁 顯示英文'}</button>
           <button type="button" class="${showZh?'active':''}" data-little-e-msg-lang="zh" data-index="${i}">${showZh?'🙈 隱藏中文':'🇹🇼 顯示中文'}</button>
           ${en&&/[A-Za-z]{2}/.test(en)?`<button type="button" data-little-e-speak="${i}">🔊 英文</button>`:''}
+          ${m.latestAnswerCoach?`<button type="button" class="little-e-retry-cta" data-little-e-retry="${i}">🎙 套用修正再答一次</button>`:''}
           <button type="button" data-little-e-feedback="helpful" data-index="${i}">👍 有幫助</button>
           <button type="button" data-little-e-feedback="needs_improvement" data-index="${i}">👎 要改進</button>
         </div>
@@ -794,6 +795,11 @@
       parts.push(`Learner role type: ${c.learnerProfile.role_type||'other'}`);
       parts.push(`Learner self level: ${c.learnerProfile.self_level||'unknown'}`);
       if(c.learnerProfile.target_company)parts.push(`Target company or role: ${c.learnerProfile.target_company}`);
+    }
+    if(c.retryComparison){
+      const sign=Number(c.retryComparison.delta)>0?'+':'';
+      parts.push(`Retry comparison: ${c.retryComparison.beforeScore} -> ${c.retryComparison.afterScore} (${sign}${c.retryComparison.delta})`);
+      parts.push(`Next review: ${c.retryComparison.reviewLabel||c.retryComparison.reviewDue||'scheduled'}`);
     }
     if(Number.isFinite(c.lastSystemScore))parts.push(`Latest speaking score: ${c.lastSystemScore}/100`);
     if(c.topWeakness)parts.push(`Current weak area: ${c.topWeakness}`);
@@ -1077,6 +1083,23 @@
         addUserMessage(text);
         rememberUserRequest(text);
         addAssistantMessage(currentQuestionAnswerPayload(q,{exampleOnly:action==='example'}));
+        return;
+      }
+
+      if(action==='retry-last'){
+        const text='套用剛才的修正，再回答一次';
+        addUserMessage(text);rememberUserRequest(text);
+        const result=bridge()?.retryLatestSpeaking?.('little_e_quick');
+        if(result?.ok){
+          addAssistantMessage(assistantPayload(
+            `Great. Your previous score was ${result.beforeScore}/100. Answer the same question again in your own words.`,
+            `好，剛才是 ${result.beforeScore}/100。現在用你自己的話重新回答同一題；完成後我會幫你比較前後分數。`,
+            {category:'interview_answer',petReaction:'happy'}
+          ));
+          setTimeout(closePanel,420);
+        }else{
+          addAssistantMessage(assistantPayload('Finish one scored speaking answer first.',result?.reason||'請先完成一題有分數的口說回答。',{category:'interview_answer'}));
+        }
         return;
       }
 
@@ -1406,6 +1429,19 @@
       if(speakBtn){
         const msg=messages[Number(speakBtn.dataset.littleESpeak)];
         if(msg?.en)bridge()?.speakEnglish?.(msg.en,.92);
+        return;
+      }
+
+      const retryBtn=e.target.closest?.('[data-little-e-retry]');
+      if(retryBtn){
+        const result=bridge()?.retryLatestSpeaking?.('little_e_coach');
+        if(result?.ok){
+          setStatus(`開始重答 · Before ${result.beforeScore}/100`,'good');
+          setPetState('is-celebrate',720);
+          setTimeout(closePanel,260);
+        }else{
+          setStatus(result?.reason||'目前沒有可重答的口說題','mid');
+        }
         return;
       }
 

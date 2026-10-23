@@ -1620,3 +1620,21 @@ body.auth-locked .little-e-panel{display:none!important}
 .diagnostic-panel,.private-pack-panel{display:flex;align-items:center;justify-content:space-between;gap:20px}
 .diagnostic-panel h2,.private-pack-panel h3{margin:8px 0 5px}.diagnostic-panel p,.private-pack-panel p{margin:0;color:var(--muted);line-height:1.6}
 @media(max-width:620px){.onboarding-overlay{padding:8px}.onboarding-card{padding:18px;border-radius:20px;max-height:94vh}.onboarding-head{flex-direction:column}.onboarding-grid{grid-template-columns:1fr}.diagnostic-panel,.private-pack-panel{align-items:flex-start;flex-direction:column}.diagnostic-panel .btn-row{width:100%}.diagnostic-panel .btn{flex:1 1 auto}}
+
+/* v55 learning loop: coach -> retry -> compare -> spaced review */
+.speaking-retry-comparison{margin:14px 0;padding:14px;border:1px solid #dfe5f3;border-radius:16px;background:#f8faff}
+.speaking-retry-comparison.up{border-color:#b9dfca;background:#f3fbf6}
+.speaking-retry-comparison.down{border-color:#f1c8c8;background:#fff7f7}
+.retry-comparison-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.retry-comparison-head>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.retry-review-label{font-size:11px;font-weight:800;color:#5b6782}
+.retry-score-grid{display:grid;grid-template-columns:1fr auto 1fr 1fr;align-items:center;gap:8px}
+.retry-score-grid>div:not(.retry-arrow){display:grid;gap:2px;padding:10px;border-radius:12px;background:#fff;border:1px solid #e7ebf3;text-align:center}
+.retry-score-grid span{font-size:10px;color:var(--muted);font-weight:800}
+.retry-score-grid b{font-size:22px}
+.retry-arrow{font-weight:900;color:#7b879f}
+.speaking-retry-comparison.up .retry-delta b{color:#16824b}
+.speaking-retry-comparison.down .retry-delta b{color:#b64040}
+.speaking-retry-comparison p{margin:10px 0 0;color:#59657d;font-size:12px;line-height:1.6}
+.little-e-retry-cta{font-weight:900!important;border-color:#9eadef!important;background:#eef1ff!important;color:#3346a2!important}
+@media(max-width:560px){.retry-score-grid{grid-template-columns:1fr auto 1fr}.retry-delta{grid-column:1/-1}.retry-comparison-head{align-items:flex-start;flex-direction:column}}
