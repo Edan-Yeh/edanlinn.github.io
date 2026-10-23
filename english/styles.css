@@ -517,17 +517,21 @@ body.auth-locked .page,body.auth-locked .mobile-dock{filter:blur(5px);pointer-ev
 }
 .model-memory-cues .model-cue-pronounce{
   display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:7px 9px;
+  align-items:flex-start;
+  gap:7px;
+  padding:8px 10px;
   border:0;
-  border-radius:999px;
+  border-radius:13px;
   background:#fff;
   color:#26344f;
   font-size:11px;
   font-weight:800;
   cursor:pointer;
+  min-width:0;
 }
+.model-cue-copy{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
+.model-cue-en{display:block;line-height:1.25;color:#26344f}
+.model-cue-zh{display:block;line-height:1.25;color:#65708a;font-size:10px;font-weight:700}
 .model-memory-cues .model-cue-pronounce:hover,
 .model-memory-cues .model-cue-pronounce:focus-visible,
 .model-memory-cues .model-cue-active{
@@ -548,6 +552,9 @@ body.auth-locked .page,body.auth-locked .mobile-dock{filter:blur(5px);pointer-ev
 @media(max-width:620px){
   .pronounce-word{padding:1px 2px}
   .model-word-hint{font-size:11px}
+  .model-memory-cues .model-cue-pronounce{flex:1 1 calc(50% - 4px);min-width:138px;padding:9px 10px}
+  .model-cue-en{font-size:11px}
+  .model-cue-zh{font-size:10px}
 }
 
 

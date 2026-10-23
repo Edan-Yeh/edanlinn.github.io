@@ -228,10 +228,176 @@
   }
   window.addEventListener('edan:cloud-state', e=>applyCloudState(e.detail?.state));
   function answerTranslation(q){ return q?.modelZh || CONTENT.answerTranslations?.[q?.id] || ''; }
+  const MODEL_CUE_ZH=Object.freeze({
+    "English at work": "工作中使用英文",
+    "technical documents": "技術文件",
+    "international vendors": "國際供應商",
+    "not the only PM": "不是唯一的 PM",
+    "multiple PMs": "多位 PM",
+    "own workstreams": "負責自己的工作流",
+    "duration": "持續時間",
+    "timeframe": "時程",
+    "expected to run": "預計進行",
+    "bank client": "銀行客戶",
+    "stakeholders": "利害關係人",
+    "delivery": "交付",
+    "other experience": "其他經驗",
+    "banking": "銀行業",
+    "securities": "證券業",
+    "IBM Taiwan": "IBM 台灣",
+    "8+ years": "8 年以上",
+    "financial IT": "金融 IT",
+    "core banking": "核心銀行系統",
+    "customer delivery": "客戶交付",
+    "clarify intent": "釐清問題意圖",
+    "PM scope": "PM 職責範圍",
+    "slower": "慢一點",
+    "repeat": "重複一次",
+    "mainly handle": "主要負責",
+    "cross-team": "跨團隊",
+    "issue management": "議題管理",
+    "technical coordination": "技術協調",
+    "project delivery": "專案交付",
+    "CTBC": "中國信託",
+    "vendors": "供應商",
+    "to what extent": "到什麼程度",
+    "day-to-day responsibilities": "日常工作職責",
+    "scope": "範圍",
+    "workstreams": "工作流",
+    "delivery timeframe": "交付時程",
+    "overall": "整體而言",
+    "started as software engineer": "從軟體工程師開始",
+    "technical foundation": "技術基礎",
+    "customer communication": "客戶溝通",
+    "consulting": "顧問工作",
+    "business impact": "業務影響",
+    "risk": "風險",
+    "decision": "決策",
+    "timeline": "時程",
+    "variable bonus": "浮動獎金",
+    "equity": "股權／股票獎酬",
+    "base salary": "底薪",
+    "total compensation": "總薪酬",
+    "expected range": "期望範圍",
+    "overall package": "整體薪酬方案",
+    "confirm meaning": "確認意思",
+    "overall program manager": "整體 Program Manager",
+    "testing": "測試",
+    "dependencies": "相依關係",
+    "unclear ownership": "責任歸屬不清",
+    "facts": "事實",
+    "owner": "負責人",
+    "next actions": "下一步行動",
+    "tracked": "持續追蹤",
+    "impact": "影響",
+    "evidence": "證據",
+    "decision owner": "決策負責人",
+    "escalate": "升級處理",
+    "executive stakeholder": "高階利害關係人",
+    "recovery plan": "復原計畫",
+    "customer impact": "客戶影響",
+    "criticality": "關鍵程度",
+    "dependency": "相依關係",
+    "adjust the level of detail": "調整資訊細節層級",
+    "audience": "溝通對象",
+    "multi-part question": "多段式問題",
+    "remind me": "提醒我",
+    "success": "成功",
+    "delivered on time": "準時交付",
+    "reliably": "可靠地",
+    "no clear owner": "沒有明確負責人",
+    "timeline at risk": "時程有風險",
+    "decision needed": "需要做決策",
+    "enterprise technology": "企業級技術",
+    "customer engagement": "客戶互動",
+    "modernize": "現代化",
+    "learned a lot": "學到很多",
+    "next stage": "下一個階段",
+    "ownership": "責任承擔",
+    "global technology product": "全球科技產品",
+    "trade-off": "取捨",
+    "technical risk": "技術風險",
+    "reversibility": "可逆性",
+    "milestone": "里程碑",
+    "resource use": "資源使用",
+    "milestones": "里程碑",
+    "change requests": "變更需求",
+    "commercial terms": "商務條件",
+    "business urgency": "業務急迫性",
+    "failure impact": "失敗影響",
+    "rollback": "回復／回滾",
+    "operational risk": "營運風險",
+    "technical design": "技術設計",
+    "delivery alignment": "交付對齊",
+    "new scope": "新增範圍",
+    "effort": "工作量",
+    "options": "選項",
+    "paraphrase": "換句話說",
+    "confirm intent": "確認意圖",
+    "trade-offs": "各種取捨",
+    "explicit": "明確說明",
+    "issue aging": "議題未解決時間",
+    "resource utilization": "資源使用率",
+    "customer satisfaction": "客戶滿意度",
+    "critical path": "關鍵路徑",
+    "parallel": "平行進行",
+    "resource constraints": "資源限制",
+    "migration risk": "移轉風險",
+    "scenarios": "情境方案",
+    "acknowledge objective": "先認同目標",
+    "alternatives": "替代方案",
+    "residual risk": "剩餘風險",
+    "customer confidence": "客戶信心",
+    "expectations": "期待",
+    "visible outcomes": "可見成果",
+    "predictable": "可預測",
+    "gap": "能力缺口",
+    "commercial metrics": "商務指標",
+    "margin": "專案毛利",
+    "billability": "可計費率",
+    "engagement lifecycle": "客戶專案全生命週期",
+    "technical depth": "技術深度",
+    "customer-facing delivery": "客戶端交付",
+    "customer outcomes": "客戶成果",
+    "usually": "通常",
+    "after work": "下班後",
+    "relax": "放鬆",
+    "how long": "多久",
+    "usually take": "通常需要",
+    "okay with that": "可以接受這樣嗎",
+    "works for me": "我可以接受",
+    "what do you mean": "你的意思是什麼",
+    "explain": "說明",
+    "weekends": "週末",
+    "friends": "朋友",
+    "exercise": "運動",
+    "these days": "最近",
+    "busy": "忙碌",
+    "improving": "持續進步",
+    "not sure yet": "還不確定",
+    "check": "確認",
+    "get back to you": "再回覆你",
+    "getting used to": "逐漸習慣",
+    "practice": "練習",
+    "responding quickly": "快速回應",
+    "would you rather": "你比較想要",
+    "now": "現在",
+    "tomorrow": "明天",
+    "decided yet": "已經決定了嗎",
+    "not yet": "還沒有",
+    "took a while": "花了一段時間",
+    "comfortable": "自在／習慣"
+  });
   function modelPracticeCues(q){
     const keys=(q.keywords||[]).filter(Boolean).slice(0,4);
-    if(keys.length)return keys;
-    return meaningfulTokens(q.model||'').filter((w,i,a)=>a.indexOf(w)===i).slice(0,4);
+    const source=keys.length?keys:meaningfulTokens(q.model||'').filter((w,i,a)=>a.indexOf(w)===i).slice(0,4);
+    return source.map(en=>({
+      en,
+      zh:MODEL_CUE_ZH[en]
+        || (CONTENT.vocabulary||[]).find(v=>String(v.word||'').toLowerCase()===String(en).toLowerCase())?.zh
+        || (CONTENT.chunks||[]).find(c=>String(c.en||'').replace(/[….,!?]/g,'').trim().toLowerCase()===String(en).replace(/[….,!?]/g,'').trim().toLowerCase())?.zh
+        || '中文意思待補'
+    }));
   }
   function pronounceableEnglishHtml(text){
     const parts=String(text||'').match(/[A-Za-z]+(?:['’][A-Za-z]+)?|\d+|\s+|[^A-Za-z\d\s]+/g)||[];
@@ -249,7 +415,7 @@
     return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en" data-model-answer-text>${pronounceableEnglishHtml(q.model)}</div><div class="model-word-hint">🔊 點任何英文單字可單獨聽發音</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div>
       <div class="model-practice-box">
         <div class="model-practice-head"><div><strong>記憶＋口說練習</strong><span>不要背整段，先記骨架再說。</span></div><span class="model-practice-count" data-model-practice-count>已練 ${practiceCount} 次</span></div>
-        <div class="model-memory-cues">${cues.map((c,i)=>`<button class="model-cue-pronounce" data-pronounce-cue="${esc(c)}" type="button" title="點一下聽 cue 發音"><b>${i+1}</b>${esc(c)}</button>`).join('')}</div>
+        <div class="model-memory-cues">${cues.map((c,i)=>`<button class="model-cue-pronounce" data-pronounce-cue="${esc(c.en)}" data-cue-zh="${esc(c.zh)}" type="button" title="點一下聽英文發音"><b>${i+1}</b><span class="model-cue-copy"><span class="model-cue-en">${esc(c.en)}</span><span class="model-cue-zh">${esc(c.zh)}</span></span></button>`).join('')}</div>
         <div class="model-practice-tip"><b>技巧：</b>先聽 1 次 → 點不熟的單字確認發音 → 看著 cue words 說 1 次 → 遮住英文再說 1 次。面試不用逐字一樣，重點是順序與意思能自己講出來。</div>
         <div class="btn-row model-practice-actions">
           <button class="btn ghost" data-model-practice="slow" type="button">▶ 0.88x 跟讀</button>
@@ -2385,12 +2551,13 @@
       const cueBtn=e.target.closest?.('[data-pronounce-cue]');
       if(cueBtn){
         const cue=cueBtn.dataset.pronounceCue;
+        const cueZh=cueBtn.dataset.cueZh||'';
         const status=cueBtn.closest('.model-answer')?.querySelector('[data-model-practice-status]');
         if(status)status.textContent='North American English · 正在準備 Cue 發音…';
         const resolved=await speakNorthAmerican(cue,.88,p=>{if(status)status.textContent=northAmericanProgressText(p,'North American English');});
         cueBtn.classList.add('model-cue-active');
         setTimeout(()=>cueBtn.classList.remove('model-cue-active'),650);
-        if(status)status.textContent=`🔊 Cue: ${cue} · ${resolved?.voiceName||'Piper · Lessac US English'}`;
+        if(status)status.textContent=`🔊 ${cue}${cueZh?'｜'+cueZh:''} · ${resolved?.voiceName||'Piper · Lessac US English'}`;
         return;
       }
 
