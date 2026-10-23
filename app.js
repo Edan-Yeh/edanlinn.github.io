@@ -344,7 +344,7 @@ function render(filter='all',q=''){
   const sortDirection=document.querySelector('#daily-sort').value;
   const items=d.days.filter(day=>{
     const txt=JSON.stringify(day).toLowerCase();
-    const filterOk=filter==='all' || (filter==='mistakes'&&day.corrections.length) || (filter==='mastered'&&day.mastered.length);
+    const filterOk=filter==='all' || (filter==='mistakes'&&Array.isArray(day.corrections)&&day.corrections.length) || (filter==='mastered'&&Array.isArray(day.mastered)&&day.mastered.length);
     return filterOk && (selectedDay==='all'||String(day.day)===selectedDay) && (!query || txt.includes(query));
   }).sort((a,b)=>sortDirection==='asc'?Number(a.day)-Number(b.day):Number(b.day)-Number(a.day));
   document.querySelector('#daily-count').textContent='顯示 '+items.length+' / '+d.days.length+' 天';
@@ -356,11 +356,11 @@ function render(filter='all',q=''){
         <div class="score ${day.score>=90?'high':'mid'}">${day.score}/100</div>
       </div>
       <div class="day-body">
-        <div class="chips">${day.mastered.map(x=>`<span class="chip">已掌握 · ${x}</span>`).join('')}</div>
+        <div class="chips">${(Array.isArray(day.mastered)?day.mastered:[]).map(x=>`<span class="chip">已掌握 · ${x}</span>`).join('')}</div>
         ${day.reinforcement?`<section class="reinforcement-panel" style="margin:16px 0;padding:16px;border:1px solid #b9d8c4;border-radius:12px;background:#f1faf4;color:#193e2b"><h3 style="margin:0 0 8px;color:#17623c">補強練習 · ${day.reinforcement.status==='passed'?'已通過':'待完成'}</h3><p><b>${day.reinforcement.title}</b> · ${day.reinforcement.score}</p><p><b>情境：</b>${day.reinforcement.question}</p><ul>${day.reinforcement.options.map(v=>`<li>${v}</li>`).join('')}</ul><p><b>你的答案：</b>${day.reinforcement.answer}　<b>正解：</b>${day.reinforcement.correct}</p><p><b>解析：</b>${day.reinforcement.explanation}</p><p><b>處理步驟：</b></p><ol>${day.reinforcement.steps.map(v=>`<li>${v}</li>`).join('')}</ol><p><b>重點：</b>${day.reinforcement.concepts.join('；')}</p><small>補強練習不重新計入正式 Day 分數。</small></section>`:''}
         <h3>需要持續修正</h3>
-        ${day.corrections.map(c=>`<div class="correction"><div class="box bad"><b>容易混淆</b><div>${c[0]}</div></div><div class="box good"><b>正確 SA 思維</b><div>${c[1]}</div></div></div>`).join('')}
-        <div class="memory"><b>必背</b><ul>${day.memory.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        ${(Array.isArray(day.corrections)?day.corrections:[]).map(c=>`<div class="correction"><div class="box bad"><b>容易混淆</b><div>${Array.isArray(c)?c[0]:c}</div></div><div class="box good"><b>正確 SA 思維</b><div>${Array.isArray(c)?c[1]||'待補充': '詳見完整課程紀錄'}</div></div></div>`).join('')}
+        <div class="memory"><b>必背</b><ul>${(Array.isArray(day.memory)?day.memory:[]).map(x=>`<li>${x}</li>`).join('')}</ul></div>
         ${day.archive?`<p class="archive-link"><a href="docs/reader.html?file=${encodeURIComponent(day.archive.split("/").pop())}" target="_blank" rel="noopener noreferrer">閱讀 Day ${day.day} 課程紀錄 ↗</a><small>Day 1–21 依現存紀錄補檔；未核實原題不冒充原題</small></p>`:''}
       </div>
     </article>`).join('');
