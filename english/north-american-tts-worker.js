@@ -193,6 +193,12 @@ async function phonemeIds(text){
   });
 }
 
+async function hasCachedModel(){
+  try{
+    const cache=await caches.open(MODEL_CACHE);
+    return !!(await cache.match(MODEL_URL));
+  }catch(e){return false;}
+}
 async function synthesize(text,requestId){
   const init=await initialize(requestId);
   post('state',requestId,{phase:'synth'});
@@ -220,17 +226,23 @@ async function synthesize(text,requestId){
 }
 
 self.addEventListener('message',async event=>{
-  const data=event.data||{};
+  const data=event.data||{},requestId=data.requestId;
+  if(data.type==='warmup'){
+    try{
+      const cached=await hasCachedModel();
+      if(!cached){post('warmup-result',requestId,{ready:false,cachedModel:false});return;}
+      await initialize(requestId);
+      post('warmup-result',requestId,{ready:true,cachedModel:true});
+    }catch(error){
+      post('error',requestId,{code:error?.code||failCode(currentStage),message:error?.message||String(error),stage:currentStage});
+    }
+    return;
+  }
   if(data.type!=='synthesize')return;
-  const requestId=data.requestId;
   try{
     const result=await synthesize(String(data.text||''),requestId);
     post('result',requestId,result);
   }catch(error){
-    post('error',requestId,{
-      code:error?.code||failCode(currentStage),
-      message:error?.message||String(error),
-      stage:currentStage
-    });
+    post('error',requestId,{code:error?.code||failCode(currentStage),message:error?.message||String(error),stage:currentStage});
   }
 });

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
 const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v49');
-assert.equal(version.cache,'edan-english-coach-20261024-v49');
+assert.equal(version.release,'2026.10.24-v50');
+assert.equal(version.cache,'edan-english-coach-20261024-v50');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -63,6 +63,7 @@ const northWorker=fs.readFileSync(path.join(root,'english/north-american-tts-wor
 const indian=fs.readFileSync(path.join(root,'english/indian-tts.js'),'utf8');
 const indianWorker=fs.readFileSync(path.join(root,'english/indian-tts-worker.js'),'utf8');
 const phonemizer=fs.readFileSync(path.join(root,'english/piper-phonemize.js'),'utf8');
+const auth=fs.readFileSync(path.join(root,'english/auth.js'),'utf8');
 
 assert.ok(html.includes('<script src="version.js"></script>'));
 assert.ok(html.includes('<script src="little-e-core.js"></script>'));
@@ -90,6 +91,8 @@ assert.match(le,/targetLanguage:'zh-Hant'/);
 assert.match(le,/targetLanguage:'zh-TW'/);
 assert.doesNotMatch(le,/targetIsTraditional[\s\S]{0,500}targetLanguage:'zh'/);
 assert.match(le,/CORE\.isCurrentQuestionAnswerRequest\(text\)/);
+assert.match(le,/LATEST USER ANSWER \/ RESULT:/);
+assert.match(le,/Corrected version:/);
 assert.match(le,/NEVER reply with only an answer framework or mnemonic/);
 assert.match(le,/Common example:/);
 assert.match(le,/Reusable template:/);
@@ -108,6 +111,13 @@ assert.ok(html.includes('href="#vocabularySection"'));
 assert.ok(html.includes('href="#chunksSection"'));
 assert.ok(html.includes('id="chunksSection"'));
 assert.ok(html.includes('data-little-e-action="example"'));
+assert.ok(html.includes('id="streakSub"'));
+assert.ok(html.includes('id="voiceModelStatus"'));
+assert.match(app,/function repairRecentStreakGap\(/);
+assert.match(app,/reason:'two_day_grace'/);
+assert.match(app,/function questionSemanticFamily\(/);
+assert.match(app,/function semanticExposurePenalty\(/);
+assert.match(app,/latestAnswer:session\?\.currentMeta\?\.latestAnswer/);
 assert.match(app,/function recentExposurePenalty\(/);
 assert.match(app,/function diversifyCandidatePool\(/);
 assert.match(app,/function withinSessionVarietyPenalty\(/);
@@ -141,6 +151,16 @@ assert.match(app,/indianCandidates=voices\.filter\(indianVoiceIdentity\)/);
 assert.match(app,/原生 en-IN voice 未安裝/);
 assert.match(app,/strictIndian:true/);
 assert.match(app,/resolved\.unavailable/);
+assert.match(auth,/function mergeLearningState\(/);
+assert.match(auth,/function fetchRecentCompletedSessionDates\(/);
+assert.match(auth,/maxAgeDays:2/);
+assert.match(auth,/mergeSessions\(/);
+assert.match(north,/function warmup\(/);
+assert.match(north,/getStatus/);
+assert.match(northWorker,/data\.type==='warmup'/);
+assert.match(indian,/function warmup\(/);
+assert.match(indian,/getStatus/);
+assert.match(indianWorker,/data\.type==='warmup'/);
 assert.match(north,/en_US-lessac-medium/);
 assert.match(north,/north-american-tts-worker\.js/);
 assert.match(northWorker,/env\.wasm\.numThreads=1/);
@@ -157,4 +177,23 @@ assert.match(indianWorker,/InferenceSession\.create/);
 assert.match(indianWorker,/MODEL_CACHE='edan-indian-piper-model-v2'/);
 assert.match(indianWorker,/piper-phonemize\.js/);
 assert.match(phonemizer,/self\.createPiperPhonemize=createPiperPhonemize/);
-console.log('PASS: v49 bilingual pronunciation cues, anti-repeat scheduling, Local AI speech and prior regressions.');
+
+const qbSandbox={window:{EDAN_APP_VERSION:{release:version.release}}};
+vm.runInNewContext(qb,qbSandbox,{filename:'question-bank.js'});
+const content=qbSandbox.window.EDAN_ENGLISH_CONTENT;
+assert.ok(content&&Array.isArray(content.questions)&&content.questions.length>0);
+for(const q of content.questions){
+  if(q.model){
+    const zh=String(q.modelZh||content.answerTranslations?.[q.id]||'').trim();
+    assert.ok(zh,'Missing Traditional Chinese model answer for '+q.id);
+    assert.match(zh,/[\u3400-\u9fff]/,'Model answer is not Chinese for '+q.id);
+  }
+}
+const cueMatch=app.match(/const MODEL_CUE_ZH=Object\.freeze\((\{[\s\S]*?\})\);/);
+assert.ok(cueMatch,'MODEL_CUE_ZH map missing');
+const cueMap=JSON.parse(cueMatch[1]);
+for(const q of content.questions){
+  for(const kw of (q.keywords||[]))assert.ok(String(cueMap[kw]||'').trim(),'Missing cue zh-TW for '+q.id+' / '+kw);
+}
+
+console.log('PASS: v50 two-day streak rescue, safe cloud merge/recovery, semantic anti-repeat, cached TTS warmup, Little E answer context, bilingual QA and prior regressions.');

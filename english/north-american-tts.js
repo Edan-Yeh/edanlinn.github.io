@@ -12,6 +12,7 @@
   let audioContext=null;
   let audioSource=null;
   const pending=new Map();
+  let engineStatus={state:'idle',cachedModel:null,updatedAt:null};
 
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 
@@ -21,6 +22,11 @@
 
   function emit(fn,data){
     try{if(typeof fn==='function')fn(data);}catch(e){}
+  }
+  function setEngineStatus(next){
+    engineStatus={...engineStatus,...next,updatedAt:new Date().toISOString()};
+    try{window.dispatchEvent(new CustomEvent('edan:tts-status',{detail:{engine:'northAmerica',...engineStatus}}));}catch(e){}
+    return engineStatus;
   }
 
   function stopAudio(){
@@ -83,13 +89,21 @@
         });
         return;
       }
+      if(data.type==='warmup-result'){
+        pending.delete(data.requestId);
+        setEngineStatus({state:data.ready?'ready':'not-cached',cachedModel:!!data.cachedModel});
+        entry.resolve({ready:!!data.ready,cachedModel:!!data.cachedModel});
+        return;
+      }
       if(data.type==='result'){
         pending.delete(data.requestId);
+        setEngineStatus({state:'ready',cachedModel:!!data.cachedModel});
         entry.resolve({blob:data.audio,cachedModel:!!data.cachedModel});
         return;
       }
       if(data.type==='error'){
         pending.delete(data.requestId);
+        setEngineStatus({state:'error',errorCode:data.code||'local_ai_failed'});
         const err=new Error(data.message||'local_ai_failed');
         err.code=data.code||'local_ai_failed';
         err.stage=data.stage||'';
@@ -115,9 +129,20 @@
     return new Promise((resolve,reject)=>{
       const requestId=++sequence;
       pending.set(requestId,{resolve,reject,onStatus});
+      setEngineStatus({state:'loading'});
       getWorker().postMessage({type:'synthesize',requestId,text});
     });
   }
+  function warmup(){
+    if(!supportsLocalAi())return Promise.resolve({ready:false,cachedModel:false,unsupported:true});
+    return new Promise((resolve,reject)=>{
+      const requestId=++sequence;
+      pending.set(requestId,{resolve,reject,onStatus:null});
+      setEngineStatus({state:'checking'});
+      getWorker().postMessage({type:'warmup',requestId});
+    });
+  }
+  function getStatus(){return {...engineStatus};}
 
   async function playBlob(blob,rate){
     stopAudio();
@@ -180,6 +205,8 @@
 
   window.EDAN_NORTH_AMERICA_TTS=Object.freeze({
     speak,
+    warmup,
+    getStatus,
     stop:stopAudio,
     supported:supportsLocalAi,
     voiceId:VOICE_ID,
