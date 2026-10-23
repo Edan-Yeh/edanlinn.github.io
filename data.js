@@ -4414,12 +4414,30 @@ window.CLOUD_SA_DATA = {
         "Vue/Spring Boot/FastAPI/ML 推論分工"
       ],
       "corrections": [
-        "Data Leakage：只能用預測當下可得特徵；不得用未來成績",
-        "Train/Validation/Test 與 Logistic Regression baseline；類別不平衡需 Precision/Recall/F1",
-        "模型版本回退不等於 DB rollback；正式交易另需補償或沖正",
-        "NAS CPU 先行；SLA/負載/維運需求才比較 SageMaker AI/Azure ML/Vertex AI"
+        [
+          "Data Leakage：只能使用預測當下已知特徵",
+          "以過去練習正確率、答題耗時與錯題數預測未來補強需求，不能使用未來正式考試成績"
+        ],
+        [
+          "訓練與模型評估尚未完整",
+          "依學生或時間分割 Train/Validation/Test；V1 用 Logistic Regression；檢查 Precision、Recall、F1、Confusion Matrix"
+        ],
+        [
+          "模型回退與 DB rollback 混淆",
+          "FastAPI 逾時時保留正式成績並降級；模型品質下降回退模型版本；DB rollback 僅適用未提交交易，已入帳交易需補償或沖正"
+        ],
+        [
+          "雲端託管選型缺少判斷標準",
+          "先以 NAS CPU + FastAPI 免費部署，待負載、SLA、GPU 訓練或維運需求增加才評估 AWS SageMaker AI、Azure ML、Vertex AI"
+        ]
       ],
-      "archive": "docs/cloud-ai-day27-2026-10-22.md"
+      "archive": "docs/cloud-ai-day27-2026-10-22.md",
+      "memory": [
+        "Inference 使用已訓練模型預測，正常不更新權重；Training 才更新參數。",
+        "Data Leakage：不可使用預測時間點尚未產生的未來資訊。",
+        "類別不平衡時不能只看 Accuracy，需看 Precision、Recall、F1 與 Confusion Matrix。",
+        "模型版本 Rollback、應用程式 Rollback、DB Transaction Rollback 與金融交易沖正並不相同。"
+      ]
     }
   ],
   "cloudComparison": {
