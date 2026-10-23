@@ -745,16 +745,68 @@
     "ctbc": "中國信託",
     "taiwan": "台灣"
   });
+  const MODEL_CONTEXT_PHRASE_ZH=Object.freeze({
+    "base salary": "底薪",
+    "variable bonus": "浮動獎金",
+    "stock options": "股票選擇權／股票獎酬",
+    "total compensation": "總薪酬",
+    "overall package": "整體薪酬方案",
+    "project manager": "專案經理",
+    "project management": "專案管理",
+    "customer-facing delivery": "客戶端交付",
+    "technical depth": "技術深度",
+    "business impact": "業務影響",
+    "core banking": "核心銀行系統",
+    "delivery decision": "交付決策",
+    "delivery decisions": "交付決策",
+    "technical execution": "技術執行",
+    "customer outcomes": "客戶成果",
+    "technical risk": "技術風險",
+    "stakeholder expectations": "利害關係人期待",
+    "customer confidence": "客戶信心",
+    "commercial metrics": "商務指標",
+    "resource utilization": "資源使用率",
+    "critical path": "關鍵路徑",
+    "change requests": "變更需求",
+    "operational risk": "營運風險",
+    "executive stakeholder": "高階利害關係人",
+    "issue management": "議題管理",
+    "technical coordination": "技術協調",
+    "project delivery": "專案交付",
+    "day-to-day responsibilities": "日常工作職責",
+    "delivery timeframe": "交付時程",
+    "financial IT": "金融 IT",
+    "international vendors": "國際供應商"
+  });
   function modelWordMeaning(word,q){
     const raw=String(word||'').trim();
     const key=raw.toLowerCase().replace(/[’]/g,"'");
+    const modelText=String(q?.model||'').toLowerCase().replace(/[’]/g,"'");
+    const phraseEntries=[
+      ...Object.entries(MODEL_CONTEXT_PHRASE_ZH),
+      ...Object.entries(MODEL_CUE_ZH)
+    ]
+      .filter(([phrase])=>{
+        const normalized=String(phrase).toLowerCase();
+        const parts=normalized.split(/\s+/).filter(Boolean);
+        return parts.length>1 && parts.includes(key) && modelText.includes(normalized);
+      })
+      .sort((a,b)=>b[0].split(/\s+/).length-a[0].split(/\s+/).length || b[0].length-a[0].length);
+    if(phraseEntries.length){
+      const [phrase,zh]=phraseEntries[0];
+      return zh+'（'+phrase+'）';
+    }
+
     const vocab=(CONTENT.vocabulary||[]).find(v=>String(v.word||'').toLowerCase()===key);
     if(vocab?.zh)return vocab.zh;
     if(MODEL_WORD_ZH[key])return MODEL_WORD_ZH[key];
     if(MODEL_CUE_ZH[raw])return MODEL_CUE_ZH[raw];
-    const cues=[...(q?.keywords||[]),...Object.keys(MODEL_CUE_ZH)];
-    const phrase=cues.find(c=>String(c).toLowerCase().split(/\s+/).includes(key)&&MODEL_CUE_ZH[c]);
-    if(phrase)return MODEL_CUE_ZH[phrase]+'（'+phrase+'）';
+
+    const keywordPhrase=(q?.keywords||[])
+      .filter(Boolean)
+      .map(c=>String(c))
+      .find(c=>c.toLowerCase().split(/\s+/).includes(key)&&MODEL_CUE_ZH[c]);
+    if(keywordPhrase)return MODEL_CUE_ZH[keywordPhrase]+'（'+keywordPhrase+'）';
     return '中文意思待補';
   }
 
@@ -3140,7 +3192,6 @@
       setTimeout(refreshVoiceCache,250);
       setTimeout(refreshVoiceCache,900);
     }
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
   }
   init();
 })();

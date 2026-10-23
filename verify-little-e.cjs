@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v51');
-assert.equal(version.cache,'edan-english-coach-20261024-v51');
+assert.equal(version.release,'2026.10.24-v52');
+assert.equal(version.cache,'edan-english-coach-20261024-v52');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -78,6 +78,9 @@ assert.match(html,/Local AI[^<]*Piper Lessac US English[^<]*Piper SPICOR Indian 
 assert.match(qb,/contentVersion:\s*window\.EDAN_APP_VERSION\.release/);
 assert.match(sw,/importScripts\('\.\/version\.js'\)/);
 assert.match(sw,/EDAN_APP_VERSION\.cache/);
+assert.match(sw,/APP_CACHE_PREFIX='edan-english-coach-'/);
+assert.match(sw,/k\.startsWith\(APP_CACHE_PREFIX\)&&k!==CACHE/);
+assert.doesNotMatch(sw,/keys\.filter\(k=>k!==CACHE\)/);
 assert.match(sw,/\.\/indian-tts\.js/);
 assert.match(sw,/url\.origin!==self\.location\.origin/);
 assert.match(le,/normalizePetAsset/);
@@ -92,6 +95,10 @@ assert.match(le,/targetLanguage:'zh-TW'/);
 assert.doesNotMatch(le,/targetIsTraditional[\s\S]{0,500}targetLanguage:'zh'/);
 assert.match(le,/CORE\.isCurrentQuestionAnswerRequest\(text\)/);
 assert.match(le,/LATEST USER ANSWER \/ RESULT:/);
+assert.match(le,/function latestAnswerFallback\(/);
+assert.match(le,/function latestAnswerPrompt\(/);
+assert.match(le,/\['review-last','natural-last','simplify-last'\]/);
+assert.match(le,/latestAnswerCoach:true/);
 assert.match(le,/Corrected version:/);
 assert.match(le,/NEVER reply with only an answer framework or mnemonic/);
 assert.match(le,/Common example:/);
@@ -106,11 +113,17 @@ assert.match(le,/panelOpen\(\)/);
 assert.match(le,/petExpressionActive/);
 assert.doesNotMatch(css,/transform:scale\([23]\./);
 assert.ok(html.includes('appUpdateBanner'));
+assert.equal((app.match(/serviceWorker\.register\('sw\.js'\)/g)||[]).length,0);
+const versionJs=fs.readFileSync(path.join(root,'english/version.js'),'utf8');
+assert.equal((versionJs.match(/serviceWorker\.register\('sw\.js'\)/g)||[]).length,1);
 assert.ok(html.includes('class="web-jump-nav"'));
 assert.ok(html.includes('href="#vocabularySection"'));
 assert.ok(html.includes('href="#chunksSection"'));
 assert.ok(html.includes('id="chunksSection"'));
 assert.ok(html.includes('data-little-e-action="example"'));
+assert.ok(html.includes('data-little-e-action="review-last"'));
+assert.ok(html.includes('data-little-e-action="natural-last"'));
+assert.ok(html.includes('data-little-e-action="simplify-last"'));
 assert.ok(html.includes('id="streakSub"'));
 assert.ok(html.includes('id="voiceModelStatus"'));
 assert.match(app,/function repairRecentStreakGap\(/);
@@ -130,6 +143,10 @@ assert.match(app,/const MODEL_CUE_ZH=Object\.freeze/);
 assert.match(app,/function questionTranslation\(/);
 assert.match(app,/function vocabExampleTranslation\(/);
 assert.match(app,/function modelWordMeaning\(/);
+assert.match(app,/const MODEL_CONTEXT_PHRASE_ZH=Object\.freeze/);
+assert.match(app,/"base salary": "底薪"/);
+assert.match(app,/"stock options": "股票選擇權／股票獎酬"/);
+assert.match(app,/phraseEntries/);
 assert.match(app,/顯示文字＋繁中/);
 assert.match(app,/播放發音＋顯示中文意思/);
 assert.match(css,/\.vocab-example-zh/);
@@ -213,4 +230,4 @@ for(const q of content.questions){
   for(const kw of (q.keywords||[]))assert.ok(String(cueMap[kw]||'').trim(),'Missing cue zh-TW for '+q.id+' / '+kw);
 }
 
-console.log('PASS: v51 bilingual vocab examples, listening question translations, click-to-meaning Model Answer words and prior regressions.');
+console.log('PASS: v52 preserved Local AI caches, single Service Worker owner, context-aware word meanings, latest-answer Little E coaching and prior regressions.');

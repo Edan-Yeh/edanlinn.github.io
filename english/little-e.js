@@ -678,6 +678,7 @@
       'Translation requests: translate only the requested sentence or current question when no sentence is supplied.',
       'Interview/work answers: direct answer first, then 2 key points, then stop.',
       'If the user asks “這題怎麼回答 / how should I answer this?”, use the CURRENT LEARNING CONTEXT question and write an actual ready-to-say answer first. NEVER reply with only an answer framework or mnemonic.',
+      'If the user asks about the latest answer (what to improve / make it natural / make it simpler), use LATEST USER ANSWER / RESULT as the primary source. Do not replace it with the Model Answer unless you are comparing them explicitly.',
       'Prefer the current question Reference answer when it exists. You may simplify or naturalize it, but do not ignore it.',
       'If there is not enough personal evidence, give a common realistic sample answer and label it as a sample. Never invent the user\'s achievements or numbers.',
       'Site help: explain what to click in short steps.',
@@ -976,6 +977,81 @@
     return fallback('answer');
   }
 
+  function latestAnswerFallback(action,c){
+    const a=c?.latestAnswer;
+    if(!a){
+      return assistantPayload(
+        'Finish one question first, then I can coach your latest answer directly.',
+        '先完成一題，我就能直接針對你剛才的回答幫你修改。'
+      );
+    }
+
+    if(a.kind==='speaking'){
+      if(action==='natural-last'&&a.natural){
+        return assistantPayload(
+          a.natural,
+          '這是系統目前整理出的較自然版本。你可以先跟讀一次，再用自己的方式重說。'
+        );
+      }
+      if(action==='simplify-last'){
+        const source=String(a.corrected||a.natural||a.transcript||'').split(/(?<=[.!?])\s+/).filter(Boolean).slice(0,2).join(' ');
+        return assistantPayload(
+          source||'Keep the answer short: one direct point, one reason, and one result.',
+          '先縮成「直接回答 → 一個理由 → 一個結果」，講順之後再補細節。'
+        );
+      }
+      const focus=[...(a.notes||[]),...(a.missing||[]),...(a.suggestions||[])].filter(Boolean).slice(0,3);
+      return assistantPayload(
+        [
+          'Your latest answer:',
+          a.transcript||'(no transcript)',
+          '',
+          'A better version:',
+          a.corrected||a.natural||'Keep the answer direct and complete.',
+          '',
+          'Focus:',
+          focus.length?focus.join(' | '):'Make the main point earlier and keep the structure clear.'
+        ].join('\n'),
+        focus.length
+          ? '這次先改這幾點：'+focus.join('；')
+          : '這次先把主要答案提早講，再讓結構更清楚。'
+      );
+    }
+
+    if(typeof a.correct==='boolean'){
+      return assistantPayload(
+        a.correct
+          ? 'Your last choice was correct. The next step is to explain why it is correct in one short sentence.'
+          : 'Your last choice was not correct. Compare your choice with the correct answer and focus on the question intent.',
+        a.correct
+          ? '你剛才答對了。下一步練習用一句話說出「為什麼這個答案對」。'
+          : `你剛才選的是「${a.selectedText||''}」，正確答案是「${a.correctText||''}」。先重新抓題目真正的意圖。`
+      );
+    }
+
+    return assistantPayload('Let me review your latest answer again.','我會重新檢查你剛才的回答。');
+  }
+
+  function latestAnswerPrompt(action,c){
+    const a=c?.latestAnswer||null;
+    const labels={
+      'review-last':'針對我剛才的回答，直接指出最值得改的 2–3 個地方。先說問題，再給修正版。不要重新回答整個題目，也不要講空泛原則。',
+      'natural-last':'把我剛才的回答改得更自然、更像實際面試口說，但保留我的原意與程度。先給可以直接說的英文，再給自然繁中翻譯。',
+      'simplify-last':'把我剛才的回答縮短成更容易說、容易記、但仍完整的版本。優先保留核心答案、理由與結果。'
+    };
+    return [
+      labels[action]||'幫我檢查剛才的回答。',
+      a?.transcript?`我的原回答：${a.transcript}`:'',
+      a?.corrected?`目前修正版：${a.corrected}`:'',
+      a?.natural?`目前自然版：${a.natural}`:'',
+      Number.isFinite(a?.score)?`目前分數：${a.score}/100`:'',
+      a?.notes?.length?`系統註記：${a.notes.join('；')}`:'',
+      a?.missing?.length?`可能漏掉：${a.missing.join('；')}`:'',
+      a?.selectedText?`我剛選：${a.selectedText}`:'',
+      a?.correctText?`正確答案：${a.correctText}`:''
+    ].filter(Boolean).join('\n');
+  }
+
   async function runQuickAction(action){
     if(busy)return;
     busy=true;
@@ -997,6 +1073,27 @@
         addUserMessage(text);
         rememberUserRequest(text);
         addAssistantMessage(currentQuestionAnswerPayload(q,{exampleOnly:action==='example'}));
+        return;
+      }
+
+      if(['review-last','natural-last','simplify-last'].includes(action)){
+        const c=ctx();
+        const labels={
+          'review-last':'幫我看剛才哪裡要改',
+          'natural-last':'把我剛才回答改自然一點',
+          'simplify-last':'把我剛才回答變簡單'
+        };
+        const text=labels[action];
+        addUserMessage(text);
+        rememberUserRequest(text);
+        if(!c.latestAnswer){
+          addAssistantMessage(latestAnswerFallback(action,c));
+          return;
+        }
+        const ai=await askAI(latestAnswerPrompt(action,c));
+        addAssistantMessage(ai
+          ? assistantPayload(ai.en,ai.zh,{category:'interview_answer',petReaction:'thinking',latestAnswerCoach:true})
+          : latestAnswerFallback(action,c));
         return;
       }
 
