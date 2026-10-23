@@ -57,6 +57,11 @@
   let modelPracticeAudioUrl = '';
   let lastLittleEQuestion = null;
   let lastLittleEAnswer = null;
+  let learnerProfile = null;
+  const publicQuestionIds = new Set((CONTENT.questions||[]).map(q=>q.id));
+  const privateQuestionIds = new Set();
+  const privateTranslationIds = new Set();
+  let privatePackLabels = [];
 
   const $ = (id) => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
@@ -64,6 +69,115 @@
   const todayKey = () => localDateKey();
   const addDays = (days) => { const d = new Date(); d.setDate(d.getDate()+days); return localDateKey(d); };
   const dateKeyDaysAgo = (days) => { const d=new Date(); d.setDate(d.getDate()-days); return localDateKey(d); };
+  function resetPrivateQuestionPacks(){
+    CONTENT.questions=(CONTENT.questions||[]).filter(q=>publicQuestionIds.has(q.id));
+    for(const id of privateTranslationIds){delete CONTENT.answerTranslations?.[id];delete CONTENT.questionTranslations?.[id];}
+    privateQuestionIds.clear();privateTranslationIds.clear();privatePackLabels=[];updatePrivatePackUI();
+  }
+  function applyPrivateQuestionPacks(packs=[]){
+    resetPrivateQuestionPacks();
+    const existing=new Set(CONTENT.questions.map(q=>q.id));
+    for(const pack of (Array.isArray(packs)?packs:[])){
+      privatePackLabels.push(pack.label||pack.pack_key||'Private Pack');
+      for(const q of (Array.isArray(pack.questions)?pack.questions:[])){
+        if(!q?.id)continue;privateQuestionIds.add(q.id);
+        if(!existing.has(q.id)){CONTENT.questions.push({...q,privatePack:true});existing.add(q.id);}
+      }
+      for(const [id,value] of Object.entries(pack.answer_translations||{})){CONTENT.answerTranslations[id]=value;privateTranslationIds.add(id);}
+      for(const [id,value] of Object.entries(pack.question_translations||{})){CONTENT.questionTranslations[id]=value;privateTranslationIds.add(id);}
+    }
+    updatePrivatePackUI();renderOverview();
+  }
+  function updatePrivatePackUI(){
+    const section=$('privatePackSection'),summary=$('privatePackSummary'),badge=$('mockBadge'),title=$('mockTitle'),desc=$('mockDescription');
+    if(privateQuestionIds.size){
+      section?.classList.remove('hidden');
+      if(summary)summary.textContent=`${privateQuestionIds.size} 題私人 Career Pack 已安全載入；公開題庫不包含這些內容。`;
+      if(badge)badge.textContent='Private Pack';
+      if(title)title.textContent='Personalized Interview Mock';
+      if(desc)desc.textContent='使用你的私人 Career Pack，加上共用面試題，並優先補強最近較弱的口說能力。';
+    }else{
+      section?.classList.add('hidden');
+      if(badge)badge.textContent='Interview';if(title)title.textContent='Interview Mock';
+      if(desc)desc.textContent='使用共用面試題庫，並優先加入你較弱、較久沒練的口說題。';
+    }
+  }
+  function profileAccentValue(profile){
+    const accents=Array.isArray(profile?.accents)?profile.accents:[];
+    if(accents.includes('northAmerica')&&accents.includes('india'))return 'both';
+    if(accents.includes('india'))return 'india';return 'northAmerica';
+  }
+  function showOnboarding(profile=learnerProfile,editable=false){
+    const modal=$('onboardingModal');if(!modal)return;
+    $('onboardingGoal').value=profile?.goal||'work';$('onboardingRole').value=profile?.role_type||'other';
+    $('onboardingLevel').value=profile?.self_level||'intermediate';$('onboardingMinutes').value=String(profile?.daily_minutes||15);
+    $('onboardingAccents').value=profileAccentValue(profile);$('onboardingTarget').value=profile?.target_company||'';
+    $('onboardingCloseBtn')?.classList.toggle('hidden',!editable&&!profile?.onboarding_completed);
+    $('onboardingMessage').textContent=editable?'修改後會套用到之後的推薦與新回合。':'完成後系統會調整推薦題型與每回合題數。';
+    modal.classList.remove('hidden');
+  }
+  function hideOnboarding(){$('onboardingModal')?.classList.add('hidden');}
+  function applyLearnerProfilePreferences(profile,{newSetup=false}={}){
+    if(!profile||!newSetup)return;
+    state.settings.sessionSize=profile.daily_minutes>=60?15:profile.daily_minutes>=30?10:5;
+    const accents=Array.isArray(profile.accents)?profile.accents:[];
+    if(accents.length===1&&accents[0]==='india')state.settings.accent='en-IN';
+    else if(accents.length===1&&accents[0]==='northAmerica')state.settings.accent='en-US';
+    else state.settings.accent='adaptive';
+    save();syncSettingsUI();
+  }
+  function showDiagnosticIfNeeded(){
+    const section=$('diagnosticSection');if(!section)return;
+    section.classList.toggle('hidden',!learnerProfile?.onboarding_completed||!!learnerProfile?.diagnostic_completed);
+  }
+  async function loadLearnerExperience(){
+    const cloud=window.EDAN_CLOUD;if(!cloud?.ready)return;
+    resetPrivateQuestionPacks();
+    try{
+      const [profile,packs]=await Promise.all([cloud.getLearnerProfile?.(),cloud.getPrivateQuestionPacks?.()]);
+      learnerProfile=profile||null;applyPrivateQuestionPacks(packs||[]);
+      if(!learnerProfile?.onboarding_completed)showOnboarding(learnerProfile,false);else hideOnboarding();
+      showDiagnosticIfNeeded();
+    }catch(err){console.warn('Learner profile/private pack load failed',err);learnerProfile=null;showOnboarding(null,false);}
+  }
+  function bindLearnerExperienceUI(){
+    $('onboardingCloseBtn')?.addEventListener('click',hideOnboarding);
+    $('editLearnerProfileBtn')?.addEventListener('click',()=>showOnboarding(learnerProfile,true));
+    $('onboardingForm')?.addEventListener('submit',async e=>{
+      e.preventDefault();const cloud=window.EDAN_CLOUD,choice=$('onboardingAccents').value;
+      const patch={goal:$('onboardingGoal').value,role_type:$('onboardingRole').value,self_level:$('onboardingLevel').value,daily_minutes:Number($('onboardingMinutes').value),accents:choice==='both'?['northAmerica','india']:[choice],target_company:$('onboardingTarget').value.trim(),onboarding_completed:true};
+      const msg=$('onboardingMessage');if(msg)msg.textContent='儲存中…';
+      try{
+        learnerProfile=await cloud.saveLearnerProfile(patch);applyLearnerProfilePreferences(learnerProfile,{newSetup:true});hideOnboarding();showDiagnosticIfNeeded();
+        cloud.logEvent?.('learner_onboarding_completed',{goal:learnerProfile.goal,roleType:learnerProfile.role_type,dailyMinutes:learnerProfile.daily_minutes},'onboarding-v54');
+        $('diagnosticSection')?.scrollIntoView({behavior:'smooth',block:'center'});
+      }catch(err){console.warn(err);if(msg)msg.textContent='儲存失敗，請確認網路與登入狀態後重試。';}
+    });
+    $('startDiagnosticBtn')?.addEventListener('click',()=>startSession('diagnostic',5));
+    $('diagnosticLaterBtn')?.addEventListener('click',()=>$('diagnosticSection')?.classList.add('hidden'));
+  }
+  function diagnosticLevel(answers,skill){
+    const rows=answers.filter(a=>a.skill===skill);if(!rows.length)return null;
+    const avg=rows.reduce((n,a)=>n+(a.quality||0),0)/(rows.length*3);return clamp(1+avg*3.2,1,4.2);
+  }
+  function completeDiagnostic(answers,score){
+    const listening=diagnosticLevel(answers,'listening')||1;
+    const practicalRows=answers.filter(a=>a.skill==='chunks'||a.skill==='rescue');
+    const practical=practicalRows.length?clamp(1+(practicalRows.reduce((n,a)=>n+(a.quality||0),0)/(practicalRows.length*3))*3.2,1,4.2):1;
+    const speakingAnswer=answers.find(a=>a.skill==='speaking');
+    const speakingScore=Number.isFinite(speakingAnswer?.extra?.systemScore)?speakingAnswer.extra.systemScore:(speakingAnswer?.quality||0)/3*100;
+    const speaking=clamp(1+(speakingScore/100)*3.2,1,4.2),interview=clamp((speaking+practical)/2,1,4.2);
+    const levels={listening:Number(listening.toFixed(1)),speaking:Number(speaking.toFixed(1)),practical:Number(practical.toFixed(1)),interview:Number(interview.toFixed(1))};
+    const weakest=Object.entries(levels).sort((a,b)=>a[1]-b[1])[0]?.[0]||'speaking';
+    const recommendations={listening:'先從短句聽力與 Question Intent 開始。',speaking:'先練短回答與即時組句，再逐步增加長度。',practical:'先把高頻 Chunks 與救援句練成自然反應。',interview:'先用簡短結構練面試回答，再增加 follow-up。'};
+    const diagnostic={source:'v54_five_question_diagnostic',score,levels,weakest,recommendation:recommendations[weakest],completedAt:new Date().toISOString()};
+    const priorTraining=state.sessions.some(s=>!s.diagnostic);
+    if(!priorTraining){state.skills.listening=levels.listening;state.skills.speaking=levels.speaking;state.skills.interview=levels.interview;state.skills.chunks=levels.practical;state.skills.rescue=levels.practical;save();}
+    learnerProfile={...(learnerProfile||{}),diagnostic_completed:true,diagnostic};
+    window.EDAN_CLOUD?.saveLearnerProfile?.({diagnostic_completed:true,diagnostic}).then(p=>{learnerProfile=p||learnerProfile;showDiagnosticIfNeeded();}).catch(err=>console.warn('Diagnostic save failed',err));
+    window.EDAN_CLOUD?.logEvent?.('diagnostic_completed',{score,levels,weakest},'diagnostic-v54');return diagnostic;
+  }
+
   function repairRecentStreakGap(){
     const completed=new Set(Array.isArray(state.completedDates)?state.completedDates:[]);
     const repairs=Array.isArray(state.streakRepairs)?state.streakRepairs:[];
@@ -161,7 +275,7 @@
     if(weak==='sound'||weak==='intent') return {mode:'listening',size:5,label:'先做 5 題聽力',reason:'目前最需要提升的是「聽到問題後快速抓意圖」。'};
     if(weak==='output'||weak==='structure'||weak==='fluency'||err==='pace_slow') return {mode:'speaking',size:3,label:'先做 3 題口說',reason:'目前最值得投資的是把你已經知道的內容更快、更完整地說出口。'};
     if(weak==='usage'||err==='preposition'||err==='tense_current') return {mode:'adaptive',size:5,label:'先做 5 題精準挑戰',reason:'今天優先修正常出現的句型與用法，同時保留少量聽力。'};
-    return {mode:'mock',size:8,label:'做一輪 MongoDB Mock',reason:'目前沒有單一弱點特別突出，直接用完整面試檢查最有效。'};
+    return {mode:'mock',size:8,label:privateQuestionIds.size?'做一輪 Personalized Mock':'做一輪 Interview Mock',reason:'目前沒有單一弱點特別突出，直接用完整面試檢查最有效。'};
   }
   function renderCoachBrief(){
     const readiness=$('readinessValue');
@@ -1424,7 +1538,7 @@
 
   function candidatePool(mode){
     const today = todayKey();
-    let qs = CONTENT.questions.slice();
+    let qs = CONTENT.questions.filter(q=>!q.diagnosticOnly);
     if(mode==='listening') qs = qs.filter(q => q.skill==='listening' && q.type==='listening_intent');
     if(mode==='speaking') qs = qs.filter(q => q.type==='speaking');
     if(mode==='wrong'){
@@ -1544,6 +1658,9 @@
     if(familiarity==='correct' && (s?.correct||0)>=3)w*=.62;
     if(q.skill==='listening' && mode==='listening')w*=1.08;
     if(q.type==='speaking' && mode==='speaking')w*=1.08;
+    if(learnerProfile?.goal==='interview' && (q.skill==='interview'||q.type==='speaking'))w*=1.12;
+    if(learnerProfile?.goal==='work' && q.source==='Professional expansion')w*=1.08;
+    if(learnerProfile?.goal==='daily' && q.source==='Everyday spoken English')w*=1.14;
     const skill=effectiveSkillForQuestion(q);
     const dist=Math.abs(q.level-skill);
     const fit=clamp(1.08-dist*.07,.88,1.08);
@@ -1565,30 +1682,21 @@
     return arr[arr.length-1];
   }
 
-  const MOCK_SEQUENCE_IDS=['mdb-l1-006','mdb-l1-010','mdb-l2-010','mdb-l2-004','mdb-l2-005','pro-l3-001','pro-l3-009','pro-l3-010'];
-  function buildPersonalizedMock(size){
-    const anchorIds=['mdb-l1-006','mdb-l1-010','pro-l3-009','pro-l3-010'];
-    const anchorCount=Math.min(2,Math.max(1,Math.floor(size/4)));
-    const rotatingAnchors=anchorIds
-      .map(id=>CONTENT.questions.find(q=>q.id===id))
-      .filter(Boolean)
-      .sort((a,b)=>questionSessionDistance(b.id)-questionSessionDistance(a.id))
-      .slice(0,anchorCount);
-
-    let pool=CONTENT.questions.filter(q=>q.type==='speaking'&&!rotatingAnchors.some(a=>a.id===q.id));
-    pool=diversifyCandidatePool(pool,'mock',Math.max(0,size-rotatingAnchors.length));
-    const selected=[...rotatingAnchors];
-
-    while(selected.length<size && pool.length){
-      const q=weightedPick(pool,'mock',selected);
-      selected.push(q);
-      pool=pool.filter(x=>x.id!==q.id);
-    }
+  const GENERAL_MOCK_ANCHORS=['gen-l1-001','gen-l2-001','gen-l2-002','gen-l3-002'];
+  const DIAGNOSTIC_IDS=['diag-l1-001','diag-l1-002','diag-l1-003','diag-l2-001','diag-l2-002'];
+  function buildInterviewMock(size){
+    const privateSpeaking=CONTENT.questions.filter(q=>privateQuestionIds.has(q.id)&&q.type==='speaking').sort((a,b)=>questionSessionDistance(b.id)-questionSessionDistance(a.id));
+    const publicAnchors=GENERAL_MOCK_ANCHORS.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
+    const source=privateSpeaking.length?privateSpeaking:publicAnchors,anchorCount=Math.min(2,Math.max(1,Math.floor(size/4))),anchors=source.slice(0,anchorCount);
+    let pool=CONTENT.questions.filter(q=>q.type==='speaking'&&!q.diagnosticOnly&&!anchors.some(a=>a.id===q.id));
+    pool=diversifyCandidatePool(pool,'mock',Math.max(0,size-anchors.length));const selected=[...anchors];
+    while(selected.length<size&&pool.length){const q=weightedPick(pool,'mock',selected);selected.push(q);pool=pool.filter(x=>x.id!==q.id);}
     return selected.slice(0,size);
   }
 
   function buildSessionQuestions(mode,size){
-    if(mode==='mock') return buildPersonalizedMock(size);
+    if(mode==='diagnostic')return DIAGNOSTIC_IDS.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
+    if(mode==='mock') return buildInterviewMock(size);
     let pool = diversifyCandidatePool(candidatePool(mode),mode,size);
     const selected=[];
     while(selected.length<size && pool.length){
@@ -1620,9 +1728,9 @@
   function startSession(mode,sizeOverride=null){
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
     setMobileDockActive(mode==='listening'?'listening':'challenge');
-    const requestedSize=sizeOverride===null?(mode==='mock'?8:state.settings.sessionSize):sizeOverride;
+    const requestedSize=sizeOverride===null?(mode==='mock'?8:mode==='diagnostic'?5:state.settings.sessionSize):sizeOverride;
     const size = clamp(parseInt(requestedSize,10)||10,2,15);
-    const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習',mock:'MongoDB Mock Interview',speaking:'口說快練'};
+    const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習',mock:(privateQuestionIds.size?'Personalized Interview Mock':'Interview Mock'),diagnostic:'5 分鐘能力診斷',speaking:'口說快練'};
     session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null};
     $('resultSection').classList.remove('show');
     $('challengeSection').classList.add('active');
@@ -2352,13 +2460,15 @@
   function finishSession(completedUnit=true){
     stopSpeakingTimer();stopRecognition();stopMediaRecording(true);cleanupRecordedAudio();stopModelPracticeRecording(false);cleanupModelPracticeAudio();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
     if(!session || !session.answers.length){session=null;return;}
+    const sessionMode=session.mode;
     const avg=session.answers.reduce((a,b)=>a+b.quality,0)/(session.answers.length*3); const score=Math.round(avg*100);
     const bySkill={};session.answers.forEach(a=>{bySkill[a.skill]=bySkill[a.skill]||[];bySkill[a.skill].push(a.quality);});
     const skillAvgs=Object.entries(bySkill).map(([k,v])=>[k,v.reduce((a,b)=>a+b,0)/v.length]).sort((a,b)=>a[1]-b[1]);
     const weakest=skillAvgs[0]?.[0]||'listening';
-    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(completedUnit?'':'（未完成）'),count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit};
+    const trainingCompleted=completedUnit&&sessionMode!=='diagnostic';
+    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
-    if(completedUnit) markPracticeDay();
+    if(trainingCompleted) markPracticeDay();
     save();
     window.EDAN_CLOUD?.logEvent?.('session_completed',{
       title:rec.title,
@@ -2375,10 +2485,11 @@
     }, rec.title+'-'+todayKey());
     $('resultScore').textContent=`${score}%`;
     const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+(Number.isFinite(a.extra?.repeats)?a.extra.repeats:Math.max(0,(a.extra?.listens||0)-1)),0);
-    $('resultSummary').textContent=score>=80?'這輪很穩。下一輪會優先換新題，已熟題目進入冷卻，只在到期時回來複習。':score>=60?'基礎已經能撐住。下一輪仍會照顧弱項，但會避開最近幾回合剛出現過的相同題目。':'這輪先補弱點，但不會連續洗同一題；弱題會間隔後再回來確認是否真的學會。';
+    let diagnostic=null;if(sessionMode==='diagnostic'&&completedUnit)diagnostic=completeDiagnostic(session.answers,score);
+    $('resultSummary').textContent=diagnostic?`診斷完成：Listening L${diagnostic.levels.listening.toFixed(1)} · Speaking L${diagnostic.levels.speaking.toFixed(1)} · Practical L${diagnostic.levels.practical.toFixed(1)}。下一步：${diagnostic.recommendation}`:score>=80?'這輪很穩。下一輪會優先換新題，已熟題目進入冷卻，只在到期時回來複習。':score>=60?'基礎已經能撐住。下一輪仍會照顧弱項，但會避開最近幾回合剛出現過的相同題目。':'這輪先補弱點，但不會連續洗同一題；弱題會間隔後再回來確認是否真的學會。';
     const weaknessThis={}; session.answers.forEach(a=>{const w=a.extra?.weakness;if(w)weaknessThis[w]=(weaknessThis[w]||0)+1;});
     const topThis=Object.entries(weaknessThis).sort((a,b)=>b[1]-a[1])[0]?.[0];
-    $('resultGrid').innerHTML=`<div class="result-mini"><b>${strong}</b><span>高品質回答</span></div><div class="result-mini"><b>${low}</b><span>需要重練</span></div><div class="result-mini"><b>${hint}</b><span>使用文字提示</span></div><div class="result-mini"><b>${repeats}</b><span>額外重播次數</span></div>${topThis?`<div class="result-mini"><b>→</b><span>主要弱點：${esc(weaknessLabels[topThis]||topThis)}</span></div>`:''}`;
+    $('resultGrid').innerHTML=diagnostic?`<div class="result-mini"><b>L${diagnostic.levels.listening.toFixed(1)}</b><span>Listening</span></div><div class="result-mini"><b>L${diagnostic.levels.speaking.toFixed(1)}</b><span>Speaking</span></div><div class="result-mini"><b>L${diagnostic.levels.practical.toFixed(1)}</b><span>Practical English</span></div><div class="result-mini"><b>${score}%</b><span>Diagnostic score</span></div>`:`<div class="result-mini"><b>${strong}</b><span>高品質回答</span></div><div class="result-mini"><b>${low}</b><span>需要重練</span></div><div class="result-mini"><b>${hint}</b><span>使用文字提示</span></div><div class="result-mini"><b>${repeats}</b><span>額外重播次數</span></div>${topThis?`<div class="result-mini"><b>→</b><span>主要弱點：${esc(weaknessLabels[topThis]||topThis)}</span></div>`:''}`;
     $('resultSection').classList.add('show');$('resultSection').scrollIntoView({behavior:'smooth',block:'start'}); session=null; renderOverview();
   }
 
@@ -3135,7 +3246,8 @@
         lastSystemScore:stat?.lastSystemScore??null,
         topWeakness:topWeakness(),
         errorMemory:topErrorEntries(5).map(([key,val])=>({key,label:errorLabels[key]||key,count:val.count||0,note:val.note||''})),
-        interviewReadiness:interviewReadiness()
+        interviewReadiness:interviewReadiness(),
+        learnerProfile:learnerProfile?{goal:learnerProfile.goal,role_type:learnerProfile.role_type,self_level:learnerProfile.self_level,daily_minutes:learnerProfile.daily_minutes,target_company:learnerProfile.target_company||''}:null
       };
     },
     getMemory(){return Array.isArray(state.littleEMemory)?state.littleEMemory.slice(-60):[];},
@@ -3234,9 +3346,10 @@
   }
 
   function init(){
-    syncSettingsUI();bindStaticEvents();renderDailyQuote();bindDailyQuote();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
+    syncSettingsUI();bindStaticEvents();bindLearnerExperienceUI();renderDailyQuote();bindDailyQuote();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
     window.addEventListener('edan:tts-status',renderVoiceModelStatus);
-    window.addEventListener('edan:auth-ready',()=>{const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);},{once:true});
+    window.addEventListener('edan:auth-ready',()=>{loadLearnerExperience();const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);});
+    window.addEventListener('edan:auth-signed-out',()=>{learnerProfile=null;resetPrivateQuestionPacks();hideOnboarding();$('diagnosticSection')?.classList.add('hidden');});
     if('speechSynthesis' in window){
       refreshVoiceCache();
       window.speechSynthesis.onvoiceschanged=()=>refreshVoiceCache();

@@ -76,7 +76,7 @@
 
     <section class="section" id="coachBriefSection">
       <div class="section-head">
-        <div><h2>Edan Coach Brief</h2><p>不是通用英文分數，而是判斷你現在去面國際科技公司時，英文最可能在哪裡讓專業能力打折。</p></div>
+        <div><h2>Personal Coach Brief</h2><p>不是通用英文分數，而是依你的練習表現，判斷目前最值得補強的能力。</p></div>
         <button class="btn primary" id="coachStartBtn" type="button">開始今天推薦</button>
       </div>
       <div class="coach-brief-grid">
@@ -99,6 +99,16 @@
       </div>
     </section>
 
+    <section class="section hidden" id="diagnosticSection">
+      <div class="panel diagnostic-panel">
+        <div><span class="badge good">5 MIN DIAGNOSTIC</span><h2>先做 5 題，讓系統知道從哪裡開始</h2><p>2 題聽力＋2 題實用表達＋1 題口說。完成後會建立你的初始能力基線，之後出題會更貼近程度。</p></div>
+        <div class="btn-row"><button class="btn primary" id="startDiagnosticBtn" type="button">開始能力診斷</button><button class="btn ghost" id="diagnosticLaterBtn" type="button">稍後再做</button></div>
+      </div>
+    </section>
+    <section class="section hidden" id="privatePackSection">
+      <div class="panel private-pack-panel"><div><span class="badge dark">PRIVATE CAREER PACK</span><h3>你的私人職涯題庫已載入</h3><p id="privatePackSummary">私人內容只在你的登入帳號載入，不放在公開題庫裡。</p></div></div>
+    </section>
+
     <section class="section" id="modesSection">
       <div class="section-head"><div><h2>今天怎麼練</h2><p>不追求功能多；每一輪都依熟悉度決定出題頻率：<b>錯的 ＞ 猜的 ＞ 新的 ＞ 已答對</b>。答對越穩定，出現頻率越低；新增題庫也不會把舊進度洗掉。</p></div><span class="badge dark" id="contentVersionBadge">題庫</span></div>
       <div class="grid mode-grid">
@@ -118,7 +128,7 @@
           <span class="badge dark">Due</span><h3>今日複習</h3><p>依簡化間隔複習機制挑今天到期的題目；如果沒有到期題，就補最弱技能。</p><button class="btn ghost start-mode" data-mode="due" type="button">今日複習</button>
         </article>
         <article class="panel mode-card mock-card">
-          <span class="badge bad">MongoDB</span><h3>Personalized Mock</h3><p>保留真實 MongoDB 面試主軸，但中間題目會優先插入你過去最弱、最容易卡住的口說題。</p><button class="btn primary start-mode" data-mode="mock" data-size="8" type="button">開始模擬面試</button>
+          <span class="badge dark" id="mockBadge">Interview</span><h3 id="mockTitle">Interview Mock</h3><p id="mockDescription">使用共用面試題庫，並優先加入你較弱、較久沒練的口說題。</p><button class="btn primary start-mode" data-mode="mock" data-size="8" type="button">開始模擬面試</button>
         </article>
       </div>
     </section>
@@ -164,15 +174,6 @@
         <p style="color:var(--muted);line-height:1.65" id="resultSummary"></p>
         <div class="result-grid" id="resultGrid"></div>
         <div class="btn-row"><button class="btn primary" id="nextAdaptiveBtn" type="button">再做一輪自適應</button><button class="btn ghost" id="backOverviewBtn" type="button">回到總覽</button></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><div><h2>MongoDB 2026-10-12：你的基線</h2><p>這些是真實面試暴露出的問題類型，現在直接變成你的固定訓練素材。</p></div><span class="badge bad">Baseline</span></div>
-      <div class="grid grid-3">
-        <div class="panel"><b>① 聽懂問題意圖</b><p style="color:var(--muted);line-height:1.6">不再用 Yes / Yeah 撐住對話；先抓 PM scope、duration、English usage、compensation 等關鍵意圖。</p></div>
-        <div class="panel"><b>② 即時組完整句</b><p style="color:var(--muted);line-height:1.6">從碎句改成「Direct answer → 2 個重點 → 停」，先求清楚，再求華麗。</p></div>
-        <div class="panel"><b>③ 專業內容英文化</b><p style="color:var(--muted);line-height:1.6">Developer → SA / Consultant → Delivery / PM 的真實故事，先用中文釐清，再做成可講的英文。</p></div>
       </div>
     </section>
 
@@ -341,8 +342,25 @@
     <div class="account-row"><span>信箱驗證</span><b>已驗證後才能使用</b></div>
     <div class="account-row"><span>雙重驗證</span><b id="accountMfaStatus">檢查中…</b></div>
     <div class="callout"><strong>資料保護：</strong>每個帳號只能讀寫自己的學習紀錄；啟用 2FA 後，資料庫也要求 AAL2 才能存取。</div>
+    <button class="btn secondary" id="editLearnerProfileBtn" type="button">學習偏好與目標</button>
     <button class="btn bad account-signout" id="signOutBtn" type="button">登出</button>
   </aside>
+</div>
+
+<div class="onboarding-overlay hidden" id="onboardingModal" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+  <form class="onboarding-card" id="onboardingForm">
+    <div class="onboarding-head"><div><span class="badge">PERSONAL SETUP</span><h2 id="onboardingTitle">1 分鐘設定你的學習方式</h2><p>只問會影響出題的資訊；之後可從「帳號 → 學習偏好與目標」修改。</p></div><button class="btn ghost hidden" id="onboardingCloseBtn" type="button">關閉</button></div>
+    <div class="onboarding-grid">
+      <label>主要目標<select id="onboardingGoal"><option value="daily">日常口說</option><option value="work">工作英文</option><option value="interview">面試英文</option></select></label>
+      <label>工作類型<select id="onboardingRole"><option value="engineer">工程／技術</option><option value="pm">PM／專案管理</option><option value="consultant">顧問／客戶交付</option><option value="other">其他</option></select></label>
+      <label>目前自評程度<select id="onboardingLevel"><option value="beginner">基礎</option><option value="intermediate" selected>中階</option><option value="advanced">進階</option></select></label>
+      <label>每天可練時間<select id="onboardingMinutes"><option value="15">15 分鐘</option><option value="30">30 分鐘</option><option value="60">60 分鐘</option></select></label>
+      <label>想練的口音<select id="onboardingAccents"><option value="both">北美＋印度</option><option value="northAmerica">北美</option><option value="india">印度</option></select></label>
+      <label>目標公司／職位（選填）<input id="onboardingTarget" type="text" maxlength="120" placeholder="例如：Solutions Architect / PM"></label>
+    </div>
+    <div class="onboarding-note" id="onboardingMessage">完成後系統會調整推薦題型與每回合題數。</div>
+    <div class="btn-row onboarding-actions"><button class="btn primary" type="submit">儲存並開始</button></div>
+  </form>
 </div>
 
 <button class="little-e-fab little-e-pet" id="littleEButton" type="button" aria-expanded="false" aria-controls="littleEPanel" aria-label="開啟小E英文小幫手" title="小E · 你的英文寵物精靈">
