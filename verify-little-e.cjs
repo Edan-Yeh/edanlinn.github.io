@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v50');
-assert.equal(version.cache,'edan-english-coach-20261024-v50');
+assert.equal(version.release,'2026.10.24-v51');
+assert.equal(version.cache,'edan-english-coach-20261024-v51');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -127,6 +127,13 @@ assert.match(app,/const anchorCount=Math\.min\(2/);
 assert.match(app,/sort\(\(a,b\)=>questionSessionDistance\(b\.id\)-questionSessionDistance\(a\.id\)\)/);
 assert.match(app,/下一輪會優先換新題/);
 assert.match(app,/const MODEL_CUE_ZH=Object\.freeze/);
+assert.match(app,/function questionTranslation\(/);
+assert.match(app,/function vocabExampleTranslation\(/);
+assert.match(app,/function modelWordMeaning\(/);
+assert.match(app,/顯示文字＋繁中/);
+assert.match(app,/播放發音＋顯示中文意思/);
+assert.match(css,/\.vocab-example-zh/);
+assert.match(css,/\.transcript-zh/);
 assert.match(app,/"English at work": "工作中使用英文"/);
 assert.match(app,/"technical documents": "技術文件"/);
 assert.match(app,/"international vendors": "國際供應商"/);
@@ -188,6 +195,16 @@ for(const q of content.questions){
     assert.ok(zh,'Missing Traditional Chinese model answer for '+q.id);
     assert.match(zh,/[\u3400-\u9fff]/,'Model answer is not Chinese for '+q.id);
   }
+  if(q.type==='listening_intent'&&/[A-Za-z]/.test(q.text)){
+    const qzh=String(q.textZh||content.questionTranslations?.[q.id]||'').trim();
+    assert.ok(qzh,'Missing Traditional Chinese question translation for '+q.id);
+    assert.match(qzh,/[\u3400-\u9fff]/,'Question translation is not Chinese for '+q.id);
+  }
+}
+for(const v of (content.vocabulary||[])){
+  const ezh=String(v.exampleZh||content.vocabExampleTranslations?.[v.id]||'').trim();
+  assert.ok(ezh,'Missing Traditional Chinese vocab example translation for '+v.id);
+  assert.match(ezh,/[\u3400-\u9fff]/,'Vocab example translation is not Chinese for '+v.id);
 }
 const cueMatch=app.match(/const MODEL_CUE_ZH=Object\.freeze\((\{[\s\S]*?\})\);/);
 assert.ok(cueMatch,'MODEL_CUE_ZH map missing');
@@ -196,4 +213,4 @@ for(const q of content.questions){
   for(const kw of (q.keywords||[]))assert.ok(String(cueMap[kw]||'').trim(),'Missing cue zh-TW for '+q.id+' / '+kw);
 }
 
-console.log('PASS: v50 two-day streak rescue, safe cloud merge/recovery, semantic anti-repeat, cached TTS warmup, Little E answer context, bilingual QA and prior regressions.');
+console.log('PASS: v51 bilingual vocab examples, listening question translations, click-to-meaning Model Answer words and prior regressions.');

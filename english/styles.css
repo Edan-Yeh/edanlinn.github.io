@@ -1566,3 +1566,14 @@ body.auth-locked .little-e-panel{display:none!important}
   .web-jump-nav{display:none}
   #overviewSection,#modesSection,#vocabularySection,#chunksSection{scroll-margin-top:78px}
 }
+
+/* v51 bilingual vocabulary + listening transcript */
+.vocab-example-en{margin:7px 0 0;color:#53617e;line-height:1.5}
+.vocab-example-zh{margin:5px 0 0;padding-top:5px;border-top:1px dashed #dbe2ef;color:#2f4bd4;font-size:11px;line-height:1.5}
+.transcript-en{font-weight:700;line-height:1.55}
+.transcript-zh{margin-top:9px;padding-top:9px;border-top:1px dashed #dce3ef;color:#334155;line-height:1.55}
+.transcript-zh span{display:block;margin-bottom:3px;color:#64748b;font-size:10px;font-weight:900;letter-spacing:.04em}
+@media(max-width:620px){
+  .vocab-example-zh{font-size:11px}
+  .transcript-zh{font-size:12px}
+}
