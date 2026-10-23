@@ -120,11 +120,14 @@
   function applyLearnerProfilePreferences(profile,{newSetup=false}={}){
     if(!profile||!newSetup)return;
     state.settings.sessionSize=profile.daily_minutes>=60?15:profile.daily_minutes>=30?10:5;
-    const accents=Array.isArray(profile.accents)?profile.accents:[];
-    if(accents.length===1&&accents[0]==='india')state.settings.accent='en-IN';
-    else if(accents.length===1&&accents[0]==='northAmerica')state.settings.accent='en-US';
-    else state.settings.accent='adaptive';
+    // Listening questions expose the learner-selected accents directly.
+    // Keep the legacy accent select on a valid value so settings UI never becomes blank.
+    state.settings.accent='adaptive';
     save();syncSettingsUI();
+  }
+  function enabledPracticeAccents(){
+    const a=Array.isArray(learnerProfile?.accents)?learnerProfile.accents.filter(x=>x==='northAmerica'||x==='india'):[];
+    return a.length?a:['northAmerica','india'];
   }
   function showDiagnosticIfNeeded(){
     const section=$('diagnosticSection');if(!section)return;
@@ -1758,6 +1761,13 @@
   function renderListeningQuestion(q){
     const qZh=questionTranslation(q);
     $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">先不要看文字，聽懂「他在問什麼」</div><div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字＋繁中</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox"><div class="transcript-en">${esc(q.text)}</div>${qZh?`<div class="transcript-zh"><span>繁體中文</span>${esc(qZh)}</div>`:''}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div>${modelAnswerHtml(q,'可以這樣回答').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 再練這題</button></div></article>`;
+    const enabledAccents=enabledPracticeAccents();
+    $('playNorthAmericaBtn').classList.toggle('hidden',!enabledAccents.includes('northAmerica'));
+    $('playIndiaBtn').classList.toggle('hidden',!enabledAccents.includes('india'));
+    const audioStatus=$('audioStatus');
+    if(audioStatus)audioStatus.textContent=enabledAccents.length===1
+      ? (enabledAccents[0]==='india'?'目前偏好：印度口音':'目前偏好：北美口音')
+      : '尚未播放 · 建議兩種都聽一次';
     $('playNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'audioStatus'));
     $('playIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','audioStatus'));
     $('showTranscriptBtn').addEventListener('click',()=>{

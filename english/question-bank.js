@@ -1773,3 +1773,5 @@ window.EDAN_ENGLISH_CONTENT = {
     }
   ]
 };
+window.EDAN_ENGLISH_CONTENT.contentVersion=window.EDAN_APP_VERSION.release;
+window.EDAN_ENGLISH_CONTENT.updatedAt=window.EDAN_APP_VERSION.date;
