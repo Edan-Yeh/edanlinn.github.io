@@ -277,8 +277,28 @@ function nextQuizQuestion(){
   const items=quizCandidates(),result=document.querySelector('#quiz-result'),options=document.querySelector('#quiz-options'),submit=document.querySelector('#quiz-submit');
   result.className='quiz-result';result.innerHTML='';document.querySelector('#quiz-next').disabled=true;answered=false;submit.hidden=true;
   if(!items.length){currentQuestion=null;document.querySelector('#quiz-category-label').textContent='';document.querySelector('#quiz-number').textContent='';document.querySelector('#quiz-question').textContent=quizMode==='due'?'目前篩選條件沒有到期複習。可改成「隨機出題」練新題。':quizMode==='missed'?'目前篩選條件沒有錯題。':'這個分類 / 題型目前沒有題目。';options.innerHTML='';renderQuizStats();return;}
-  let pool=items.filter(q=>!currentQuestion||q.id!==currentQuestion.id);if(!pool.length)pool=items;
-  currentQuestion=pool[Math.floor(Math.random()*pool.length)];const q=currentQuestion,type=q.type||'single';
+  // Prefer unseen questions and cycle through the eligible pool before repeating.
+  // Keep due/missed review available, but do not repeatedly pick the same card.
+  const state=quizState(),now=Date.now();
+  const scope=[quizMode,document.querySelector('#quiz-category').value,document.querySelector('#quiz-type').value].join('|');
+  if(!nextQuizQuestion.recentByScope)nextQuizQuestion.recentByScope={};
+  const recent=nextQuizQuestion.recentByScope[scope]||[];
+  const seen=new Set(Object.keys(state.reviews||{}));
+  const unseen=items.filter(q=>!seen.has(q.id));
+  const source=quizMode==='all'&&unseen.length?unseen:items;
+  const withoutRecent=source.filter(q=>!recent.includes(q.id));
+  const candidates=withoutRecent.length?withoutRecent:source;
+  const withoutCurrent=candidates.filter(q=>!currentQuestion||q.id!==currentQuestion.id);
+  const pool=withoutCurrent.length?withoutCurrent:candidates;
+  // Among previously answered questions, prefer ones least recently reviewed.
+  // Legacy progress may not have lastAttempt; keep those eligible.
+  const ranked=pool.map(q=>({q,last:Date.parse((state.reviews[q.id]||{}).lastAttempt||'')||0}));
+  const oldest=Math.min(...ranked.map(x=>x.last));
+  const shortlist=ranked.filter(x=>x.last===oldest).map(x=>x.q);
+  currentQuestion=shortlist[Math.floor(Math.random()*shortlist.length)];
+  const maxRecent=Math.min(20,Math.max(0,items.length-1));
+  nextQuizQuestion.recentByScope[scope]=[...recent.filter(id=>id!==currentQuestion.id),currentQuestion.id].slice(-maxRecent);
+  const q=currentQuestion,type=q.type||'single';
   document.querySelector('#quiz-category-label').textContent=q.category+' · '+({single:'單選',multi:'多選',combo:'配對組合',order:'拖曳排序',match:'拖曳詞彙'}[type]);
   document.querySelector('#quiz-number').textContent='題號 '+q.id;document.querySelector('#quiz-question').textContent=q.question;
   submit.textContent='提交答案';submit.hidden=type==='single';
@@ -294,7 +314,7 @@ function recordQuizResult(q,ok,self=false){
   if(self)s.selfAttempts=(s.selfAttempts||0)+1;else{s.attempts++;if(ok)s.correct++;}
   if(!ok){s.missed[q.id]=(s.missed[q.id]||0)+1;r.stage=0;r.streak=0;r.due=nextReviewDay(1);r.lastSuccess=null;}
   else if(r.lastSuccess!==today){r.streak++;if(r.streak>=2)delete s.missed[q.id];if(!r.due||r.due<=today){r.due=nextReviewDay(reviewIntervals[Math.min(r.stage,3)]);r.stage=Math.min(r.stage+1,3);}r.lastSuccess=today;}
-  s.reviews[q.id]=r;saveQuizState(s);if(typeof rewardPractice==='function')rewardPractice(q,ok,self,wasDue);return r;
+  r.lastAttempt=new Date().toISOString();s.reviews[q.id]=r;saveQuizState(s);if(typeof rewardPractice==='function')rewardPractice(q,ok,self,wasDue);return r;
 }
 function submitQuiz(){
   if(answered||!currentQuestion)return;const q=currentQuestion,type=q.type;
