@@ -852,16 +852,59 @@
     if(s.lastQuality===1)return 'guessed';
     return 'correct';
   }
+
+  function recentSessionQuestionIds(sessionCount=3){
+    const ids=new Set();
+    (state.sessions||[]).slice(-sessionCount).forEach(s=>(s.answers||[]).forEach(a=>{if(a?.id)ids.add(a.id)}));
+    return ids;
+  }
+
+  function questionSessionDistance(id,maxSessions=12){
+    const sessions=(state.sessions||[]).slice(-maxSessions).reverse();
+    for(let i=0;i<sessions.length;i++){
+      if((sessions[i].answers||[]).some(a=>a?.id===id))return i;
+    }
+    return Number.POSITIVE_INFINITY;
+  }
+
+  function recentExposurePenalty(q,mode){
+    const distance=questionSessionDistance(q.id,6);
+    const deliberateReview=mode==='wrong'||mode==='due';
+    if(!Number.isFinite(distance))return 1;
+    const normal=[.08,.18,.38,.62,.82,.94];
+    const review=[.42,.58,.72,.84,.92,.97];
+    return (deliberateReview?review:normal)[Math.min(distance,5)]||1;
+  }
+
+  function diversifyCandidatePool(pool,mode,size){
+    if(mode==='wrong'||mode==='due')return pool;
+    for(const count of [4,3,2,1]){
+      const recent=recentSessionQuestionIds(count);
+      const filtered=pool.filter(q=>!recent.has(q.id));
+      if(filtered.length>=size)return filtered;
+    }
+    return pool;
+  }
+
+  function withinSessionVarietyPenalty(q,selected,mode){
+    if(mode==='listening'||mode==='speaking'||mode==='wrong'||mode==='due')return 1;
+    const last=selected[selected.length-1];
+    const prev=selected[selected.length-2];
+    if(last?.skill===q.skill && prev?.skill===q.skill)return .38;
+    if(last?.skill===q.skill)return .68;
+    return 1;
+  }
+
   function weightQuestion(q, mode){
     const s=state.qstats[q.id]||null;
     const familiarity=questionFamiliarity(s);
-    let w={wrong:14,guessed:8,new:4,correct:1.1}[familiarity]||1;
-    if(s?.due && s.due<=todayKey())w*=1.2;
-    else if(familiarity==='correct')w*=.5;
+    let w={wrong:8,guessed:5.5,new:6,correct:1.05}[familiarity]||1;
+    if(s?.due && s.due<=todayKey())w*=1.15;
+    else if(familiarity==='correct')w*=.48;
     if(q.type==='speaking' && Number.isFinite(s?.lastSystemScore) && s.lastSystemScore<60){
-      w*=1+Math.min(2.2,(s.speakingLowScoreCount||1)*.55);
+      w*=1+Math.min(1.6,(s.speakingLowScoreCount||1)*.38);
     }
-    if(familiarity==='correct' && (s?.correct||0)>=3)w*=.65;
+    if(familiarity==='correct' && (s?.correct||0)>=3)w*=.62;
     if(q.skill==='listening' && mode==='listening')w*=1.08;
     if(q.type==='speaking' && mode==='speaking')w*=1.08;
     const skill=effectiveSkillForQuestion(q);
@@ -872,11 +915,12 @@
     if((personalWeak==='sound'||personalWeak==='intent') && q.skill==='listening')w*=1.08;
     if((personalWeak==='output'||personalWeak==='structure'||personalWeak==='fluency') && q.type==='speaking')w*=1.08;
     if(personalWeak==='usage' && (q.skill==='chunks'||q.skill==='rescue'))w*=1.06;
-    return Math.max(.05,w);
+    w*=recentExposurePenalty(q,mode);
+    return Math.max(.025,w);
   }
 
-  function weightedPick(arr, mode){
-    const weights = arr.map(q=>weightQuestion(q,mode));
+  function weightedPick(arr, mode, selected=[]){
+    const weights = arr.map(q=>weightQuestion(q,mode)*withinSessionVarietyPenalty(q,selected,mode));
     const total = weights.reduce((a,b)=>a+b,0);
     let r = Math.random()*total;
     for(let i=0;i<arr.length;i++){ r-=weights[i]; if(r<=0) return arr[i]; }
@@ -885,24 +929,40 @@
 
   const MOCK_SEQUENCE_IDS=['mdb-l1-006','mdb-l1-010','mdb-l2-010','mdb-l2-004','mdb-l2-005','pro-l3-001','pro-l3-009','pro-l3-010'];
   function buildPersonalizedMock(size){
-    const anchors=['mdb-l1-006','mdb-l1-010','pro-l3-009','pro-l3-010'];
-    const anchorQs=anchors.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
-    const candidates=CONTENT.questions.filter(q=>q.type==='speaking'&&!anchors.includes(q.id));
-    const priority=q=>weightQuestion(q,'speaking');
-    const middle=[...candidates].sort((a,b)=>priority(b)-priority(a)).slice(0,Math.max(0,size-anchorQs.length));
-    const ordered=[anchorQs[0],anchorQs[1],...middle,anchorQs[2],anchorQs[3]].filter(Boolean);
-    return ordered.slice(0,size);
+    const anchorIds=['mdb-l1-006','mdb-l1-010','pro-l3-009','pro-l3-010'];
+    const anchorCount=Math.min(2,Math.max(1,Math.floor(size/4)));
+    const rotatingAnchors=anchorIds
+      .map(id=>CONTENT.questions.find(q=>q.id===id))
+      .filter(Boolean)
+      .sort((a,b)=>questionSessionDistance(b.id)-questionSessionDistance(a.id))
+      .slice(0,anchorCount);
+
+    let pool=CONTENT.questions.filter(q=>q.type==='speaking'&&!rotatingAnchors.some(a=>a.id===q.id));
+    pool=diversifyCandidatePool(pool,'mock',Math.max(0,size-rotatingAnchors.length));
+    const selected=[...rotatingAnchors];
+
+    while(selected.length<size && pool.length){
+      const q=weightedPick(pool,'mock',selected);
+      selected.push(q);
+      pool=pool.filter(x=>x.id!==q.id);
+    }
+    return selected.slice(0,size);
   }
+
   function buildSessionQuestions(mode,size){
     if(mode==='mock') return buildPersonalizedMock(size);
-    let pool = candidatePool(mode);
+    let pool = diversifyCandidatePool(candidatePool(mode),mode,size);
     const selected=[];
     while(selected.length<size && pool.length){
-      const q=weightedPick(pool,mode); selected.push(q); pool=pool.filter(x=>x.id!==q.id);
+      const q=weightedPick(pool,mode,selected); selected.push(q); pool=pool.filter(x=>x.id!==q.id);
     }
     if(selected.length<size){
-      let fallback=CONTENT.questions.filter(q=>!selected.some(s=>s.id===q.id));
-      while(selected.length<size && fallback.length){ const q=weightedPick(fallback,'adaptive'); selected.push(q); fallback=fallback.filter(x=>x.id!==q.id); }
+      let fallback=diversifyCandidatePool(CONTENT.questions.filter(q=>!selected.some(s=>s.id===q.id)),'adaptive',size-selected.length);
+      while(selected.length<size && fallback.length){
+        const q=weightedPick(fallback,'adaptive',selected);
+        selected.push(q);
+        fallback=fallback.filter(x=>x.id!==q.id);
+      }
     }
     return selected;
   }
@@ -1671,7 +1731,7 @@
     }, rec.title+'-'+todayKey());
     $('resultScore').textContent=`${score}%`;
     const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+(Number.isFinite(a.extra?.repeats)?a.extra.repeats:Math.max(0,(a.extra?.listens||0)-1)),0);
-    $('resultSummary').textContent=score>=80?'這輪很穩。系統會逐步增加問法變化與難度，但仍保留到期複習。':score>=60?'基礎已經能撐住。下一輪會繼續集中在弱項，不需要一次補很多新東西。':'這輪不要追求升級。先讓相同問題用不同問法出現，直到你能自然抓到意圖並講完整句。';
+    $('resultSummary').textContent=score>=80?'這輪很穩。下一輪會優先換新題，已熟題目進入冷卻，只在到期時回來複習。':score>=60?'基礎已經能撐住。下一輪仍會照顧弱項，但會避開最近幾回合剛出現過的相同題目。':'這輪先補弱點，但不會連續洗同一題；弱題會間隔後再回來確認是否真的學會。';
     const weaknessThis={}; session.answers.forEach(a=>{const w=a.extra?.weakness;if(w)weaknessThis[w]=(weaknessThis[w]||0)+1;});
     const topThis=Object.entries(weaknessThis).sort((a,b)=>b[1]-a[1])[0]?.[0];
     $('resultGrid').innerHTML=`<div class="result-mini"><b>${strong}</b><span>高品質回答</span></div><div class="result-mini"><b>${low}</b><span>需要重練</span></div><div class="result-mini"><b>${hint}</b><span>使用文字提示</span></div><div class="result-mini"><b>${repeats}</b><span>額外重播次數</span></div>${topThis?`<div class="result-mini"><b>→</b><span>主要弱點：${esc(weaknessLabels[topThis]||topThis)}</span></div>`:''}`;
