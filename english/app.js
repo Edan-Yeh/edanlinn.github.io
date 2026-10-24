@@ -150,7 +150,7 @@
       const [profile,packs]=await Promise.all([cloud.getLearnerProfile?.(),cloud.getPrivateQuestionPacks?.()]);
       learnerProfile=profile||null;applyPrivateQuestionPacks(packs||[]);
       if(!learnerProfile?.onboarding_completed)showOnboarding(learnerProfile,false);else hideOnboarding();
-      showDiagnosticIfNeeded();
+      showDiagnosticIfNeeded();renderWeeklyPlan();renderTodayMission();
     }catch(err){console.warn('Learner profile/private pack load failed',err);learnerProfile=null;showOnboarding(null,false);}
   }
   function bindLearnerExperienceUI(){
@@ -3433,6 +3433,7 @@
       '# Edan English Learning Report',`- Exported: ${new Date().toLocaleString('zh-TW',{hour12:false})}`,`- Content version: ${CONTENT.contentVersion}`,`- XP: ${state.xp}`,`- Streak: ${streak()} days`,'',
       '## Skill profile',...skillKeys.map(k=>`- ${skillLabels[k]}: L${(state.skills[k]||1).toFixed(2)}`),'',
       '## Career interview readiness',`- Readiness: ${interviewReadiness()}%`,'',
+      '## Today Mission',...todayMissionSnapshot().tasks.map((t,i)=>`- ${i+1}. ${t.title} | ${t.done?'done':'pending'} | ${t.estimate} min | mode=${t.mode}`),'',
       '## Weakness profile',...Object.entries(state.weaknessCounts||{}).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${weaknessLabels[k]||k}: ${v}`),'',
       '## Personal error memory',...topErrorEntries(10).map(([k,v])=>`- ${errorLabels[k]||k}: ${v.count} times | last=${v.lastSeen||''} | note=${v.note||''} | example=${v.example||''} | corrected=${v.corrected||''}`),'',
       '## Weak / review-priority questions',...(weakQuestions.length?weakQuestions.map(({q,s},i)=>`${i+1}. [${q.id}] L${q.level} ${q.text}\n   - seen=${s.seen}, correct=${s.correct}, wrong=${s.wrong}, hints=${s.hints}, listens=${s.listens}, lastQuality=${s.lastQuality}, due=${s.due}`):['- No answered questions yet.']),'',
@@ -3539,6 +3540,8 @@
 
     const weekly=progressAnalyticsSnapshot(7);
     const plan=weeklyPlanSnapshot();
+    const mission=todayMissionSnapshot();
+    const todayMission=mission.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,題數:task.size,預估分鐘:task.estimate,狀態:task.done?'已完成':'待完成',原因:task.reason}));
     const weeklyPlan=plan.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,題數:task.size,預估分鐘:task.estimate,原因:task.reason}));
     const summary=[
       {項目:'匯出時間',值:new Date().toLocaleString('zh-TW',{hour12:false})},
@@ -3553,12 +3556,14 @@
       {項目:'近7天口說平均',值:weekly.speakingAvg===null?'—':Math.round(weekly.speakingAvg)},
       {項目:'近7天重答平均提升',值:weekly.retryLift===null?'—':(weekly.retryLift>0?'+':'')+(Math.round(weekly.retryLift*10)/10)},
       {項目:'目前到期複習',值:weekly.dueReviews},
+      {項目:'今日任務',值:`${mission.done}/${mission.total} 已完成`},
+      {項目:'今日配置時間',值:mission.minutes+' 分鐘'},
       {項目:'本週目標學習日',值:plan.targetDays},
       {項目:'每日可用時間',值:plan.dailyMinutes+' 分鐘'},
       {項目:'本週第一弱項',值:skillLabels[plan.focusSkill]||plan.focusSkill}
     ];
 
-    return {summary,skills,skillHistory,weeklyPlan,weaknesses,errors,questions,vocabulary,speaking,sessions};
+    return {summary,skills,skillHistory,todayMission,weeklyPlan,weaknesses,errors,questions,vocabulary,speaking,sessions};
   }
 
   function setExportStatus(text,tone=''){
@@ -3601,6 +3606,7 @@
       addWorkbookSheet(wb,'總覽',data.summary,[22,34]);
       addWorkbookSheet(wb,'能力',data.skills,[24,12]);
       addWorkbookSheet(wb,'能力歷史',data.skillHistory,[14,22,20,12,12,12,12,12]);
+      addWorkbookSheet(wb,'今日任務',data.todayMission,[8,28,16,10,12,14,58]);
       addWorkbookSheet(wb,'週計畫',data.weeklyPlan,[8,28,16,10,12,58]);
       addWorkbookSheet(wb,'弱點',data.weaknesses,[28,12]);
       addWorkbookSheet(wb,'錯誤記憶',data.errors,[24,10,16,34,48,48]);
@@ -3635,6 +3641,7 @@
         <div><b>${(state.sessions||[]).length}</b><span>Sessions</span></div>
       </div>
       ${reportTableHtml('能力輪廓',data.skills,[{key:'技能',label:'技能'},{key:'等級',label:'目前等級'}],10)}
+      ${reportTableHtml('今日智慧任務',data.todayMission,[{key:'步驟',label:'#'},{key:'訓練',label:'任務'},{key:'預估分鐘',label:'分鐘'},{key:'狀態',label:'狀態'}],3)}
       ${reportTableHtml('本週學習計畫',data.weeklyPlan,[{key:'步驟',label:'#'},{key:'訓練',label:'訓練'},{key:'題數',label:'題數'},{key:'預估分鐘',label:'分鐘'}],7)}
       ${reportTableHtml('目前弱點',data.weaknesses,[{key:'弱點',label:'弱點'},{key:'次數',label:'累積次數'}],8)}
       ${reportTableHtml('Personal Error Memory',data.errors,[{key:'類型',label:'錯誤類型'},{key:'次數',label:'次數'},{key:'說明',label:'說明'},{key:'修正',label:'修正'}],8)}
