@@ -1725,3 +1725,48 @@ body.auth-locked .little-e-panel{display:none!important}
   .skill-history-controls{width:100%;align-items:flex-start;justify-content:flex-start;flex-direction:column}
   .skill-history-controls .analytics-range-switch{width:100%}
 }
+
+
+/* v59 Adaptive Weekly Plan */
+.weekly-plan-head{align-items:flex-end}
+.weekly-plan-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.weekly-plan-time{display:inline-flex;align-items:center;min-height:34px;padding:0 11px;border:1px solid #e3e7ef;border-radius:999px;background:#fff;color:#39445f;font-size:10px;font-weight:850}
+.btn.compact{min-height:34px;padding:8px 12px}
+.weekly-plan-panel{overflow:hidden}
+.weekly-plan-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.weekly-plan-top h3{margin:8px 0 4px;font-size:18px;color:#25304f}
+.weekly-plan-top p{margin:0;color:#667085;font-size:11px;line-height:1.6;max-width:620px}
+.weekly-plan-days{display:flex;align-items:flex-end;gap:7px;flex-direction:column;flex:0 0 auto}
+.weekly-plan-days>span{font-size:9px;font-weight:900;color:#8a94a8;letter-spacing:.08em}
+.weekly-plan-goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.weekly-plan-goals article{padding:13px;border:1px solid #e7eaf1;border-radius:14px;background:#fafbfe}
+.weekly-plan-goals article>span{display:block;color:#69758d;font-size:10px;font-weight:800;min-height:28px}
+.weekly-plan-goals article>b{display:block;margin:4px 0 7px;font-size:22px;color:#263154}
+.weekly-plan-goals article>small{display:block;margin-top:5px;color:#7d879b;font-size:9px;font-weight:800}
+.weekly-plan-progress{height:6px;border-radius:999px;background:#e9edf5;overflow:hidden}
+.weekly-plan-progress span{display:block;height:100%;border-radius:inherit;background:#5367d8;transition:width .25s ease}
+.weekly-plan-divider{height:1px;background:#e9ecf2;margin:17px 0 13px}
+.weekly-plan-list-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
+.weekly-plan-list-head strong{font-size:12px;color:#2c3554}
+.weekly-plan-list-head span{font-size:9px;color:#8a94a8}
+.weekly-plan-tasks{display:grid;gap:8px}
+.weekly-plan-task{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 12px;border:1px solid #e8ebf2;border-radius:13px;background:#fff}
+.weekly-plan-step{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#f0f3ff;color:#5367d8;font-size:11px;font-weight:950}
+.weekly-plan-task-copy{min-width:0}
+.weekly-plan-task-copy>div{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.weekly-plan-task-copy strong{font-size:11px;color:#2b3552}
+.weekly-plan-task-copy span{font-size:9px;color:#8791a5;font-weight:750}
+.weekly-plan-task-copy p{margin:4px 0 0;color:#69758d;font-size:10px;line-height:1.5}
+.weekly-plan-task .btn{white-space:nowrap}
+@media(max-width:760px){
+  .weekly-plan-head{align-items:flex-start;flex-direction:column}
+  .weekly-plan-controls{justify-content:flex-start;width:100%}
+  .weekly-plan-top{flex-direction:column}
+  .weekly-plan-days{align-items:flex-start;width:100%}
+  .weekly-plan-days .analytics-range-switch{width:100%}
+  .weekly-plan-days .analytics-range-switch button{flex:1}
+  .weekly-plan-goals{grid-template-columns:1fr}
+  .weekly-plan-list-head{align-items:flex-start;flex-direction:column;gap:3px}
+  .weekly-plan-task{grid-template-columns:30px minmax(0,1fr)}
+  .weekly-plan-task .btn{grid-column:2;width:100%;margin-top:2px}
+}
