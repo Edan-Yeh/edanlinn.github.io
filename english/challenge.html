@@ -177,6 +177,41 @@
       </div>
     </section>
 
+    <section class="section" id="weeklyPlanSection">
+      <div class="section-head weekly-plan-head">
+        <div>
+          <h2>本週學習目標｜Weekly Plan</h2>
+          <p>依目前能力、弱點、到期複習與每日可用時間自動排出可完成的下一步；完成訓練後會即時重算。</p>
+        </div>
+        <div class="weekly-plan-controls">
+          <span class="support" id="weeklyPlanWindow">—</span>
+          <span class="weekly-plan-time" id="weeklyPlanTime">每日可用 30 分鐘</span>
+          <button class="btn ghost compact" id="weeklyPlanEditTime" type="button">調整時間</button>
+        </div>
+      </div>
+      <div class="panel weekly-plan-panel">
+        <div class="weekly-plan-top">
+          <div>
+            <span class="badge good">AUTO PLAN</span>
+            <h3>這週不用自己排課</h3>
+            <p id="weeklyPlanNote">系統會先處理到期複習，再補第一弱項。</p>
+          </div>
+          <div class="weekly-plan-days" role="group" aria-label="每週目標學習天數">
+            <span>每週目標</span>
+            <div class="analytics-range-switch">
+              <button data-weekly-days="3" type="button" aria-pressed="false">3 天</button>
+              <button class="active" data-weekly-days="5" type="button" aria-pressed="true">5 天</button>
+              <button data-weekly-days="7" type="button" aria-pressed="false">7 天</button>
+            </div>
+          </div>
+        </div>
+        <div class="weekly-plan-goals" id="weeklyPlanGoals"></div>
+        <div class="weekly-plan-divider"></div>
+        <div class="weekly-plan-list-head"><strong>建議順序</strong><span>不是固定星期幾；有空時照順序完成即可。</span></div>
+        <div class="weekly-plan-tasks" id="weeklyPlanTasks"></div>
+      </div>
+    </section>
+
     <section class="section" id="progressAnalyticsSection">
       <div class="section-head analytics-head">
         <div><h2>學習進步｜Progress Analytics</h2><p>只用真實學習紀錄比較本期與前一期；沒有歷史資料的指標不會硬畫趨勢。</p></div>
