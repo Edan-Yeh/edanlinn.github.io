@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v64');
-assert.equal(version.cache,'edan-english-coach-20261024-v64');
+assert.equal(version.release,'2026.10.24-v65');
+assert.equal(version.cache,'edan-english-coach-20261024-v65');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -243,6 +243,10 @@ assert.match(app,/standardAnswer:q\?\.model\|\|''/);
 assert.match(app,/文法修正版｜只修你的句子/);
 assert.match(app,/更自然的面試說法｜保留你的內容/);
 assert.match(app,/不會把下方「參考標準答案」的新內容塞進來/);
+assert.match(app,/function filledTemplateExampleHtml\(/);
+assert.match(app,/data-example-audio="northAmerica"/);
+assert.match(app,/data-example-audio-status/);
+assert.match(app,/把上面的模板實際填成可以直接說的版本/);
 assert.match(app,/function calibratedMissionQuestionSize\(/);
 assert.match(app,/function calibratedMissionEstimateMinutes\(/);
 assert.match(app,/samples\.length<4/);
@@ -379,6 +383,9 @@ assert.match(css,/\.speaking-question-translation-controls/);
 assert.match(css,/\.speaking-question-translation/);
 assert.match(css,/\.language-fix-title/);
 assert.match(css,/\.correction-grounding-note/);
+assert.match(css,/\.filled-template-example/);
+assert.match(css,/\.filled-template-slots/);
+assert.match(css,/\.filled-template-example-en/);
 assert.match(css,/\.today-mission-overall/);
 assert.match(css,/\.weekly-plan-panel/);
 assert.match(css,/\.weekly-plan-goals/);
@@ -471,6 +478,14 @@ const content=qbSandbox.window.EDAN_ENGLISH_CONTENT;
 assert.ok(content&&Array.isArray(content.questions)&&content.questions.length>0);
 const publicIds=new Set(content.questions.map(q=>q.id));
 assert.ok(publicIds.has('gen-l1-001'));
+const selfIntroExample=content.questions.find(q=>q.id==='gen-l1-001');
+assert.match(selfIntroExample.model,/\[role\]/,'Self-intro standard template must stay intact');
+assert.match(selfIntroExample.example,/System Analyst and Consultant at IBM/);
+assert.match(selfIntroExample.example,/financial IT/);
+assert.match(selfIntroExample.example,/cloud transformation and end-to-end project delivery/);
+assert.ok(Array.isArray(selfIntroExample.exampleSlots)&&selfIntroExample.exampleSlots.length===4);
+const diagIntroExample=content.questions.find(q=>q.id==='diag-l2-002');
+assert.match(diagIntroExample.example,/cloud-focused consulting role/);
 assert.ok(publicIds.has('gen-l3-002'));
 assert.ok(publicIds.has('diag-l1-001'));
 assert.ok(publicIds.has('diag-l2-002'));
@@ -553,4 +568,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v64 Speaking UX shows Traditional Chinese only on demand, keeps all speaking translations covered, grounds grammar/natural corrections in the user transcript plus question context, and keeps the standard answer independent while preserving prior regressions.');
+console.log('PASS: v65 Filled Template Examples keeps reusable standard templates unchanged, adds Edan-filled examples with slot mappings and bilingual text, supports example TTS, and preserves prior regressions.');
