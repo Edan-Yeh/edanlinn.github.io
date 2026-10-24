@@ -2286,6 +2286,10 @@
         notes.push('題目談的是跨團隊責任歸屬，multiple teams 比 multiple things 精準');
       }
     }
+    if(/\bwas (?:really )?responding\b/i.test(t)&&/\band follow up on the problem\b/i.test(t)){
+      t=t.replace(/\band follow up on the problem\b/i,'and following up on the problem');
+      notes.push('與 was responding 並列時改成 following up，讓動詞形式一致');
+    }
 
     if(q?.id==='mdb-l1-010'){
       if(/large banking transformation project/i.test(t)){
