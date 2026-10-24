@@ -1536,6 +1536,15 @@ window.EDAN_ENGLISH_CONTENT = {
       "text": "Can you introduce yourself?",
       "intent": "用 30–60 秒說清楚目前角色、背景、強項，以及下一步想創造的價值。",
       "model": "I currently work as a [role]. My background is mainly in [field]. I’m strongest in [strength], and I’m looking for a role where I can contribute through [value].",
+      "exampleLabel": "Edan 填空範例",
+      "example": "I currently work as a System Analyst and Consultant at IBM. My background is mainly in financial IT, especially core banking and system integration. I’m strongest in connecting business needs with technical solutions and coordinating across teams, and I’m looking for a role where I can contribute through cloud transformation and end-to-end project delivery.",
+      "exampleZh": "我目前在 IBM 擔任系統分析師與顧問。我的背景主要是金融 IT，尤其是核心銀行系統與系統整合。我最擅長把業務需求與技術解決方案連結起來，並協調跨團隊合作；我希望下一份工作能透過雲端轉型與端到端專案交付創造價值。",
+      "exampleSlots": [
+        ["role", "System Analyst and Consultant at IBM"],
+        ["field", "financial IT, especially core banking and system integration"],
+        ["strength", "connecting business needs with technical solutions and coordinating across teams"],
+        ["value", "cloud transformation and end-to-end project delivery"]
+      ],
       "keywords": [
         "other experience",
         "customer delivery",
@@ -1765,6 +1774,14 @@ window.EDAN_ENGLISH_CONTENT = {
       "text": "Please introduce yourself in about 30 seconds.",
       "intent": "用簡短完整的英文說明目前角色、背景與一個主要強項。",
       "model": "I currently work as a [role]. My background is in [field], and one of my strengths is [strength]. I’m now looking to keep growing in a role where I can create more value.",
+      "exampleLabel": "Edan 30 秒範例",
+      "example": "I currently work as a System Analyst and Consultant at IBM. My background is in financial IT, especially core banking and system integration. One of my strengths is connecting business needs with technical solutions, and I’m now looking to grow into a cloud-focused consulting role.",
+      "exampleZh": "我目前在 IBM 擔任系統分析師與顧問。我的背景是金融 IT，尤其是核心銀行系統與系統整合。我的其中一個強項是把業務需求與技術解決方案連結起來，而我現在希望往更聚焦雲端的顧問角色發展。",
+      "exampleSlots": [
+        ["role", "System Analyst and Consultant at IBM"],
+        ["field", "financial IT, especially core banking and system integration"],
+        ["strength", "connecting business needs with technical solutions"]
+      ],
       "keywords": [
         "other experience",
         "technical depth",
