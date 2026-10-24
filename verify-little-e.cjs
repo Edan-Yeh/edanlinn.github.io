@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v63');
-assert.equal(version.cache,'edan-english-coach-20261024-v63');
+assert.equal(version.release,'2026.10.24-v64');
+assert.equal(version.cache,'edan-english-coach-20261024-v64');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -233,6 +233,16 @@ assert.match(app,/function missionTimingBounds\(/);
 assert.match(app,/function timeCalibrationSamples\(/);
 assert.match(app,/function timeCalibrationForMode\(/);
 assert.match(app,/function timeCalibrationSnapshot\(/);
+assert.match(app,/const qZh=questionTranslation\(q\)/);
+assert.match(app,/id="toggleSpeakQZhBtn"/);
+assert.match(app,/id="speakingQuestionZh"/);
+assert.match(app,/顯示繁體翻譯/);
+assert.match(app,/參考標準答案（獨立，不依你的回答變動）/);
+assert.match(app,/source:'user_transcript_only'/);
+assert.match(app,/standardAnswer:q\?\.model\|\|''/);
+assert.match(app,/文法修正版｜只修你的句子/);
+assert.match(app,/更自然的面試說法｜保留你的內容/);
+assert.match(app,/不會把下方「參考標準答案」的新內容塞進來/);
 assert.match(app,/function calibratedMissionQuestionSize\(/);
 assert.match(app,/function calibratedMissionEstimateMinutes\(/);
 assert.match(app,/samples\.length<4/);
@@ -365,6 +375,10 @@ assert.match(css,/\.today-mission-task-progress/);
 assert.match(css,/\.today-mission-timing-note/);
 assert.match(css,/\.today-mission-time-badge/);
 assert.match(css,/\.today-mission-time-badge\.calibrated/);
+assert.match(css,/\.speaking-question-translation-controls/);
+assert.match(css,/\.speaking-question-translation/);
+assert.match(css,/\.language-fix-title/);
+assert.match(css,/\.correction-grounding-note/);
 assert.match(css,/\.today-mission-overall/);
 assert.match(css,/\.weekly-plan-panel/);
 assert.match(css,/\.weekly-plan-goals/);
@@ -476,7 +490,29 @@ for(const q of content.questions){
     assert.ok(qzh,'Missing Traditional Chinese question translation for '+q.id);
     assert.match(qzh,/[\u3400-\u9fff]/,'Question translation is not Chinese for '+q.id);
   }
+  if(q.type==='speaking'&&/[A-Za-z]/.test(q.text)){
+    const qzh=String(q.textZh||content.questionTranslations?.[q.id]||'').trim();
+    assert.ok(qzh,'Missing Traditional Chinese speaking question translation for '+q.id);
+    assert.match(qzh,/[\u3400-\u9fff]/,'Speaking question translation is not Chinese for '+q.id);
+  }
 }
+const correctionBlock=app.match(/function normalizeSpokenSentence[\s\S]*?function buildSpokenCorrection[\s\S]*?\n  \}/);
+assert.ok(correctionBlock,'Speaking correction block missing');
+const correctionSandbox={};
+vm.runInNewContext(correctionBlock[0]+'\nthis.buildSpokenCorrection=buildSpokenCorrection;',correctionSandbox,{filename:'speaking-correction-v64.js'});
+const ownershipQ=content.questions.find(q=>q.id==='pro-l3-001');
+assert.ok(ownershipQ,'pro-l3-001 missing');
+const ownershipOriginal='The situation was unclear across multiple things. I was really responding to BOT for system analyze and get back to problem.';
+const ownershipFix=correctionSandbox.buildSpokenCorrection(ownershipOriginal,ownershipQ);
+assert.equal(ownershipFix.source,'user_transcript_only');
+assert.equal(ownershipFix.standardAnswer,ownershipQ.model,'Standard answer must remain the original question-bank model answer');
+assert.match(ownershipFix.corrected,/Ownership was unclear across multiple teams\./);
+assert.match(ownershipFix.corrected,/system analysis/);
+assert.match(ownershipFix.corrected,/following up on the problem/);
+assert.match(ownershipFix.natural,/BOT/,'Natural version should retain facts/names from the user transcript');
+assert.notEqual(ownershipFix.corrected,ownershipQ.model,'Grammar correction must not be replaced by the standard answer');
+assert.notEqual(ownershipFix.natural,ownershipQ.model,'Natural correction must not be replaced by the standard answer');
+
 for(const v of (content.vocabulary||[])){
   const ezh=String(v.exampleZh||content.vocabExampleTranslations?.[v.id]||'').trim();
   assert.ok(ezh,'Missing Traditional Chinese vocab example translation for '+v.id);
@@ -517,4 +553,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v63 Adaptive Time Calibration learns robust per-mode timing from valid question samples, keeps conservative baselines until enough evidence exists, preserves timed sessions across cloud merge, personalizes Today Mission sizing and exports calibration data while preserving prior regressions.');
+console.log('PASS: v64 Speaking UX shows Traditional Chinese only on demand, keeps all speaking translations covered, grounds grammar/natural corrections in the user transcript plus question context, and keeps the standard answer independent while preserving prior regressions.');
