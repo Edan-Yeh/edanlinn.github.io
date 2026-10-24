@@ -155,6 +155,28 @@
       <div class="panel" id="skillPanel"></div>
     </section>
 
+    <section class="section" id="skillHistorySection">
+      <div class="section-head skill-history-head">
+        <div>
+          <h2>能力曲線｜Skill History</h2>
+          <p>從 v58 開始保存真實每日技能快照；不回填過去不存在的等級資料。</p>
+        </div>
+        <div class="skill-history-controls">
+          <span class="support" id="skillHistoryCount">0 個真實日快照</span>
+          <div class="analytics-range-switch" role="group" aria-label="能力曲線期間">
+            <button data-skill-range="30" type="button" aria-pressed="false">30 天</button>
+            <button class="active" data-skill-range="90" type="button" aria-pressed="true">90 天</button>
+            <button data-skill-range="365" type="button" aria-pressed="false">365 天</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel skill-history-panel">
+        <div class="skill-history-legend" id="skillHistoryLegend"></div>
+        <div class="skill-history-chart" id="skillHistoryChart"></div>
+        <div class="skill-history-note" id="skillHistoryNote">從今天開始建立第一個可信基線。</div>
+      </div>
+    </section>
+
     <section class="section" id="progressAnalyticsSection">
       <div class="section-head analytics-head">
         <div><h2>學習進步｜Progress Analytics</h2><p>只用真實學習紀錄比較本期與前一期；沒有歷史資料的指標不會硬畫趨勢。</p></div>

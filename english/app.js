@@ -27,6 +27,7 @@
     quoteHistory: [],
     quoteFavorites: [],
     quoteWordBank: {},
+    skillHistory: [],
     completedDates: [],
     streakRepairs: [],
     clientUpdatedAt: null,
@@ -64,6 +65,7 @@
   let speakingRetryCycle = null;
   let learnerProfile = null;
   let progressAnalyticsRange = 7;
+  let skillChartRange = 90;
   const publicQuestionIds = new Set((CONTENT.questions||[]).map(q=>q.id));
   const privateQuestionIds = new Set();
   const privateTranslationIds = new Set();
@@ -181,7 +183,10 @@
     const recommendations={listening:'先從短句聽力與 Question Intent 開始。',speaking:'先練短回答與即時組句，再逐步增加長度。',practical:'先把高頻 Chunks 與救援句練成自然反應。',interview:'先用簡短結構練面試回答，再增加 follow-up。'};
     const diagnostic={source:'v54_five_question_diagnostic',score,levels,weakest,recommendation:recommendations[weakest],completedAt:new Date().toISOString()};
     const priorTraining=state.sessions.some(s=>!s.diagnostic);
-    if(!priorTraining){state.skills.listening=levels.listening;state.skills.speaking=levels.speaking;state.skills.interview=levels.interview;state.skills.chunks=levels.practical;state.skills.rescue=levels.practical;save();}
+    if(!priorTraining){
+      state.skills.listening=levels.listening;state.skills.speaking=levels.speaking;state.skills.interview=levels.interview;state.skills.chunks=levels.practical;state.skills.rescue=levels.practical;
+      captureSkillSnapshot('diagnostic');save();
+    }
     learnerProfile={...(learnerProfile||{}),diagnostic_completed:true,diagnostic};
     window.EDAN_CLOUD?.saveLearnerProfile?.({diagnostic_completed:true,diagnostic}).then(p=>{learnerProfile=p||learnerProfile;showDiagnosticIfNeeded();}).catch(err=>console.warn('Diagnostic save failed',err));
     window.EDAN_CLOUD?.logEvent?.('diagnostic_completed',{score,levels,weakest},'diagnostic-v54');return diagnostic;
@@ -200,11 +205,41 @@
     state.streakRepairs=[...repairs,{date:missing,sourceDate:today,repairedAt:new Date().toISOString(),reason:'two_day_grace'}].slice(-20);
     return missing;
   }
+  function skillSnapshotValues(){
+    return Object.fromEntries(skillKeys.map(k=>[k,Number(clamp(state.skills?.[k]||1,1,5).toFixed(3))]));
+  }
+
+  function captureSkillSnapshot(source='practice'){
+    const date=todayKey(),capturedAt=new Date().toISOString(),skills=skillSnapshotValues();
+    const history=Array.isArray(state.skillHistory)?state.skillHistory:[];
+    const idx=history.findIndex(x=>x?.date===date);
+    const previous=idx>=0?history[idx]:null;
+    const changed=!previous||skillKeys.some(k=>Number(previous.skills?.[k])!==Number(skills[k]));
+    const entry={date,capturedAt,source,skills};
+    if(idx>=0)history[idx]=entry;else history.push(entry);
+    state.skillHistory=history
+      .filter(x=>x?.date&&x?.skills)
+      .sort((a,b)=>String(a.date).localeCompare(String(b.date)))
+      .slice(-730);
+    if(changed){
+      window.EDAN_CLOUD?.logEvent?.('skill_snapshot_saved',{date,source,skills},'skill-snapshot-'+date);
+    }
+    return {entry,changed};
+  }
+
+  function ensureSkillBaseline(){
+    if((state.skillHistory||[]).some(x=>x?.date===todayKey()))return false;
+    captureSkillSnapshot('v58_baseline');
+    save();
+    return true;
+  }
+
   function markPracticeDay(){
     const k=todayKey();
     if(!state.completedDates.includes(k)) state.completedDates.push(k);
     const repaired=repairRecentStreakGap();
     if(repaired)window.EDAN_CLOUD?.logEvent?.('streak_repaired',{date:repaired,sourceDate:k,policy:'single_gap_within_2_days'},'streak-repair-'+repaired);
+    captureSkillSnapshot('practice_day');
   }
   const weaknessLabels={sound:'聽力辨音',intent:'問題意圖',output:'即時輸出',structure:'回答結構',fluency:'口說流暢度',usage:'句型／用法'};
   function topWeakness(){
@@ -336,6 +371,7 @@
         quoteHistory: Array.isArray(parsed.quoteHistory)?parsed.quoteHistory.slice(-140):[],
         quoteFavorites: Array.isArray(parsed.quoteFavorites)?[...new Set(parsed.quoteFavorites)].slice(-100):[],
         quoteWordBank: parsed.quoteWordBank&&typeof parsed.quoteWordBank==='object'?parsed.quoteWordBank:{},
+        skillHistory: Array.isArray(parsed.skillHistory)?parsed.skillHistory.slice(-730):[],
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         streakRepairs: Array.isArray(parsed.streakRepairs)?parsed.streakRepairs.slice(-20):[],
         clientUpdatedAt: parsed.clientUpdatedAt||null,
@@ -370,6 +406,7 @@
       quoteHistory:Array.isArray(incoming.quoteHistory)?incoming.quoteHistory.slice(-140):[],
       quoteFavorites:Array.isArray(incoming.quoteFavorites)?[...new Set(incoming.quoteFavorites)].slice(-100):[],
       quoteWordBank:incoming.quoteWordBank&&typeof incoming.quoteWordBank==='object'?incoming.quoteWordBank:{},
+      skillHistory:Array.isArray(incoming.skillHistory)?incoming.skillHistory.slice(-730):[],
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
       streakRepairs:Array.isArray(incoming.streakRepairs)?incoming.streakRepairs.slice(-20):[],
       clientUpdatedAt:incoming.clientUpdatedAt||null,
@@ -387,7 +424,11 @@
     renderChunks();
     renderVocabulary(12,true,false);
   }
-  window.addEventListener('edan:cloud-state', e=>applyCloudState(e.detail?.state));
+  window.addEventListener('edan:cloud-state', e=>{
+    applyCloudState(e.detail?.state);
+    ensureSkillBaseline();
+    renderSkillHistoryChart();
+  });
   function answerTranslation(q){ return q?.modelZh || CONTENT.answerTranslations?.[q?.id] || ''; }
   function questionTranslation(q){ return q?.textZh || CONTENT.questionTranslations?.[q?.id] || ''; }
   function vocabExampleTranslation(v){ return v?.exampleZh || CONTENT.vocabExampleTranslations?.[v?.id] || ''; }
@@ -1032,6 +1073,7 @@
     $('contentVersionBadge').textContent = `題庫 ${CONTENT.contentVersion}`;
     $('versionText').textContent = `${CONTENT.contentVersion} · ${CONTENT.questions.length} 題 · ${CONTENT.chunks.length} chunks · ${(CONTENT.vocabulary||[]).length} words`;
     renderSkills();
+    renderSkillHistoryChart();
     renderHistory();
     renderProgressAnalytics();
     renderDailyCoach();
@@ -1186,6 +1228,72 @@
         progressAnalyticsRange=Number(btn.dataset.analyticsRange)||7;
         renderProgressAnalytics();
       };
+    });
+  }
+
+  function skillHistoryPoints(days=90){
+    const cutoff=new Date();cutoff.setDate(cutoff.getDate()-(Math.max(1,days)-1));const cutoffKey=localDateKey(cutoff);
+    return (state.skillHistory||[])
+      .filter(x=>x?.date&&x?.skills&&String(x.date)>=cutoffKey)
+      .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  }
+
+  function skillHistoryChartSvg(points){
+    const W=760,H=270,pad={l:42,r:18,t:18,b:34};
+    const innerW=W-pad.l-pad.r,innerH=H-pad.t-pad.b;
+    const dates=points.map(p=>p.date);
+    const count=Math.max(1,points.length-1);
+    const x=i=>pad.l+(i/count)*innerW;
+    const y=v=>pad.t+((5-clamp(Number(v)||1,1,5))/4)*innerH;
+    const grid=[1,2,3,4,5].map(level=>{
+      const yy=y(level);
+      return `<line x1="${pad.l}" y1="${yy}" x2="${W-pad.r}" y2="${yy}" class="skill-chart-grid"/><text x="${pad.l-10}" y="${yy+4}" class="skill-chart-y" text-anchor="end">L${level}</text>`;
+    }).join('');
+    const series=skillKeys.map((k,idx)=>{
+      const pts=points.map((p,i)=>`${x(i)},${y(p.skills?.[k])}`).join(' ');
+      const dots=points.map((p,i)=>`<circle cx="${x(i)}" cy="${y(p.skills?.[k])}" r="3" class="skill-line skill-line-${idx}" data-skill-point="${k}" data-date="${esc(p.date)}" data-level="${Number(p.skills?.[k]||1).toFixed(2)}"><title>${esc(skillLabels[k]||k)} · ${p.date} · L${Number(p.skills?.[k]||1).toFixed(2)}</title></circle>`).join('');
+      return `<polyline points="${pts}" class="skill-chart-series skill-line-${idx}"/>${dots}`;
+    }).join('');
+    const first=dates[0]||'',last=dates[dates.length-1]||'';
+    const labels=points.length?`<text x="${pad.l}" y="${H-8}" class="skill-chart-x">${esc(first.slice(5))}</text><text x="${W-pad.r}" y="${H-8}" class="skill-chart-x" text-anchor="end">${esc(last.slice(5))}</text>`:'';
+    return `<svg class="skill-history-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="技能等級歷史曲線">${grid}${series}${labels}</svg>`;
+  }
+
+  function skillHistorySummary(points){
+    if(!points.length)return {text:'從 v58 開始保存真實技能快照；完成下一次練習後會開始形成曲線。',changes:[]};
+    const first=points[0],last=points[points.length-1];
+    const changes=skillKeys.map(k=>({
+      key:k,label:skillLabels[k]||k,
+      from:Number(first.skills?.[k]||1),to:Number(last.skills?.[k]||1),
+      delta:Number(last.skills?.[k]||1)-Number(first.skills?.[k]||1)
+    })).sort((a,b)=>b.delta-a.delta);
+    const best=changes[0],weakest=changes[changes.length-1];
+    const text=points.length===1
+      ? `目前只有 ${first.date} 的第一個真實快照；之後每天最多保留一個最新值。`
+      : best.delta>0
+        ? `${best.label} 在這段期間提升最多：L${best.from.toFixed(2)} → L${best.to.toFixed(2)}（+${best.delta.toFixed(2)}）。`
+        : weakest.delta<0
+          ? `目前沒有明顯上升；${weakest.label} 變化最大：${weakest.delta.toFixed(2)}。建議先看近期弱點與到期複習。`
+          : '這段期間技能等級大致持平；可以搭配口說分數與重答提升一起判讀。';
+    return {text,changes};
+  }
+
+  function renderSkillHistoryChart(){
+    const host=$('skillHistoryChart'),note=$('skillHistoryNote'),legend=$('skillHistoryLegend');
+    if(!host)return;
+    const points=skillHistoryPoints(skillChartRange);
+    host.innerHTML=points.length?skillHistoryChartSvg(points):'<div class="skill-history-empty">尚未有 v58 之後的技能快照。</div>';
+    const summary=skillHistorySummary(points);
+    if(note)note.textContent=summary.text;
+    if(legend)legend.innerHTML=skillKeys.map((k,i)=>{
+      const latest=points.at(-1)?.skills?.[k]??state.skills[k]??1;
+      return `<span class="skill-legend-item skill-line-${i}"><i></i>${esc(skillLabels[k]||k)} <b>L${Number(latest).toFixed(2)}</b></span>`;
+    }).join('');
+    $('skillHistoryCount')?.replaceChildren(document.createTextNode(`${points.length} 個真實日快照`));
+    document.querySelectorAll('[data-skill-range]').forEach(btn=>{
+      const active=Number(btn.dataset.skillRange)===skillChartRange;
+      btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',active?'true':'false');
+      btn.onclick=()=>{skillChartRange=Number(btn.dataset.skillRange)||90;renderSkillHistoryChart();};
     });
   }
 
@@ -2677,7 +2785,9 @@
     const answerExtra={...(extra||{})};
     answerExtra.weakness=diagnoseWeakness(q,quality,correct,answerExtra);
     addWeakness(answerExtra.weakness);
-    session.answers.push({id:q.id,skill:q.skill,level:q.level,quality,correct,extra:answerExtra,xp}); save(); renderOverview();
+    session.answers.push({id:q.id,skill:q.skill,level:q.level,quality,correct,extra:answerExtra,xp});
+    captureSkillSnapshot('answer');
+    save(); renderOverview();
   }
 
   function nextQuestion(){speakingRetryCycle=null;session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
@@ -2694,6 +2804,7 @@
     const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
     if(trainingCompleted) markPracticeDay();
+    captureSkillSnapshot(sessionMode==='diagnostic'?'diagnostic_completed':'session_completed');
     save();
     window.EDAN_CLOUD?.logEvent?.('session_completed',{
       title:rec.title,
@@ -3168,6 +3279,17 @@
       等級:Number((state.skills[k]||1).toFixed(2))
     }));
 
+    const skillHistory=(state.skillHistory||[]).map(snap=>({
+      日期:snap.date||'',
+      擷取時間:snap.capturedAt||'',
+      來源:snap.source||'',
+      Listening:Number(snap.skills?.listening||1).toFixed(2),
+      Speaking:Number(snap.skills?.speaking||1).toFixed(2),
+      Interview:Number(snap.skills?.interview||1).toFixed(2),
+      Chunks:Number(snap.skills?.chunks||1).toFixed(2),
+      Rescue:Number(snap.skills?.rescue||1).toFixed(2)
+    })).reverse();
+
     const weaknesses=Object.entries(state.weaknessCounts||{}).map(([k,v])=>({
       弱點:weaknessLabels[k]||k,
       次數:v
@@ -3189,7 +3311,7 @@
       {項目:'目前到期複習',值:weekly.dueReviews}
     ];
 
-    return {summary,skills,weaknesses,errors,questions,vocabulary,speaking,sessions};
+    return {summary,skills,skillHistory,weaknesses,errors,questions,vocabulary,speaking,sessions};
   }
 
   function setExportStatus(text,tone=''){
@@ -3231,6 +3353,7 @@
       const wb=window.XLSX.utils.book_new();
       addWorkbookSheet(wb,'總覽',data.summary,[22,34]);
       addWorkbookSheet(wb,'能力',data.skills,[24,12]);
+      addWorkbookSheet(wb,'能力歷史',data.skillHistory,[14,22,20,12,12,12,12,12]);
       addWorkbookSheet(wb,'弱點',data.weaknesses,[28,12]);
       addWorkbookSheet(wb,'錯誤記憶',data.errors,[24,10,16,34,48,48]);
       addWorkbookSheet(wb,'單字熟悉度',data.vocabulary,[20,20,16,12,14,12,10,10,10,12,16,16,52]);
@@ -3686,7 +3809,9 @@
   }
 
   function init(){
-    syncSettingsUI();bindStaticEvents();bindLearnerExperienceUI();renderDailyQuote();bindDailyQuote();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
+    syncSettingsUI();bindStaticEvents();bindLearnerExperienceUI();renderDailyQuote();bindDailyQuote();
+    ensureSkillBaseline();
+    renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
     window.addEventListener('edan:tts-status',renderVoiceModelStatus);
     window.addEventListener('edan:auth-ready',()=>{loadLearnerExperience();renderDailyQuote(true);const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);});
     window.addEventListener('edan:auth-signed-out',()=>{learnerProfile=null;resetPrivateQuestionPacks();hideOnboarding();$('diagnosticSection')?.classList.add('hidden');});
