@@ -140,14 +140,37 @@
     </section>
 
     <section class="section" id="dailyCoachSection">
-      <div class="section-head"><div><h2>今日 15 分鐘｜系統幫你排</h2><p id="dailyFocusText">完成一個小單元後，系統會依弱點調整優先順序。</p></div><span class="badge good" id="dailyStatusText">今天尚未完成完整單元</span></div>
-      <div class="panel daily-plan">
-        <button class="daily-step" id="dailyListeningBtn" type="button"><b>① 5 題聽力</b><span>先練問題意圖與辨音</span></button>
-        <button class="daily-step" id="dailyVocabBtn" type="button"><b>② 8 題單字</b><span>系統依弱點選擇題／句型／聽力</span></button>
-        <button class="daily-step" id="dailyChunksBtn" type="button"><b>③ 3 個 Chunks</b><span>把單字變成能說出口的句子</span></button>
-        <button class="daily-step" id="dailySpeakingBtn" type="button"><b>④ 2 題口說</b><span>錄音、評分、修正；低於 60 分提高後續出現頻率</span></button>
+      <div class="section-head today-mission-head">
+        <div>
+          <h2>Today Mission｜今天只做最有效的事</h2>
+          <p>先告訴系統今天有多少時間；它會從週計畫、弱點與到期複習中，只留下 1–3 個最低有效任務。</p>
+        </div>
+        <div class="today-mission-head-meta">
+          <span class="support" id="todayMissionDate">—</span>
+          <span class="badge good" id="todayMissionTime">今天 30 分鐘</span>
+        </div>
       </div>
-      <div class="support" style="margin-top:8px">不用四個都做。完整完成其中任一小單元，就會記錄今天 1 天。</div>
+      <div class="panel today-mission-panel">
+        <div class="today-mission-toolbar">
+          <div>
+            <span class="today-mission-label">今天可用時間</span>
+            <div class="today-mission-time-switch" role="group" aria-label="今天可用學習時間">
+              <button id="todayMissionProfileMinutes" data-today-minutes="profile" type="button" aria-pressed="true">預設 30 分</button>
+              <button data-today-minutes="10" type="button" aria-pressed="false">10 分</button>
+              <button data-today-minutes="20" type="button" aria-pressed="false">20 分</button>
+              <button data-today-minutes="30" type="button" aria-pressed="false">30 分</button>
+              <button data-today-minutes="60" type="button" aria-pressed="false">60 分</button>
+            </div>
+          </div>
+          <div class="today-mission-progress-copy">
+            <strong id="todayMissionProgressText">0 / 0 已完成</strong>
+            <span>完成的任務今天不會再要求一次。</span>
+          </div>
+        </div>
+        <div class="today-mission-progress"><span id="todayMissionProgressBar" style="width:0%"></span></div>
+        <p class="today-mission-summary" id="todayMissionSummary">正在依目前學習狀態安排今天任務。</p>
+        <div class="today-mission-tasks" id="todayMissionTasks"></div>
+      </div>
     </section>
 
     <section class="section">
