@@ -51,10 +51,15 @@
       <div class="hero-main daily-quote-main">
         <div class="daily-quote-topline">
           <div class="eyebrow"><span id="dailyQuoteKind">DAILY THOUGHT</span> · 每日一句</div>
-          <span class="daily-quote-date" id="dailyQuoteDate"></span>
+          <div class="daily-quote-top-meta"><span class="daily-quote-category" id="dailyQuoteCategory">VISION</span><span class="daily-quote-date" id="dailyQuoteDate"></span></div>
         </div>
         <h1 class="daily-quote-en" id="dailyQuoteEn">Progress begins where certainty ends.</h1>
         <p class="daily-quote-zh" id="dailyQuoteZh">真正的進步，往往從確定性結束的地方開始。</p>
+        <div class="daily-quote-learning-hint"><span id="dailyQuoteCycle">66 句輪替 · 本輪不重複</span><span>點英文單字：發音＋中文意思＋加入單字複習</span></div>
+        <div class="daily-quote-word-info hidden" id="dailyQuoteWordInfo">
+          <div><strong id="dailyQuoteWord"></strong><span id="dailyQuoteWordMeaning"></span></div>
+          <button type="button" id="dailyQuoteAddWord">＋ 加入學習</button>
+        </div>
         <div class="daily-quote-meta">
           <div class="daily-quote-credit">
             <strong id="dailyQuoteAuthor">Daily Reflection</strong>
@@ -62,6 +67,7 @@
           </div>
           <div class="daily-quote-actions">
             <button class="daily-quote-speak" id="dailyQuoteSpeak" type="button">▶ 聽英文</button>
+            <button class="daily-quote-favorite" id="dailyQuoteFavorite" type="button" aria-pressed="false">♡ 收藏</button>
             <a class="daily-quote-source hidden" id="dailyQuoteSource" href="#" target="_blank" rel="noopener noreferrer">查看來源 ↗</a>
           </div>
         </div>

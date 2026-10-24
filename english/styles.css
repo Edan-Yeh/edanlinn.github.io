@@ -1638,3 +1638,24 @@ body.auth-locked .little-e-panel{display:none!important}
 .speaking-retry-comparison p{margin:10px 0 0;color:#59657d;font-size:12px;line-height:1.6}
 .little-e-retry-cta{font-weight:900!important;border-color:#9eadef!important;background:#eef1ff!important;color:#3346a2!important}
 @media(max-width:560px){.retry-score-grid{grid-template-columns:1fr auto 1fr}.retry-delta{grid-column:1/-1}.retry-comparison-head{align-items:flex-start;flex-direction:column}}
+
+/* v56 Daily Quote 2.0 */
+.daily-quote-top-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.daily-quote-category{display:inline-flex;align-items:center;min-height:24px;padding:4px 8px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);font-size:9px;font-weight:900;letter-spacing:.06em;color:rgba(255,255,255,.82)}
+.daily-quote-en .daily-quote-word{display:inline;padding:0;border:0;background:transparent;color:inherit;font:inherit;font-weight:inherit;line-height:inherit;text-align:inherit;cursor:pointer;border-radius:5px}
+.daily-quote-en .daily-quote-word:hover,.daily-quote-en .daily-quote-word:focus-visible{background:rgba(255,255,255,.14);outline:none;box-shadow:0 0 0 2px rgba(255,255,255,.16)}
+.daily-quote-learning-hint{position:relative;z-index:1;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;color:rgba(255,255,255,.58);font-size:10px;line-height:1.45}
+.daily-quote-learning-hint span:first-child{font-weight:900;color:rgba(255,255,255,.72)}
+.daily-quote-word-info{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:11px;padding:10px 11px;border:1px solid rgba(255,255,255,.18);border-radius:13px;background:rgba(255,255,255,.08);backdrop-filter:blur(8px)}
+.daily-quote-word-info>div{display:flex;align-items:baseline;gap:9px;min-width:0}
+.daily-quote-word-info strong{font-size:14px}
+.daily-quote-word-info span{font-size:11px;color:rgba(255,255,255,.75)}
+.daily-quote-word-info button,.daily-quote-favorite{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.09);color:#fff;font-size:11px;font-weight:800;cursor:pointer}
+.daily-quote-favorite.active{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.46)}
+.daily-quote-word-info button:hover,.daily-quote-favorite:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+@media(max-width:620px){
+  .daily-quote-top-meta{justify-content:flex-start}
+  .daily-quote-word-info{align-items:flex-start;flex-direction:column}
+  .daily-quote-word-info button{width:100%}
+  .daily-quote-learning-hint{gap:5px;flex-direction:column;align-items:flex-start}
+}

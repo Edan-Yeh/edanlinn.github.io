@@ -24,6 +24,9 @@
     littleEMemory: [],
     sessions: [],
     retryHistory: [],
+    quoteHistory: [],
+    quoteFavorites: [],
+    quoteWordBank: {},
     completedDates: [],
     streakRepairs: [],
     clientUpdatedAt: null,
@@ -329,6 +332,9 @@
         littleEMemory: Array.isArray(parsed.littleEMemory)?parsed.littleEMemory.slice(-60):[],
         sessions: Array.isArray(parsed.sessions)?parsed.sessions:[],
         retryHistory: Array.isArray(parsed.retryHistory)?parsed.retryHistory.slice(-80):[],
+        quoteHistory: Array.isArray(parsed.quoteHistory)?parsed.quoteHistory.slice(-140):[],
+        quoteFavorites: Array.isArray(parsed.quoteFavorites)?[...new Set(parsed.quoteFavorites)].slice(-100):[],
+        quoteWordBank: parsed.quoteWordBank&&typeof parsed.quoteWordBank==='object'?parsed.quoteWordBank:{},
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         streakRepairs: Array.isArray(parsed.streakRepairs)?parsed.streakRepairs.slice(-20):[],
         clientUpdatedAt: parsed.clientUpdatedAt||null,
@@ -360,6 +366,9 @@
       littleEMemory:Array.isArray(incoming.littleEMemory)?incoming.littleEMemory.slice(-60):[],
       sessions:Array.isArray(incoming.sessions)?incoming.sessions:[],
       retryHistory:Array.isArray(incoming.retryHistory)?incoming.retryHistory.slice(-80):[],
+      quoteHistory:Array.isArray(incoming.quoteHistory)?incoming.quoteHistory.slice(-140):[],
+      quoteFavorites:Array.isArray(incoming.quoteFavorites)?[...new Set(incoming.quoteFavorites)].slice(-100):[],
+      quoteWordBank:incoming.quoteWordBank&&typeof incoming.quoteWordBank==='object'?incoming.quoteWordBank:{},
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
       streakRepairs:Array.isArray(incoming.streakRepairs)?incoming.streakRepairs.slice(-20):[],
       clientUpdatedAt:incoming.clientUpdatedAt||null,
@@ -373,6 +382,7 @@
       window.EDAN_CLOUD?.logEvent?.('streak_repaired',{date:repaired,sourceDate:todayKey(),policy:'single_gap_within_2_days'},'streak-repair-'+repaired);
     }
     renderOverview();
+    renderDailyQuote(false);
     renderChunks();
     renderVocabulary(12,true,false);
   }
@@ -1079,11 +1089,23 @@
     renderChunks(3,chunkUnitIds);
     $('chunkGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
   }
+  function quoteWordVocabEntries(){
+    const baseWords=new Set((CONTENT.vocabulary||[]).map(v=>String(v.word||'').toLowerCase()));
+    return Object.values(state.quoteWordBank||{})
+      .filter(v=>v?.word&&!baseWords.has(String(v.word).toLowerCase()))
+      .map(v=>({
+        id:v.id||('dqv-'+String(v.word).toLowerCase().replace(/[^a-z0-9]+/g,'-')),
+        word:v.word,zh:v.meaning||'',category:'Daily Quote',pos:'quote word',
+        example:v.quoteText||'',exampleZh:v.quoteZh||'',fromDailyQuote:true
+      }));
+  }
+  function allVocabulary(){return [...(CONTENT.vocabulary||[]),...quoteWordVocabEntries()];}
+
   function renderVocabulary(limit=12,randomize=false,learningOnly=false){
     const host=$('vocabGrid');
     if(!host || !Array.isArray(CONTENT.vocabulary)) return;
     const filter=$('vocabFilter')?.value||'all';
-    let arr=CONTENT.vocabulary.filter(v=>filter==='all'||v.category===filter);
+    let arr=allVocabulary().filter(v=>filter==='all'||v.category===filter);
     if(learningOnly) arr=arr.filter(v=>!state.vocabKnown[v.id]);
     if(randomize) arr=weightedVocabSample(arr,limit||arr.length);
     else if(limit) arr=arr.slice(0,limit);
@@ -1113,7 +1135,7 @@
       b.textContent=box.classList.contains('hidden')?'看意思':'收起意思';
     }));
     document.querySelectorAll('.vocab-listen-na').forEach(b=>b.addEventListener('click',async()=>{
-      const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
+      const v=allVocabulary().find(x=>x.id===b.dataset.id); if(!v)return;
       const rate=playbackRate(1,'chunk');
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
       if(status)status.textContent='North American English · 正在準備語音…';
@@ -1121,7 +1143,7 @@
       if(status)status.textContent=northAmericanPlaybackStatus(resolved,rate);
     }));
     document.querySelectorAll('.vocab-listen-in').forEach(b=>b.addEventListener('click',async()=>{
-      const v=CONTENT.vocabulary.find(x=>x.id===b.dataset.id); if(!v)return;
+      const v=allVocabulary().find(x=>x.id===b.dataset.id); if(!v)return;
       const rate=playbackRate(1,'chunk');
       const status=document.querySelector(`.vocab-audio-status[data-vocab-status-id="${CSS.escape(v.id)}"]`);
       if(status)status.textContent='Indian English · 正在準備語音…';
@@ -1152,7 +1174,7 @@
   function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
   function vocabPool(){
     const filter=$('vocabFilter')?.value||'all';
-    return (CONTENT.vocabulary||[]).filter(v=>filter==='all'||v.category===filter);
+    return allVocabulary().filter(v=>filter==='all'||v.category===filter);
   }
   function vocabStat(id){
     if(!state.vocabStats[id]) state.vocabStats[id]={attempts:0,correct:0,wrong:0,guessed:0,choice:0,sentence:0,listening:0,lastOutcome:null,correctStreak:0,interval:0,due:todayKey(),lastSeen:null};
@@ -1288,7 +1310,7 @@
     setVocabModeActive(mode);
     let pool=vocabPool();
     if(mode==='sentence') pool=pool.filter(v=>sentenceBlank(v));
-    if(pool.length<4) pool=(CONTENT.vocabulary||[]).filter(v=>mode!=='sentence'||sentenceBlank(v));
+    if(pool.length<4) pool=allVocabulary().filter(v=>mode!=='sentence'||sentenceBlank(v));
     const queue=weightedVocabSample(pool,Math.min(size,pool.length));
     vocabPracticeSession={mode,queue,index:0,correct:0,answered:false};
     $('vocabGrid')?.classList.add('hidden');
@@ -2940,7 +2962,7 @@
       };
     });
 
-    const vocabulary=(CONTENT.vocabulary||[]).map(v=>{
+    const vocabulary=allVocabulary().map(v=>{
       const st=state.vocabStats[v.id]||{};
       return {
         單字:v.word,
@@ -3330,54 +3352,158 @@
     clearCurrentQuestion(){lastLittleEQuestion=null;lastLittleEAnswer=null;}
   };
 
-  function renderDailyQuote(){
+  function favoriteQuoteCategoryCounts(){
+    const deck=window.EDAN_DAILY_QUOTES,counts={};
+    for(const id of (state.quoteFavorites||[])){
+      const q=deck?.getById?.(id);if(q)counts[q.category]=(counts[q.category]||0)+1;
+    }
+    return counts;
+  }
+
+  function selectDailyQuote(persist=false){
     const deck=window.EDAN_DAILY_QUOTES;
-    if(!deck?.today)return;
-    const quote=deck.today(new Date());
-    if(!quote)return;
+    if(!deck?.quotes?.length)return null;
+    const date=todayKey();
+    const history=Array.isArray(state.quoteHistory)?state.quoteHistory:[];
+    const existing=history.find(x=>x?.date===date);
+    if(existing){
+      const q=deck.getById(existing.quoteId);if(q)return q;
+    }
+    if(!persist)return deck.today(new Date());
+
+    const seen=new Set(history.slice(-deck.quotes.length).map(x=>x?.quoteId).filter(Boolean));
+    let candidates=deck.quotes.filter(q=>!seen.has(q.id));
+    if(!candidates.length)candidates=[...deck.quotes];
+
+    const likes=favoriteQuoteCategoryCounts();
+    candidates.sort((a,b)=>{
+      const pref=(likes[b.category]||0)-(likes[a.category]||0);
+      if(pref)return pref;
+      return deck.rankForDate(date,a.id)-deck.rankForDate(date,b.id);
+    });
+    const quote=candidates[0]||deck.today(new Date());
+    state.quoteHistory=[...history.filter(x=>x?.date!==date),{date,quoteId:quote.id,category:quote.category}]
+      .sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(-140);
+    save();
+    window.EDAN_CLOUD?.logEvent?.('daily_quote_shown',{quoteId:quote.id,category:quote.category,author:quote.author},'daily-quote-'+date);
+    return quote;
+  }
+
+  function dailyQuoteWordMeaning(word,quote){
+    const deck=window.EDAN_DAILY_QUOTES;
+    const direct=deck?.wordMeaning?.(word);
+    if(direct)return direct;
+    const viaModel=modelWordMeaning(word,{model:quote?.en||'',keywords:[]});
+    return viaModel==='中文意思待補'?'依整句語境理解':viaModel;
+  }
+
+  function dailyQuoteEnglishHtml(quote){
+    const parts=String(quote?.en||'').match(/[A-Za-z]+(?:['’][A-Za-z]+)?|\d+|\s+|[^A-Za-z\d\s]+/g)||[];
+    return parts.map(part=>{
+      if(/^[A-Za-z]+(?:['’][A-Za-z]+)?$/.test(part)){
+        const meaning=dailyQuoteWordMeaning(part,quote);
+        return `<button class="daily-quote-word" data-daily-quote-word="${esc(part)}" data-daily-quote-meaning="${esc(meaning)}" type="button" title="${esc(meaning)}">${esc(part)}</button>`;
+      }
+      return esc(part);
+    }).join('');
+  }
+
+  function updateDailyQuoteFavorite(quote){
+    const btn=$('dailyQuoteFavorite');if(!btn||!quote)return;
+    const active=(state.quoteFavorites||[]).includes(quote.id);
+    btn.classList.toggle('active',active);
+    btn.textContent=active?'♥ 已收藏':'♡ 收藏';
+    btn.setAttribute('aria-pressed',active?'true':'false');
+  }
+
+  function addDailyQuoteWord(word,meaning,quote){
+    const key=String(word||'').toLowerCase().replace(/[’]/g,"'").trim();
+    if(!key||!meaning||!quote)return null;
+    const existing=(CONTENT.vocabulary||[]).find(v=>String(v.word||'').toLowerCase()===key);
+    const id=existing?.id||('dqv-'+key.replace(/[^a-z0-9]+/g,'-'));
+    state.quoteWordBank=state.quoteWordBank||{};
+    const previous=state.quoteWordBank[key]||{};
+    state.quoteWordBank[key]={
+      ...previous,id,word,meaning,quoteId:quote.id,quoteText:quote.en,quoteZh:quote.zh,category:quote.category,
+      addedAt:previous.addedAt||new Date().toISOString(),lastSeen:todayKey(),count:(previous.count||0)+1
+    };
+    state.vocabKnown[id]=false;
+    const st=vocabStat(id);st.interval=0;st.due=todayKey();if(st.lastOutcome==='correct')st.lastOutcome='guessed';
+    save();
+    renderVocabulary(12,true,false);
+    window.EDAN_CLOUD?.logEvent?.('daily_quote_word_added',{quoteId:quote.id,word,meaning,vocabId:id},'quote-word-'+quote.id+'-'+key);
+    return id;
+  }
+
+  function renderDailyQuote(persist=false){
+    const deck=window.EDAN_DAILY_QUOTES;
+    const quote=selectDailyQuote(persist);
+    if(!deck||!quote)return;
 
     const d=new Date();
     const dateLabel=new Intl.DateTimeFormat('zh-TW',{month:'2-digit',day:'2-digit',weekday:'short'}).format(d);
     if($('dailyQuoteDate'))$('dailyQuoteDate').textContent=dateLabel;
     if($('dailyQuoteKind'))$('dailyQuoteKind').textContent=quote.kind||'DAILY THOUGHT';
-    if($('dailyQuoteEn'))$('dailyQuoteEn').textContent=quote.en;
+    if($('dailyQuoteCategory'))$('dailyQuoteCategory').textContent=(deck.categoryZh?.[quote.category]||quote.category)+' · '+quote.category;
+    if($('dailyQuoteCycle'))$('dailyQuoteCycle').textContent=`${deck.quotes.length} 句輪替 · 本輪不重複`;
+    if($('dailyQuoteEn'))$('dailyQuoteEn').innerHTML=dailyQuoteEnglishHtml(quote);
     if($('dailyQuoteZh'))$('dailyQuoteZh').textContent=quote.zh;
     if($('dailyQuoteAuthor'))$('dailyQuoteAuthor').textContent=quote.author;
     if($('dailyQuoteSourceLabel'))$('dailyQuoteSourceLabel').textContent=quote.source||'';
+    $('dailyQuoteWordInfo')?.classList.add('hidden');
 
     const link=$('dailyQuoteSource');
     if(link){
-      if(quote.sourceUrl){
-        link.href=quote.sourceUrl;
-        link.classList.remove('hidden');
-      }else{
-        link.removeAttribute('href');
-        link.classList.add('hidden');
-      }
+      if(quote.sourceUrl){link.href=quote.sourceUrl;link.classList.remove('hidden');}
+      else{link.removeAttribute('href');link.classList.add('hidden');}
     }
 
     const speak=$('dailyQuoteSpeak');
-    if(speak)speak.dataset.quoteText=quote.en;
+    if(speak){speak.dataset.quoteText=quote.en;speak.dataset.quoteId=quote.id;speak.textContent='▶ 聽英文';}
+    const favorite=$('dailyQuoteFavorite');
+    if(favorite)favorite.dataset.quoteId=quote.id;
+    updateDailyQuoteFavorite(quote);
   }
 
   function bindDailyQuote(){
-    const btn=$('dailyQuoteSpeak');
-    if(!btn)return;
-    btn.addEventListener('click',async()=>{
-      const text=btn.dataset.quoteText||$('dailyQuoteEn')?.textContent||'';
+    $('dailyQuoteSpeak')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget,text=btn.dataset.quoteText||$('dailyQuoteEn')?.textContent||'';
       if(!text)return;
-      const original=btn.textContent;
-      btn.disabled=true;
-      btn.textContent='準備發音…';
-      try{
-        await speakNorthAmerican(text,.9);
-        btn.textContent='▶ 再聽一次';
-      }catch(e){
-        btn.textContent='播放失敗 · 重試';
-      }finally{
-        btn.disabled=false;
-        if(btn.textContent==='準備發音…')btn.textContent=original;
+      btn.disabled=true;btn.textContent='準備發音…';
+      try{await speakNorthAmerican(text,.9);btn.textContent='▶ 再聽一次';}
+      catch(e){btn.textContent='播放失敗 · 重試';}
+      finally{btn.disabled=false;}
+    });
+
+    $('dailyQuoteFavorite')?.addEventListener('click',e=>{
+      const deck=window.EDAN_DAILY_QUOTES,id=e.currentTarget.dataset.quoteId,quote=deck?.getById?.(id);
+      if(!quote)return;
+      const set=new Set(state.quoteFavorites||[]);
+      const active=set.has(id);if(active)set.delete(id);else set.add(id);
+      state.quoteFavorites=[...set].slice(-100);save();updateDailyQuoteFavorite(quote);
+      window.EDAN_CLOUD?.logEvent?.(active?'daily_quote_unfavorited':'daily_quote_favorited',{quoteId:id,category:quote.category},'quote-favorite-'+id+'-'+Date.now());
+    });
+
+    $('dailyQuoteEn')?.addEventListener('click',async e=>{
+      const btn=e.target.closest?.('[data-daily-quote-word]');if(!btn)return;
+      const deck=window.EDAN_DAILY_QUOTES,quote=deck?.getById?.($('dailyQuoteSpeak')?.dataset.quoteId);
+      const word=btn.dataset.dailyQuoteWord,meaning=btn.dataset.dailyQuoteMeaning||dailyQuoteWordMeaning(word,quote);
+      const info=$('dailyQuoteWordInfo');
+      if(info){info.classList.remove('hidden');$('dailyQuoteWord')?.replaceChildren(document.createTextNode(word));$('dailyQuoteWordMeaning')?.replaceChildren(document.createTextNode(meaning));}
+      const add=$('dailyQuoteAddWord');
+      if(add){
+        add.dataset.word=word;add.dataset.meaning=meaning;add.dataset.quoteId=quote?.id||'';
+        const key=String(word||'').toLowerCase().replace(/[’]/g,"'");
+        add.textContent=state.quoteWordBank?.[key]?'✓ 已加入學習':'＋ 加入學習';
       }
+      try{await speakNorthAmerican(word,.88);}catch(err){}
+    });
+
+    $('dailyQuoteAddWord')?.addEventListener('click',e=>{
+      const btn=e.currentTarget,quote=window.EDAN_DAILY_QUOTES?.getById?.(btn.dataset.quoteId);
+      if(!quote)return;
+      addDailyQuoteWord(btn.dataset.word,btn.dataset.meaning,quote);
+      btn.textContent='✓ 已加入學習';
     });
   }
 
@@ -3403,7 +3529,7 @@
   function init(){
     syncSettingsUI();bindStaticEvents();bindLearnerExperienceUI();renderDailyQuote();bindDailyQuote();renderOverview();renderVocabulary(12);renderChunks();renderVoiceModelStatus();
     window.addEventListener('edan:tts-status',renderVoiceModelStatus);
-    window.addEventListener('edan:auth-ready',()=>{loadLearnerExperience();const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);});
+    window.addEventListener('edan:auth-ready',()=>{loadLearnerExperience();renderDailyQuote(true);const warm=()=>warmCachedTtsModels();if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:2500});else setTimeout(warm,700);});
     window.addEventListener('edan:auth-signed-out',()=>{learnerProfile=null;resetPrivateQuestionPacks();hideOnboarding();$('diagnosticSection')?.classList.add('hidden');});
     if('speechSynthesis' in window){
       refreshVoiceCache();
