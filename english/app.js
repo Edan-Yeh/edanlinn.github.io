@@ -28,6 +28,8 @@
     quoteFavorites: [],
     quoteWordBank: {},
     skillHistory: [],
+    dailyMissionPlan: null,
+    todayMissionOverride: null,
     completedDates: [],
     streakRepairs: [],
     clientUpdatedAt: null,
@@ -159,7 +161,7 @@
       const patch={goal:$('onboardingGoal').value,role_type:$('onboardingRole').value,self_level:$('onboardingLevel').value,daily_minutes:Number($('onboardingMinutes').value),accents:choice==='both'?['northAmerica','india']:[choice],target_company:$('onboardingTarget').value.trim(),onboarding_completed:true};
       const msg=$('onboardingMessage');if(msg)msg.textContent='儲存中…';
       try{
-        learnerProfile=await cloud.saveLearnerProfile(patch);applyLearnerProfilePreferences(learnerProfile,{newSetup:true});hideOnboarding();showDiagnosticIfNeeded();renderWeeklyPlan();
+        learnerProfile=await cloud.saveLearnerProfile(patch);applyLearnerProfilePreferences(learnerProfile,{newSetup:true});state.dailyMissionPlan=null;save();hideOnboarding();showDiagnosticIfNeeded();renderWeeklyPlan();renderTodayMission();
         cloud.logEvent?.('learner_onboarding_completed',{goal:learnerProfile.goal,roleType:learnerProfile.role_type,dailyMinutes:learnerProfile.daily_minutes},'onboarding-v54');
         $('diagnosticSection')?.scrollIntoView({behavior:'smooth',block:'center'});
       }catch(err){console.warn(err);if(msg)msg.textContent='儲存失敗，請確認網路與登入狀態後重試。';}
@@ -250,15 +252,126 @@
     const w=topWeakness();
     return (w==='sound'||w==='intent')?'listening':(w==='output'||w==='structure'||w==='usage'?'sentence':'choice');
   }
-  function renderDailyCoach(){
-    const focus=$('dailyFocusText');
-    const status=$('dailyStatusText');
-    if(focus){
-      const key=topWeakness();
-      focus.textContent=key?'目前優先：'+(weaknessLabels[key]||key)+'。':'目前先建立基線，完成一個小單元後會開始找弱點。';
-    }
-    if(status) status.textContent=state.completedDates.includes(todayKey())?'✓ 今天已完成至少 1 個完整單元':'今天尚未完成完整單元';
+  function todayMissionMinutes(){
+    const override=state.todayMissionOverride;
+    if(override?.date===todayKey()&&Number.isFinite(Number(override.minutes)))return clamp(Number(override.minutes),10,60);
+    return clamp(Number(learnerProfile?.daily_minutes)||30,10,60);
   }
+
+  function todayMissionTaskCount(minutes){
+    if(minutes<=12)return 1;
+    if(minutes<=35)return 2;
+    return 3;
+  }
+
+  function sessionModeGuess(sess){
+    if(sess?.mode)return sess.mode;
+    const title=String(sess?.title||'');
+    if(/今日複習/.test(title))return 'due';
+    if(/錯題複習/.test(title))return 'wrong';
+    if(/聽力特訓/.test(title))return 'listening';
+    if(/口說快練/.test(title))return 'speaking';
+    if(/Interview Mock|Personalized Interview Mock/.test(title))return 'mock';
+    if(/自適應挑戰/.test(title))return 'adaptive';
+    return null;
+  }
+
+  function todayCompletedSessions(){
+    return (state.sessions||[]).filter(sess=>{
+      if(sess?.completedUnit===false||sess?.diagnostic)return false;
+      const d=parseLearningDate(sess.date);return d&&localDateKey(d)===todayKey();
+    });
+  }
+
+  function todayMissionTaskDone(task){
+    return todayCompletedSessions().some(sess=>sess.missionTaskKey===task.key||sessionModeGuess(sess)===task.mode);
+  }
+
+  function buildTodayMissionPlan(minutes=todayMissionMinutes()){
+    const weekly=weeklyPlanSnapshot();
+    const count=todayMissionTaskCount(minutes);
+    const unique=[];const modes=new Set();
+    for(const task of (weekly.tasks||[])){
+      if(!task?.mode||modes.has(task.mode))continue;
+      unique.push(task);modes.add(task.mode);
+    }
+    const fallbacks=[
+      {key:'today-adaptive',mode:'adaptive',title:'綜合自適應挑戰',reason:'依目前熟悉度、弱點與近期曝光自動補齊。'},
+      {key:'today-listening',mode:'listening',title:'雙口音聽力維持',reason:'維持北美與印度口音的問題意圖反應。'},
+      {key:'today-speaking',mode:'speaking',title:'口說輸出',reason:'把知道的內容用短回答說完整。'}
+    ];
+    for(const task of fallbacks){if(!modes.has(task.mode)){unique.push(task);modes.add(task.mode);}}
+    const shares=count===1?[1]:count===2?[.56,.44]:[.42,.33,.25];
+    const tasks=unique.slice(0,count).map((task,i)=>{
+      const budget=Math.max(5,Math.round(minutes*shares[i]));
+      const size=weeklyPlanQuestionSize(task.mode,budget,weekly.dueReviews);
+      const estimate=task.mode==='speaking'?Math.min(budget,Math.max(6,size*6))
+        :task.mode==='mock'?Math.min(budget,Math.max(12,size*4))
+        :Math.min(budget,Math.max(6,size*2.5));
+      return {
+        key:task.key||('today-'+task.mode+'-'+i),mode:task.mode,title:task.title,
+        reason:task.reason||'依今天可用時間縮成最低有效訓練量。',
+        size,estimate:Math.max(5,Math.round(estimate))
+      };
+    });
+    return {date:todayKey(),minutes,createdAt:new Date().toISOString(),tasks};
+  }
+
+  function ensureTodayMissionPlan(force=false){
+    const minutes=todayMissionMinutes();
+    const current=state.dailyMissionPlan;
+    const valid=!force&&current?.date===todayKey()&&Number(current.minutes)===minutes&&Array.isArray(current.tasks)&&current.tasks.length;
+    if(valid)return current;
+    state.dailyMissionPlan=buildTodayMissionPlan(minutes);
+    save();
+    return state.dailyMissionPlan;
+  }
+
+  function todayMissionSnapshot(){
+    const plan=ensureTodayMissionPlan();
+    const tasks=(plan.tasks||[]).map(task=>({...task,done:todayMissionTaskDone(task)}));
+    const done=tasks.filter(x=>x.done).length;
+    const remaining=tasks.filter(x=>!x.done).reduce((n,x)=>n+(Number(x.estimate)||0),0);
+    return {...plan,tasks,done,total:tasks.length,remaining,complete:tasks.length>0&&done===tasks.length};
+  }
+
+  function renderTodayMission(){
+    const host=$('todayMissionTasks');if(!host)return;
+    const mission=todayMissionSnapshot();
+    const label=$('todayMissionDate');if(label)label.textContent=todayKey();
+    const time=$('todayMissionTime');if(time)time.textContent=`今天 ${mission.minutes} 分鐘 · ${mission.total} 個任務`;
+    const progress=$('todayMissionProgressText');if(progress)progress.textContent=`${mission.done} / ${mission.total} 已完成`;
+    const bar=$('todayMissionProgressBar');if(bar)bar.style.width=mission.total?`${Math.round(mission.done/mission.total*100)}%`:'0%';
+    const summary=$('todayMissionSummary');
+    if(summary){
+      if(mission.complete)summary.textContent='今天的最低有效訓練已完成。想多練可以直接使用下方 Weekly Plan 或自由訓練。';
+      else{
+        const next=mission.tasks.find(x=>!x.done);
+        summary.textContent=`接下來先做「${next?.title||'今日任務'}」；照目前配置，剩餘約 ${mission.remaining} 分鐘。`;
+      }
+    }
+    const nextIndex=mission.tasks.findIndex(x=>!x.done);
+    host.innerHTML=mission.tasks.map((task,i)=>`<article class="today-mission-task ${task.done?'done':''}"><div class="today-mission-check">${task.done?'✓':i+1}</div><div class="today-mission-copy"><div><strong>${esc(task.title)}</strong><span>約 ${task.estimate} 分鐘 · ${task.size} 題</span></div><p>${esc(task.reason)}</p></div><button class="btn ${!task.done&&i===nextIndex?'primary':'ghost'}" type="button" data-today-mission-mode="${task.mode}" data-today-mission-size="${task.size}" data-today-mission-key="${esc(task.key)}" ${task.done?'disabled':''}>${task.done?'已完成':'開始'}</button></article>`).join('');
+    host.querySelectorAll('[data-today-mission-mode]').forEach(btn=>btn.addEventListener('click',()=>{
+      startSession(btn.dataset.todayMissionMode,Number(btn.dataset.todayMissionSize)||null,{missionTaskKey:btn.dataset.todayMissionKey,missionDate:todayKey()});
+      window.EDAN_CLOUD?.logEvent?.('today_mission_started',{taskKey:btn.dataset.todayMissionKey,mode:btn.dataset.todayMissionMode,minutes:mission.minutes},'today-mission-start-'+todayKey()+'-'+btn.dataset.todayMissionKey);
+    }));
+    const profileMinutes=clamp(Number(learnerProfile?.daily_minutes)||30,10,60);
+    const profileBtn=$('todayMissionProfileMinutes');if(profileBtn)profileBtn.textContent=`預設 ${profileMinutes} 分`;
+    document.querySelectorAll('[data-today-minutes]').forEach(btn=>{
+      const value=btn.dataset.todayMinutes;
+      const override=state.todayMissionOverride?.date===todayKey()?Number(state.todayMissionOverride.minutes):null;
+      const active=value==='profile'?override===null:Number(value)===override;
+      btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',active?'true':'false');
+      btn.onclick=()=>{
+        state.todayMissionOverride=value==='profile'?null:{date:todayKey(),minutes:clamp(Number(value)||profileMinutes,10,60)};
+        state.dailyMissionPlan=null;save();renderTodayMission();
+        window.EDAN_CLOUD?.logEvent?.('today_mission_time_changed',{minutes:todayMissionMinutes(),source:value==='profile'?'profile':'override'},'today-mission-time-'+todayKey());
+      };
+    });
+  }
+
+  function renderDailyCoach(){renderTodayMission();}
   const errorLabels={
     tense_current:'現在工作時態',
     fragment:'句子不完整',
@@ -372,6 +485,8 @@
         quoteFavorites: Array.isArray(parsed.quoteFavorites)?[...new Set(parsed.quoteFavorites)].slice(-100):[],
         quoteWordBank: parsed.quoteWordBank&&typeof parsed.quoteWordBank==='object'?parsed.quoteWordBank:{},
         skillHistory: Array.isArray(parsed.skillHistory)?parsed.skillHistory.slice(-730):[],
+        dailyMissionPlan: parsed.dailyMissionPlan&&typeof parsed.dailyMissionPlan==='object'?parsed.dailyMissionPlan:null,
+        todayMissionOverride: parsed.todayMissionOverride&&typeof parsed.todayMissionOverride==='object'?parsed.todayMissionOverride:null,
         completedDates: Array.isArray(parsed.completedDates)?parsed.completedDates:[],
         streakRepairs: Array.isArray(parsed.streakRepairs)?parsed.streakRepairs.slice(-20):[],
         clientUpdatedAt: parsed.clientUpdatedAt||null,
@@ -407,6 +522,8 @@
       quoteFavorites:Array.isArray(incoming.quoteFavorites)?[...new Set(incoming.quoteFavorites)].slice(-100):[],
       quoteWordBank:incoming.quoteWordBank&&typeof incoming.quoteWordBank==='object'?incoming.quoteWordBank:{},
       skillHistory:Array.isArray(incoming.skillHistory)?incoming.skillHistory.slice(-730):[],
+      dailyMissionPlan:incoming.dailyMissionPlan&&typeof incoming.dailyMissionPlan==='object'?incoming.dailyMissionPlan:null,
+      todayMissionOverride:incoming.todayMissionOverride&&typeof incoming.todayMissionOverride==='object'?incoming.todayMissionOverride:null,
       completedDates:Array.isArray(incoming.completedDates)?incoming.completedDates:[],
       streakRepairs:Array.isArray(incoming.streakRepairs)?incoming.streakRepairs.slice(-20):[],
       clientUpdatedAt:incoming.clientUpdatedAt||null,
@@ -2177,14 +2294,14 @@
     return entry;
   }
 
-  function startSession(mode,sizeOverride=null){
+  function startSession(mode,sizeOverride=null,meta={}){
     speakingRetryCycle=null;
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
     setMobileDockActive(mode==='listening'?'listening':'challenge');
     const requestedSize=sizeOverride===null?(mode==='mock'?8:mode==='diagnostic'?5:state.settings.sessionSize):sizeOverride;
     const size = clamp(parseInt(requestedSize,10)||10,2,15);
     const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習',mock:(privateQuestionIds.size?'Personalized Interview Mock':'Interview Mock'),diagnostic:'5 分鐘能力診斷',speaking:'口說快練'};
-    session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null};
+    session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null,missionTaskKey:meta?.missionTaskKey||null,missionDate:meta?.missionDate||null};
     $('resultSection').classList.remove('show');
     $('challengeSection').classList.add('active');
     $('sessionTitle').textContent=session.title;
@@ -2924,7 +3041,7 @@
     const skillAvgs=Object.entries(bySkill).map(([k,v])=>[k,v.reduce((a,b)=>a+b,0)/v.length]).sort((a,b)=>a[1]-b[1]);
     const weakest=skillAvgs[0]?.[0]||'listening';
     const trainingCompleted=completedUnit&&sessionMode!=='diagnostic';
-    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
+    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),mode:sessionMode,missionTaskKey:session.missionTaskKey||null,missionDate:session.missionDate||null,count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
     if(trainingCompleted) markPracticeDay();
     captureSkillSnapshot(sessionMode==='diagnostic'?'diagnostic_completed':'session_completed');
@@ -2935,6 +3052,8 @@
       count:rec.count,
       weakest:rec.weakest,
       completedUnit:rec.completedUnit,
+      mode:rec.mode,
+      missionTaskKey:rec.missionTaskKey,
       answers:rec.answers.map(a=>({
         id:a.id,skill:a.skill,level:a.level,quality:a.quality,correct:a.correct,
         systemScore:a.extra?.systemScore??null,
@@ -3671,10 +3790,6 @@
     $('nextAdaptiveBtn').addEventListener('click',()=>startSession('adaptive'));
     $('backOverviewBtn').addEventListener('click',()=>{$('resultSection').classList.remove('show');$('overviewSection').scrollIntoView({behavior:'smooth'});});
     $('chunkLevelFilter').addEventListener('change',()=>renderChunks()); $('randomChunksBtn').addEventListener('click',()=>renderChunks(3));
-    $('dailyListeningBtn')?.addEventListener('click',()=>startSession('listening',5));
-    $('dailyVocabBtn')?.addEventListener('click',()=>{setMobileDockActive('vocab');startVocabPractice(recommendedVocabMode(),8);});
-    $('dailyChunksBtn')?.addEventListener('click',()=>{setMobileDockActive('chunks');startChunkUnit();});
-    $('dailySpeakingBtn')?.addEventListener('click',()=>startSession('speaking',2));
     $('coachStartBtn')?.addEventListener('click',e=>startSession(e.currentTarget.dataset.mode||'adaptive',Number(e.currentTarget.dataset.size)||5));
     $('vocabFilter')?.addEventListener('change',()=>{if(vocabPracticeSession)startVocabPractice(vocabPracticeSession.mode,8);else renderVocabulary(12);});
     $('randomVocabBtn')?.addEventListener('click',()=>{showVocabCards();renderVocabulary(8,true,false);});
