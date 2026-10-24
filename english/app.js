@@ -11,7 +11,7 @@
   const skillLabels = CONTENT.skillLabels;
   const initialSkills = {listening:1.0,speaking:1.1,chunks:1.2,interview:1.2,rescue:1.0};
   const defaultState = () => ({
-    schemaVersion: 5,
+    schemaVersion: 6,
     xp: 0,
     skills: {...initialSkills},
     qstats: {},
@@ -277,20 +277,36 @@
     return null;
   }
 
-  function missionSessionsForDate(dateKey){
+  function missionSessionsForDate(dateKey,{completedOnly=false}={}){
     return (state.sessions||[]).filter(sess=>{
-      if(sess?.completedUnit===false||sess?.diagnostic)return false;
-      const d=parseLearningDate(sess.date);return d&&localDateKey(d)===dateKey;
+      if(sess?.diagnostic)return false;
+      if(completedOnly&&sess?.completedUnit===false)return false;
+      const d=parseLearningDate(sess.date);
+      if(!d||localDateKey(d)!==dateKey)return false;
+      return completedOnly||Number(sess.count)>0||(sess.answers||[]).length>0;
     });
   }
 
-  function missionTaskDoneOnDate(task,dateKey){
-    return missionSessionsForDate(dateKey).some(sess=>{
-      const exact=sess.missionTaskKey&&(sess.missionTaskKey===task.key||sess.missionTaskKey===task.originKey);
-      return exact||sessionModeGuess(sess)===task.mode;
-    });
+  function missionSessionMatchesTask(sess,task){
+    if(!sess?.missionTaskKey)return false;
+    const keys=new Set([task?.key,task?.originKey].filter(Boolean));
+    return keys.has(sess.missionTaskKey);
   }
 
+  function missionTaskProgressOnDate(task,dateKey){
+    const target=clamp(Number(task?.size)||1,1,15);
+    const sessions=missionSessionsForDate(dateKey);
+    const exact=sessions.filter(sess=>missionSessionMatchesTask(sess,task));
+    const answered=exact.reduce((n,sess)=>n+Math.max(0,Number(sess.count)||(sess.answers||[]).length||0),0);
+    const exactCompleted=exact.some(sess=>sess.completedUnit!==false);
+    const equivalentCompleted=sessions.some(sess=>sess.completedUnit!==false&&!missionSessionMatchesTask(sess,task)&&sessionModeGuess(sess)===task?.mode);
+    const done=exactCompleted||equivalentCompleted||answered>=target;
+    const credited=done?target:Math.min(target,answered);
+    const remaining=Math.max(0,target-credited);
+    return {target,answered,credited,remaining,done,exactCompleted,equivalentCompleted,pct:target?Math.round(credited/target*100):0};
+  }
+
+  function missionTaskDoneOnDate(task,dateKey){return missionTaskProgressOnDate(task,dateKey).done;}
   function todayMissionTaskDone(task){return missionTaskDoneOnDate(task,todayKey());}
 
   function missionAgeDays(dateKey){
@@ -320,7 +336,9 @@
       const key=localDateKey(d);
       if(key<=originDate||key>=todayKey())return false;
       const carryKey='carry-'+originDate+'-'+String(task.originKey||task.key||'');
-      return sess.missionTaskKey===task.key||sess.missionTaskKey===task.originKey||sess.missionTaskKey===carryKey||sessionModeGuess(sess)===task.mode;
+      const exact=sess.missionTaskKey===task.key||sess.missionTaskKey===task.originKey||sess.missionTaskKey===carryKey;
+      const sameOrigin=sess.missionOriginDate===originDate&&sessionModeGuess(sess)===task.mode;
+      return exact||sameOrigin||(!sess.missionTaskKey&&sessionModeGuess(sess)===task.mode);
     });
   }
 
@@ -331,7 +349,24 @@
       minutes:Number(plan.minutes)||30,
       createdAt:plan.createdAt||'',
       archivedAt:new Date().toISOString(),
-      tasks:plan.tasks.map(task=>({...task,done:missionTaskDoneOnDate(task,plan.date)}))
+      tasks:plan.tasks.map(task=>{
+        const progress=missionTaskProgressOnDate(task,plan.date);
+        const originalSize=clamp(Number(task.originalSize)||Number(task.size)||1,1,15);
+        const completedBefore=clamp(Number(task.completedBefore)||0,0,originalSize);
+        const completedTotal=progress.equivalentCompleted
+          ? originalSize
+          : Math.min(originalSize,completedBefore+progress.credited);
+        const remainingSize=Math.max(0,originalSize-completedTotal);
+        return {
+          ...task,
+          progressCount:progress.credited,
+          archivedTargetSize:progress.target,
+          completedTotal,
+          remainingSize,
+          done:progress.done,
+          resolved:remainingSize===0
+        };
+      })
     };
     const map=new Map((state.dailyMissionHistory||[]).filter(x=>x?.date).map(x=>[x.date,x]));
     map.set(archived.date,archived);
@@ -349,16 +384,26 @@
         const ageDays=missionAgeDays(originDate);
         const originKey=task.originKey||task.key;
         const identity=originDate+'|'+originKey;
-        if(ageDays<1||ageDays>2||seen.has(identity)||task.done||!importantCarryoverTask(task)||missionTaskCompletedAfter(task,originDate))continue;
+        if(ageDays<1||ageDays>2||seen.has(identity))continue;
         seen.add(identity);
+        const legacyResolved=task.resolved===true||(task.resolved===undefined&&task.done===true);
+        if(legacyResolved||!importantCarryoverTask(task)||missionTaskCompletedAfter(task,originDate))continue;
+        const originalSize=clamp(Number(task.originalSize)||Number(task.size)||1,1,15);
+        const completedTotal=clamp(Number(task.completedTotal)||Number(task.progressCount)||0,0,originalSize);
+        const remainingSize=clamp(
+          Number.isFinite(Number(task.remainingSize))?Number(task.remainingSize):Math.max(0,originalSize-completedTotal),
+          0,15
+        );
+        if(remainingSize<=0)continue;
         const baseTitle=String(task.title||'補強任務').replace(/^補回｜/,'');
         const sourceReason=task.sourceReason||task.reason||'前一日的重要任務尚未完成。';
         candidates.push({
           key:'carry-'+originDate+'-'+originKey,
           originKey,originDate,ageDays,carryover:true,
+          originalSize,completedBefore:Math.max(completedTotal,originalSize-remainingSize),remainingSize,
           mode:task.mode,title:'補回｜'+baseTitle,
           sourceReason,
-          reason:`${ageDays} 天前未完成的重要任務；只在 2 天補救窗內保留。 ${sourceReason}`,
+          reason:`${ageDays} 天前的重要任務尚餘 ${remainingSize} 題；只在 2 天補救窗內保留。 ${sourceReason}`,
           priority:missionTaskPriority(task)
         });
       }
@@ -399,18 +444,27 @@
     const shares=count===1?[1]:count===2?[.56,.44]:[.42,.33,.25];
     const tasks=selected.slice(0,count).map((task,i)=>{
       const budget=Math.max(5,Math.round(minutes*shares[i]));
-      const size=weeklyPlanQuestionSize(task.mode,budget,weekly.dueReviews);
+      const slotSize=weeklyPlanQuestionSize(task.mode,budget,weekly.dueReviews);
+      const outstanding=task.carryover?clamp(Number(task.remainingSize)||Number(task.size)||1,1,15):slotSize;
+      const size=task.carryover?Math.min(outstanding,slotSize):slotSize;
+      const originalSize=task.carryover?clamp(Number(task.originalSize)||outstanding,1,15):size;
+      const completedBefore=task.carryover
+        ? clamp(Number(task.completedBefore)||Math.max(0,originalSize-outstanding),0,originalSize)
+        : 0;
       const estimate=task.mode==='speaking'?Math.min(budget,Math.max(6,size*6))
         :task.mode==='mock'?Math.min(budget,Math.max(12,size*4))
         :Math.min(budget,Math.max(6,size*2.5));
+      const reason=task.carryover
+        ? `${task.ageDays} 天前原任務尚餘 ${outstanding} 題，本次依今天時間安排 ${size} 題。 ${task.sourceReason||''}`.trim()
+        : task.reason||'依今天可用時間縮成最低有效訓練量。';
       return {
         key:task.key||('today-'+task.mode+'-'+i),originKey:task.originKey||null,originDate:task.originDate||null,
         carryover:!!task.carryover,ageDays:Number(task.ageDays)||0,mode:task.mode,title:task.title,
-        sourceReason:task.sourceReason||null,reason:task.reason||'依今天可用時間縮成最低有效訓練量。',
-        size,estimate:Math.max(5,Math.round(estimate))
+        sourceReason:task.sourceReason||null,reason,
+        originalSize,completedBefore,size,estimate:Math.max(5,Math.round(estimate))
       };
     });
-    return {date:todayKey(),minutes,createdAt:new Date().toISOString(),carryoverPolicy:'important_only_within_2_days',tasks};
+    return {date:todayKey(),minutes,createdAt:new Date().toISOString(),carryoverPolicy:'important_only_within_2_days',partialCreditPolicy:'exact_mission_answers_only',tasks};
   }
 
   function ensureTodayMissionPlan(force=false){
@@ -426,11 +480,33 @@
 
   function todayMissionSnapshot(){
     const plan=ensureTodayMissionPlan();
-    const tasks=(plan.tasks||[]).map(task=>({...task,done:todayMissionTaskDone(task)}));
+    const tasks=(plan.tasks||[]).map(task=>{
+      const progress=missionTaskProgressOnDate(task,todayKey());
+      const originalSize=clamp(Number(task.originalSize)||Number(task.size)||1,1,15);
+      const completedBefore=clamp(Number(task.completedBefore)||0,0,originalSize);
+      const overallCompleted=progress.equivalentCompleted
+        ? originalSize
+        : Math.min(originalSize,completedBefore+progress.credited);
+      const overallRemaining=Math.max(0,originalSize-overallCompleted);
+      const remainingEstimate=progress.done?0:Math.max(1,Math.round((Number(task.estimate)||5)*(progress.remaining/progress.target)));
+      return {
+        ...task,
+        done:progress.done,
+        progressCount:progress.credited,
+        remainingSize:progress.remaining,
+        progressPct:progress.pct,
+        overallCompleted,
+        overallRemaining,
+        remainingEstimate
+      };
+    });
     const done=tasks.filter(x=>x.done).length;
-    const remaining=tasks.filter(x=>!x.done).reduce((n,x)=>n+(Number(x.estimate)||0),0);
+    const targetQuestions=tasks.reduce((n,x)=>n+(Number(x.size)||0),0);
+    const completedQuestions=tasks.reduce((n,x)=>n+(Number(x.progressCount)||0),0);
+    const progressPct=targetQuestions?clamp(Math.round(completedQuestions/targetQuestions*100),0,100):0;
+    const remaining=tasks.filter(x=>!x.done).reduce((n,x)=>n+(Number(x.remainingEstimate)||0),0);
     const carryoverCount=tasks.filter(x=>x.carryover).length;
-    return {...plan,tasks,done,total:tasks.length,remaining,carryoverCount,complete:tasks.length>0&&done===tasks.length};
+    return {...plan,tasks,done,total:tasks.length,targetQuestions,completedQuestions,progressPct,remaining,carryoverCount,complete:tasks.length>0&&done===tasks.length};
   }
 
   function renderTodayMission(){
@@ -438,13 +514,14 @@
     const mission=todayMissionSnapshot();
     const label=$('todayMissionDate');if(label)label.textContent=todayKey();
     const time=$('todayMissionTime');if(time)time.textContent=`今天 ${mission.minutes} 分鐘 · ${mission.total} 個任務`;
-    const progress=$('todayMissionProgressText');if(progress)progress.textContent=`${mission.done} / ${mission.total} 已完成`;
-    const bar=$('todayMissionProgressBar');if(bar)bar.style.width=mission.total?`${Math.round(mission.done/mission.total*100)}%`:'0%';
+    const progress=$('todayMissionProgressText');
+    if(progress)progress.textContent=`已做 ${mission.completedQuestions} / ${mission.targetQuestions} 題 · ${mission.done} / ${mission.total} 任務完成`;
+    const bar=$('todayMissionProgressBar');if(bar)bar.style.width=`${mission.progressPct}%`;
     const carryNote=$('todayMissionCarryoverNote');
     if(carryNote){
       carryNote.classList.toggle('hidden',mission.carryoverCount===0);
       carryNote.textContent=mission.carryoverCount
-        ? `已帶入 ${mission.carryoverCount} 件 2 天內的重要未完成任務；補做算今天訓練，不會把舊日期偽裝成已完成。`
+        ? `已帶入 ${mission.carryoverCount} 件 2 天內的重要未完成任務；只補剩餘題數，補做仍算今天訓練。`
         : '沒有需要補回的重要任務；超過 2 天的舊任務不再累積。';
     }
     const summary=$('todayMissionSummary');
@@ -452,16 +529,44 @@
       if(mission.complete)summary.textContent='今天的最低有效訓練已完成。想多練可以直接使用下方 Weekly Plan 或自由訓練。';
       else{
         const next=mission.tasks.find(x=>!x.done);
+        const partial=next?.progressCount>0?`已先完成 ${next.progressCount}/${next.size} 題，`:'';
         summary.textContent=mission.carryoverCount
-          ? `今天核心任務優先，並在剩餘容量補回舊任務。接下來做「${next?.title||'今日任務'}」，約剩 ${mission.remaining} 分鐘。`
-          : `接下來先做「${next?.title||'今日任務'}」；照目前配置，剩餘約 ${mission.remaining} 分鐘。`;
+          ? `今天核心任務優先，舊任務只補剩餘量。${partial}接下來做「${next?.title||'今日任務'}」，約剩 ${mission.remaining} 分鐘。`
+          : `${partial}接下來做「${next?.title||'今日任務'}」；照目前配置，約剩 ${mission.remaining} 分鐘。`;
       }
     }
     const nextIndex=mission.tasks.findIndex(x=>!x.done);
-    host.innerHTML=mission.tasks.map((task,i)=>`<article class="today-mission-task ${task.done?'done':''} ${task.carryover?'carryover':''}"><div class="today-mission-check">${task.done?'✓':i+1}</div><div class="today-mission-copy"><div><strong>${esc(task.title)}</strong>${task.carryover?`<em class="today-mission-carry-badge">補回 · ${task.ageDays} 天前</em>`:''}<span>約 ${task.estimate} 分鐘 · ${task.size} 題</span></div><p>${esc(task.reason)}</p></div><button class="btn ${!task.done&&i===nextIndex?'primary':'ghost'}" type="button" data-today-mission-mode="${task.mode}" data-today-mission-size="${task.size}" data-today-mission-key="${esc(task.key)}" data-today-mission-origin="${esc(task.originDate||'')}" ${task.done?'disabled':''}>${task.done?'已完成':'開始'}</button></article>`).join('');
+    host.innerHTML=mission.tasks.map((task,i)=>{
+      const progressText=task.done
+        ? `完成 ${task.size}/${task.size} 題`
+        : task.progressCount>0
+          ? `已做 ${task.progressCount}/${task.size} 題 · 剩 ${task.remainingSize} 題`
+          : `目標 ${task.size} 題`;
+      const overall=task.carryover?`<small class="today-mission-overall">原任務累積 ${task.overallCompleted}/${task.originalSize} 題</small>`:'';
+      const buttonLabel=task.done?'已完成':task.progressCount>0?`繼續剩 ${task.remainingSize} 題`:'開始';
+      return `<article class="today-mission-task ${task.done?'done':''} ${task.carryover?'carryover':''}">
+        <div class="today-mission-check">${task.done?'✓':i+1}</div>
+        <div class="today-mission-copy">
+          <div><strong>${esc(task.title)}</strong>${task.carryover?`<em class="today-mission-carry-badge">補回 · ${task.ageDays} 天前</em>`:''}<span>約 ${task.done?task.estimate:Math.max(1,task.remainingEstimate)} 分鐘 · ${progressText}</span></div>
+          <p>${esc(task.reason)}</p>
+          ${overall}
+          <div class="today-mission-task-progress" aria-label="${esc(progressText)}"><span style="width:${task.progressPct}%"></span></div>
+        </div>
+        <button class="btn ${!task.done&&i===nextIndex?'primary':'ghost'}" type="button" data-today-mission-mode="${task.mode}" data-today-mission-size="${task.remainingSize}" data-today-mission-target="${task.size}" data-today-mission-key="${esc(task.key)}" data-today-mission-origin="${esc(task.originDate||'')}" ${task.done?'disabled':''}>${buttonLabel}</button>
+      </article>`;
+    }).join('');
     host.querySelectorAll('[data-today-mission-mode]').forEach(btn=>btn.addEventListener('click',()=>{
-      startSession(btn.dataset.todayMissionMode,Number(btn.dataset.todayMissionSize)||null,{missionTaskKey:btn.dataset.todayMissionKey,missionDate:todayKey(),missionOriginDate:btn.dataset.todayMissionOrigin||null});
-      window.EDAN_CLOUD?.logEvent?.('today_mission_started',{taskKey:btn.dataset.todayMissionKey,mode:btn.dataset.todayMissionMode,minutes:mission.minutes,originDate:btn.dataset.todayMissionOrigin||null},'today-mission-start-'+todayKey()+'-'+btn.dataset.todayMissionKey);
+      const remaining=Math.max(1,Number(btn.dataset.todayMissionSize)||1);
+      startSession(btn.dataset.todayMissionMode,remaining,{
+        missionTaskKey:btn.dataset.todayMissionKey,
+        missionDate:todayKey(),
+        missionOriginDate:btn.dataset.todayMissionOrigin||null,
+        missionTargetSize:Number(btn.dataset.todayMissionTarget)||remaining
+      });
+      window.EDAN_CLOUD?.logEvent?.('today_mission_started',{
+        taskKey:btn.dataset.todayMissionKey,mode:btn.dataset.todayMissionMode,minutes:mission.minutes,
+        requestedSize:remaining,targetSize:Number(btn.dataset.todayMissionTarget)||remaining,originDate:btn.dataset.todayMissionOrigin||null
+      },'today-mission-start-'+todayKey()+'-'+btn.dataset.todayMissionKey+'-'+Date.now());
     }));
     const profileMinutes=clamp(Number(learnerProfile?.daily_minutes)||30,10,60);
     const profileBtn=$('todayMissionProfileMinutes');if(profileBtn)profileBtn.textContent=`預設 ${profileMinutes} 分`;
@@ -576,7 +681,7 @@
       return {
         ...base,
         ...parsed,
-        schemaVersion:5,
+        schemaVersion:6,
         skills:{...base.skills,...(parsed.skills||{})},
         qstats: parsed.qstats||{},
         chunkKnown: parsed.chunkKnown||{},
@@ -614,7 +719,7 @@
     state={
       ...base,
       ...incoming,
-      schemaVersion:5,
+      schemaVersion:6,
       skills:{...base.skills,...(incoming.skills||{})},
       qstats:incoming.qstats||{},
       chunkKnown:incoming.chunkKnown||{},
@@ -2408,9 +2513,10 @@
     stopSpeakingTimer(); stopRecognition(); speechSynthesis.cancel();
     setMobileDockActive(mode==='listening'?'listening':'challenge');
     const requestedSize=sizeOverride===null?(mode==='mock'?8:mode==='diagnostic'?5:state.settings.sessionSize):sizeOverride;
-    const size = clamp(parseInt(requestedSize,10)||10,2,15);
+    const minSize=meta?.missionTaskKey?1:2;
+    const size = clamp(parseInt(requestedSize,10)||10,minSize,15);
     const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習',mock:(privateQuestionIds.size?'Personalized Interview Mock':'Interview Mock'),diagnostic:'5 分鐘能力診斷',speaking:'口說快練'};
-    session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null,missionTaskKey:meta?.missionTaskKey||null,missionDate:meta?.missionDate||null,missionOriginDate:meta?.missionOriginDate||null};
+    session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null,missionTaskKey:meta?.missionTaskKey||null,missionDate:meta?.missionDate||null,missionOriginDate:meta?.missionOriginDate||null,missionTargetSize:meta?.missionTargetSize||null,missionRequestedSize:size};
     $('resultSection').classList.remove('show');
     $('challengeSection').classList.add('active');
     $('sessionTitle').textContent=session.title;
@@ -3150,7 +3256,7 @@
     const skillAvgs=Object.entries(bySkill).map(([k,v])=>[k,v.reduce((a,b)=>a+b,0)/v.length]).sort((a,b)=>a[1]-b[1]);
     const weakest=skillAvgs[0]?.[0]||'listening';
     const trainingCompleted=completedUnit&&sessionMode!=='diagnostic';
-    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),mode:sessionMode,missionTaskKey:session.missionTaskKey||null,missionDate:session.missionDate||null,missionOriginDate:session.missionOriginDate||null,count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
+    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),mode:sessionMode,missionTaskKey:session.missionTaskKey||null,missionDate:session.missionDate||null,missionOriginDate:session.missionOriginDate||null,missionTargetSize:session.missionTargetSize||null,missionRequestedSize:session.missionRequestedSize||null,count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
     if(trainingCompleted) markPracticeDay();
     captureSkillSnapshot(sessionMode==='diagnostic'?'diagnostic_completed':'session_completed');
@@ -3164,6 +3270,8 @@
       mode:rec.mode,
       missionTaskKey:rec.missionTaskKey,
       missionOriginDate:rec.missionOriginDate,
+      missionTargetSize:rec.missionTargetSize,
+      missionRequestedSize:rec.missionRequestedSize,
       answers:rec.answers.map(a=>({
         id:a.id,skill:a.skill,level:a.level,quality:a.quality,correct:a.correct,
         systemScore:a.extra?.systemScore??null,
@@ -3174,14 +3282,16 @@
     $('resultScore').textContent=`${score}%`;
     const low=session.answers.filter(a=>a.quality<=1).length; const strong=session.answers.filter(a=>a.quality===3).length; const hint=session.answers.filter(a=>a.extra?.hint).length; const repeats=session.answers.reduce((n,a)=>n+(Number.isFinite(a.extra?.repeats)?a.extra.repeats:Math.max(0,(a.extra?.listens||0)-1)),0);
     let diagnostic=null;if(sessionMode==='diagnostic'&&completedUnit)diagnostic=completeDiagnostic(session.answers,score);
-    $('resultSummary').textContent=diagnostic?`診斷完成：Listening L${diagnostic.levels.listening.toFixed(1)} · Speaking L${diagnostic.levels.speaking.toFixed(1)} · Practical L${diagnostic.levels.practical.toFixed(1)}。下一步：${diagnostic.recommendation}`:score>=80?'這輪很穩。下一輪會優先換新題，已熟題目進入冷卻，只在到期時回來複習。':score>=60?'基礎已經能撐住。下一輪仍會照顧弱項，但會避開最近幾回合剛出現過的相同題目。':'這輪先補弱點，但不會連續洗同一題；弱題會間隔後再回來確認是否真的學會。';
+    const baseResultSummary=diagnostic?`診斷完成：Listening L${diagnostic.levels.listening.toFixed(1)} · Speaking L${diagnostic.levels.speaking.toFixed(1)} · Practical L${diagnostic.levels.practical.toFixed(1)}。下一步：${diagnostic.recommendation}`:score>=80?'這輪很穩。下一輪會優先換新題，已熟題目進入冷卻，只在到期時回來複習。':score>=60?'基礎已經能撐住。下一輪仍會照顧弱項，但會避開最近幾回合剛出現過的相同題目。':'這輪先補弱點，但不會連續洗同一題；弱題會間隔後再回來確認是否真的學會。';
+    const partialMissionNote=rec.missionTaskKey&&!trainingCompleted?` Today Mission 已保留這次完成的 ${rec.count} 題；回到總覽後只會續做剩餘題數。`:'';
+    $('resultSummary').textContent=baseResultSummary+partialMissionNote;
     const weaknessThis={}; session.answers.forEach(a=>{const w=a.extra?.weakness;if(w)weaknessThis[w]=(weaknessThis[w]||0)+1;});
     const topThis=Object.entries(weaknessThis).sort((a,b)=>b[1]-a[1])[0]?.[0];
     $('resultGrid').innerHTML=diagnostic?`<div class="result-mini"><b>L${diagnostic.levels.listening.toFixed(1)}</b><span>Listening</span></div><div class="result-mini"><b>L${diagnostic.levels.speaking.toFixed(1)}</b><span>Speaking</span></div><div class="result-mini"><b>L${diagnostic.levels.practical.toFixed(1)}</b><span>Practical English</span></div><div class="result-mini"><b>${score}%</b><span>Diagnostic score</span></div>`:`<div class="result-mini"><b>${strong}</b><span>高品質回答</span></div><div class="result-mini"><b>${low}</b><span>需要重練</span></div><div class="result-mini"><b>${hint}</b><span>使用文字提示</span></div><div class="result-mini"><b>${repeats}</b><span>額外重播次數</span></div>${topThis?`<div class="result-mini"><b>→</b><span>主要弱點：${esc(weaknessLabels[topThis]||topThis)}</span></div>`:''}`;
     $('resultSection').classList.add('show');$('resultSection').scrollIntoView({behavior:'smooth',block:'start'}); session=null; renderOverview();
   }
 
-  function quitSession(){if(!session)return;if(confirm('要結束這一回合嗎？已完成的題目仍會保留進度，但未完成整個單元不會計入今日連續訓練。'))finishSession(false);}
+  function quitSession(){if(!session)return;if(confirm('要結束這一回合嗎？已完成題目會保留；若來自 Today Mission，之後只會續做剩餘題數。未完成完整單元仍不計入今日連續訓練。'))finishSession(false);}
 
   function rateForLevel(level){return [0,.80,.90,1.0,1.04,1.08][clamp(level,1,5)];}
   function playbackRate(level,context='question'){
@@ -3543,7 +3653,7 @@
       '# Edan English Learning Report',`- Exported: ${new Date().toLocaleString('zh-TW',{hour12:false})}`,`- Content version: ${CONTENT.contentVersion}`,`- XP: ${state.xp}`,`- Streak: ${streak()} days`,'',
       '## Skill profile',...skillKeys.map(k=>`- ${skillLabels[k]}: L${(state.skills[k]||1).toFixed(2)}`),'',
       '## Career interview readiness',`- Readiness: ${interviewReadiness()}%`,'',
-      '## Today Mission',...todayMissionSnapshot().tasks.map((t,i)=>`- ${i+1}. ${t.title} | ${t.done?'done':'pending'} | ${t.estimate} min | mode=${t.mode}${t.carryover?` | carry-over from ${t.originDate}`:''}`),'',
+      '## Today Mission',...todayMissionSnapshot().tasks.map((t,i)=>`- ${i+1}. ${t.title} | ${t.done?'done':'pending'} | progress=${t.progressCount}/${t.size} | remaining=${t.remainingSize} | ${t.estimate} min | mode=${t.mode}${t.carryover?` | carry-over from ${t.originDate} | overall=${t.overallCompleted}/${t.originalSize}`:''}`),'',
       '## Weakness profile',...Object.entries(state.weaknessCounts||{}).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${weaknessLabels[k]||k}: ${v}`),'',
       '## Personal error memory',...topErrorEntries(10).map(([k,v])=>`- ${errorLabels[k]||k}: ${v.count} times | last=${v.lastSeen||''} | note=${v.note||''} | example=${v.example||''} | corrected=${v.corrected||''}`),'',
       '## Weak / review-priority questions',...(weakQuestions.length?weakQuestions.map(({q,s},i)=>`${i+1}. [${q.id}] L${q.level} ${q.text}\n   - seen=${s.seen}, correct=${s.correct}, wrong=${s.wrong}, hints=${s.hints}, listens=${s.listens}, lastQuality=${s.lastQuality}, due=${s.due}`):['- No answered questions yet.']),'',
@@ -3651,7 +3761,7 @@
     const weekly=progressAnalyticsSnapshot(7);
     const plan=weeklyPlanSnapshot();
     const mission=todayMissionSnapshot();
-    const todayMission=mission.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,題數:task.size,預估分鐘:task.estimate,來源:task.carryover?`${task.originDate} 補回`:'今日',狀態:task.done?'已完成':'待完成',原因:task.reason}));
+    const todayMission=mission.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,本次目標:task.size,已做題數:task.progressCount,剩餘題數:task.remainingSize,累積進度:task.carryover?`${task.overallCompleted}/${task.originalSize}`:`${task.progressCount}/${task.size}`,預估分鐘:task.estimate,來源:task.carryover?`${task.originDate} 補回`:'今日',狀態:task.done?'已完成':task.progressCount>0?'進行中':'待完成',原因:task.reason}));
     const weeklyPlan=plan.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,題數:task.size,預估分鐘:task.estimate,原因:task.reason}));
     const summary=[
       {項目:'匯出時間',值:new Date().toLocaleString('zh-TW',{hour12:false})},
@@ -3667,6 +3777,7 @@
       {項目:'近7天重答平均提升',值:weekly.retryLift===null?'—':(weekly.retryLift>0?'+':'')+(Math.round(weekly.retryLift*10)/10)},
       {項目:'目前到期複習',值:weekly.dueReviews},
       {項目:'今日任務',值:`${mission.done}/${mission.total} 已完成`},
+      {項目:'今日題目進度',值:`${mission.completedQuestions}/${mission.targetQuestions} 題`},
       {項目:'今日配置時間',值:mission.minutes+' 分鐘'},
       {項目:'今日補回任務',值:mission.carryoverCount+' 件'},
       {項目:'本週目標學習日',值:plan.targetDays},
@@ -3717,7 +3828,7 @@
       addWorkbookSheet(wb,'總覽',data.summary,[22,34]);
       addWorkbookSheet(wb,'能力',data.skills,[24,12]);
       addWorkbookSheet(wb,'能力歷史',data.skillHistory,[14,22,20,12,12,12,12,12]);
-      addWorkbookSheet(wb,'今日任務',data.todayMission,[8,28,16,10,12,18,14,58]);
+      addWorkbookSheet(wb,'今日任務',data.todayMission,[8,28,16,12,12,12,16,12,18,14,58]);
       addWorkbookSheet(wb,'週計畫',data.weeklyPlan,[8,28,16,10,12,58]);
       addWorkbookSheet(wb,'弱點',data.weaknesses,[28,12]);
       addWorkbookSheet(wb,'錯誤記憶',data.errors,[24,10,16,34,48,48]);
@@ -3752,7 +3863,7 @@
         <div><b>${(state.sessions||[]).length}</b><span>Sessions</span></div>
       </div>
       ${reportTableHtml('能力輪廓',data.skills,[{key:'技能',label:'技能'},{key:'等級',label:'目前等級'}],10)}
-      ${reportTableHtml('今日智慧任務',data.todayMission,[{key:'步驟',label:'#'},{key:'訓練',label:'任務'},{key:'預估分鐘',label:'分鐘'},{key:'狀態',label:'狀態'}],3)}
+      ${reportTableHtml('今日智慧任務',data.todayMission,[{key:'步驟',label:'#'},{key:'訓練',label:'任務'},{key:'累積進度',label:'進度'},{key:'剩餘題數',label:'剩餘'},{key:'狀態',label:'狀態'}],3)}
       ${reportTableHtml('本週學習計畫',data.weeklyPlan,[{key:'步驟',label:'#'},{key:'訓練',label:'訓練'},{key:'題數',label:'題數'},{key:'預估分鐘',label:'分鐘'}],7)}
       ${reportTableHtml('目前弱點',data.weaknesses,[{key:'弱點',label:'弱點'},{key:'次數',label:'累積次數'}],8)}
       ${reportTableHtml('Personal Error Memory',data.errors,[{key:'類型',label:'錯誤類型'},{key:'次數',label:'次數'},{key:'說明',label:'說明'},{key:'修正',label:'修正'}],8)}

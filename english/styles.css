@@ -1820,3 +1820,12 @@ body.auth-locked .little-e-panel{display:none!important}
 .today-mission-task.carryover .today-mission-check{background:#fff0c5;color:#987426}
 .today-mission-task.carryover.done{background:#f8faf8;border-color:#dce9e1}
 .today-mission-task.carryover.done .today-mission-carry-badge{background:#e4f2e9;color:#268b68}
+
+
+/* v62 Partial Mission Credit */
+.today-mission-task-progress{height:5px;margin-top:8px;border-radius:999px;background:#e8ecf4;overflow:hidden}
+.today-mission-task-progress span{display:block;height:100%;border-radius:inherit;background:#5367d8;transition:width .2s ease}
+.today-mission-task.done .today-mission-task-progress span{background:#2f9a73}
+.today-mission-task.carryover .today-mission-task-progress span{background:#b68b2d}
+.today-mission-overall{display:block;margin-top:6px;color:#8b743f;font-size:8px;font-weight:800}
+.today-mission-task.done .today-mission-overall{color:#4f7c66}
