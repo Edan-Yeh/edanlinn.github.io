@@ -31,7 +31,7 @@
     completedDates: [],
     streakRepairs: [],
     clientUpdatedAt: null,
-    settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto'},
+    settings: {accent:'adaptive', speechRate:'1.00', voiceQuality:'natural', sessionSize:10, speechRecognition:'auto', weeklyPlanDays:5},
     lastContentVersion: CONTENT.contentVersion
   });
 
@@ -159,7 +159,7 @@
       const patch={goal:$('onboardingGoal').value,role_type:$('onboardingRole').value,self_level:$('onboardingLevel').value,daily_minutes:Number($('onboardingMinutes').value),accents:choice==='both'?['northAmerica','india']:[choice],target_company:$('onboardingTarget').value.trim(),onboarding_completed:true};
       const msg=$('onboardingMessage');if(msg)msg.textContent='儲存中…';
       try{
-        learnerProfile=await cloud.saveLearnerProfile(patch);applyLearnerProfilePreferences(learnerProfile,{newSetup:true});hideOnboarding();showDiagnosticIfNeeded();
+        learnerProfile=await cloud.saveLearnerProfile(patch);applyLearnerProfilePreferences(learnerProfile,{newSetup:true});hideOnboarding();showDiagnosticIfNeeded();renderWeeklyPlan();
         cloud.logEvent?.('learner_onboarding_completed',{goal:learnerProfile.goal,roleType:learnerProfile.role_type,dailyMinutes:learnerProfile.daily_minutes},'onboarding-v54');
         $('diagnosticSection')?.scrollIntoView({behavior:'smooth',block:'center'});
       }catch(err){console.warn(err);if(msg)msg.textContent='儲存失敗，請確認網路與登入狀態後重試。';}
@@ -1076,6 +1076,7 @@
     renderSkillHistoryChart();
     renderHistory();
     renderProgressAnalytics();
+    renderWeeklyPlan();
     renderDailyCoach();
     renderCoachBrief();
   }
@@ -1229,6 +1230,128 @@
         renderProgressAnalytics();
       };
     });
+  }
+
+
+  function weeklyPlanWeekBounds(){
+    const start=dayStart();const offset=(start.getDay()+6)%7;start.setDate(start.getDate()-offset);
+    const end=new Date(start);end.setDate(end.getDate()+6);
+    return {start,end,startKey:localDateKey(start),endKey:localDateKey(end)};
+  }
+
+  function weeklyPlanDailyMinutes(){
+    return clamp(Number(learnerProfile?.daily_minutes)||30,10,120);
+  }
+
+  function weeklyPlanQuestionSize(mode,minutes,dueReviews=0){
+    const normal=clamp(Math.round(minutes/4),3,15);
+    if(mode==='speaking')return clamp(Math.round(minutes/10),2,6);
+    if(mode==='mock')return clamp(Math.round(minutes/7),4,10);
+    if(mode==='due')return clamp(Math.min(Math.max(dueReviews,3),normal),3,15);
+    return normal;
+  }
+
+  function weeklyPlanModeForSkill(skill){
+    return skill==='listening'?'listening':skill==='speaking'?'speaking':skill==='interview'?'mock':'adaptive';
+  }
+
+  function weeklyPlanWeaknessMode(weak){
+    if(weak==='sound'||weak==='intent')return 'listening';
+    if(weak==='output'||weak==='structure'||weak==='fluency')return 'speaking';
+    return 'adaptive';
+  }
+
+  function weeklyPlanTask({key,mode,title,reason,minutes,dueReviews=0}){
+    const size=weeklyPlanQuestionSize(mode,minutes,dueReviews);
+    const estimate=mode==='speaking'?Math.min(minutes,Math.max(8,size*7))
+      :mode==='mock'?Math.min(minutes,Math.max(18,size*5))
+      :Math.min(minutes,Math.max(10,size*3));
+    return {key,mode,title,reason,size,estimate};
+  }
+
+  function weeklyPlanSnapshot(){
+    const bounds=weeklyPlanWeekBounds();
+    const dailyMinutes=weeklyPlanDailyMinutes();
+    const targetDays=clamp(Number(state.settings.weeklyPlanDays)||5,3,7);
+    const profileGoal=learnerProfile?.goal||'work';
+    const completedDays=(state.completedDates||[]).filter(d=>String(d)>=bounds.startKey&&String(d)<=bounds.endKey);
+    const sessions=(state.sessions||[]).filter(sess=>{
+      const d=parseLearningDate(sess.date);return d&&d>=bounds.start&&d<=bounds.end&&sess.completedUnit!==false&&!sess.diagnostic;
+    });
+    const ranked=skillKeys.map(key=>({key,value:Number(state.skills?.[key]||1)})).sort((a,b)=>a.value-b.value);
+    const focusSkill=ranked[0]?.key||'listening',secondarySkill=ranked[1]?.key||'speaking';
+    const weak=topWeakness();
+    const analytics=progressAnalyticsSnapshot(7);
+    const dueReviews=analytics.dueReviews;
+    const focusAnswers=sessions.flatMap(x=>x.answers||[]).filter(a=>a.skill===focusSkill).length;
+    const speakingAnswers=sessions.flatMap(x=>x.answers||[]).filter(a=>a.skill==='speaking'||a.skill==='interview'||Number.isFinite(a.extra?.systemScore)).length;
+    const focusTarget=Math.max(4,targetDays*2);
+    const speakingTarget=(profileGoal==='interview'||learnerProfile?.target_company)?Math.max(4,targetDays):Math.max(2,Math.ceil(targetDays/2));
+    const skillTask=(skill,slot)=>weeklyPlanTask({
+      key:'skill-'+slot+'-'+skill,
+      mode:weeklyPlanModeForSkill(skill),
+      title:`${skillLabels[skill]||skill} 弱項補強`,
+      reason:`目前 ${skillLabels[skill]||skill} 約 L${Number(state.skills?.[skill]||1).toFixed(2)}，安排一輪集中練習。`,
+      minutes:dailyMinutes,dueReviews
+    });
+    const candidates=[];
+    if(dueReviews>0)candidates.push(weeklyPlanTask({key:'due',mode:'due',title:'先清到期複習',reason:`目前有 ${dueReviews} 個到期項目；先處理它們，避免熟悉度繼續下滑。`,minutes:dailyMinutes,dueReviews}));
+    candidates.push(skillTask(focusSkill,'primary'));
+    if(weak)candidates.push(weeklyPlanTask({key:'weak-'+weak,mode:weeklyPlanWeaknessMode(weak),title:`${weaknessLabels[weak]||weak} 專項修正`,reason:'依最近真實錯誤與弱點計數安排，不用重複刷已熟題。',minutes:dailyMinutes,dueReviews}));
+    candidates.push(skillTask(secondarySkill,'secondary'));
+    if(profileGoal==='interview'||learnerProfile?.target_company){
+      candidates.push(weeklyPlanTask({key:'speaking-interview',mode:'speaking',title:'面試口說輸出',reason:'用短回答與重答迴圈，把知道的內容更快說完整。',minutes:dailyMinutes,dueReviews}));
+      candidates.push(weeklyPlanTask({key:'mock-checkpoint',mode:'mock',title:'Interview Mock 檢查',reason:'用整體情境確認內容、結構與即時反應是否穩定。',minutes:dailyMinutes,dueReviews}));
+    }else{
+      const rec=coachRecommendation();
+      candidates.push(weeklyPlanTask({key:'coach-recommendation',mode:rec.mode,title:rec.label,reason:rec.reason,minutes:dailyMinutes,dueReviews}));
+    }
+    candidates.push(weeklyPlanTask({key:'listening-balance',mode:'listening',title:'雙口音聽力維持',reason:'維持北美與印度口音的辨音與問題意圖反應。',minutes:dailyMinutes,dueReviews}));
+    candidates.push(weeklyPlanTask({key:'adaptive-balance',mode:'adaptive',title:'綜合自適應挑戰',reason:'讓題庫依熟悉度、錯題與近期曝光自動補齊。',minutes:dailyMinutes,dueReviews}));
+    candidates.push(weeklyPlanTask({key:'wrong-repair',mode:'wrong',title:'錯題回收',reason:'把本週仍不穩的題目重新確認一次，不追求大量刷題。',minutes:dailyMinutes,dueReviews}));
+
+    const tasks=[];const seen=new Set();
+    for(const task of candidates){
+      if(seen.has(task.key))continue;
+      if(tasks.length<targetDays){tasks.push(task);seen.add(task.key);}
+    }
+    return {
+      ...bounds,dailyMinutes,targetDays,practiceDays:new Set(completedDays).size,
+      focusSkill,secondarySkill,weak,dueReviews,focusAnswers,focusTarget,speakingAnswers,speakingTarget,tasks
+    };
+  }
+
+  function weeklyPlanProgress(current,target){
+    const pct=target?clamp(Math.round((current/target)*100),0,100):0;
+    return `<div class="weekly-plan-progress"><span style="width:${pct}%"></span></div><small>${current} / ${target}</small>`;
+  }
+
+  function renderWeeklyPlan(){
+    const section=$('weeklyPlanSection');if(!section)return;
+    const plan=weeklyPlanSnapshot();
+    const title=$('weeklyPlanWindow');if(title)title.textContent=`${plan.startKey.slice(5)} → ${plan.endKey.slice(5)}`;
+    const time=$('weeklyPlanTime');if(time)time.textContent=`每日可用 ${plan.dailyMinutes} 分鐘`;
+    const note=$('weeklyPlanNote');
+    if(note){
+      note.textContent=plan.dueReviews>0
+        ? `本週先清 ${plan.dueReviews} 個到期複習，再把 ${skillLabels[plan.focusSkill]||plan.focusSkill} 當第一弱項補強。`
+        : `目前沒有到期複習；本週第一優先是 ${skillLabels[plan.focusSkill]||plan.focusSkill}，並保留口說／面試檢查。`;
+    }
+    const goals=$('weeklyPlanGoals');
+    if(goals)goals.innerHTML=[
+      {label:'完成學習日',current:plan.practiceDays,target:plan.targetDays},
+      {label:`${skillLabels[plan.focusSkill]||plan.focusSkill} 有效作答`,current:plan.focusAnswers,target:plan.focusTarget},
+      {label:'口說／面試輸出',current:plan.speakingAnswers,target:plan.speakingTarget}
+    ].map(g=>`<article><span>${esc(g.label)}</span><b>${g.current}</b>${weeklyPlanProgress(g.current,g.target)}</article>`).join('');
+    const tasks=$('weeklyPlanTasks');
+    if(tasks)tasks.innerHTML=plan.tasks.map((task,i)=>`<article class="weekly-plan-task"><div class="weekly-plan-step">${i+1}</div><div class="weekly-plan-task-copy"><div><strong>${esc(task.title)}</strong><span>約 ${task.estimate} 分鐘 · ${task.size} 題</span></div><p>${esc(task.reason)}</p></div><button class="btn ${i===0?'primary':'ghost'}" type="button" data-weekly-plan-mode="${task.mode}" data-weekly-plan-size="${task.size}">${i===0?'從這裡開始':'開始'}</button></article>`).join('');
+    tasks?.querySelectorAll('[data-weekly-plan-mode]').forEach(btn=>btn.addEventListener('click',()=>startSession(btn.dataset.weeklyPlanMode,Number(btn.dataset.weeklyPlanSize)||null)));
+    document.querySelectorAll('[data-weekly-days]').forEach(btn=>{
+      const active=Number(btn.dataset.weeklyDays)===plan.targetDays;
+      btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',active?'true':'false');
+      btn.onclick=()=>{state.settings.weeklyPlanDays=Number(btn.dataset.weeklyDays)||5;save();renderWeeklyPlan();};
+    });
+    const edit=$('weeklyPlanEditTime');if(edit)edit.onclick=()=>showOnboarding(learnerProfile,true);
   }
 
   function skillHistoryPoints(days=90){
@@ -3296,6 +3419,8 @@
     })).sort((a,b)=>b.次數-a.次數);
 
     const weekly=progressAnalyticsSnapshot(7);
+    const plan=weeklyPlanSnapshot();
+    const weeklyPlan=plan.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,題數:task.size,預估分鐘:task.estimate,原因:task.reason}));
     const summary=[
       {項目:'匯出時間',值:new Date().toLocaleString('zh-TW',{hour12:false})},
       {項目:'內容版本',值:CONTENT.contentVersion},
@@ -3308,10 +3433,13 @@
       {項目:'近7天回合平均',值:weekly.sessionAvg===null?'—':Math.round(weekly.sessionAvg)+'%'},
       {項目:'近7天口說平均',值:weekly.speakingAvg===null?'—':Math.round(weekly.speakingAvg)},
       {項目:'近7天重答平均提升',值:weekly.retryLift===null?'—':(weekly.retryLift>0?'+':'')+(Math.round(weekly.retryLift*10)/10)},
-      {項目:'目前到期複習',值:weekly.dueReviews}
+      {項目:'目前到期複習',值:weekly.dueReviews},
+      {項目:'本週目標學習日',值:plan.targetDays},
+      {項目:'每日可用時間',值:plan.dailyMinutes+' 分鐘'},
+      {項目:'本週第一弱項',值:skillLabels[plan.focusSkill]||plan.focusSkill}
     ];
 
-    return {summary,skills,skillHistory,weaknesses,errors,questions,vocabulary,speaking,sessions};
+    return {summary,skills,skillHistory,weeklyPlan,weaknesses,errors,questions,vocabulary,speaking,sessions};
   }
 
   function setExportStatus(text,tone=''){
@@ -3354,6 +3482,7 @@
       addWorkbookSheet(wb,'總覽',data.summary,[22,34]);
       addWorkbookSheet(wb,'能力',data.skills,[24,12]);
       addWorkbookSheet(wb,'能力歷史',data.skillHistory,[14,22,20,12,12,12,12,12]);
+      addWorkbookSheet(wb,'週計畫',data.weeklyPlan,[8,28,16,10,12,58]);
       addWorkbookSheet(wb,'弱點',data.weaknesses,[28,12]);
       addWorkbookSheet(wb,'錯誤記憶',data.errors,[24,10,16,34,48,48]);
       addWorkbookSheet(wb,'單字熟悉度',data.vocabulary,[20,20,16,12,14,12,10,10,10,12,16,16,52]);
@@ -3387,6 +3516,7 @@
         <div><b>${(state.sessions||[]).length}</b><span>Sessions</span></div>
       </div>
       ${reportTableHtml('能力輪廓',data.skills,[{key:'技能',label:'技能'},{key:'等級',label:'目前等級'}],10)}
+      ${reportTableHtml('本週學習計畫',data.weeklyPlan,[{key:'步驟',label:'#'},{key:'訓練',label:'訓練'},{key:'題數',label:'題數'},{key:'預估分鐘',label:'分鐘'}],7)}
       ${reportTableHtml('目前弱點',data.weaknesses,[{key:'弱點',label:'弱點'},{key:'次數',label:'累積次數'}],8)}
       ${reportTableHtml('Personal Error Memory',data.errors,[{key:'類型',label:'錯誤類型'},{key:'次數',label:'次數'},{key:'說明',label:'說明'},{key:'修正',label:'修正'}],8)}
       ${reportTableHtml('優先複習題目',data.questions.filter(x=>x.作答次數>0).sort((a,b)=>(b.答錯+b.猜題+b.低於60分次數)-(a.答錯+a.猜題+a.低於60分次數)),[{key:'題目',label:'題目'},{key:'熟悉度',label:'熟悉度'},{key:'答錯',label:'錯'},{key:'猜題',label:'猜'},{key:'最近口說分數',label:'口說'}],12)}
