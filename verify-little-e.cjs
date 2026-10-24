@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v58');
-assert.equal(version.cache,'edan-english-coach-20261024-v58');
+assert.equal(version.release,'2026.10.24-v59');
+assert.equal(version.cache,'edan-english-coach-20261024-v59');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -150,6 +150,13 @@ assert.ok(html.includes('id="dailyQuoteCategory"'));
 assert.ok(html.includes('id="dailyQuoteCycle"'));
 assert.ok(html.includes('id="dailyQuoteWordInfo"'));
 assert.ok(html.includes('id="dailyQuoteAddWord"'));
+assert.ok(html.includes('id="weeklyPlanSection"'));
+assert.ok(html.includes('id="weeklyPlanGoals"'));
+assert.ok(html.includes('id="weeklyPlanTasks"'));
+assert.ok(html.includes('id="weeklyPlanTime"'));
+assert.ok(html.includes('data-weekly-days="3"'));
+assert.ok(html.includes('data-weekly-days="5"'));
+assert.ok(html.includes('data-weekly-days="7"'));
 assert.ok(html.includes('id="skillHistorySection"'));
 assert.ok(html.includes('id="skillHistoryChart"'));
 assert.ok(html.includes('id="skillHistoryLegend"'));
@@ -205,6 +212,13 @@ assert.match(app,/const anchorCount=Math\.min\(2/);
 assert.match(app,/sort\(\(a,b\)=>questionSessionDistance\(b\.id\)-questionSessionDistance\(a\.id\)\)/);
 assert.match(app,/下一輪會優先換新題/);
 assert.match(app,/const MODEL_CUE_ZH=Object\.freeze/);
+assert.match(app,/function weeklyPlanWeekBounds\(/);
+assert.match(app,/function weeklyPlanSnapshot\(/);
+assert.match(app,/function renderWeeklyPlan\(/);
+assert.match(app,/weeklyPlanDays:5/);
+assert.match(app,/learnerProfile\?\.daily_minutes/);
+assert.match(app,/data-weekly-plan-mode/);
+assert.match(app,/addWorkbookSheet\(wb,'週計畫'/);
 assert.match(app,/function skillSnapshotValues\(/);
 assert.match(app,/function captureSkillSnapshot\(/);
 assert.match(app,/function ensureSkillBaseline\(/);
@@ -262,6 +276,10 @@ assert.match(css,/\.daily-quote-speak/);
 assert.match(css,/\.daily-quote-word/);
 assert.match(css,/\.daily-quote-word-info/);
 assert.match(css,/\.daily-quote-favorite/);
+assert.match(css,/\.weekly-plan-panel/);
+assert.match(css,/\.weekly-plan-goals/);
+assert.match(css,/\.weekly-plan-task/);
+assert.match(css,/\.weekly-plan-progress/);
 assert.match(css,/\.skill-history-panel/);
 assert.match(css,/\.skill-history-svg/);
 assert.match(css,/\.skill-chart-series/);
@@ -405,4 +423,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v58 Skill History saves real daily snapshots, merges them across devices, renders 30/90/365-day skill curves, exports history and preserves prior regressions.');
+console.log('PASS: v59 Weekly Plan converts real skills, weaknesses, due reviews and daily time into adaptive 3/5/7-day goals, actionable sessions and exports while preserving prior regressions.');
