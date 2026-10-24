@@ -155,6 +155,44 @@
       <div class="panel" id="skillPanel"></div>
     </section>
 
+    <section class="section" id="progressAnalyticsSection">
+      <div class="section-head analytics-head">
+        <div><h2>學習進步｜Progress Analytics</h2><p>只用真實學習紀錄比較本期與前一期；沒有歷史資料的指標不會硬畫趨勢。</p></div>
+        <div class="analytics-range-switch" role="group" aria-label="分析期間">
+          <button class="active" data-analytics-range="7" type="button" aria-pressed="true">7 天</button>
+          <button data-analytics-range="30" type="button" aria-pressed="false">30 天</button>
+        </div>
+      </div>
+      <div class="analytics-metrics">
+        <article class="panel analytics-metric"><span>學習天數</span><b id="analyticsPracticeDays">0</b><small id="analyticsPracticeSub">—</small></article>
+        <article class="panel analytics-metric"><span>回合平均</span><b id="analyticsSessionAvg">—</b><small id="analyticsSessionSub">—</small></article>
+        <article class="panel analytics-metric"><span>口說平均</span><b id="analyticsSpeakingAvg">—</b><small id="analyticsSpeakingSub">—</small></article>
+        <article class="panel analytics-metric analytics-retry"><span>重答平均提升</span><b id="analyticsRetryLift">—</b><small id="analyticsRetrySub">—</small></article>
+      </div>
+      <div class="analytics-main-grid">
+        <article class="panel analytics-coach-card">
+          <div class="analytics-card-top"><span class="badge good">COACH INSIGHT</span><span class="support" id="analyticsRangeLabel">近 7 天</span></div>
+          <h3>這段時間真的有進步嗎？</h3>
+          <p id="analyticsEvidence">累積更多學習資料後，這裡會用前後期比較回答。</p>
+          <div class="analytics-focus"><strong>現在最值得處理</strong><span id="analyticsFocus">先完成一個小單元建立基線。</span></div>
+          <button class="btn primary" id="analyticsActionBtn" type="button">開始今天推薦</button>
+        </article>
+        <article class="panel analytics-review-card">
+          <span class="badge warn">REVIEW LOAD</span>
+          <div class="analytics-review-number" id="analyticsDueCount">0</div>
+          <p>目前到期複習</p>
+          <div class="analytics-mini-stats">
+            <div><b id="analyticsLearnedWords">0</b><span>已會單字</span></div>
+            <div><b id="analyticsQuoteWords">0</b><span>佳句加入單字</span></div>
+          </div>
+        </article>
+      </div>
+      <div class="panel analytics-activity-card">
+        <div class="analytics-card-top"><div><strong>最近 14 天活動</strong><span>深色代表完成至少一個完整小單元</span></div><span class="support">Today →</span></div>
+        <div class="analytics-activity" id="analyticsActivity"></div>
+      </div>
+    </section>
+
     <section class="section challenge-wrap" id="challengeSection" aria-live="polite">
       <div class="challenge-toolbar">
         <div>

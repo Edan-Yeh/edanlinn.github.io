@@ -63,6 +63,7 @@
   let lastLittleEAnswer = null;
   let speakingRetryCycle = null;
   let learnerProfile = null;
+  let progressAnalyticsRange = 7;
   const publicQuestionIds = new Set((CONTENT.questions||[]).map(q=>q.id));
   const privateQuestionIds = new Set();
   const privateTranslationIds = new Set();
@@ -1032,8 +1033,160 @@
     $('versionText').textContent = `${CONTENT.contentVersion} · ${CONTENT.questions.length} 題 · ${CONTENT.chunks.length} chunks · ${(CONTENT.vocabulary||[]).length} words`;
     renderSkills();
     renderHistory();
+    renderProgressAnalytics();
     renderDailyCoach();
     renderCoachBrief();
+  }
+
+  function parseLearningDate(value){
+    if(!value)return null;
+    if(value instanceof Date)return Number.isNaN(value.getTime())?null:value;
+    const text=String(value).trim();
+    const m=text.match(/(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})/);
+    if(m){
+      const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));
+      return Number.isNaN(d.getTime())?null:d;
+    }
+    const d=new Date(text);
+    return Number.isNaN(d.getTime())?null:d;
+  }
+
+  function dayStart(value=new Date()){
+    const d=parseLearningDate(value)||new Date();
+    return new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  }
+
+  function inAnalyticsWindow(value,days,offset=0){
+    const d=dayStart(value),today=dayStart();
+    const end=new Date(today);end.setDate(end.getDate()-offset);
+    const start=new Date(end);start.setDate(start.getDate()-(days-1));
+    return d>=start&&d<=end;
+  }
+
+  function avg(values){
+    const nums=(values||[]).map(Number).filter(Number.isFinite);
+    return nums.length?nums.reduce((n,v)=>n+v,0)/nums.length:null;
+  }
+
+  function progressAnalyticsSnapshot(days=7){
+    const sessions=(state.sessions||[]).filter(s=>parseLearningDate(s.date));
+    const currentSessions=sessions.filter(s=>inAnalyticsWindow(s.date,days,0));
+    const previousSessions=sessions.filter(s=>inAnalyticsWindow(s.date,days,days));
+    const currentSessionAvg=avg(currentSessions.map(s=>s.score));
+    const previousSessionAvg=avg(previousSessions.map(s=>s.score));
+
+    const speakingRows=sessions.flatMap(s=>(s.answers||[]).map(a=>({date:s.date,score:a.extra?.systemScore})))
+      .filter(x=>Number.isFinite(x.score));
+    const currentSpeaking=speakingRows.filter(x=>inAnalyticsWindow(x.date,days,0));
+    const previousSpeaking=speakingRows.filter(x=>inAnalyticsWindow(x.date,days,days));
+    const currentSpeakingAvg=avg(currentSpeaking.map(x=>x.score));
+    const previousSpeakingAvg=avg(previousSpeaking.map(x=>x.score));
+
+    const currentRetries=(state.retryHistory||[]).filter(r=>inAnalyticsWindow(r.completedAt,days,0)&&Number.isFinite(Number(r.delta)));
+    const retryLift=avg(currentRetries.map(r=>r.delta));
+    const improvedRetries=currentRetries.filter(r=>Number(r.delta)>0).length;
+
+    const practiceDays=(state.completedDates||[]).filter(d=>inAnalyticsWindow(d,days,0)).length;
+    const previousPracticeDays=(state.completedDates||[]).filter(d=>inAnalyticsWindow(d,days,days)).length;
+
+    const today=todayKey();
+    const questionDue=Object.values(state.qstats||{}).filter(st=>st?.seen>0&&st?.due&&String(st.due)<=today).length;
+    const vocabDue=Object.values(state.vocabStats||{}).filter(st=>st?.attempts>0&&st?.due&&String(st.due)<=today).length;
+    const dueReviews=questionDue+vocabDue;
+    const learnedWords=Object.values(state.vocabKnown||{}).filter(Boolean).length;
+    const quoteWords=Object.keys(state.quoteWordBank||{}).length;
+
+    const scoreDelta=currentSessionAvg!==null&&previousSessionAvg!==null?currentSessionAvg-previousSessionAvg:null;
+    const speakingDelta=currentSpeakingAvg!==null&&previousSpeakingAvg!==null?currentSpeakingAvg-previousSpeakingAvg:null;
+    const weak=topWeakness();
+    const recommendation=coachRecommendation();
+
+    return {
+      days,practiceDays,previousPracticeDays,
+      sessions:currentSessions.length,sessionAvg:currentSessionAvg,previousSessionAvg,scoreDelta,
+      speakingCount:currentSpeaking.length,speakingAvg:currentSpeakingAvg,previousSpeakingAvg,speakingDelta,
+      retryCount:currentRetries.length,retryLift,improvedRetries,
+      dueReviews,questionDue,vocabDue,learnedWords,quoteWords,weak,recommendation
+    };
+  }
+
+  function analyticsDeltaLabel(delta,suffix=''){
+    if(delta===null||delta===undefined||!Number.isFinite(delta))return '尚無前一期可比較';
+    const rounded=Math.round(delta*10)/10;
+    return `${rounded>0?'+':''}${rounded}${suffix} vs 前一期`;
+  }
+
+  function progressActivityHtml(){
+    const completed=new Set(state.completedDates||[]);
+    const repaired=new Set((state.streakRepairs||[]).map(x=>x.date));
+    const rows=[];
+    for(let i=13;i>=0;i--){
+      const d=new Date();d.setDate(d.getDate()-i);
+      const key=localDateKey(d),done=completed.has(key),isToday=i===0;
+      rows.push(`<div class="progress-day ${done?'done':''} ${repaired.has(key)?'repaired':''} ${isToday?'today':''}" title="${key}${done?' · 已完成':''}"><span>${String(d.getDate()).padStart(2,'0')}</span><small>${['日','一','二','三','四','五','六'][d.getDay()]}</small></div>`);
+    }
+    return rows.join('');
+  }
+
+  function renderProgressAnalytics(){
+    const host=$('progressAnalyticsSection');if(!host)return;
+    const s=progressAnalyticsSnapshot(progressAnalyticsRange);
+    const periodLabel=s.days===7?'近 7 天':'近 30 天';
+    const practiceDelta=s.practiceDays-s.previousPracticeDays;
+    const retryText=s.retryCount
+      ? `重答 ${s.retryCount} 次 · ${s.improvedRetries} 次進步`
+      : '本期尚無重答比較';
+    const retryValue=s.retryLift===null?'—':`${s.retryLift>0?'+':''}${Math.round(s.retryLift*10)/10}`;
+    const evidence=s.retryLift!==null&&s.retryLift>0
+      ? `重答平均提升 ${retryValue} 分，代表「修正 → 重答」已開始產生可量化效果。`
+      : s.scoreDelta!==null&&s.scoreDelta>0
+        ? `回合平均比前一期提升 ${Math.round(s.scoreDelta*10)/10} 分，整體表現正在往上。`
+        : s.speakingDelta!==null&&s.speakingDelta>0
+          ? `口說平均比前一期提升 ${Math.round(s.speakingDelta*10)/10} 分，口說輸出有改善。`
+          : s.practiceDays>0
+            ? `${periodLabel}完成 ${s.practiceDays} 個學習日；目前先累積穩定資料，再判斷趨勢。`
+            : '這個期間還沒有完整學習日，先完成一個小單元建立趨勢基線。';
+
+    const focus=s.dueReviews>0
+      ? `目前有 ${s.dueReviews} 個到期複習（題目 ${s.questionDue}、單字 ${s.vocabDue}），先清到期項目最有效。`
+      : s.weak
+        ? `目前累積最明顯的弱點是「${weaknessLabels[s.weak]||s.weak}」，建議下輪繼續針對它。`
+        : '目前沒有單一弱點特別突出，可以用完整 Interview Mock 檢查穩定度。';
+
+    $('analyticsRangeLabel').textContent=periodLabel;
+    $('analyticsPracticeDays').textContent=String(s.practiceDays);
+    $('analyticsPracticeSub').textContent=`${practiceDelta>0?'+':''}${practiceDelta} 天 vs 前一期`;
+    $('analyticsSessionAvg').textContent=s.sessionAvg===null?'—':`${Math.round(s.sessionAvg)}%`;
+    $('analyticsSessionSub').textContent=analyticsDeltaLabel(s.scoreDelta,' 分');
+    $('analyticsSpeakingAvg').textContent=s.speakingAvg===null?'—':`${Math.round(s.speakingAvg)}`;
+    $('analyticsSpeakingSub').textContent=analyticsDeltaLabel(s.speakingDelta,' 分');
+    $('analyticsRetryLift').textContent=retryValue;
+    $('analyticsRetrySub').textContent=retryText;
+    $('analyticsEvidence').textContent=evidence;
+    $('analyticsFocus').textContent=focus;
+    $('analyticsDueCount').textContent=String(s.dueReviews);
+    $('analyticsLearnedWords').textContent=String(s.learnedWords);
+    $('analyticsQuoteWords').textContent=String(s.quoteWords);
+    $('analyticsActivity').innerHTML=progressActivityHtml();
+
+    const action=$('analyticsActionBtn');
+    if(action){
+      action.textContent=s.dueReviews>0?'先做今日複習':s.recommendation.label;
+      action.onclick=()=>{
+        if(s.dueReviews>0)startSession('due',Math.min(10,Math.max(3,s.dueReviews)));
+        else startSession(s.recommendation.mode,s.recommendation.size);
+      };
+    }
+
+    document.querySelectorAll('[data-analytics-range]').forEach(btn=>{
+      const active=Number(btn.dataset.analyticsRange)===progressAnalyticsRange;
+      btn.classList.toggle('active',active);
+      btn.setAttribute('aria-pressed',active?'true':'false');
+      btn.onclick=()=>{
+        progressAnalyticsRange=Number(btn.dataset.analyticsRange)||7;
+        renderProgressAnalytics();
+      };
+    });
   }
 
   function renderSkills(){
@@ -3020,6 +3173,7 @@
       次數:v
     })).sort((a,b)=>b.次數-a.次數);
 
+    const weekly=progressAnalyticsSnapshot(7);
     const summary=[
       {項目:'匯出時間',值:new Date().toLocaleString('zh-TW',{hour12:false})},
       {項目:'內容版本',值:CONTENT.contentVersion},
@@ -3027,7 +3181,12 @@
       {項目:'連續學習天數',值:streak()},
       {項目:'Interview Readiness',值:`${interviewReadiness()}%`},
       {項目:'完成學習日',值:(state.completedDates||[]).length},
-      {項目:'累積回合',值:(state.sessions||[]).length}
+      {項目:'累積回合',值:(state.sessions||[]).length},
+      {項目:'近7天學習日',值:weekly.practiceDays},
+      {項目:'近7天回合平均',值:weekly.sessionAvg===null?'—':Math.round(weekly.sessionAvg)+'%'},
+      {項目:'近7天口說平均',值:weekly.speakingAvg===null?'—':Math.round(weekly.speakingAvg)},
+      {項目:'近7天重答平均提升',值:weekly.retryLift===null?'—':(weekly.retryLift>0?'+':'')+(Math.round(weekly.retryLift*10)/10)},
+      {項目:'目前到期複習',值:weekly.dueReviews}
     ];
 
     return {summary,skills,weaknesses,errors,questions,vocabulary,speaking,sessions};

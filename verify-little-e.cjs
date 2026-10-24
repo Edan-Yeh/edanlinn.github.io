@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v56');
-assert.equal(version.cache,'edan-english-coach-20261024-v56');
+assert.equal(version.release,'2026.10.24-v57');
+assert.equal(version.cache,'edan-english-coach-20261024-v57');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -150,6 +150,14 @@ assert.ok(html.includes('id="dailyQuoteCategory"'));
 assert.ok(html.includes('id="dailyQuoteCycle"'));
 assert.ok(html.includes('id="dailyQuoteWordInfo"'));
 assert.ok(html.includes('id="dailyQuoteAddWord"'));
+assert.ok(html.includes('id="progressAnalyticsSection"'));
+assert.ok(html.includes('id="analyticsPracticeDays"'));
+assert.ok(html.includes('id="analyticsSessionAvg"'));
+assert.ok(html.includes('id="analyticsSpeakingAvg"'));
+assert.ok(html.includes('id="analyticsRetryLift"'));
+assert.ok(html.includes('id="analyticsActivity"'));
+assert.ok(html.includes('data-analytics-range="7"'));
+assert.ok(html.includes('data-analytics-range="30"'));
 assert.ok(html.includes('daily-quotes.js'));
 assert.doesNotMatch(html,/Built for Edan · IBM \/ Core Banking \/ Global Tech/);
 assert.doesNotMatch(html,/不是學更多英文，是讓你的英文配得上你的實力/);
@@ -190,6 +198,17 @@ assert.match(app,/const anchorCount=Math\.min\(2/);
 assert.match(app,/sort\(\(a,b\)=>questionSessionDistance\(b\.id\)-questionSessionDistance\(a\.id\)\)/);
 assert.match(app,/下一輪會優先換新題/);
 assert.match(app,/const MODEL_CUE_ZH=Object\.freeze/);
+assert.match(app,/function parseLearningDate\(/);
+assert.match(app,/function progressAnalyticsSnapshot\(/);
+assert.match(app,/function renderProgressAnalytics\(/);
+assert.match(app,/function progressActivityHtml\(/);
+assert.match(app,/progressAnalyticsRange/);
+assert.match(app,/previousSessionAvg/);
+assert.match(app,/previousSpeakingAvg/);
+assert.match(app,/retryLift/);
+assert.match(app,/dueReviews/);
+assert.match(app,/renderProgressAnalytics\(\)/);
+assert.match(app,/const weekly=progressAnalyticsSnapshot\(7\)/);
 assert.match(app,/function favoriteQuoteCategoryCounts\(/);
 assert.match(app,/function selectDailyQuote\(/);
 assert.match(app,/function dailyQuoteWordMeaning\(/);
@@ -222,6 +241,10 @@ assert.match(css,/\.daily-quote-speak/);
 assert.match(css,/\.daily-quote-word/);
 assert.match(css,/\.daily-quote-word-info/);
 assert.match(css,/\.daily-quote-favorite/);
+assert.match(css,/\.analytics-metrics/);
+assert.match(css,/\.analytics-main-grid/);
+assert.match(css,/\.analytics-activity/);
+assert.match(css,/\.progress-day\.done/);
 assert.match(app,/"English at work": "工作中使用英文"/);
 assert.match(app,/"technical documents": "技術文件"/);
 assert.match(app,/"international vendors": "國際供應商"/);
@@ -353,4 +376,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v56 Daily Quote 2.0 adds 66 non-repeating quotes, categories, favorites, per-word pronunciation/meaning, quote vocabulary review, cloud merge and prior regressions.');
+console.log('PASS: v57 Progress Analytics adds 7/30-day evidence-based trends, speaking/retry comparisons, review load, activity heatmap, actionable coaching and prior regressions.');
