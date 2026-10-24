@@ -1430,11 +1430,36 @@
       return esc(part);
     }).join('');
   }
+  function filledTemplateExampleHtml(q){
+    const example=String(q?.example||'').trim();
+    if(!example)return '';
+    const label=String(q?.exampleLabel||'填空範例');
+    const zh=String(q?.exampleZh||'').trim();
+    const slots=Array.isArray(q?.exampleSlots)?q.exampleSlots.filter(x=>Array.isArray(x)&&x.length>=2):[];
+    const slotsHtml=slots.length
+      ? `<div class="filled-template-slots">${slots.map(([slot,value])=>`<div class="filled-template-slot"><code>[${esc(slot)}]</code><span>${esc(value)}</span></div>`).join('')}</div>`
+      : '';
+    return `<div class="filled-template-example">
+      <div class="filled-template-example-head">
+        <div><strong>${esc(label)}</strong><span>把上面的模板實際填成可以直接說的版本</span></div>
+        <div class="filled-template-example-audio">
+          <button class="btn ghost" data-example-audio="northAmerica" type="button">▶ 北美朗讀</button>
+          <button class="btn ghost" data-example-audio="india" type="button">▶ 印度朗讀</button>
+        </div>
+      </div>
+      ${slotsHtml}
+      <div class="filled-template-example-en">${esc(example)}</div>
+      ${zh?`<div class="filled-template-example-zh"><span>繁體中文</span><p>${esc(zh)}</p></div>`:''}
+      <div class="filled-template-example-status" data-example-audio-status>這是填空示範；標準模板本身仍保留不動。</div>
+    </div>`;
+  }
+
   function modelAnswerHtml(q,label='推薦答案'){
     const zh=answerTranslation(q);
     const cues=modelPracticeCues(q);
+    const exampleHtml=filledTemplateExampleHtml(q);
     const practiceCount=qstat(q.id).modelPracticeCount||0;
-    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en" data-model-answer-text>${pronounceableEnglishHtml(q.model)}</div><div class="model-word-hint">🔊 點任何英文單字：播放發音＋顯示中文意思</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div>
+    return `<div class="model-answer"><div class="model-answer-head"><strong>${esc(label)}</strong><div class="model-answer-audio"><button class="model-audio-btn" data-model-audio="northAmerica" type="button">▶ 北美朗讀</button><button class="model-audio-btn" data-model-audio="india" type="button">▶ 印度朗讀</button></div></div><div class="answer-en" data-model-answer-text>${pronounceableEnglishHtml(q.model)}</div><div class="model-word-hint">🔊 點任何英文單字：播放發音＋顯示中文意思</div><div class="model-audio-status" data-model-audio-status>點擊播放英文 Model answer</div>${zh?`<div class="answer-zh"><span>繁體中文</span>${esc(zh)}</div>`:''}${exampleHtml}<div class="keywords">Keywords: ${esc((q.keywords||[]).join(' · '))}</div>
       <div class="model-practice-box">
         <div class="model-practice-head"><div><strong>記憶＋口說練習</strong><span>不要背整段，先記骨架再說。</span></div><span class="model-practice-count" data-model-practice-count>已練 ${practiceCount} 次</span></div>
         <div class="model-memory-cues">${cues.map((c,i)=>`<button class="model-cue-pronounce" data-pronounce-cue="${esc(c.en)}" data-cue-zh="${esc(c.zh)}" type="button" title="點一下聽英文發音"><b>${i+1}</b><span class="model-cue-copy"><span class="model-cue-en">${esc(c.en)}</span><span class="model-cue-zh">${esc(c.zh)}</span></span></button>`).join('')}</div>
@@ -4109,6 +4134,24 @@
     $('questionHost')?.addEventListener('click',async e=>{
       const q=session?.questions?.[session.index];
       if(!q?.model)return;
+
+      const exampleAudioBtn=e.target.closest?.('[data-example-audio]');
+      if(exampleAudioBtn&&q.example){
+        const kind=exampleAudioBtn.dataset.exampleAudio;
+        const rate=playbackRate(q.level||1,'question');
+        const status=exampleAudioBtn.closest('.filled-template-example')?.querySelector('[data-example-audio-status]');
+        if(kind==='india'&&status)status.textContent='Indian English · 正在準備 Edan 範例…';
+        if(kind!=='india'&&status)status.textContent='North American English · 正在準備 Edan 範例…';
+        const resolved=kind==='india'
+          ? await speakIndian(q.example,rate,p=>{if(status)status.textContent=indianProgressText(p);})
+          : await speakNorthAmerican(q.example,rate,p=>{if(status)status.textContent=northAmericanProgressText(p);});
+        if(status){
+          status.textContent=kind==='india'
+            ? indianPlaybackStatus(resolved,rate,'Edan example')
+            : northAmericanPlaybackStatus(resolved,rate,'Edan example');
+        }
+        return;
+      }
 
       const audioBtn=e.target.closest?.('[data-model-audio]');
       if(audioBtn){
