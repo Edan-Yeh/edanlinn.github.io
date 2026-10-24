@@ -2262,7 +2262,10 @@
       [/\bdepend of\b/gi,'depend on','固定搭配是 depend on'],
       [/\bI have (\d+|eight) years experience\b/gi,'I have $1 years of experience','自然搭配是 years of experience'],
       [/\bin IBM\b/gi,'at IBM','公司前通常用 at'],
-      [/\bwork in IBM\b/gi,'work at IBM','公司前通常用 at']
+      [/\bwork in IBM\b/gi,'work at IBM','公司前通常用 at'],
+      [/\bsystem analyze\b/gi,'system analysis','analyze 是動詞；這裡需要名詞 system analysis'],
+      [/\bget back to (?:the )?problem\b/gi,'follow up on the problem','描述後續追蹤問題時，follow up on the problem 更自然'],
+      [/\bget back (?:on|about) (?:the )?problem\b/gi,'follow up on the problem','描述後續追蹤問題時，follow up on the problem 更自然']
     ];
     rules.forEach(([re,to,note])=>{
       if(re.test(t)){re.lastIndex=0;t=t.replace(re,to);notes.push(note);}
@@ -2271,6 +2274,21 @@
     if(/current|currently/i.test(q?.text||'') && /\bI will work on\b/i.test(t)){
       t=t.replace(/\bI will work on\b/i,"I'm currently working on");
       notes.push('題目問現在的工作，使用現在進行式比 will work 更正確');
+    }
+
+    const questionText=String(q?.text||'').toLowerCase();
+    if(questionText.includes('ownership')&&questionText.includes('multiple teams')){
+      if(/\bthe situation was unclear across multiple things\b/i.test(t)){
+        t=t.replace(/\bthe situation was unclear across multiple things\b/i,'ownership was unclear across multiple teams');
+        notes.push('依題目語境，把模糊的 situation / things 改回 ownership / teams；沒有新增你的事件內容');
+      }else if(/\bunclear across multiple things\b/i.test(t)){
+        t=t.replace(/\bunclear across multiple things\b/i,'unclear across multiple teams');
+        notes.push('題目談的是跨團隊責任歸屬，multiple teams 比 multiple things 精準');
+      }
+    }
+    if(/\bwas (?:really )?responding\b/i.test(t)&&/\band follow up on the problem\b/i.test(t)){
+      t=t.replace(/\band follow up on the problem\b/i,'and following up on the problem');
+      notes.push('與 was responding 並列時改成 following up，讓動詞形式一致');
     }
 
     if(q?.id==='mdb-l1-010'){
@@ -2302,36 +2320,47 @@
   function naturalizeSpokenAnswer(corrected,original,q){
     let t=corrected;
     const notes=[];
+    const before=t;
+
+    t=t.replace(/^I work on\b/i,"I'm currently working on");
+    t=t.replace(/\bI mainly analyze\b/i,'My main responsibility is to analyze');
+    t=t.replace(/\bI mainly handle\b/i,'My main responsibility is handling');
+    t=t.replace(/\bI want to\b/i,"I'm looking to");
+    t=t.replace(/\bI was really responding to ([A-Za-z0-9_-]+) for system analysis and following up on the problem\b/i,'I was handling the system analysis with $1 and following up on the problem');
+    t=t.replace(/\bI was responding to ([A-Za-z0-9_-]+) for system analysis and following up on the problem\b/i,'I was handling the system analysis with $1 and following up on the problem');
+
     if(q?.id==='mdb-l1-010'){
       const lower=String(original||'').toLowerCase();
       const sentences=[];
       if(lower.includes('bank')||lower.includes('transformation')){
-        sentences.push("I'm currently working on a large core banking transformation project.");
+        const sourceSentence=String(corrected||'').split(/(?<=[.!?])\s+/).find(x=>/bank|transformation/i.test(x));
+        if(sourceSentence)sentences.push(normalizeSpokenSentence(sourceSentence));
       }
       if(lower.includes('analy')||lower.includes('business')||lower.includes('system')){
-        sentences.push('My main responsibility is analyzing business requirements and system-related issues.');
+        const sourceSentence=String(corrected||'').split(/(?<=[.!?])\s+/).find(x=>/analy|business|system/i.test(x));
+        if(sourceSentence&&!sentences.includes(normalizeSpokenSentence(sourceSentence)))sentences.push(normalizeSpokenSentence(sourceSentence));
       }
-      if(sentences.length){
-        t=sentences.join(' ');
-        notes.push('自然版保留你原本「專案＋主要工作」兩個重點，改成面試更順的兩句結構');
-      }
-    }else{
-      t=t.replace(/^I work on\b/i,"I'm currently working on");
-      t=t.replace(/\bI mainly analyze\b/i,'My main responsibility is to analyze');
-      t=t.replace(/\bI mainly handle\b/i,'My main responsibility is handling');
-      t=t.replace(/\bI want to\b/i,"I'm looking to");
-      t=normalizeSpokenSentence(t);
+      if(sentences.length)t=sentences.join(' ');
+    }
+
+    t=normalizeSpokenSentence(t);
+    if(t!==normalizeSpokenSentence(before)){
+      notes.push('自然版只重組你原本說出的內容與用字，不補入 Model answer 的新事實');
     }
     return {text:t,notes};
   }
   function buildSpokenCorrection(text,q){
-    const grammar=applyGrammarRules(text,q);
-    const natural=naturalizeSpokenAnswer(grammar.text,text,q);
+    const original=normalizeSpokenSentence(text);
+    const grammar=applyGrammarRules(original,q);
+    const natural=naturalizeSpokenAnswer(grammar.text,original,q);
     const notes=[...new Set([...grammar.notes,...natural.notes])].slice(0,5);
     return {
+      original,
       corrected:grammar.text,
       natural:natural.text,
-      notes
+      notes,
+      source:'user_transcript_only',
+      standardAnswer:q?.model||''
     };
   }
 
@@ -2787,12 +2816,14 @@
 
   function renderSpeakingQuestion(q){
     const hideText=q.level>=3;
+    const qZh=questionTranslation(q);
     const SR=speechRecognitionCtor();
     const recognitionAvailable=!!SR && state.settings.speechRecognition!=='off';
     const recorderAvailable=mediaRecorderAvailable();
     const recordLabel=recorderAvailable?'🎙 開始錄音回答':(recognitionAvailable?'🎙 開始語音辨識':'開始 45 秒');
     const recordClass=(recorderAvailable||recognitionAvailable)?'btn primary':'btn secondary';
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div><div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後會先嘗試瀏覽器轉文字；若不可用，改用本機 Whisper，再提供 0–100 分與修正建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage">${speakingFrameworkHtml(q)}<div class="timer" id="speakTimer">00:45</div><div class="support">先照上面的 Answer Map 聯想，再直接用簡單英文講。錄音與轉文字是兩個不同功能。即使瀏覽器即時轉文字不可用，仍會保留錄音，並在講完後嘗試本機 Whisper 分析。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'Model answer（講完才看）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若即時轉文字失敗，系統會再嘗試本機 Whisper。':'完成錄音後會嘗試本機 Whisper 轉文字與評分；若仍失敗才改用自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 套用修正再答一次</button></div></article>`;
+    const translationControls=qZh?`<div class="speaking-question-translation-controls ${hideText?'hidden':''}" id="speakingQuestionTranslationControls"><button class="btn ghost speaking-question-translation-toggle" id="toggleSpeakQZhBtn" type="button" aria-expanded="false">顯示繁體翻譯</button><div class="speaking-question-translation hidden" id="speakingQuestionZh"><span>繁體中文</span><p>${esc(qZh)}</p></div></div>`:'';
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge warn">SPEAK OUT LOUD</span><div class="question-title" id="speakingQuestionText">${hideText?'先聽問題，再用 30–60 秒回答。':esc(q.text)}</div>${translationControls}<div class="question-intent">L${q.level} · 直接用英文回答。錄音完成後會先嘗試瀏覽器轉文字；若不可用，改用本機 Whisper，再提供 0–100 分與修正建議。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playSpeakNorthAmericaBtn" type="button">▶ 北美面試官</button><button class="btn secondary" id="playSpeakIndiaBtn" type="button">▶ 印度面試官</button>${hideText?'<button class="btn ghost" id="revealSpeakQBtn" type="button">顯示問題文字</button>':''}<span class="audio-status" id="speakAudioStatus">北美＋印度雙口音</span></div></div><div class="speaking-stage">${speakingFrameworkHtml(q)}<div class="timer" id="speakTimer">00:45</div><div class="support">先照上面的 Answer Map 聯想，再直接用簡單英文講。錄音與轉文字是兩個不同功能。即使瀏覽器即時轉文字不可用，仍會保留錄音，並在講完後嘗試本機 Whisper 分析。</div><div class="btn-row" style="margin-top:12px"><button class="${recordClass}" id="recognitionBtn" type="button">${recordLabel}</button><button class="btn ghost" id="finishSpeakingBtn" type="button">■ 我講完了</button></div><div class="recorded-audio hidden" id="recordedAudioHost"><strong>你的錄音</strong><audio id="recordedAudioPlayer" controls preload="metadata"></audio><span class="support" id="recordedAudioStatus"></span></div><div class="speech-text" id="speechText">${recognitionAvailable?'按「開始錄音回答」後直接說，若轉文字可用，辨識內容會即時顯示。':(recorderAvailable?'這個瀏覽器目前無法自動轉文字，但仍可以錄音、播放回聽，再用自評完成題目。':'此瀏覽器目前無法使用錄音與語音辨識，可改用計時＋自評。')}</div></div><div class="speaking-score hidden" id="speakingScoreHost"></div>${modelAnswerHtml(q,'參考標準答案（獨立，不依你的回答變動）').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="feedback neutral" id="feedbackBox"><strong id="feedbackTitle">${recognitionAvailable?'錄音後會自動評分':'錄音完成後可回聽'}</strong><span id="feedbackNote">${recognitionAvailable?'若即時轉文字失敗，系統會再嘗試本機 Whisper。':'完成錄音後會嘗試本機 Whisper 轉文字與評分；若仍失敗才改用自評。'}</span><div class="self-rate" id="selfRateBlock"><button class="good" data-quality="3" type="button">✓ 順暢 / 能說清楚</button><button class="mid" data-quality="2" type="button">△ 有卡，但能完成</button><button class="bad" data-quality="1" type="button">× 很卡 / 需要重練</button></div></div><div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 套用修正再答一次</button></div></article>`;
     $('playSpeakNorthAmericaBtn').addEventListener('click',()=>playQuestionAccent(q,'northAmerica',chooseVoiceLang(q.level),'speakAudioStatus'));
     $('playSpeakIndiaBtn').addEventListener('click',()=>playQuestionAccent(q,'india','en-IN','speakAudioStatus'));
     document.querySelector('[data-framework-toggle]')?.addEventListener('click',e=>{
@@ -2801,7 +2832,27 @@
       body.classList.toggle('hidden');
       e.currentTarget.textContent=body.classList.contains('hidden')?'展開架構':'收起架構';
     });
-    if(hideText) $('revealSpeakQBtn').addEventListener('click',()=>{session.currentMeta.hint=true;qstat(q.id).hints++;$('speakingQuestionText').textContent=q.text;$('revealSpeakQBtn').disabled=true;save();});
+    const markSpeakingQuestionHint=()=>{
+      if(session.currentMeta.hint)return;
+      session.currentMeta.hint=true;
+      qstat(q.id).hints++;
+      save();
+    };
+    if(hideText) $('revealSpeakQBtn').addEventListener('click',()=>{
+      markSpeakingQuestionHint();
+      $('speakingQuestionText').textContent=q.text;
+      $('speakingQuestionTranslationControls')?.classList.remove('hidden');
+      $('revealSpeakQBtn').disabled=true;
+      $('revealSpeakQBtn').textContent='✓ 已顯示問題文字';
+    });
+    $('toggleSpeakQZhBtn')?.addEventListener('click',()=>{
+      const zh=$('speakingQuestionZh');if(!zh)return;
+      const showing=zh.classList.contains('hidden');
+      zh.classList.toggle('hidden',!showing);
+      $('toggleSpeakQZhBtn').textContent=showing?'隱藏繁體翻譯':'顯示繁體翻譯';
+      $('toggleSpeakQZhBtn').setAttribute('aria-expanded',showing?'true':'false');
+      if(showing)markSpeakingQuestionHint();
+    });
     $('recognitionBtn').addEventListener('click',()=>startRecordedAnswer(q,recognitionAvailable));
     $('finishSpeakingBtn').addEventListener('click',()=>finishSpeakingStage(q));
     document.querySelectorAll('.self-rate button').forEach(b=>b.addEventListener('click',()=>{
@@ -2907,7 +2958,7 @@
     applyRecordingMetrics(analysis);
     const correction=buildSpokenCorrection(transcript,q);
     rememberSpeakingErrors(q,transcript,analysis,correction);
-    const answerSnapshot={kind:'speaking',transcript,score:analysis.score,corrected:correction.corrected||'',natural:correction.natural||'',notes:[...(correction.notes||[])],missing:[...(analysis.missing||[])],suggestions:[...(analysis.suggestions||[])],wordsPerMinute:analysis.wordsPerMinute||null};
+    const answerSnapshot={kind:'speaking',transcript,score:analysis.score,corrected:correction.corrected||'',natural:correction.natural||'',correctionSource:correction.source||'user_transcript_only',standardAnswer:correction.standardAnswer||q.model||'',notes:[...(correction.notes||[])],missing:[...(analysis.missing||[])],suggestions:[...(analysis.suggestions||[])],wordsPerMinute:analysis.wordsPerMinute||null};
     session.currentMeta.latestAnswer=answerSnapshot;lastLittleEAnswer=answerSnapshot;
     session.currentMeta.answered=true;session.currentMeta.scoringDone=true;session.currentMeta.processingScore=false;
     let quality=analysis.score>=80?3:analysis.score>=60?2:1;if(session.currentMeta.hint&&quality===3)quality=2;
@@ -3064,7 +3115,7 @@
     const b=analysis.breakdown;
     const correction=buildSpokenCorrection(transcript,q);
     const notesHtml=correction.notes.length?'<ul>'+correction.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<p>目前沒有偵測到明顯的規則型文法錯誤；可以再看內容完整度與 Model answer 的差異。</p>';
-    const fixHtml='<div class="language-fix-box"><strong>依據你剛剛說的內容修正</strong><div class="correction-version"><span>文法修正版</span><p>'+esc(correction.corrected)+'</p><button class="btn ghost" id="playCorrectedBtn" type="button">▶ 聽修正版</button></div><div class="correction-version natural"><span>更自然的面試說法</span><p>'+esc(correction.natural)+'</p><button class="btn ghost" id="playNaturalBtn" type="button">▶ 聽自然版</button></div><div class="correction-notes"><span>為什麼這樣改</span>'+notesHtml+'</div><div class="support">修正會盡量保留你的原意，不是直接拿 Model answer 取代你的回答。若語音轉文字有辨識錯字，也可能影響修正結果。</div></div>';
+    const fixHtml='<div class="language-fix-box"><div class="language-fix-title"><strong>依據你剛剛說的內容修正</strong><span>USER-BASED</span></div><div class="correction-version"><span>文法修正版｜只修你的句子</span><p>'+esc(correction.corrected)+'</p><button class="btn ghost" id="playCorrectedBtn" type="button">▶ 聽修正版</button></div><div class="correction-version natural"><span>更自然的面試說法｜保留你的內容</span><p>'+esc(correction.natural)+'</p><button class="btn ghost" id="playNaturalBtn" type="button">▶ 聽自然版</button></div><div class="correction-notes"><span>為什麼這樣改</span>'+notesHtml+'</div><div class="support correction-grounding-note">這兩版只以你的轉錄內容＋題目語境做修正，不會把下方「參考標準答案」的新內容塞進來。標準答案保持獨立，可另外比較。</div></div>';
     const tone=analysis.score>=80?'good':analysis.score>=60?'mid':'low';
     const reliabilityHtml=analysis.transcriptReliability!==null&&analysis.transcriptReliability!==undefined
       ? `<div class="transcript-score-note">${analysis.transcriptConfirmed?'✓ 轉錄已由你確認':`轉錄可信度 ${analysis.transcriptReliability}/100`}</div>`
@@ -3086,7 +3137,7 @@
       ${fixHtml}<div class="support score-disclaimer">此分數只會在轉錄可信度足夠，或你已確認／修正辨識文字後寫入紀錄；依內容、關鍵重點、長度、結構與 filler / 重複字計算。目前不評發音準確度或口音。</div>`;
     $('speechText').innerHTML=`<strong>辨識內容：</strong> ${esc(transcript)}<br><span class="support">關鍵內容覆蓋：約 ${analysis.keywordRatio}% · ${analysis.wordCount} words</span>`;
     $('feedbackTitle').textContent='系統已完成比對';
-    $('feedbackNote').textContent='分數會直接納入這一題的訓練紀錄；Model answer 是參考，不需要逐字一樣。';
+    $('feedbackNote').textContent='分數會直接納入這一題的訓練紀錄；你的修正版與參考標準答案是兩條獨立內容，不需要逐字一樣。';
     $('playCorrectedBtn')?.addEventListener('click',async()=>{await speakNorthAmerican(correction.corrected,1.0);});
     $('playNaturalBtn')?.addEventListener('click',async()=>{await speakNorthAmerican(correction.natural,1.0);});
     const self=$('selfRateBlock'); if(self)self.classList.add('hidden');
