@@ -11,7 +11,7 @@
   const skillLabels = CONTENT.skillLabels;
   const initialSkills = {listening:1.0,speaking:1.1,chunks:1.2,interview:1.2,rescue:1.0};
   const defaultState = () => ({
-    schemaVersion: 6,
+    schemaVersion: 7,
     xp: 0,
     skills: {...initialSkills},
     qstats: {},
@@ -265,6 +265,87 @@
     return 3;
   }
 
+  const missionTimeModes=['listening','adaptive','speaking','mock','due','wrong'];
+  const missionTimeLabels={listening:'Listening',adaptive:'Adaptive',speaking:'Speaking',mock:'Interview',due:'Due Review',wrong:'Wrong Review'};
+  function missionTimeFallbackSeconds(mode){
+    if(mode==='speaking')return 360;
+    if(mode==='mock')return 300;
+    return 180;
+  }
+  function missionTimingBounds(mode){
+    return (mode==='speaking'||mode==='mock')?{min:10,max:900}:{min:5,max:480};
+  }
+  function median(values=[]){
+    const nums=values.map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+    if(!nums.length)return null;
+    const mid=Math.floor(nums.length/2);
+    return nums.length%2?nums[mid]:(nums[mid-1]+nums[mid])/2;
+  }
+  function timeCalibrationSamples(mode,limit=24){
+    const bounds=missionTimingBounds(mode);
+    const samples=[];
+    for(const sess of (state.sessions||[])){
+      if(sess?.diagnostic||sessionModeGuess(sess)!==mode)continue;
+      for(const answer of (sess.answers||[])){
+        const sec=Number(answer?.extra?.activeSeconds);
+        if(answer?.extra?.retrySource)continue;
+        if(Number.isFinite(sec)&&sec>=bounds.min&&sec<=bounds.max)samples.push(sec);
+      }
+    }
+    return samples.slice(-limit);
+  }
+  function timeCalibrationForMode(mode){
+    const fallback=missionTimeFallbackSeconds(mode);
+    const samples=timeCalibrationSamples(mode);
+    if(samples.length<4)return {mode,sampleCount:samples.length,secondsPerQuestion:fallback,observedSeconds:null,confidence:'baseline',source:'baseline'};
+    let robust=[...samples].sort((a,b)=>a-b);
+    if(robust.length>=8){
+      const trim=Math.max(1,Math.floor(robust.length*.1));
+      robust=robust.slice(trim,robust.length-trim);
+    }
+    const observed=median(robust)||fallback;
+    const weight=samples.length>=15?.90:samples.length>=8?.75:.45;
+    const blended=fallback*(1-weight)+observed*weight;
+    const secondsPerQuestion=Math.round(clamp(blended,fallback*.35,fallback*2.5));
+    return {
+      mode,sampleCount:samples.length,secondsPerQuestion,observedSeconds:Math.round(observed),
+      confidence:samples.length>=8?'calibrated':'learning',
+      source:samples.length>=8?'personal':'blended'
+    };
+  }
+  function timeCalibrationSnapshot(){
+    return missionTimeModes.map(mode=>{
+      const c=timeCalibrationForMode(mode);
+      return {
+        mode,label:missionTimeLabels[mode]||mode,sampleCount:c.sampleCount,
+        secondsPerQuestion:c.secondsPerQuestion,
+        minutesPerQuestion:Math.round(c.secondsPerQuestion/6)/10,
+        observedSeconds:c.observedSeconds,
+        confidence:c.confidence,
+        source:c.source
+      };
+    });
+  }
+  function missionBaselineEstimateMinutes(mode,size,budget){
+    const raw=mode==='speaking'?Math.max(6,size*6)
+      :mode==='mock'?Math.max(12,size*4)
+      :Math.max(6,size*2.5);
+    return Math.max(1,Math.round(Math.min(budget,raw)));
+  }
+  function calibratedMissionQuestionSize(mode,minutes,dueReviews=0){
+    const c=timeCalibrationForMode(mode);
+    if(c.sampleCount<4)return weeklyPlanQuestionSize(mode,minutes,dueReviews);
+    const max=mode==='speaking'?6:mode==='mock'?10:15;
+    let size=Math.max(1,Math.floor((minutes*60)/c.secondsPerQuestion));
+    if(mode==='due'&&dueReviews>0)size=Math.min(size,dueReviews);
+    return clamp(size,1,max);
+  }
+  function calibratedMissionEstimateMinutes(mode,size,budget){
+    const c=timeCalibrationForMode(mode);
+    if(c.sampleCount<4)return missionBaselineEstimateMinutes(mode,size,budget);
+    return clamp(Math.ceil((size*c.secondsPerQuestion)/60),1,Math.max(1,budget));
+  }
+
   function sessionModeGuess(sess){
     if(sess?.mode)return sess.mode;
     const title=String(sess?.title||'');
@@ -444,16 +525,15 @@
     const shares=count===1?[1]:count===2?[.56,.44]:[.42,.33,.25];
     const tasks=selected.slice(0,count).map((task,i)=>{
       const budget=Math.max(5,Math.round(minutes*shares[i]));
-      const slotSize=weeklyPlanQuestionSize(task.mode,budget,weekly.dueReviews);
+      const slotSize=calibratedMissionQuestionSize(task.mode,budget,weekly.dueReviews);
       const outstanding=task.carryover?clamp(Number(task.remainingSize)||Number(task.size)||1,1,15):slotSize;
       const size=task.carryover?Math.min(outstanding,slotSize):slotSize;
       const originalSize=task.carryover?clamp(Number(task.originalSize)||outstanding,1,15):size;
       const completedBefore=task.carryover
         ? clamp(Number(task.completedBefore)||Math.max(0,originalSize-outstanding),0,originalSize)
         : 0;
-      const estimate=task.mode==='speaking'?Math.min(budget,Math.max(6,size*6))
-        :task.mode==='mock'?Math.min(budget,Math.max(12,size*4))
-        :Math.min(budget,Math.max(6,size*2.5));
+      const calibration=timeCalibrationForMode(task.mode);
+      const estimate=calibratedMissionEstimateMinutes(task.mode,size,budget);
       const reason=task.carryover
         ? `${task.ageDays} 天前原任務尚餘 ${outstanding} 題，本次依今天時間安排 ${size} 題。 ${task.sourceReason||''}`.trim()
         : task.reason||'依今天可用時間縮成最低有效訓練量。';
@@ -461,10 +541,11 @@
         key:task.key||('today-'+task.mode+'-'+i),originKey:task.originKey||null,originDate:task.originDate||null,
         carryover:!!task.carryover,ageDays:Number(task.ageDays)||0,mode:task.mode,title:task.title,
         sourceReason:task.sourceReason||null,reason,
-        originalSize,completedBefore,size,estimate:Math.max(5,Math.round(estimate))
+        originalSize,completedBefore,size,estimate:Math.max(1,Math.round(estimate)),
+        timeSource:calibration.source,timeConfidence:calibration.confidence,timeSamples:calibration.sampleCount,secondsPerQuestion:calibration.secondsPerQuestion
       };
     });
-    return {date:todayKey(),minutes,createdAt:new Date().toISOString(),carryoverPolicy:'important_only_within_2_days',partialCreditPolicy:'exact_mission_answers_only',tasks};
+    return {date:todayKey(),minutes,createdAt:new Date().toISOString(),carryoverPolicy:'important_only_within_2_days',partialCreditPolicy:'exact_mission_answers_only',timeCalibrationPolicy:'robust_median_with_baseline_blend',tasks};
   }
 
   function ensureTodayMissionPlan(force=false){
@@ -517,6 +598,20 @@
     const progress=$('todayMissionProgressText');
     if(progress)progress.textContent=`已做 ${mission.completedQuestions} / ${mission.targetQuestions} 題 · ${mission.done} / ${mission.total} 任務完成`;
     const bar=$('todayMissionProgressBar');if(bar)bar.style.width=`${mission.progressPct}%`;
+    const timingNote=$('todayMissionTimingNote');
+    if(timingNote){
+      const modes=[...new Set(mission.tasks.map(x=>x.mode))];
+      const cals=modes.map(timeCalibrationForMode);
+      const personalized=cals.filter(c=>c.sampleCount>=4);
+      if(personalized.length){
+        timingNote.textContent='時間校準：'+personalized.map(c=>`${missionTimeLabels[c.mode]||c.mode} 約 ${(c.secondsPerQuestion/60).toFixed(1)} 分/題（${c.sampleCount} 樣本）`).join(' · ');
+        timingNote.dataset.state='personal';
+      }else{
+        const maxSamples=Math.max(0,...cals.map(c=>c.sampleCount));
+        timingNote.textContent=`時間校準正在建立基線：目前最多 ${maxSamples}/4 個有效樣本；達 4 題前沿用保守估算。`;
+        timingNote.dataset.state='baseline';
+      }
+    }
     const carryNote=$('todayMissionCarryoverNote');
     if(carryNote){
       carryNote.classList.toggle('hidden',mission.carryoverCount===0);
@@ -543,11 +638,12 @@
           ? `已做 ${task.progressCount}/${task.size} 題 · 剩 ${task.remainingSize} 題`
           : `目標 ${task.size} 題`;
       const overall=task.carryover?`<small class="today-mission-overall">原任務累積 ${task.overallCompleted}/${task.originalSize} 題</small>`:'';
+      const timeBadge=task.timeSamples>=4?`<em class="today-mission-time-badge ${task.timeConfidence==='calibrated'?'calibrated':'learning'}">${task.timeConfidence==='calibrated'?'個人速度':'學習中'} · ${task.timeSamples} 樣本</em>`:`<em class="today-mission-time-badge baseline">基準估算</em>`;
       const buttonLabel=task.done?'已完成':task.progressCount>0?`繼續剩 ${task.remainingSize} 題`:'開始';
       return `<article class="today-mission-task ${task.done?'done':''} ${task.carryover?'carryover':''}">
         <div class="today-mission-check">${task.done?'✓':i+1}</div>
         <div class="today-mission-copy">
-          <div><strong>${esc(task.title)}</strong>${task.carryover?`<em class="today-mission-carry-badge">補回 · ${task.ageDays} 天前</em>`:''}<span>約 ${task.done?task.estimate:Math.max(1,task.remainingEstimate)} 分鐘 · ${progressText}</span></div>
+          <div><strong>${esc(task.title)}</strong>${task.carryover?`<em class="today-mission-carry-badge">補回 · ${task.ageDays} 天前</em>`:''}${timeBadge}<span>約 ${task.done?task.estimate:Math.max(1,task.remainingEstimate)} 分鐘 · ${progressText}</span></div>
           <p>${esc(task.reason)}</p>
           ${overall}
           <div class="today-mission-task-progress" aria-label="${esc(progressText)}"><span style="width:${task.progressPct}%"></span></div>
@@ -681,7 +777,7 @@
       return {
         ...base,
         ...parsed,
-        schemaVersion:6,
+        schemaVersion:7,
         skills:{...base.skills,...(parsed.skills||{})},
         qstats: parsed.qstats||{},
         chunkKnown: parsed.chunkKnown||{},
@@ -719,7 +815,7 @@
     state={
       ...base,
       ...incoming,
-      schemaVersion:6,
+      schemaVersion:7,
       skills:{...base.skills,...(incoming.skills||{})},
       qstats:incoming.qstats||{},
       chunkKnown:incoming.chunkKnown||{},
@@ -2530,7 +2626,7 @@
     const retryBaseline=speakingRetryCycle?.questionId===q.id?speakingRetryCycle:null;
     lastLittleEQuestion=q;
     lastLittleEAnswer=retryBaseline?.before||null;
-    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0},latestAnswer:null,retryBaseline};
+    session.currentMeta={listens:0,hint:false,answered:false,accentCounts:{northAmerica:0,india:0},latestAnswer:null,retryBaseline,questionStartedAt:Date.now(),timingFinalized:false};
     $('questionCounter').textContent=`${session.index+1} / ${session.questions.length}`;
     $('questionLevelBadge').textContent=`L${q.level}`;
     $('questionSkillBadge').textContent=skillLabels[q.skill]||q.skill;
@@ -3212,6 +3308,21 @@
   function stopRecognition(){if(recognition){try{recognition.stop();}catch(e){} recognition=null;}}
   function keywordCoverage(text,keywords){if(!text||!keywords.length)return 0;const t=text.toLowerCase();let hit=0;keywords.forEach(k=>{const pieces=k.toLowerCase().split(/\s+/).filter(w=>w.length>3);if(pieces.some(p=>t.includes(p)))hit++;});return Math.round(hit/keywords.length*100);}
 
+  function finalizeCurrentQuestionTiming(){
+    if(!session?.currentMeta?.answered||session.currentMeta.timingFinalized)return null;
+    const started=Number(session.currentMeta.questionStartedAt)||0;
+    const sec=started?Math.round((Date.now()-started)/1000):0;
+    const bounds=missionTimingBounds(session.mode);
+    const last=session.answers?.[session.answers.length-1];
+    if(last&&Number.isFinite(sec)&&sec>=bounds.min&&sec<=bounds.max){
+      last.extra=last.extra||{};
+      last.extra.activeSeconds=sec;
+      last.extra.timeMode=session.mode;
+    }
+    session.currentMeta.timingFinalized=true;
+    return (sec>=bounds.min&&sec<=bounds.max)?sec:null;
+  }
+
   function recordAnswer(q,quality,correct,extra){
     const s=qstat(q.id); s.seen++; if(correct)s.correct++;else s.wrong++; s.lastQuality=quality;s.lastSeen=todayKey();
     s.lastOutcome=!correct?'wrong':(quality<=1?'guessed':'correct');
@@ -3245,9 +3356,10 @@
     save(); renderOverview();
   }
 
-  function nextQuestion(){speakingRetryCycle=null;session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
+  function nextQuestion(){finalizeCurrentQuestionTiming();speakingRetryCycle=null;session.index++;if(session.index>=session.questions.length)finishSession(true);else renderCurrentQuestion();}
 
   function finishSession(completedUnit=true){
+    finalizeCurrentQuestionTiming();
     stopSpeakingTimer();stopRecognition();stopMediaRecording(true);cleanupRecordedAudio();stopModelPracticeRecording(false);cleanupModelPracticeAudio();speechSynthesis.cancel();$('challengeSection').classList.remove('active');$('sessionProgress').style.width='100%';
     if(!session || !session.answers.length){session=null;return;}
     const sessionMode=session.mode;
@@ -3256,7 +3368,7 @@
     const skillAvgs=Object.entries(bySkill).map(([k,v])=>[k,v.reduce((a,b)=>a+b,0)/v.length]).sort((a,b)=>a[1]-b[1]);
     const weakest=skillAvgs[0]?.[0]||'listening';
     const trainingCompleted=completedUnit&&sessionMode!=='diagnostic';
-    const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),mode:sessionMode,missionTaskKey:session.missionTaskKey||null,missionDate:session.missionDate||null,missionOriginDate:session.missionOriginDate||null,missionTargetSize:session.missionTargetSize||null,missionRequestedSize:session.missionRequestedSize||null,count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
+    const finishedAt=new Date().toISOString();const activeDurationSec=session.answers.reduce((n,a)=>n+(Number(a.extra?.activeSeconds)||0),0);const rec={date:new Date().toLocaleString('zh-TW',{hour12:false}),startedAt:session.startedAt,finishedAt,activeDurationSec,title:session.title+(!completedUnit&&sessionMode!=='diagnostic'?'（未完成）':''),mode:sessionMode,missionTaskKey:session.missionTaskKey||null,missionDate:session.missionDate||null,missionOriginDate:session.missionOriginDate||null,missionTargetSize:session.missionTargetSize||null,missionRequestedSize:session.missionRequestedSize||null,count:session.answers.length,score,weakest:skillLabels[weakest]||weakest,answers:session.answers.slice(),completedUnit:trainingCompleted,diagnostic:sessionMode==='diagnostic'};
     state.sessions.push(rec); if(state.sessions.length>60)state.sessions=state.sessions.slice(-60);
     if(trainingCompleted) markPracticeDay();
     captureSkillSnapshot(sessionMode==='diagnostic'?'diagnostic_completed':'session_completed');
@@ -3272,9 +3384,13 @@
       missionOriginDate:rec.missionOriginDate,
       missionTargetSize:rec.missionTargetSize,
       missionRequestedSize:rec.missionRequestedSize,
+      startedAt:rec.startedAt,
+      finishedAt:rec.finishedAt,
+      activeDurationSec:rec.activeDurationSec,
       answers:rec.answers.map(a=>({
         id:a.id,skill:a.skill,level:a.level,quality:a.quality,correct:a.correct,
         systemScore:a.extra?.systemScore??null,
+        activeSeconds:a.extra?.activeSeconds??null,
         weakness:a.extra?.weakness??null,
         wordsPerMinute:a.extra?.wordsPerMinute??null
       }))
@@ -3734,7 +3850,8 @@
       題數:sess.count||0,
       分數:sess.score??'',
       最弱技能:sess.weakest||'',
-      完成: sess.completedUnit===false?'否':'是'
+      完成: sess.completedUnit===false?'否':'是',
+      有效分鐘:Number.isFinite(Number(sess.activeDurationSec))?Math.round(Number(sess.activeDurationSec)/6)/10:''
     })).reverse();
 
     const skills=skillKeys.map(k=>({
@@ -3759,6 +3876,7 @@
     })).sort((a,b)=>b.次數-a.次數);
 
     const weekly=progressAnalyticsSnapshot(7);
+    const timeCalibration=timeCalibrationSnapshot().map(x=>({模式:x.label,有效樣本:x.sampleCount,估計分鐘每題:x.minutesPerQuestion,觀察秒數中位:x.observedSeconds??'',狀態:x.confidence==='calibrated'?'已校準':x.confidence==='learning'?'學習中':'基準估算'}));
     const plan=weeklyPlanSnapshot();
     const mission=todayMissionSnapshot();
     const todayMission=mission.tasks.map((task,i)=>({步驟:i+1,訓練:task.title,模式:task.mode,本次目標:task.size,已做題數:task.progressCount,剩餘題數:task.remainingSize,累積進度:task.carryover?`${task.overallCompleted}/${task.originalSize}`:`${task.progressCount}/${task.size}`,預估分鐘:task.estimate,來源:task.carryover?`${task.originDate} 補回`:'今日',狀態:task.done?'已完成':task.progressCount>0?'進行中':'待完成',原因:task.reason}));
@@ -3778,6 +3896,7 @@
       {項目:'目前到期複習',值:weekly.dueReviews},
       {項目:'今日任務',值:`${mission.done}/${mission.total} 已完成`},
       {項目:'今日題目進度',值:`${mission.completedQuestions}/${mission.targetQuestions} 題`},
+      {項目:'已個人化時間模式',值:timeCalibration.filter(x=>x.狀態!=='基準估算').length+' / '+timeCalibration.length},
       {項目:'今日配置時間',值:mission.minutes+' 分鐘'},
       {項目:'今日補回任務',值:mission.carryoverCount+' 件'},
       {項目:'本週目標學習日',值:plan.targetDays},
@@ -3785,7 +3904,7 @@
       {項目:'本週第一弱項',值:skillLabels[plan.focusSkill]||plan.focusSkill}
     ];
 
-    return {summary,skills,skillHistory,todayMission,weeklyPlan,weaknesses,errors,questions,vocabulary,speaking,sessions};
+    return {summary,skills,skillHistory,timeCalibration,todayMission,weeklyPlan,weaknesses,errors,questions,vocabulary,speaking,sessions};
   }
 
   function setExportStatus(text,tone=''){
@@ -3828,6 +3947,7 @@
       addWorkbookSheet(wb,'總覽',data.summary,[22,34]);
       addWorkbookSheet(wb,'能力',data.skills,[24,12]);
       addWorkbookSheet(wb,'能力歷史',data.skillHistory,[14,22,20,12,12,12,12,12]);
+      addWorkbookSheet(wb,'時間校準',data.timeCalibration,[18,12,16,16,14]);
       addWorkbookSheet(wb,'今日任務',data.todayMission,[8,28,16,12,12,12,16,12,18,14,58]);
       addWorkbookSheet(wb,'週計畫',data.weeklyPlan,[8,28,16,10,12,58]);
       addWorkbookSheet(wb,'弱點',data.weaknesses,[28,12]);
@@ -3835,7 +3955,7 @@
       addWorkbookSheet(wb,'單字熟悉度',data.vocabulary,[20,20,16,12,14,12,10,10,10,12,16,16,52]);
       addWorkbookSheet(wb,'題目熟悉度',data.questions,[18,16,18,8,14,56,12,10,10,10,12,12,16,16,16,16]);
       addWorkbookSheet(wb,'口說紀錄',data.speaking,[18,26,18,10,10,20,58,58]);
-      addWorkbookSheet(wb,'最近回合',data.sessions,[20,28,10,10,20,10]);
+      addWorkbookSheet(wb,'最近回合',data.sessions,[20,28,10,10,20,10,12]);
       window.XLSX.writeFile(wb,`edan-english-learning-${todayKey()}.xlsx`,{compression:true});
       setExportStatus('✓ Excel 已匯出','success');
     }catch(err){
@@ -3863,6 +3983,7 @@
         <div><b>${(state.sessions||[]).length}</b><span>Sessions</span></div>
       </div>
       ${reportTableHtml('能力輪廓',data.skills,[{key:'技能',label:'技能'},{key:'等級',label:'目前等級'}],10)}
+      ${reportTableHtml('時間校準',data.timeCalibration,[{key:'模式',label:'模式'},{key:'有效樣本',label:'樣本'},{key:'估計分鐘每題',label:'分/題'},{key:'狀態',label:'狀態'}],6)}
       ${reportTableHtml('今日智慧任務',data.todayMission,[{key:'步驟',label:'#'},{key:'訓練',label:'任務'},{key:'累積進度',label:'進度'},{key:'剩餘題數',label:'剩餘'},{key:'狀態',label:'狀態'}],3)}
       ${reportTableHtml('本週學習計畫',data.weeklyPlan,[{key:'步驟',label:'#'},{key:'訓練',label:'訓練'},{key:'題數',label:'題數'},{key:'預估分鐘',label:'分鐘'}],7)}
       ${reportTableHtml('目前弱點',data.weaknesses,[{key:'弱點',label:'弱點'},{key:'次數',label:'累積次數'}],8)}
