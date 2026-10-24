@@ -1811,3 +1811,12 @@ body.auth-locked .little-e-panel{display:none!important}
   .today-mission-task{grid-template-columns:30px minmax(0,1fr)}
   .today-mission-task .btn{grid-column:2;width:100%;margin-top:2px}
 }
+
+
+/* v61 Smart Carry-over */
+.today-mission-carryover-note{margin:-2px 0 11px;padding:9px 11px;border-radius:11px;background:#fff8e9;border:1px solid #f0dfad;color:#75602f;font-size:9px;line-height:1.55}
+.today-mission-task.carryover{border-color:#eadcad;background:#fffdf7}
+.today-mission-carry-badge{display:inline-flex;align-items:center;min-height:20px;padding:3px 7px;border-radius:999px;background:#fff1c9;color:#866923;font-size:8px;font-style:normal;font-weight:900;letter-spacing:.02em}
+.today-mission-task.carryover .today-mission-check{background:#fff0c5;color:#987426}
+.today-mission-task.carryover.done{background:#f8faf8;border-color:#dce9e1}
+.today-mission-task.carryover.done .today-mission-carry-badge{background:#e4f2e9;color:#268b68}
