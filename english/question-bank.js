@@ -2284,6 +2284,546 @@ window.EDAN_ENGLISH_CONTENT = {
       "zh": "負責的",
       "example": "The application team is responsible for the code change.",
       "exampleZh": "應用團隊負責程式碼變更。"
+    },
+    {
+      "id": "v201",
+      "word": "bug",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "程式錯誤",
+      "example": "We found a bug in the payment flow.",
+      "exampleZh": "我們在付款流程中發現了一個程式錯誤。"
+    },
+    {
+      "id": "v202",
+      "word": "defect",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "缺陷",
+      "example": "The defect only appears under a specific condition.",
+      "exampleZh": "這個缺陷只會在特定條件下出現。"
+    },
+    {
+      "id": "v203",
+      "word": "incident",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "事件；事故",
+      "example": "We opened an incident after the service became unavailable.",
+      "exampleZh": "服務無法使用後，我們建立了一筆事故事件。"
+    },
+    {
+      "id": "v204",
+      "word": "outage",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "服務中斷",
+      "example": "The outage lasted for about fifteen minutes.",
+      "exampleZh": "服務中斷大約持續了十五分鐘。"
+    },
+    {
+      "id": "v205",
+      "word": "latency",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "延遲",
+      "example": "API latency increased after the release.",
+      "exampleZh": "發布後 API 延遲增加了。"
+    },
+    {
+      "id": "v206",
+      "word": "throughput",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "吞吐量",
+      "example": "We improved batch throughput by optimizing the process.",
+      "exampleZh": "我們透過流程優化提升了批次吞吐量。"
+    },
+    {
+      "id": "v207",
+      "word": "timeout",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "逾時",
+      "example": "The request failed because of a timeout.",
+      "exampleZh": "這個 request 因為逾時而失敗。"
+    },
+    {
+      "id": "v208",
+      "word": "retry",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "重試",
+      "example": "We retry the request only when it is safe.",
+      "exampleZh": "只有在安全的情況下我們才會重試 request。"
+    },
+    {
+      "id": "v209",
+      "word": "idempotent",
+      "pos": "adj.",
+      "category": "工程師英文",
+      "zh": "冪等的",
+      "example": "The API should be idempotent so retries do not create duplicates.",
+      "exampleZh": "API 應具備冪等性，讓重試不會產生重複資料。"
+    },
+    {
+      "id": "v210",
+      "word": "duplicate",
+      "pos": "n./adj.",
+      "category": "工程師英文",
+      "zh": "重複資料；重複的",
+      "example": "We need to prevent duplicate transactions.",
+      "exampleZh": "我們需要避免重複交易。"
+    },
+    {
+      "id": "v211",
+      "word": "request",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "請求",
+      "example": "The request includes the customer identifier.",
+      "exampleZh": "這個 request 包含客戶識別碼。"
+    },
+    {
+      "id": "v212",
+      "word": "response",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "回應",
+      "example": "The API returned an unexpected response.",
+      "exampleZh": "API 回傳了非預期的 response。"
+    },
+    {
+      "id": "v213",
+      "word": "payload",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "傳輸內容",
+      "example": "The payload is missing a required field.",
+      "exampleZh": "payload 缺少一個必要欄位。"
+    },
+    {
+      "id": "v214",
+      "word": "endpoint",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "API 端點",
+      "example": "This endpoint is used to update the account status.",
+      "exampleZh": "這個 endpoint 用來更新帳戶狀態。"
+    },
+    {
+      "id": "v215",
+      "word": "API",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "應用程式介面",
+      "example": "The frontend calls the API to retrieve the data.",
+      "exampleZh": "前端透過 API 取得資料。"
+    },
+    {
+      "id": "v216",
+      "word": "authentication",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "身分驗證",
+      "example": "Authentication failed because the token expired.",
+      "exampleZh": "因為 token 過期，所以身分驗證失敗。"
+    },
+    {
+      "id": "v217",
+      "word": "authorization",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "授權",
+      "example": "Authorization determines what the user can access.",
+      "exampleZh": "授權決定使用者可以存取什麼。"
+    },
+    {
+      "id": "v218",
+      "word": "permission",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "權限",
+      "example": "The service account does not have permission to write the file.",
+      "exampleZh": "服務帳號沒有寫入檔案的權限。"
+    },
+    {
+      "id": "v219",
+      "word": "token",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "權杖",
+      "example": "The access token expires after one hour.",
+      "exampleZh": "存取 token 一小時後會過期。"
+    },
+    {
+      "id": "v220",
+      "word": "session",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "工作階段",
+      "example": "The user session expired after a long period of inactivity.",
+      "exampleZh": "使用者長時間未操作後 session 過期了。"
+    },
+    {
+      "id": "v221",
+      "word": "cache",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "快取",
+      "example": "We use a cache to reduce repeated database reads.",
+      "exampleZh": "我們使用快取來減少重複讀取資料庫。"
+    },
+    {
+      "id": "v222",
+      "word": "queue",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "佇列",
+      "example": "Failed messages are sent to a separate queue.",
+      "exampleZh": "失敗的訊息會送到另一個 queue。"
+    },
+    {
+      "id": "v223",
+      "word": "message",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "訊息",
+      "example": "Each message has a unique identifier.",
+      "exampleZh": "每一則訊息都有唯一識別碼。"
+    },
+    {
+      "id": "v224",
+      "word": "event",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "事件",
+      "example": "The service publishes an event after the transaction completes.",
+      "exampleZh": "交易完成後服務會發布一個 event。"
+    },
+    {
+      "id": "v225",
+      "word": "log",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "日誌",
+      "example": "I checked the application log to find the error.",
+      "exampleZh": "我查看應用程式 log 來找錯誤。"
+    },
+    {
+      "id": "v226",
+      "word": "trace",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "追蹤資料",
+      "example": "The trace shows where the request spent most of its time.",
+      "exampleZh": "trace 顯示 request 大部分時間花在哪一段。"
+    },
+    {
+      "id": "v227",
+      "word": "metric",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "指標",
+      "example": "We monitor latency and error rate as key metrics.",
+      "exampleZh": "我們把延遲和錯誤率當成關鍵指標監控。"
+    },
+    {
+      "id": "v228",
+      "word": "monitor",
+      "pos": "v.",
+      "category": "工程師英文",
+      "zh": "監控",
+      "example": "We monitor the service during the release window.",
+      "exampleZh": "我們會在發布時段監控服務。"
+    },
+    {
+      "id": "v229",
+      "word": "alert",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "告警",
+      "example": "An alert was triggered when the error rate increased.",
+      "exampleZh": "錯誤率上升時觸發了告警。"
+    },
+    {
+      "id": "v230",
+      "word": "dashboard",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "監控儀表板",
+      "example": "The dashboard shows the current service health.",
+      "exampleZh": "dashboard 顯示目前服務健康狀況。"
+    },
+    {
+      "id": "v231",
+      "word": "database",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "資料庫",
+      "example": "The application stores customer data in the database.",
+      "exampleZh": "應用程式把客戶資料存進資料庫。"
+    },
+    {
+      "id": "v232",
+      "word": "query",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "查詢",
+      "example": "This query is taking longer than expected.",
+      "exampleZh": "這個 query 執行時間比預期久。"
+    },
+    {
+      "id": "v233",
+      "word": "schema",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "資料結構；綱要",
+      "example": "The schema change needs backward compatibility.",
+      "exampleZh": "schema 變更需要保持向後相容。"
+    },
+    {
+      "id": "v234",
+      "word": "index",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "索引",
+      "example": "Adding an index improved the query performance.",
+      "exampleZh": "新增索引改善了查詢效能。"
+    },
+    {
+      "id": "v235",
+      "word": "transaction",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "交易；事務",
+      "example": "The transaction should either fully succeed or roll back.",
+      "exampleZh": "這筆 transaction 應該要全部成功，否則就回滾。"
+    },
+    {
+      "id": "v236",
+      "word": "commit",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "提交",
+      "example": "The fix is included in the latest commit.",
+      "exampleZh": "修正已包含在最新 commit 中。"
+    },
+    {
+      "id": "v237",
+      "word": "lock",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "鎖定",
+      "example": "The process is waiting for a database lock.",
+      "exampleZh": "這個 process 正在等待資料庫 lock。"
+    },
+    {
+      "id": "v238",
+      "word": "deadlock",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "死鎖",
+      "example": "The two transactions caused a deadlock.",
+      "exampleZh": "這兩筆 transaction 造成了 deadlock。"
+    },
+    {
+      "id": "v239",
+      "word": "connection",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "連線",
+      "example": "The database connection was closed unexpectedly.",
+      "exampleZh": "資料庫連線意外中斷。"
+    },
+    {
+      "id": "v240",
+      "word": "thread",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "執行緒",
+      "example": "The worker uses a separate thread for the task.",
+      "exampleZh": "worker 使用獨立 thread 處理工作。"
+    },
+    {
+      "id": "v241",
+      "word": "process",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "程序；處理程序",
+      "example": "The process restarted automatically after the failure.",
+      "exampleZh": "process 在失敗後自動重新啟動。"
+    },
+    {
+      "id": "v242",
+      "word": "service",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "服務",
+      "example": "The service is healthy again.",
+      "exampleZh": "服務已恢復正常。"
+    },
+    {
+      "id": "v243",
+      "word": "microservice",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "微服務",
+      "example": "Each microservice owns a specific business capability.",
+      "exampleZh": "每個微服務負責特定的業務能力。"
+    },
+    {
+      "id": "v244",
+      "word": "container",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "容器",
+      "example": "The application runs inside a container.",
+      "exampleZh": "應用程式在 container 中執行。"
+    },
+    {
+      "id": "v245",
+      "word": "image",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "映像檔",
+      "example": "We built a new container image for the release.",
+      "exampleZh": "我們為這次發布建立了新的 container image。"
+    },
+    {
+      "id": "v246",
+      "word": "deployment",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "部署",
+      "example": "The deployment completed without errors.",
+      "exampleZh": "部署已完成且沒有錯誤。"
+    },
+    {
+      "id": "v247",
+      "word": "release",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "發布版本",
+      "example": "The new release includes several bug fixes.",
+      "exampleZh": "新版本包含數個 bug 修正。"
+    },
+    {
+      "id": "v248",
+      "word": "version",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "版本",
+      "example": "Please confirm which version is running in production.",
+      "exampleZh": "請確認 production 現在跑的是哪個版本。"
+    },
+    {
+      "id": "v249",
+      "word": "configuration",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "設定",
+      "example": "The issue was caused by an incorrect configuration.",
+      "exampleZh": "問題是由錯誤設定造成的。"
+    },
+    {
+      "id": "v250",
+      "word": "environment",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "環境",
+      "example": "The issue only happens in the production environment.",
+      "exampleZh": "這個問題只發生在 production 環境。"
+    },
+    {
+      "id": "v251",
+      "word": "integration",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "整合",
+      "example": "The integration failed because the upstream API changed.",
+      "exampleZh": "因為上游 API 改變，整合失敗了。"
+    },
+    {
+      "id": "v252",
+      "word": "build",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "建置",
+      "example": "The latest build passed all tests.",
+      "exampleZh": "最新 build 通過所有測試。"
+    },
+    {
+      "id": "v253",
+      "word": "pipeline",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "自動化流程；管線",
+      "example": "The deployment pipeline runs after the merge.",
+      "exampleZh": "merge 後會執行部署 pipeline。"
+    },
+    {
+      "id": "v254",
+      "word": "repository",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "程式碼儲存庫",
+      "example": "The source code is stored in the repository.",
+      "exampleZh": "原始碼存放在 repository。"
+    },
+    {
+      "id": "v255",
+      "word": "branch",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "分支",
+      "example": "I created a branch for the fix.",
+      "exampleZh": "我為這個修正建立了一個 branch。"
+    },
+    {
+      "id": "v256",
+      "word": "merge",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "合併",
+      "example": "We can merge the change after the review.",
+      "exampleZh": "review 完成後就可以 merge 變更。"
+    },
+    {
+      "id": "v257",
+      "word": "pull request",
+      "pos": "phrase",
+      "category": "工程師英文",
+      "zh": "合併請求",
+      "example": "The pull request is ready for review.",
+      "exampleZh": "pull request 已準備好進行 review。"
+    },
+    {
+      "id": "v258",
+      "word": "test case",
+      "pos": "phrase",
+      "category": "工程師英文",
+      "zh": "測試案例",
+      "example": "We added a test case for the failure scenario.",
+      "exampleZh": "我們為失敗情境新增了一個 test case。"
+    },
+    {
+      "id": "v259",
+      "word": "regression",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "回歸問題；回歸測試",
+      "example": "The regression test caught the issue before release.",
+      "exampleZh": "回歸測試在發布前抓到了問題。"
+    },
+    {
+      "id": "v260",
+      "word": "production",
+      "pos": "n./adj.",
+      "category": "工程師英文",
+      "zh": "正式環境",
+      "example": "The fix has not been deployed to production yet.",
+      "exampleZh": "修正還沒有部署到正式環境。"
     }
   ],
   "questions": [
