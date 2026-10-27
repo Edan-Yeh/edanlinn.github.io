@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.28-v67');
-assert.equal(version.cache,'edan-english-coach-20261028-v67');
+assert.equal(version.release,'2026.10.28-v68');
+assert.equal(version.cache,'edan-english-coach-20261028-v68');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -492,8 +492,8 @@ assert.ok(publicIds.has('diag-l2-002'));
 assert.equal(content.questions.filter(q=>q.diagnosticOnly).length,5);
 const allListeningQuestions=content.questions.filter(q=>q.type==='listening_intent');
 const listeningQuestions=allListeningQuestions.filter(q=>!q.diagnosticOnly);
-assert.equal(allListeningQuestions.length,128,'v67 should provide 128 total listening-intent questions including diagnostics');
-assert.equal(listeningQuestions.length,126,'v67 should provide 126 non-diagnostic listening-intent questions');
+assert.equal(allListeningQuestions.length,140,'v68 should provide 140 listening-intent questions including diagnostics');
+assert.equal(listeningQuestions.length,138,'v68 should provide 138 non-diagnostic listening-intent questions');
 for(const source of ['Project Listening Expansion','Interview Listening Expansion','AI Listening Expansion','Engineering Listening Expansion']){
   assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 v66 questions for '+source);
 }
@@ -503,6 +503,21 @@ for(const source of ['Life Listening Core','Interview Listening Core','Project L
 for(const id of ['listen-life-001','listen-life-016','listen-interview-009','listen-interview-024','listen-project-009','listen-project-024','listen-engineer-009','listen-engineer-024','listen-ai-009','listen-ai-024']){
   assert.ok(publicIds.has(id),'Missing v67 listening question '+id);
 }
+const multiTurn=content.questions.filter(q=>q.source==='v68 Multi-turn Listening');
+assert.equal(multiTurn.length,12,'v68 adds 12 realistic multi-turn listening scenarios');
+assert.equal(multiTurn.filter(q=>q.format==='conversation').length,10);
+assert.equal(multiTurn.filter(q=>q.format==='briefing').length,2);
+for(const q of multiTurn){
+  assert.equal(q.type,'listening_intent');
+  assert.ok(Array.isArray(q.turns)&&q.turns.length>=4);
+  assert.ok(q.comprehensionQuestion&&q.comprehensionQuestionZh&&q.scenario);
+  assert.ok(q.turns.every(turn=>turn.speaker&&turn.en&&turn.zh));
+}
+assert.match(app,/mode==='conversation'\|\|mode==='briefing'/);
+assert.match(app,/function renderListeningQuestion/);
+assert.match(app,/id="comprehensionQuestionZh"/);
+assert.ok(html.includes('data-mode="conversation"'));
+assert.ok(html.includes('data-mode="briefing"'));
 assert.equal((content.vocabulary||[]).length,300,'v67 should provide 300 core vocabulary items');
 assert.equal(new Set(content.vocabulary.map(v=>String(v.word||'').toLowerCase())).size,300,'v67 core vocabulary words must be unique');
 for(const [category,count] of [['生活會話',50],['面試職涯',50],['專案顧問',50],['工程師英文',60],['Cloud／AI',40]]){
@@ -592,4 +607,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v67 Core Coverage expands vocabulary to 300 and listening-intent practice to 128 total questions across life, interview, project, engineering, and Cloud/AI; live counts, category filters, zh-TW content, cue coverage, and prior regressions remain intact.');
+console.log('PASS: v68 Multi-turn Listening adds 10 dialogues and 2 briefings, preserves translation/hint behavior, 300 core words, and previous regression checks.');
