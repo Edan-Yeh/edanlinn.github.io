@@ -4805,6 +4805,374 @@ window.EDAN_ENGLISH_CONTENT = {
         "business impact",
         "operational risk"
       ]
+    },
+    {
+      "id": "listen-life-001",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Are you free for dinner after work, or do you already have plans?",
+      "textZh": "你下班後有空一起吃晚餐嗎？還是已經有安排了？",
+      "intent": "辨認對方在詢問下班後是否有空聚餐。",
+      "options": [
+        "詢問下班後是否有空",
+        "詢問工作內容",
+        "詢問薪資",
+        "詢問地址"
+      ],
+      "answer": 0,
+      "model": "I’m free after work. Dinner sounds good.",
+      "modelZh": "我下班後有空，一起吃晚餐不錯。",
+      "keywords": [
+        "after work",
+        "usually"
+      ]
+    },
+    {
+      "id": "listen-life-002",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Would you rather eat here or get something to take away?",
+      "textZh": "你比較想在這裡吃，還是買外帶？",
+      "intent": "辨認對方在詢問內用或外帶偏好。",
+      "options": [
+        "詢問用餐方式偏好",
+        "詢問交通方式",
+        "詢問工作進度",
+        "詢問時間"
+      ],
+      "answer": 0,
+      "model": "I’d rather eat here if we have enough time.",
+      "modelZh": "如果時間夠，我比較想在這裡吃。",
+      "keywords": [
+        "would you rather",
+        "okay with that"
+      ]
+    },
+    {
+      "id": "listen-life-003",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "The train is delayed again. Do you want to take a taxi instead?",
+      "textZh": "火車又延誤了，你要不要改搭計程車？",
+      "intent": "辨認對方在提出交通替代方案。",
+      "options": [
+        "提出替代交通方式",
+        "取消面試",
+        "要求加班",
+        "詢問餐廳"
+      ],
+      "answer": 0,
+      "model": "Yes, let’s take a taxi so we can arrive on time.",
+      "modelZh": "好，我們搭計程車吧，這樣可以準時到。",
+      "keywords": [
+        "on time",
+        "maybe"
+      ]
+    },
+    {
+      "id": "listen-life-004",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Can you pick me up at the station around seven?",
+      "textZh": "你可以大約七點到車站接我嗎？",
+      "intent": "辨認對方在請你到車站接人。",
+      "options": [
+        "請你接人",
+        "請你買東西",
+        "請你改會議",
+        "請你寄信"
+      ],
+      "answer": 0,
+      "model": "Sure. I’ll meet you near the main entrance at seven.",
+      "modelZh": "可以，我七點會在正門附近跟你碰面。",
+      "keywords": [
+        "how long",
+        "okay with that"
+      ]
+    },
+    {
+      "id": "listen-life-005",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "I’m running a little late. Is it okay if we meet at seven thirty instead?",
+      "textZh": "我有點晚了，我們改成七點半見可以嗎？",
+      "intent": "辨認對方因遲到而想延後見面時間。",
+      "options": [
+        "延後約定時間",
+        "取消工作",
+        "詢問地址",
+        "借東西"
+      ],
+      "answer": 0,
+      "model": "That’s fine. Seven thirty works for me.",
+      "modelZh": "沒問題，七點半我可以。",
+      "keywords": [
+        "works for me",
+        "okay with that"
+      ]
+    },
+    {
+      "id": "listen-life-006",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Do you know anywhere nearby that’s quiet enough for a video call?",
+      "textZh": "你知道附近哪裡夠安靜，可以進行視訊通話嗎？",
+      "intent": "辨認對方在找附近適合視訊通話的安靜地點。",
+      "options": [
+        "找安靜的附近地點",
+        "找停車位",
+        "找工程師",
+        "找面試題"
+      ],
+      "answer": 0,
+      "model": "There’s a quiet café across the street. It should work.",
+      "modelZh": "街對面有一家安靜的咖啡店，應該可以。",
+      "keywords": [
+        "nearby",
+        "what do you mean"
+      ]
+    },
+    {
+      "id": "listen-life-007",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Could you remind me to bring the documents tomorrow morning?",
+      "textZh": "你可以提醒我明天早上帶文件嗎？",
+      "intent": "辨認對方在請你明天提醒帶文件。",
+      "options": [
+        "請你提醒事情",
+        "請你翻譯文件",
+        "請你取消會議",
+        "請你加班"
+      ],
+      "answer": 0,
+      "model": "Sure. I’ll remind you tomorrow morning.",
+      "modelZh": "可以，我明天早上會提醒你。",
+      "keywords": [
+        "remind me",
+        "tomorrow"
+      ]
+    },
+    {
+      "id": "listen-life-008",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "I’m not sure what to order. What do you usually get here?",
+      "textZh": "我不確定要點什麼，你平常來這裡都點什麼？",
+      "intent": "辨認對方在詢問餐點推薦。",
+      "options": [
+        "詢問餐點推薦",
+        "詢問工作內容",
+        "詢問薪資",
+        "詢問交通"
+      ],
+      "answer": 0,
+      "model": "I usually get the chicken. It’s simple and not too spicy.",
+      "modelZh": "我通常點雞肉，口味簡單而且不會太辣。",
+      "keywords": [
+        "usually",
+        "not sure yet"
+      ]
+    },
+    {
+      "id": "listen-life-009",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Do you mind if I borrow your charger for about twenty minutes?",
+      "textZh": "你介意我借你的充電器大約二十分鐘嗎？",
+      "intent": "辨認對方在禮貌詢問是否可以借充電器。",
+      "options": [
+        "借充電器",
+        "借錢",
+        "改時間",
+        "問路"
+      ],
+      "answer": 0,
+      "model": "No problem. You can use it until I leave.",
+      "modelZh": "沒問題，我離開前你都可以用。",
+      "keywords": [
+        "how long",
+        "works for me"
+      ]
+    },
+    {
+      "id": "listen-life-010",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "The package says it was delivered, but I can’t find it anywhere.",
+      "textZh": "包裹顯示已送達，但我到處都找不到。",
+      "intent": "辨認對方在描述包裹顯示送達但找不到的問題。",
+      "options": [
+        "包裹遺失問題",
+        "餐廳訂位",
+        "工作面試",
+        "系統故障"
+      ],
+      "answer": 0,
+      "model": "Let’s check the entrance and ask the front desk first.",
+      "modelZh": "我們先檢查入口，再問一下櫃台。",
+      "keywords": [
+        "check",
+        "confirm meaning"
+      ]
+    },
+    {
+      "id": "listen-life-011",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Are you okay with walking, or should we take the bus?",
+      "textZh": "你可以走路嗎？還是我們應該搭公車？",
+      "intent": "辨認對方在詢問步行或搭公車的交通偏好。",
+      "options": [
+        "詢問交通偏好",
+        "詢問飲食偏好",
+        "詢問工作偏好",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "Walking is fine if it’s not too far.",
+      "modelZh": "如果不會太遠，走路沒問題。",
+      "keywords": [
+        "okay with that",
+        "how long"
+      ]
+    },
+    {
+      "id": "listen-life-012",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "I haven’t seen you in a while. Want to catch up this weekend?",
+      "textZh": "好一陣子沒見了，這週末要不要聚一下聊近況？",
+      "intent": "辨認對方在邀請週末見面聊近況。",
+      "options": [
+        "邀請週末聚會",
+        "安排面試",
+        "詢問工作進度",
+        "要求協助"
+      ],
+      "answer": 0,
+      "model": "Sure. I’m free on Saturday afternoon.",
+      "modelZh": "好啊，我星期六下午有空。",
+      "keywords": [
+        "weekends",
+        "friends"
+      ]
+    },
+    {
+      "id": "listen-life-013",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Could you say that again a little more slowly?",
+      "textZh": "你可以再說一次，稍微慢一點嗎？",
+      "intent": "辨認對方在要求重複並放慢語速。",
+      "options": [
+        "要求重複並放慢",
+        "要求更大聲",
+        "要求翻譯",
+        "要求停止"
+      ],
+      "answer": 0,
+      "model": "Of course. I’ll say it again more slowly.",
+      "modelZh": "當然，我會再慢一點說一次。",
+      "keywords": [
+        "slower",
+        "repeat"
+      ]
+    },
+    {
+      "id": "listen-life-014",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Do you need anything from the convenience store? I’m going now.",
+      "textZh": "你需要我從便利商店帶什麼嗎？我現在要去。",
+      "intent": "辨認對方在主動詢問是否需要順便買東西。",
+      "options": [
+        "詢問是否需要代買",
+        "詢問工作內容",
+        "詢問地址",
+        "詢問交通"
+      ],
+      "answer": 0,
+      "model": "Could you get me a bottle of water, please?",
+      "modelZh": "可以幫我買一瓶水嗎？",
+      "keywords": [
+        "maybe",
+        "get back to you"
+      ]
+    },
+    {
+      "id": "listen-life-015",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "The restaurant is fully booked tonight. Should we try somewhere else?",
+      "textZh": "這家餐廳今晚都訂滿了，我們要不要換一家？",
+      "intent": "辨認對方因餐廳客滿而提出更換地點。",
+      "options": [
+        "更換餐廳",
+        "取消所有行程",
+        "改工作內容",
+        "安排會議"
+      ],
+      "answer": 0,
+      "model": "Yes. Let’s find another place nearby.",
+      "modelZh": "好，我們找附近另一家吧。",
+      "keywords": [
+        "nearby",
+        "maybe"
+      ]
+    },
+    {
+      "id": "listen-life-016",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "I’m still getting ready. Can you give me another ten minutes?",
+      "textZh": "我還在準備，可以再給我十分鐘嗎？",
+      "intent": "辨認對方因尚未準備好而需要多十分鐘。",
+      "options": [
+        "需要多一點準備時間",
+        "要求提前到",
+        "要求取消",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "Sure. Take your time. I’ll wait here.",
+      "modelZh": "可以，慢慢來，我在這裡等。",
+      "keywords": [
+        "still",
+        "how long"
+      ]
     }
   ]
 };
