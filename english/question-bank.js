@@ -5173,6 +5173,390 @@ window.EDAN_ENGLISH_CONTENT = {
         "still",
         "how long"
       ]
+    },
+    {
+      "id": "listen-interview-009",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What made you start looking for a new opportunity at this point in your career?",
+      "textZh": "是什麼原因讓你在職涯這個階段開始尋找新的機會？",
+      "intent": "面試官在問你現在尋找新工作的動機。",
+      "options": [
+        "轉職動機",
+        "薪資明細",
+        "通勤方式",
+        "休假安排"
+      ],
+      "answer": 0,
+      "model": "I’m looking for a role with more cloud exposure, customer ownership, and room to grow.",
+      "modelZh": "我希望下一個角色有更多雲端經驗、客戶責任與成長空間。",
+      "keywords": [
+        "next stage",
+        "motivation",
+        "customer-facing delivery"
+      ]
+    },
+    {
+      "id": "listen-interview-010",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Walk me through a project where the original plan did not work and you had to adjust.",
+      "textZh": "請說明一個原本計畫沒有奏效、你必須調整做法的專案。",
+      "intent": "面試官要你說明遇到計畫失效時如何調整。",
+      "options": [
+        "計畫失效後如何調整",
+        "工作年資",
+        "英文程度",
+        "薪資期待"
+      ],
+      "answer": 0,
+      "model": "I would explain what changed, how I reassessed the risk, and what actions I took to keep delivery moving.",
+      "modelZh": "我會說明發生了什麼改變、如何重新評估風險，以及採取哪些行動讓交付持續推進。",
+      "keywords": [
+        "risk",
+        "next actions",
+        "delivery"
+      ]
+    },
+    {
+      "id": "listen-interview-011",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you make sure you understand the real business need before proposing a technical solution?",
+      "textZh": "在提出技術方案前，你如何確認自己理解真正的業務需求？",
+      "intent": "面試官在問你如何從需求釐清走到技術方案。",
+      "options": [
+        "如何釐清真正業務需求",
+        "如何談薪資",
+        "如何安排假期",
+        "如何學英文"
+      ],
+      "answer": 0,
+      "model": "I clarify the business outcome, constraints, and priority first, then translate them into technical options.",
+      "modelZh": "我會先釐清業務成果、限制與優先順序，再轉成技術選項。",
+      "keywords": [
+        "scope",
+        "business impact",
+        "options"
+      ]
+    },
+    {
+      "id": "listen-interview-012",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Tell me about a time you had to push back on a request from a customer or stakeholder.",
+      "textZh": "請分享一次你必須對客戶或利害關係人的要求提出不同意見的經驗。",
+      "intent": "面試官在問你如何專業地 push back。",
+      "options": [
+        "如何對不合理要求提出不同意見",
+        "如何介紹自己",
+        "如何詢問福利",
+        "如何請假"
+      ],
+      "answer": 0,
+      "model": "I would acknowledge the objective, explain the risk, and offer safer alternatives instead of simply saying no.",
+      "modelZh": "我會先認同目標，說明風險，再提出較安全的替代方案，而不是直接拒絕。",
+      "keywords": [
+        "acknowledge objective",
+        "risk",
+        "alternatives"
+      ]
+    },
+    {
+      "id": "listen-interview-013",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What do you do when two senior stakeholders give you conflicting priorities?",
+      "textZh": "當兩位高階利害關係人給你互相衝突的優先順序時，你會怎麼做？",
+      "intent": "面試官在測試你處理高階優先順序衝突的能力。",
+      "options": [
+        "處理高階優先順序衝突",
+        "處理電腦故障",
+        "安排通勤",
+        "談薪資"
+      ],
+      "answer": 0,
+      "model": "I make the trade-offs visible and ask the decision owner to confirm the priority.",
+      "modelZh": "我會把取捨透明化，並請決策負責人確認優先順序。",
+      "keywords": [
+        "trade-offs",
+        "decision owner",
+        "priority"
+      ]
+    },
+    {
+      "id": "listen-interview-014",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What kind of work gives you the most energy?",
+      "textZh": "哪一類工作最能讓你有動力？",
+      "intent": "面試官在了解你的工作偏好與動機。",
+      "options": [
+        "工作動機與偏好",
+        "工作地點",
+        "薪資明細",
+        "離職手續"
+      ],
+      "answer": 0,
+      "model": "I enjoy work that combines technical problem solving, coordination, and visible customer impact.",
+      "modelZh": "我喜歡結合技術解題、協調與可見客戶影響的工作。",
+      "keywords": [
+        "technical depth",
+        "customer impact",
+        "motivation"
+      ]
+    },
+    {
+      "id": "listen-interview-015",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "How would your teammates describe the way you work under pressure?",
+      "textZh": "你的同事會如何形容你在壓力下的工作方式？",
+      "intent": "面試官在問壓力情境下的工作風格。",
+      "options": [
+        "壓力下的工作風格",
+        "薪資期待",
+        "學歷背景",
+        "休假偏好"
+      ],
+      "answer": 0,
+      "model": "They would probably say I stay calm, clarify priorities, and keep communication structured.",
+      "modelZh": "他們大概會說我能保持冷靜、釐清優先順序，並維持有結構的溝通。",
+      "keywords": [
+        "priority",
+        "customer communication",
+        "reliably"
+      ]
+    },
+    {
+      "id": "listen-interview-016",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is a decision you made that turned out to be wrong, and what did you learn from it?",
+      "textZh": "請分享一個你做錯的決策，以及你從中學到什麼。",
+      "intent": "面試官在測試你是否能承認錯誤並反思。",
+      "options": [
+        "錯誤決策與學習",
+        "薪資談判",
+        "技術證照",
+        "通勤方式"
+      ],
+      "answer": 0,
+      "model": "I would explain the assumption I got wrong, how I corrected it, and what check I added afterward.",
+      "modelZh": "我會說明哪個假設判斷錯了、如何修正，以及後來加入什麼檢查機制。",
+      "keywords": [
+        "assumptions",
+        "learned a lot",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-interview-017",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you balance being hands-on technically with coordinating the broader project?",
+      "textZh": "你如何平衡親自處理技術細節與協調整體專案？",
+      "intent": "面試官在問技術深度與專案協調的平衡。",
+      "options": [
+        "技術實作與專案協調的平衡",
+        "工作地點",
+        "薪資福利",
+        "英文口音"
+      ],
+      "answer": 0,
+      "model": "I go deep when the team needs technical clarity, but I step back when alignment and delivery need more attention.",
+      "modelZh": "團隊需要技術釐清時我會深入，但需要對齊與交付時我會拉高視角。",
+      "keywords": [
+        "technical depth",
+        "delivery alignment",
+        "scope"
+      ]
+    },
+    {
+      "id": "listen-interview-018",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What would you do if you joined and discovered the role was less clearly defined than expected?",
+      "textZh": "如果你加入後發現這個角色的定義比預期模糊，你會怎麼做？",
+      "intent": "面試官在測試你面對模糊角色邊界的做法。",
+      "options": [
+        "處理角色模糊",
+        "申請調薪",
+        "改面試時間",
+        "安排休假"
+      ],
+      "answer": 0,
+      "model": "I would clarify success criteria, ownership, and the most important outcomes with my manager and stakeholders.",
+      "modelZh": "我會和主管與利害關係人釐清成功標準、責任歸屬與最重要的成果。",
+      "keywords": [
+        "ownership",
+        "success",
+        "stakeholders"
+      ]
+    },
+    {
+      "id": "listen-interview-019",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What is one skill you are actively trying to improve right now?",
+      "textZh": "你目前正在積極改善哪一項能力？",
+      "intent": "面試官在問目前正在發展的能力。",
+      "options": [
+        "目前正在改善的能力",
+        "離職原因",
+        "薪資期待",
+        "工作地址"
+      ],
+      "answer": 0,
+      "model": "I’m actively improving my English listening and speaking for global customer communication.",
+      "modelZh": "我正在積極提升英文聽力與口說，以應對全球客戶溝通。",
+      "keywords": [
+        "improving",
+        "English at work",
+        "customer communication"
+      ]
+    },
+    {
+      "id": "listen-interview-020",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If I asked you to lead a customer workshop tomorrow, how would you prepare?",
+      "textZh": "如果我請你明天主持一場客戶工作坊，你會怎麼準備？",
+      "intent": "面試官在測試你快速準備客戶 workshop 的方法。",
+      "options": [
+        "準備客戶工作坊",
+        "準備薪資談判",
+        "準備旅行",
+        "準備休假"
+      ],
+      "answer": 0,
+      "model": "I would clarify the objective, audience, decisions needed, and expected output, then prepare a simple structure and examples.",
+      "modelZh": "我會先釐清目標、對象、需要做的決策與預期產出，再準備簡單架構與例子。",
+      "keywords": [
+        "audience",
+        "decision needed",
+        "customer engagement"
+      ]
+    },
+    {
+      "id": "listen-interview-021",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you know when a problem needs your involvement instead of staying with the engineering team?",
+      "textZh": "你如何判斷一個問題需要你介入，而不是留在工程團隊內處理？",
+      "intent": "面試官在問介入與 escalation 的判斷。",
+      "options": [
+        "何時需要介入工程問題",
+        "如何寫履歷",
+        "如何安排會議室",
+        "如何請假"
+      ],
+      "answer": 0,
+      "model": "I get involved when the issue affects delivery, customers, ownership, or requires a cross-team decision.",
+      "modelZh": "當問題影響交付、客戶、責任歸屬，或需要跨團隊決策時，我會介入。",
+      "keywords": [
+        "customer impact",
+        "ownership",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-interview-022",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What would you want your first ninety days in this role to accomplish?",
+      "textZh": "你希望在這個角色的前九十天完成什麼？",
+      "intent": "面試官在問入職前三個月的具體目標。",
+      "options": [
+        "前三個月目標",
+        "上一份薪資",
+        "假期安排",
+        "通勤時間"
+      ],
+      "answer": 0,
+      "model": "I would aim to understand the environment, build stakeholder trust, and deliver one visible outcome.",
+      "modelZh": "我會以了解環境、建立利害關係人信任，以及交付一個可見成果為目標。",
+      "keywords": [
+        "visible outcomes",
+        "stakeholders",
+        "success"
+      ]
+    },
+    {
+      "id": "listen-interview-023",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What questions do you have for us about the team or the role?",
+      "textZh": "你對團隊或這個角色有什麼想問我們的？",
+      "intent": "辨認面試官正在邀請你反問問題。",
+      "options": [
+        "邀請候選人反問",
+        "要求自我介紹",
+        "要求技術測試",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "I’d like to understand the team structure, success criteria, and the biggest challenge for this role.",
+      "modelZh": "我想了解團隊結構、成功標準，以及這個角色目前最大的挑戰。",
+      "keywords": [
+        "success",
+        "challenge",
+        "scope"
+      ]
+    },
+    {
+      "id": "listen-interview-024",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would make you choose one offer over another if you had multiple options?",
+      "textZh": "如果你同時有多個 offer，什麼因素會讓你選擇其中一個？",
+      "intent": "面試官在了解你選擇職位的主要考量。",
+      "options": [
+        "選擇 offer 的考量",
+        "目前薪資",
+        "休假餘額",
+        "交通工具"
+      ],
+      "answer": 0,
+      "model": "I would compare role scope, learning potential, team quality, customer impact, and the overall package.",
+      "modelZh": "我會比較職務範圍、學習潛力、團隊品質、客戶影響與整體薪酬方案。",
+      "keywords": [
+        "scope",
+        "customer impact",
+        "overall package"
+      ]
     }
   ]
 };
