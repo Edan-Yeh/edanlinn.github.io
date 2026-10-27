@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.28-v66');
-assert.equal(version.cache,'edan-english-coach-20261028-v66');
+assert.equal(version.release,'2026.10.28-v67');
+assert.equal(version.cache,'edan-english-coach-20261028-v67');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -492,14 +492,26 @@ assert.ok(publicIds.has('diag-l2-002'));
 assert.equal(content.questions.filter(q=>q.diagnosticOnly).length,5);
 const allListeningQuestions=content.questions.filter(q=>q.type==='listening_intent');
 const listeningQuestions=allListeningQuestions.filter(q=>!q.diagnosticOnly);
-assert.equal(allListeningQuestions.length,48,'v66 should provide 48 total listening-intent questions including diagnostics');
-assert.equal(listeningQuestions.length,46,'v66 should provide 46 non-diagnostic listening-intent questions');
+assert.equal(allListeningQuestions.length,128,'v67 should provide 128 total listening-intent questions including diagnostics');
+assert.equal(listeningQuestions.length,126,'v67 should provide 126 non-diagnostic listening-intent questions');
 for(const source of ['Project Listening Expansion','Interview Listening Expansion','AI Listening Expansion','Engineering Listening Expansion']){
-  assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 questions for '+source);
+  assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 v66 questions for '+source);
 }
-for(const id of ['listen-project-001','listen-project-008','listen-interview-001','listen-interview-008','listen-ai-001','listen-ai-008','listen-engineer-001','listen-engineer-008']){
-  assert.ok(publicIds.has(id),'Missing v66 listening question '+id);
+for(const source of ['Life Listening Core','Interview Listening Core','Project Listening Core','Engineering Listening Core','Cloud AI Listening Core']){
+  assert.equal(listeningQuestions.filter(q=>q.source===source).length,16,'Expected 16 v67 questions for '+source);
 }
+for(const id of ['listen-life-001','listen-life-016','listen-interview-009','listen-interview-024','listen-project-009','listen-project-024','listen-engineer-009','listen-engineer-024','listen-ai-009','listen-ai-024']){
+  assert.ok(publicIds.has(id),'Missing v67 listening question '+id);
+}
+assert.equal((content.vocabulary||[]).length,300,'v67 should provide 300 core vocabulary items');
+for(const [category,count] of [['生活會話',50],['面試職涯',50],['專案顧問',50],['工程師英文',60],['Cloud／AI',40]]){
+  assert.equal(content.vocabulary.filter(v=>v.category===category).length,count,'Unexpected v67 vocabulary count for '+category);
+}
+assert.ok(html.includes('id="listeningBankCount"'));
+assert.ok(html.includes('id="vocabBankCount"'));
+assert.ok(html.includes('id="vocabSectionCount"'));
+for(const category of ['生活會話','面試職涯','專案顧問','工程師英文','Cloud／AI'])assert.ok(html.includes(`value="${category}"`));
+assert.match(app,/Listening \${listeningBankCount} 題 · Vocab \${vocabBankCount}/);
 
 assert.equal(content.questions.filter(q=>String(q.id).startsWith('mdb-')).length,0);
 assert.ok(!publicIds.has('pro-l3-009'));
@@ -579,4 +591,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v66 Listening Expansion grows listening-intent coverage to 48 total questions (46 regular + 2 diagnostic), adds 8 each for project, interview, AI, and engineering scenarios, keeps zh-TW question/model support and cue translations complete, and preserves prior regressions.');
+console.log('PASS: v67 Core Coverage expands vocabulary to 300 and listening-intent practice to 128 total questions across life, interview, project, engineering, and Cloud/AI; live counts, category filters, zh-TW content, cue coverage, and prior regressions remain intact.');
