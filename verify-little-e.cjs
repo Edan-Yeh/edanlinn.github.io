@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.24-v65');
-assert.equal(version.cache,'edan-english-coach-20261024-v65');
+assert.equal(version.release,'2026.10.28-v66');
+assert.equal(version.cache,'edan-english-coach-20261028-v66');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -490,6 +490,17 @@ assert.ok(publicIds.has('gen-l3-002'));
 assert.ok(publicIds.has('diag-l1-001'));
 assert.ok(publicIds.has('diag-l2-002'));
 assert.equal(content.questions.filter(q=>q.diagnosticOnly).length,5);
+const allListeningQuestions=content.questions.filter(q=>q.type==='listening_intent');
+const listeningQuestions=allListeningQuestions.filter(q=>!q.diagnosticOnly);
+assert.equal(allListeningQuestions.length,48,'v66 should provide 48 total listening-intent questions including diagnostics');
+assert.equal(listeningQuestions.length,46,'v66 should provide 46 non-diagnostic listening-intent questions');
+for(const source of ['Project Listening Expansion','Interview Listening Expansion','AI Listening Expansion','Engineering Listening Expansion']){
+  assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 questions for '+source);
+}
+for(const id of ['listen-project-001','listen-project-008','listen-interview-001','listen-interview-008','listen-ai-001','listen-ai-008','listen-engineer-001','listen-engineer-008']){
+  assert.ok(publicIds.has(id),'Missing v66 listening question '+id);
+}
+
 assert.equal(content.questions.filter(q=>String(q.id).startsWith('mdb-')).length,0);
 assert.ok(!publicIds.has('pro-l3-009'));
 assert.ok(!publicIds.has('pro-l3-010'));
@@ -568,4 +579,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v65 Filled Template Examples keeps reusable standard templates unchanged, adds Edan-filled examples with slot mappings and bilingual text, supports example TTS, and preserves prior regressions.');
+console.log('PASS: v66 Listening Expansion grows listening-intent coverage to 48 total questions (46 regular + 2 diagnostic), adds 8 each for project, interview, AI, and engineering scenarios, keeps zh-TW question/model support and cue translations complete, and preserves prior regressions.');
