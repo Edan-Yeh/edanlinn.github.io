@@ -504,6 +504,7 @@ for(const id of ['listen-life-001','listen-life-016','listen-interview-009','lis
   assert.ok(publicIds.has(id),'Missing v67 listening question '+id);
 }
 assert.equal((content.vocabulary||[]).length,300,'v67 should provide 300 core vocabulary items');
+assert.equal(new Set(content.vocabulary.map(v=>String(v.word||'').toLowerCase())).size,300,'v67 core vocabulary words must be unique');
 for(const [category,count] of [['生活會話',50],['面試職涯',50],['專案顧問',50],['工程師英文',60],['Cloud／AI',40]]){
   assert.equal(content.vocabulary.filter(v=>v.category===category).length,count,'Unexpected v67 vocabulary count for '+category);
 }
