@@ -1787,6 +1787,774 @@ window.EDAN_ENGLISH_CONTENT = {
         "technical depth",
         "next stage"
       ]
+    },
+    {
+      "id": "listen-project-001",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Before we lock the plan, can you walk me through the critical dependencies that could put the timeline at risk?",
+      "textZh": "在我們定案之前，你可以說明一下哪些關鍵相依項目可能讓時程產生風險嗎？",
+      "intent": "對方要你指出會影響專案時程的關鍵相依關係與風險。",
+      "options": [
+        "關鍵相依關係與時程風險",
+        "你的薪資期待",
+        "系統登入方式",
+        "團隊休假安排"
+      ],
+      "answer": 0,
+      "model": "The main dependencies are the upstream interface, test data readiness, and client decisions. I would track each owner and escalate anything that threatens the timeline.",
+      "modelZh": "主要相依項目是上游介面、測試資料準備度，以及客戶決策。我會追蹤每一項的負責人，任何可能影響時程的問題都會升級處理。",
+      "keywords": [
+        "dependencies",
+        "timeline at risk",
+        "owner"
+      ]
+    },
+    {
+      "id": "listen-project-002",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Who is actually accountable for the handoff between the application team and the infrastructure team?",
+      "textZh": "應用團隊與基礎架構團隊之間的交接，實際上到底由誰負責？",
+      "intent": "對方在確認跨團隊交接的明確 owner。",
+      "options": [
+        "跨團隊交接的負責人",
+        "專案預算",
+        "工作地點",
+        "面試流程"
+      ],
+      "answer": 0,
+      "model": "I would clarify one accountable owner for the handoff and make the acceptance criteria and next actions visible to both teams.",
+      "modelZh": "我會先釐清一位對交接負最終責任的 owner，並讓兩邊團隊都清楚驗收標準與下一步行動。",
+      "keywords": [
+        "owner",
+        "cross-team",
+        "next actions"
+      ]
+    },
+    {
+      "id": "listen-project-003",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "If the client brings this requirement into scope now, what does it do to effort and the delivery date?",
+      "textZh": "如果客戶現在把這個需求納入範圍，會對工作量和交付日期造成什麼影響？",
+      "intent": "對方要你評估 scope change 對 effort 與 delivery timeline 的影響。",
+      "options": [
+        "新增範圍對工作量與時程的影響",
+        "英文口說程度",
+        "資料庫帳號",
+        "公司福利"
+      ],
+      "answer": 0,
+      "model": "I would estimate the added effort, identify the affected milestones, and make the trade-off between scope and delivery date explicit.",
+      "modelZh": "我會估算新增工作量、找出受影響的里程碑，並把範圍與交付日期之間的取捨說清楚。",
+      "keywords": [
+        "new scope",
+        "effort",
+        "trade-off"
+      ]
+    },
+    {
+      "id": "listen-project-004",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which milestone is most likely to slip, and what are you doing to protect it?",
+      "textZh": "哪一個里程碑最可能延遲？你正在做什麼來保護它？",
+      "intent": "對方要你說明最有延誤風險的 milestone 與預防措施。",
+      "options": [
+        "里程碑風險與保護措施",
+        "職涯目標",
+        "薪資結構",
+        "英文證照"
+      ],
+      "answer": 0,
+      "model": "The integration test milestone is the most exposed. I would protect it by resolving dependencies early and keeping the decision timeline visible.",
+      "modelZh": "整合測試里程碑目前風險最高。我會提早處理相依項目，並讓決策時程保持透明來降低延誤風險。",
+      "keywords": [
+        "milestone",
+        "dependencies",
+        "timeline"
+      ]
+    },
+    {
+      "id": "listen-project-005",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Are there any decisions we need from the client this week to keep the work moving?",
+      "textZh": "這週有沒有任何需要客戶做的決策，才能讓工作繼續往前？",
+      "intent": "對方在問本週有哪些 client decisions 是專案繼續推進的阻塞點。",
+      "options": [
+        "本週需要客戶做的決策",
+        "團隊午餐",
+        "加班規定",
+        "系統密碼"
+      ],
+      "answer": 0,
+      "model": "Yes. We need the client to confirm the scope priority and approve the interface approach so the downstream work can continue.",
+      "modelZh": "有。我們需要客戶確認範圍優先順序並核准介面方案，後續工作才能繼續。",
+      "keywords": [
+        "decision needed",
+        "scope",
+        "dependencies"
+      ]
+    },
+    {
+      "id": "listen-project-006",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would you escalate now instead of letting the team resolve it on its own?",
+      "textZh": "哪些事情你會現在就升級處理，而不是讓團隊自己繼續解決？",
+      "intent": "對方在測試你判斷何時需要 escalate 的能力。",
+      "options": [
+        "何時需要升級處理",
+        "如何安排休假",
+        "如何談薪資",
+        "如何修改履歷"
+      ],
+      "answer": 0,
+      "model": "I would escalate when the issue has customer impact, no clear owner, or a decision is needed beyond the team's authority.",
+      "modelZh": "當問題已影響客戶、沒有明確 owner，或需要超出團隊權限的決策時，我會升級處理。",
+      "keywords": [
+        "escalate",
+        "customer impact",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-project-007",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Can we run these workstreams in parallel, or does one depend on the other?",
+      "textZh": "這些工作流可以平行進行嗎？還是其中一個必須等另一個完成？",
+      "intent": "對方在確認 workstreams 能否 parallel，以及彼此的 dependency。",
+      "options": [
+        "工作流是否能平行與相依關係",
+        "專案費用",
+        "出差地點",
+        "面試官職稱"
+      ],
+      "answer": 0,
+      "model": "We can run part of the work in parallel, but the final integration depends on the upstream interface being stable.",
+      "modelZh": "部分工作可以平行進行，但最終整合仍依賴上游介面穩定。",
+      "keywords": [
+        "parallel",
+        "dependency",
+        "workstreams"
+      ]
+    },
+    {
+      "id": "listen-project-008",
+      "source": "Project Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How are you tracking issue aging and making sure nothing sits without an owner?",
+      "textZh": "你怎麼追蹤問題存在多久，並確保沒有任何問題長時間沒有負責人？",
+      "intent": "對方在問 issue governance：aging、owner 與持續追蹤機制。",
+      "options": [
+        "問題 aging 與 owner 管理",
+        "履歷格式",
+        "英文發音",
+        "雲端帳號"
+      ],
+      "answer": 0,
+      "model": "I track issue aging, owner, next action, and due date. Anything stalled without progress is reviewed and escalated.",
+      "modelZh": "我會追蹤問題存在時間、owner、下一步與到期日；任何長時間沒有進展的問題都會被檢視並升級處理。",
+      "keywords": [
+        "issue aging",
+        "owner",
+        "tracked"
+      ]
+    },
+    {
+      "id": "listen-interview-001",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What part of your current role has the most direct impact on customer delivery?",
+      "textZh": "你目前的工作中，哪一部分對客戶交付有最直接的影響？",
+      "intent": "面試官要你說明目前角色中最直接影響 customer delivery 的工作。",
+      "options": [
+        "目前角色對客戶交付的影響",
+        "離職原因",
+        "薪資期待",
+        "休閒興趣"
+      ],
+      "answer": 0,
+      "model": "The biggest impact comes from translating business needs into workable technical actions and coordinating teams until the issue is resolved.",
+      "modelZh": "影響最大的是把業務需求轉成可執行的技術行動，並協調團隊直到問題解決。",
+      "keywords": [
+        "customer delivery",
+        "technical coordination",
+        "business impact"
+      ]
+    },
+    {
+      "id": "listen-interview-002",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Tell me about a time you had to make a decision without having all the information you wanted.",
+      "textZh": "請分享一次你在資訊不完整的情況下仍必須做決策的經驗。",
+      "intent": "面試官在考你如何在資訊不足時做 decision 與 risk judgment。",
+      "options": [
+        "資訊不完整時如何做決策",
+        "英文學習方法",
+        "工作年資",
+        "薪資結構"
+      ],
+      "answer": 0,
+      "model": "I would separate confirmed facts from assumptions, assess the risk of waiting, and make a reversible decision when possible.",
+      "modelZh": "我會把已確認事實與假設分開，評估等待的風險，並在可能時選擇可逆的決策。",
+      "keywords": [
+        "facts",
+        "risk",
+        "reversibility"
+      ]
+    },
+    {
+      "id": "listen-interview-003",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you handle a stakeholder who strongly disagrees with your recommendation?",
+      "textZh": "如果有利害關係人強烈不同意你的建議，你會怎麼處理？",
+      "intent": "面試官在問你如何處理 stakeholder disagreement 與 alignment。",
+      "options": [
+        "處理利害關係人不同意見",
+        "調整薪資",
+        "申請休假",
+        "準備證照"
+      ],
+      "answer": 0,
+      "model": "I would understand the concern first, make the trade-offs explicit, and use evidence to align on the decision.",
+      "modelZh": "我會先理解對方的顧慮，把取捨說清楚，再用證據協助大家對齊決策。",
+      "keywords": [
+        "stakeholders",
+        "trade-offs",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-interview-004",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What would your manager say is the biggest strength you bring to a project?",
+      "textZh": "你的主管會認為你帶給專案最大的優勢是什麼？",
+      "intent": "面試官要你用第三方視角說明自己的核心強項。",
+      "options": [
+        "主管眼中的核心強項",
+        "公司福利",
+        "工作地點",
+        "英文檢定"
+      ],
+      "answer": 0,
+      "model": "My manager would probably say I connect technical details with delivery priorities and keep cross-team issues moving.",
+      "modelZh": "我的主管大概會說，我能把技術細節與交付優先順序連結起來，並持續推進跨團隊問題。",
+      "keywords": [
+        "technical depth",
+        "delivery alignment",
+        "cross-team"
+      ]
+    },
+    {
+      "id": "listen-interview-005",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What is the most technical problem you have personally helped drive to resolution?",
+      "textZh": "你親自推動解決過最具技術性的問題是什麼？",
+      "intent": "面試官要你舉出具體 technical problem，並說明你如何推動解決。",
+      "options": [
+        "你推動解決過的技術問題",
+        "學歷背景",
+        "期望薪資",
+        "是否出差"
+      ],
+      "answer": 0,
+      "model": "I would choose a system integration issue where I analyzed logs, clarified the failure point, and coordinated the right teams to fix it.",
+      "modelZh": "我會舉一個系統整合問題，我分析 log、釐清失敗點，並協調正確團隊完成修復。",
+      "keywords": [
+        "technical depth",
+        "system integration",
+        "technical coordination"
+      ]
+    },
+    {
+      "id": "listen-interview-006",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How do you decide when to go deep into technical details and when to stay at the business level?",
+      "textZh": "你怎麼判斷什麼時候需要深入技術細節，什麼時候只需要停留在業務層級？",
+      "intent": "面試官在測試你依 audience 調整技術深度的能力。",
+      "options": [
+        "如何依對象調整技術深度",
+        "如何請假",
+        "如何談薪資",
+        "如何安排通勤"
+      ],
+      "answer": 0,
+      "model": "I adjust the level of detail based on the audience and the decision needed. I go deeper only when technical detail changes the risk or decision.",
+      "modelZh": "我會根據溝通對象與需要做的決策調整資訊深度；只有當技術細節會影響風險或決策時才深入。",
+      "keywords": [
+        "adjust the level of detail",
+        "audience",
+        "decision"
+      ]
+    },
+    {
+      "id": "listen-interview-007",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Why do you think your background is a good fit for a customer-facing technology role?",
+      "textZh": "為什麼你認為自己的背景適合客戶導向的科技職位？",
+      "intent": "面試官要你把技術背景與 customer-facing delivery 連結起來。",
+      "options": [
+        "背景如何符合客戶導向科技角色",
+        "薪資期待",
+        "工作地點",
+        "休閒嗜好"
+      ],
+      "answer": 0,
+      "model": "My background combines technical depth, financial IT experience, and customer-facing delivery, so I can connect business needs with practical technical decisions.",
+      "modelZh": "我的背景結合技術深度、金融 IT 經驗與客戶交付，因此能把業務需求與實際技術決策連結起來。",
+      "keywords": [
+        "technical depth",
+        "financial IT",
+        "customer-facing delivery"
+      ]
+    },
+    {
+      "id": "listen-interview-008",
+      "source": "Interview Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "If you joined us, what would you want to learn in your first few months?",
+      "textZh": "如果你加入我們，前幾個月最想學習什麼？",
+      "intent": "面試官在問入職初期的 learning priorities 與成長方向。",
+      "options": [
+        "入職初期想學什麼",
+        "上一份薪資",
+        "是否能加班",
+        "休假天數"
+      ],
+      "answer": 0,
+      "model": "I would first learn the customer environment, delivery model, and technical platform so I can contribute reliably as early as possible.",
+      "modelZh": "我會先了解客戶環境、交付模式與技術平台，讓自己能盡快可靠地做出貢獻。",
+      "keywords": [
+        "customer engagement",
+        "delivery",
+        "technical foundation"
+      ]
+    },
+    {
+      "id": "listen-ai-001",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Where would you put a human approval step if the model can affect a customer-facing decision?",
+      "textZh": "如果模型可能影響客戶端決策，你會在哪個位置加入人工核准？",
+      "intent": "對方在問高風險 AI 流程中的 human approval 與 decision control。",
+      "options": [
+        "高風險 AI 決策的人工作業關卡",
+        "模型名稱",
+        "薪資制度",
+        "UI 顏色"
+      ],
+      "answer": 0,
+      "model": "I would add human approval before the decision becomes externally effective, especially when customer impact is high or the action is hard to reverse.",
+      "modelZh": "我會在決策對外生效前加入人工核准，尤其是客戶影響高或動作難以回復時。",
+      "keywords": [
+        "decision owner",
+        "customer impact",
+        "reversibility"
+      ]
+    },
+    {
+      "id": "listen-ai-002",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you prevent the same event from triggering an AI workflow twice?",
+      "textZh": "你會怎麼避免同一個事件重複觸發 AI 工作流兩次？",
+      "intent": "對方在問 AI workflow 的重複處理與 idempotency 概念。",
+      "options": [
+        "避免重複執行同一工作流",
+        "提高模型溫度",
+        "更換 UI",
+        "增加會議"
+      ],
+      "answer": 0,
+      "model": "I would use an idempotency key or unique event identifier and store the processing state before starting the expensive AI step.",
+      "modelZh": "我會使用冪等鍵或唯一事件識別碼，並在啟動高成本 AI 步驟前先記錄處理狀態。",
+      "keywords": [
+        "idempotency",
+        "technical design",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-ai-003",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If model latency suddenly doubles, what would you check before scaling the service?",
+      "textZh": "如果模型延遲突然變成兩倍，在擴容服務前你會先檢查什麼？",
+      "intent": "對方要你先做 latency root-cause analysis，而不是直接 scale。",
+      "options": [
+        "模型延遲變高時的排查順序",
+        "模型品牌",
+        "團隊人數",
+        "薪資預算"
+      ],
+      "answer": 0,
+      "model": "I would check request volume, model latency, upstream dependencies, and timeout patterns before deciding whether scaling will actually solve the problem.",
+      "modelZh": "我會先檢查請求量、模型延遲、上游相依服務與 timeout 型態，再判斷擴容是否真的能解決問題。",
+      "keywords": [
+        "model latency",
+        "dependencies",
+        "timeout"
+      ]
+    },
+    {
+      "id": "listen-ai-004",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "What data would you exclude from a RAG index, even if it improves answer quality?",
+      "textZh": "即使某些資料能提升回答品質，你仍會把哪些資料排除在 RAG 索引之外？",
+      "intent": "對方在問 RAG 的 data governance、授權與敏感資料邊界。",
+      "options": [
+        "RAG 資料治理與敏感資料排除",
+        "Prompt 字體",
+        "模型名稱",
+        "會議時間"
+      ],
+      "answer": 0,
+      "model": "I would exclude data that is not authorized, contains sensitive information, or cannot be traced to a reliable source, even if retrieval quality improves.",
+      "modelZh": "即使檢索品質會提升，我仍會排除未授權、含敏感資訊，或無法追溯可靠來源的資料。",
+      "keywords": [
+        "RAG",
+        "data governance",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-ai-005",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you decide whether this use case needs a large model or a smaller, cheaper model?",
+      "textZh": "你會怎麼判斷這個使用案例需要大型模型，還是較小、較便宜的模型？",
+      "intent": "對方在問 model selection 的能力、成本與品質取捨。",
+      "options": [
+        "模型大小、品質與成本的取捨",
+        "招聘流程",
+        "資料庫密碼",
+        "頁面顏色"
+      ],
+      "answer": 0,
+      "model": "I would compare quality, latency, cost, and task complexity with a small evaluation set before choosing the larger model.",
+      "modelZh": "我會用小型評估資料集比較品質、延遲、成本與任務複雜度，再決定是否需要大型模型。",
+      "keywords": [
+        "model selection",
+        "trade-off",
+        "options"
+      ]
+    },
+    {
+      "id": "listen-ai-006",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What should happen if the AI service times out during a critical workflow?",
+      "textZh": "如果 AI 服務在關鍵工作流中 timeout，系統應該怎麼處理？",
+      "intent": "對方在問 timeout、fallback 與 critical workflow 的降級策略。",
+      "options": [
+        "AI timeout 時的降級與 fallback",
+        "增加模型參數",
+        "改名",
+        "安排面試"
+      ],
+      "answer": 0,
+      "model": "The workflow should fail safely, record the error, and use a deterministic fallback or manual path instead of blocking the entire process.",
+      "modelZh": "工作流應安全失敗、記錄錯誤，並使用可預期的 fallback 或人工流程，而不是讓整個流程卡住。",
+      "keywords": [
+        "timeout",
+        "fallback",
+        "operational risk"
+      ]
+    },
+    {
+      "id": "listen-ai-007",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you measure whether this AI feature is actually helping users rather than just generating more output?",
+      "textZh": "你會如何衡量這個 AI 功能是真的幫助使用者，而不只是產生更多輸出？",
+      "intent": "對方要你定義 AI feature 的可衡量 user outcome，而不是只看使用量。",
+      "options": [
+        "AI 功能是否真的產生使用者價值",
+        "GPU 型號",
+        "畫面顏色",
+        "開會次數"
+      ],
+      "answer": 0,
+      "model": "I would define measurable customer outcomes such as task completion time, correction rate, and successful resolution instead of only counting generated responses.",
+      "modelZh": "我會定義可衡量的客戶成果，例如任務完成時間、修正率與成功解決率，而不是只統計產生了多少回答。",
+      "keywords": [
+        "customer outcomes",
+        "success",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-ai-008",
+      "source": "AI Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "If the model gives a confident but wrong answer, how should the system detect and contain the risk?",
+      "textZh": "如果模型很有自信地給出錯誤答案，系統要怎麼偵測並控制風險？",
+      "intent": "對方在問 hallucination detection、evidence 與高風險輸出的 containment。",
+      "options": [
+        "偵測並限制 AI 錯誤答案的風險",
+        "增加字數",
+        "改變字體",
+        "延長會議"
+      ],
+      "answer": 0,
+      "model": "I would require evidence for high-risk answers, apply confidence or validation checks, and route uncertain cases to a safer fallback or human review.",
+      "modelZh": "對高風險答案我會要求證據，加入信心或驗證檢查，並把不確定案例導向較安全的 fallback 或人工審查。",
+      "keywords": [
+        "hallucination",
+        "evidence",
+        "fallback"
+      ]
+    },
+    {
+      "id": "listen-engineer-001",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Can you reproduce the issue consistently, or does it only happen under certain conditions?",
+      "textZh": "這個問題可以穩定重現嗎？還是只有在特定條件下才會發生？",
+      "intent": "工程師在確認 issue 是否可重現，以及觸發條件。",
+      "options": [
+        "問題是否可重現及觸發條件",
+        "專案費用",
+        "面試時間",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "I would first confirm the exact reproduction steps, environment, input data, and whether the failure is consistent.",
+      "modelZh": "我會先確認精確的重現步驟、環境、輸入資料，以及錯誤是否穩定發生。",
+      "keywords": [
+        "reproduce issue",
+        "testing",
+        "facts"
+      ]
+    },
+    {
+      "id": "listen-engineer-002",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What changed between the last good deployment and the first failed one?",
+      "textZh": "最後一次正常部署和第一次失敗之間，有哪些東西發生改變？",
+      "intent": "工程師在用 change comparison 找 deployment failure 的可能原因。",
+      "options": [
+        "部署前後變更差異",
+        "薪資差異",
+        "面試官偏好",
+        "休假規則"
+      ],
+      "answer": 0,
+      "model": "I would compare code, configuration, database changes, and dependencies between the last known good version and the failed deployment.",
+      "modelZh": "我會比較最後正常版本與失敗部署之間的程式碼、設定、資料庫變更與相依服務。",
+      "keywords": [
+        "configuration issue",
+        "dependencies",
+        "technical design"
+      ]
+    },
+    {
+      "id": "listen-engineer-003",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Is the API failing because of authentication, validation, or an upstream dependency?",
+      "textZh": "API 失敗是因為驗證身分、欄位驗證，還是上游相依服務？",
+      "intent": "工程師在分類 API failure 的可能層次。",
+      "options": [
+        "API 錯誤層次與根因",
+        "UI 排版",
+        "履歷格式",
+        "薪資範圍"
+      ],
+      "answer": 0,
+      "model": "I would separate authentication, request validation, and upstream failures by checking the response code, logs, and dependency status.",
+      "modelZh": "我會透過 response code、log 與相依服務狀態，把 authentication、request validation 與 upstream failure 分開判斷。",
+      "keywords": [
+        "authentication",
+        "validation",
+        "dependencies"
+      ]
+    },
+    {
+      "id": "listen-engineer-004",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What logs or traces do we have to prove where the request is slowing down?",
+      "textZh": "我們有哪些 log 或 trace 可以證明 request 到底慢在哪一段？",
+      "intent": "工程師在要 observability evidence 來定位 latency。",
+      "options": [
+        "用 log / trace 找出延遲位置",
+        "增加伺服器數量",
+        "修改履歷",
+        "調整會議"
+      ],
+      "answer": 0,
+      "model": "I would use request traces and service logs to compare timing across each hop before deciding where the bottleneck is.",
+      "modelZh": "我會使用 request trace 與 service log 比較每一段的耗時，再判斷瓶頸位置。",
+      "keywords": [
+        "observability",
+        "evidence",
+        "technical depth"
+      ]
+    },
+    {
+      "id": "listen-engineer-005",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If we roll this release back, what data changes do we need to reverse or reconcile?",
+      "textZh": "如果我們把這個版本 rollback，需要反轉或重新對帳哪些資料變更？",
+      "intent": "工程師在問 rollback 不只是程式版本，還包含 data consistency。",
+      "options": [
+        "回滾時的資料一致性處理",
+        "面試流程",
+        "工作地點",
+        "UI 顏色"
+      ],
+      "answer": 0,
+      "model": "I would identify schema changes, writes made by the new release, and any transactions that need reconciliation before rollback.",
+      "modelZh": "我會先確認 schema 變更、新版本已寫入的資料，以及 rollback 前需要重新對帳的交易。",
+      "keywords": [
+        "rollback",
+        "risk",
+        "technical design"
+      ]
+    },
+    {
+      "id": "listen-engineer-006",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Can this operation be safely retried, or could it create duplicate transactions?",
+      "textZh": "這個操作可以安全重試嗎？還是可能造成重複交易？",
+      "intent": "工程師在確認 retry safety 與 duplicate transaction 風險。",
+      "options": [
+        "重試是否安全及重複交易風險",
+        "薪資結構",
+        "職涯規劃",
+        "英文口音"
+      ],
+      "answer": 0,
+      "model": "I would confirm whether the operation is idempotent before retrying. If not, I would check the transaction state first.",
+      "modelZh": "在重試前我會先確認操作是否具備冪等性；如果沒有，我會先檢查交易狀態。",
+      "keywords": [
+        "retry",
+        "idempotency",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-engineer-007",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How are you separating a code defect from a data issue or configuration issue?",
+      "textZh": "你怎麼區分這是程式缺陷、資料問題，還是設定問題？",
+      "intent": "工程師在問系統化 root-cause isolation。",
+      "options": [
+        "區分程式、資料與設定問題",
+        "安排面試",
+        "談薪資",
+        "設定休假"
+      ],
+      "answer": 0,
+      "model": "I would reproduce the issue with controlled data, compare environments, and check whether the same code behaves differently under different configuration.",
+      "modelZh": "我會用可控資料重現問題、比較不同環境，並確認相同程式碼是否因設定不同而產生不同結果。",
+      "keywords": [
+        "configuration issue",
+        "testing",
+        "facts"
+      ]
+    },
+    {
+      "id": "listen-engineer-008",
+      "source": "Engineering Listening Expansion",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is your fallback if the downstream service is unavailable for thirty minutes?",
+      "textZh": "如果下游服務中斷三十分鐘，你的 fallback 是什麼？",
+      "intent": "工程師在問 downstream outage 的 fallback 與 resilience。",
+      "options": [
+        "下游服務中斷時的替代方案",
+        "工作地點",
+        "履歷版本",
+        "面試薪資"
+      ],
+      "answer": 0,
+      "model": "I would define whether we can queue the request, use a cached response, or route to a manual process depending on the business impact.",
+      "modelZh": "我會根據業務影響判斷能否排隊等待、使用快取回應，或切換到人工流程。",
+      "keywords": [
+        "fallback",
+        "business impact",
+        "operational risk"
+      ]
     }
   ]
 };
