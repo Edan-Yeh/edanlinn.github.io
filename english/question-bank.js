@@ -934,6 +934,456 @@ window.EDAN_ENGLISH_CONTENT = {
       "category": "口說片語",
       "zh": "確認；確保",
       "example": "Let me make sure I understand."
+    },
+    {
+      "id": "v051",
+      "word": "appointment",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "預約；約會",
+      "example": "I have a doctor’s appointment this afternoon.",
+      "exampleZh": "我今天下午有一個看醫生的預約。"
+    },
+    {
+      "id": "v052",
+      "word": "available",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "有空的；可用的",
+      "example": "Are you available after work today?",
+      "exampleZh": "你今天下班後有空嗎？"
+    },
+    {
+      "id": "v053",
+      "word": "convenient",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "方便的",
+      "example": "Is six o’clock convenient for you?",
+      "exampleZh": "六點對你方便嗎？"
+    },
+    {
+      "id": "v054",
+      "word": "schedule",
+      "pos": "n./v.",
+      "category": "生活會話",
+      "zh": "行程；安排",
+      "example": "My schedule is pretty full this week.",
+      "exampleZh": "我這週的行程很滿。"
+    },
+    {
+      "id": "v055",
+      "word": "reschedule",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "重新安排時間",
+      "example": "Can we reschedule the meeting to Friday?",
+      "exampleZh": "我們可以把會議改到星期五嗎？"
+    },
+    {
+      "id": "v056",
+      "word": "cancel",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "取消",
+      "example": "I need to cancel my reservation tonight.",
+      "exampleZh": "我需要取消今晚的預約。"
+    },
+    {
+      "id": "v057",
+      "word": "confirm",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "確認",
+      "example": "Please confirm the time before you leave.",
+      "exampleZh": "離開前請確認時間。"
+    },
+    {
+      "id": "v058",
+      "word": "remind",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "提醒",
+      "example": "Please remind me to call him later.",
+      "exampleZh": "請提醒我晚點打給他。"
+    },
+    {
+      "id": "v059",
+      "word": "nearby",
+      "pos": "adv./adj.",
+      "category": "生活會話",
+      "zh": "附近的",
+      "example": "Is there a convenience store nearby?",
+      "exampleZh": "附近有便利商店嗎？"
+    },
+    {
+      "id": "v060",
+      "word": "commute",
+      "pos": "n./v.",
+      "category": "生活會話",
+      "zh": "通勤",
+      "example": "My commute takes about thirty minutes.",
+      "exampleZh": "我的通勤大約需要三十分鐘。"
+    },
+    {
+      "id": "v061",
+      "word": "crowded",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "擁擠的",
+      "example": "The train is usually crowded in the morning.",
+      "exampleZh": "早上的火車通常很擁擠。"
+    },
+    {
+      "id": "v062",
+      "word": "quiet",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "安靜的",
+      "example": "I’m looking for a quiet place to work.",
+      "exampleZh": "我在找一個安靜的地方工作。"
+    },
+    {
+      "id": "v063",
+      "word": "noisy",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "吵雜的",
+      "example": "It’s too noisy to have a call here.",
+      "exampleZh": "這裡太吵，不適合講電話。"
+    },
+    {
+      "id": "v064",
+      "word": "borrow",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "借入",
+      "example": "Can I borrow your charger for a minute?",
+      "exampleZh": "我可以借一下你的充電器嗎？"
+    },
+    {
+      "id": "v065",
+      "word": "lend",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "借出",
+      "example": "Could you lend me an umbrella?",
+      "exampleZh": "你可以借我一把雨傘嗎？"
+    },
+    {
+      "id": "v066",
+      "word": "return",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "歸還；返回",
+      "example": "I’ll return the book tomorrow.",
+      "exampleZh": "我明天會把書還回去。"
+    },
+    {
+      "id": "v067",
+      "word": "order",
+      "pos": "v./n.",
+      "category": "生活會話",
+      "zh": "點餐；訂單",
+      "example": "I’d like to order the chicken, please.",
+      "exampleZh": "我想點雞肉，謝謝。"
+    },
+    {
+      "id": "v068",
+      "word": "receipt",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "收據",
+      "example": "Could I get a receipt, please?",
+      "exampleZh": "可以給我收據嗎？"
+    },
+    {
+      "id": "v069",
+      "word": "bill",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "帳單",
+      "example": "Could we have the bill, please?",
+      "exampleZh": "可以幫我們結帳嗎？"
+    },
+    {
+      "id": "v070",
+      "word": "split the bill",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "分開付帳",
+      "example": "Let’s split the bill this time.",
+      "exampleZh": "這次我們分開付帳吧。"
+    },
+    {
+      "id": "v071",
+      "word": "reservation",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "預約；訂位",
+      "example": "I have a reservation for two at seven.",
+      "exampleZh": "我訂了七點兩位。"
+    },
+    {
+      "id": "v072",
+      "word": "seat",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "座位",
+      "example": "Is this seat available?",
+      "exampleZh": "這個座位有人坐嗎？"
+    },
+    {
+      "id": "v073",
+      "word": "takeout",
+      "pos": "n./adj.",
+      "category": "生活會話",
+      "zh": "外帶",
+      "example": "Can I get this for takeout?",
+      "exampleZh": "這個可以幫我做外帶嗎？"
+    },
+    {
+      "id": "v074",
+      "word": "dine in",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "內用",
+      "example": "We’ll dine in today.",
+      "exampleZh": "我們今天要內用。"
+    },
+    {
+      "id": "v075",
+      "word": "recommend",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "推薦",
+      "example": "What do you recommend here?",
+      "exampleZh": "你推薦這裡的什麼？"
+    },
+    {
+      "id": "v076",
+      "word": "prefer",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "比較喜歡",
+      "example": "I prefer something less sweet.",
+      "exampleZh": "我比較喜歡沒那麼甜的。"
+    },
+    {
+      "id": "v077",
+      "word": "allergy",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "過敏",
+      "example": "I have a seafood allergy.",
+      "exampleZh": "我對海鮮過敏。"
+    },
+    {
+      "id": "v078",
+      "word": "spicy",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "辣的",
+      "example": "Is this dish very spicy?",
+      "exampleZh": "這道菜很辣嗎？"
+    },
+    {
+      "id": "v079",
+      "word": "refill",
+      "pos": "n./v.",
+      "category": "生活會話",
+      "zh": "續杯；補充",
+      "example": "Could I get a water refill?",
+      "exampleZh": "可以幫我再加水嗎？"
+    },
+    {
+      "id": "v080",
+      "word": "package",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "包裹",
+      "example": "A package arrived for you this morning.",
+      "exampleZh": "今天早上有你的包裹送到。"
+    },
+    {
+      "id": "v081",
+      "word": "delivery",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "配送；交付",
+      "example": "The delivery should arrive before noon.",
+      "exampleZh": "配送應該會在中午前到。"
+    },
+    {
+      "id": "v082",
+      "word": "address",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "地址",
+      "example": "Let me confirm the delivery address.",
+      "exampleZh": "讓我確認一下配送地址。"
+    },
+    {
+      "id": "v083",
+      "word": "entrance",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "入口",
+      "example": "I’ll meet you at the main entrance.",
+      "exampleZh": "我會在正門入口跟你碰面。"
+    },
+    {
+      "id": "v084",
+      "word": "elevator",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "電梯",
+      "example": "Take the elevator to the eighth floor.",
+      "exampleZh": "搭電梯到八樓。"
+    },
+    {
+      "id": "v085",
+      "word": "floor",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "樓層",
+      "example": "Our office is on the tenth floor.",
+      "exampleZh": "我們辦公室在十樓。"
+    },
+    {
+      "id": "v086",
+      "word": "neighborhood",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "社區；街區",
+      "example": "It’s a quiet neighborhood at night.",
+      "exampleZh": "這個街區晚上很安靜。"
+    },
+    {
+      "id": "v087",
+      "word": "weather",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "天氣",
+      "example": "The weather looks better this afternoon.",
+      "exampleZh": "今天下午天氣看起來會比較好。"
+    },
+    {
+      "id": "v088",
+      "word": "umbrella",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "雨傘",
+      "example": "Don’t forget your umbrella.",
+      "exampleZh": "別忘了帶雨傘。"
+    },
+    {
+      "id": "v089",
+      "word": "traffic",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "交通；車流",
+      "example": "Traffic is heavy during rush hour.",
+      "exampleZh": "尖峰時段交通很塞。"
+    },
+    {
+      "id": "v090",
+      "word": "delayed",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "延誤的",
+      "example": "My train was delayed by twenty minutes.",
+      "exampleZh": "我的火車延誤了二十分鐘。"
+    },
+    {
+      "id": "v091",
+      "word": "on time",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "準時",
+      "example": "I should be there on time.",
+      "exampleZh": "我應該會準時到。"
+    },
+    {
+      "id": "v092",
+      "word": "hurry",
+      "pos": "v./n.",
+      "category": "生活會話",
+      "zh": "趕快；匆忙",
+      "example": "We need to hurry or we’ll miss the train.",
+      "exampleZh": "我們得快一點，不然會錯過火車。"
+    },
+    {
+      "id": "v093",
+      "word": "take your time",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "慢慢來；不用急",
+      "example": "Take your time. There’s no rush.",
+      "exampleZh": "慢慢來，不用急。"
+    },
+    {
+      "id": "v094",
+      "word": "catch up",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "聊近況；趕上",
+      "example": "Let’s catch up over coffee this weekend.",
+      "exampleZh": "這週末一起喝咖啡聊聊近況吧。"
+    },
+    {
+      "id": "v095",
+      "word": "hang out",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "一起出去；相處",
+      "example": "Do you want to hang out after dinner?",
+      "exampleZh": "晚餐後要不要一起出去？"
+    },
+    {
+      "id": "v096",
+      "word": "get ready",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "準備好",
+      "example": "I need ten minutes to get ready.",
+      "exampleZh": "我需要十分鐘準備。"
+    },
+    {
+      "id": "v097",
+      "word": "run out of",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "用完；耗盡",
+      "example": "We ran out of milk this morning.",
+      "exampleZh": "我們今天早上牛奶用完了。"
+    },
+    {
+      "id": "v098",
+      "word": "pick up",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "接人；取件",
+      "example": "I’ll pick you up at the station.",
+      "exampleZh": "我會到車站接你。"
+    },
+    {
+      "id": "v099",
+      "word": "drop off",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "送到；放下",
+      "example": "Can you drop me off near the office?",
+      "exampleZh": "你可以載我到辦公室附近嗎？"
+    },
+    {
+      "id": "v100",
+      "word": "figure out",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "弄清楚；想出辦法",
+      "example": "I’ll figure out how to get there.",
+      "exampleZh": "我會想辦法弄清楚怎麼到那裡。"
     }
   ],
   "questions": [
