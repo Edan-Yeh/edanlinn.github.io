@@ -5941,6 +5941,390 @@ window.EDAN_ENGLISH_CONTENT = {
         "resource constraints",
         "customer confidence"
       ]
+    },
+    {
+      "id": "listen-engineer-009",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Can you show me the exact request and response that failed?",
+      "textZh": "你可以給我看實際失敗的 request 和 response 嗎？",
+      "intent": "工程師在要求具體失敗請求與回應證據。",
+      "options": [
+        "查看失敗 request / response",
+        "安排會議",
+        "詢問薪資",
+        "修改履歷"
+      ],
+      "answer": 0,
+      "model": "Yes. I’ll provide the request payload, response code, and relevant log entries.",
+      "modelZh": "可以，我會提供 request payload、response code 與相關 log。",
+      "keywords": [
+        "request",
+        "response",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-engineer-010",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Does the failure happen before the database write or after the transaction starts?",
+      "textZh": "錯誤是在寫入資料庫前發生，還是在 transaction 開始後發生？",
+      "intent": "工程師在定位 failure 發生於 transaction 流程的哪個階段。",
+      "options": [
+        "定位 transaction 失敗階段",
+        "安排面試",
+        "詢問工作地點",
+        "討論薪資"
+      ],
+      "answer": 0,
+      "model": "I would trace the request and confirm the last successful step before the failure.",
+      "modelZh": "我會追蹤 request，確認失敗前最後成功的步驟。",
+      "keywords": [
+        "trace",
+        "transaction",
+        "facts"
+      ]
+    },
+    {
+      "id": "listen-engineer-011",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What changed in configuration between test and production?",
+      "textZh": "測試環境和正式環境之間有哪些設定不同？",
+      "intent": "工程師在比較 test 與 production configuration 差異。",
+      "options": [
+        "比較環境設定差異",
+        "比較薪資",
+        "比較履歷",
+        "比較面試官"
+      ],
+      "answer": 0,
+      "model": "I would compare environment variables, endpoints, permissions, and feature settings.",
+      "modelZh": "我會比較環境變數、endpoint、權限與功能設定。",
+      "keywords": [
+        "configuration issue",
+        "environment",
+        "permission"
+      ]
+    },
+    {
+      "id": "listen-engineer-012",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If this query is slow only in production, what would you check first?",
+      "textZh": "如果這個 query 只在正式環境很慢，你會先檢查什麼？",
+      "intent": "工程師在問 production-only query latency 的排查方式。",
+      "options": [
+        "正式環境 query 慢的排查",
+        "UI 配色",
+        "面試流程",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "I would compare execution plans, data volume, indexes, locks, and current load.",
+      "modelZh": "我會比較 execution plan、資料量、index、lock 與目前負載。",
+      "keywords": [
+        "query",
+        "index",
+        "lock"
+      ]
+    },
+    {
+      "id": "listen-engineer-013",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Can we reproduce the timeout with the same payload in a lower environment?",
+      "textZh": "我們可以用相同 payload 在較低環境重現 timeout 嗎？",
+      "intent": "工程師在問能否以相同輸入重現 timeout。",
+      "options": [
+        "重現 timeout",
+        "調薪",
+        "排休",
+        "改履歷"
+      ],
+      "answer": 0,
+      "model": "I would replay the same payload and compare timing across environments.",
+      "modelZh": "我會重放相同 payload，並比較不同環境的耗時。",
+      "keywords": [
+        "timeout",
+        "reproduce issue",
+        "environment"
+      ]
+    },
+    {
+      "id": "listen-engineer-014",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What prevents two workers from processing the same message at the same time?",
+      "textZh": "什麼機制可以避免兩個 worker 同時處理同一則 message？",
+      "intent": "工程師在問並行處理時如何避免重複消費。",
+      "options": [
+        "避免重複處理 message",
+        "加薪流程",
+        "面試準備",
+        "工作排程"
+      ],
+      "answer": 0,
+      "model": "I would use a unique message identifier, idempotent processing, or a locking mechanism.",
+      "modelZh": "我會使用唯一 message ID、冪等處理或 locking 機制。",
+      "keywords": [
+        "idempotency",
+        "message",
+        "lock"
+      ]
+    },
+    {
+      "id": "listen-engineer-015",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which service owns this endpoint, and who should we contact for the fix?",
+      "textZh": "這個 endpoint 是哪個 service 負責？需要找誰處理修正？",
+      "intent": "工程師在確認 service ownership 與修正窗口。",
+      "options": [
+        "確認 service owner",
+        "安排聚餐",
+        "詢問薪資",
+        "請假"
+      ],
+      "answer": 0,
+      "model": "I would identify the owning service and contact the team responsible for that endpoint.",
+      "modelZh": "我會確認負責該 endpoint 的 service 與團隊。",
+      "keywords": [
+        "owner",
+        "service",
+        "endpoint"
+      ]
+    },
+    {
+      "id": "listen-engineer-016",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the cache is stale, how do we know whether the database is still correct?",
+      "textZh": "如果 cache 是舊的，我們要怎麼確認 database 裡的資料仍然正確？",
+      "intent": "工程師在問 cache 與 source of truth 的一致性驗證。",
+      "options": [
+        "驗證 cache 與 database 一致性",
+        "重新面試",
+        "調整薪資",
+        "更換辦公室"
+      ],
+      "answer": 0,
+      "model": "I would compare the cached value with the source-of-truth record in the database.",
+      "modelZh": "我會把 cache 值與 database 裡的來源資料做比較。",
+      "keywords": [
+        "cache",
+        "database",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-engineer-017",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What happens to queued messages if the consumer is down for an hour?",
+      "textZh": "如果 consumer 中斷一小時，queue 裡的 message 會怎麼處理？",
+      "intent": "工程師在問 queue backlog 與 consumer outage 行為。",
+      "options": [
+        "consumer 中斷時的 message 處理",
+        "面試流程",
+        "薪資談判",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "The messages should remain queued and be processed after recovery, with retry and dead-letter handling if needed.",
+      "modelZh": "message 應保留在 queue，恢復後再處理；需要時搭配 retry 與 dead-letter 機制。",
+      "keywords": [
+        "queue",
+        "retry",
+        "message"
+      ]
+    },
+    {
+      "id": "listen-engineer-018",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Can we deploy this change without changing the database schema first?",
+      "textZh": "這個變更可以在不先修改 database schema 的情況下部署嗎？",
+      "intent": "工程師在問 deployment 與 schema compatibility。",
+      "options": [
+        "部署與 schema 相容性",
+        "薪資與獎金",
+        "會議時間",
+        "出差安排"
+      ],
+      "answer": 0,
+      "model": "I would check backward compatibility and whether the new code can work with the existing schema.",
+      "modelZh": "我會檢查向後相容性，以及新程式是否能搭配現有 schema。",
+      "keywords": [
+        "deployment",
+        "schema",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-engineer-019",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which log line proves the request reached the downstream service?",
+      "textZh": "哪一行 log 可以證明 request 已經到達下游 service？",
+      "intent": "工程師在要求具體 log evidence 確認請求路徑。",
+      "options": [
+        "用 log 證明 request 路徑",
+        "詢問薪資",
+        "安排會議",
+        "更新履歷"
+      ],
+      "answer": 0,
+      "model": "I would use a correlation ID to match the upstream request with the downstream log.",
+      "modelZh": "我會用 correlation ID 對應上游 request 與下游 log。",
+      "keywords": [
+        "log",
+        "evidence",
+        "service"
+      ]
+    },
+    {
+      "id": "listen-engineer-020",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If we retry this transaction, what stops us from charging the customer twice?",
+      "textZh": "如果我們重試這筆 transaction，什麼可以避免客戶被扣款兩次？",
+      "intent": "工程師在問 retry 與 duplicate transaction 防護。",
+      "options": [
+        "避免重複交易",
+        "增加 timeout",
+        "改面試時間",
+        "調整薪資"
+      ],
+      "answer": 0,
+      "model": "I would require an idempotency key and verify the existing transaction state before retrying.",
+      "modelZh": "我會要求 idempotency key，並在 retry 前確認既有 transaction 狀態。",
+      "keywords": [
+        "retry",
+        "idempotency",
+        "transaction"
+      ]
+    },
+    {
+      "id": "listen-engineer-021",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What alert should wake someone up at night, and what can wait until morning?",
+      "textZh": "哪些 alert 值得半夜叫醒人？哪些可以等到早上再處理？",
+      "intent": "工程師在問 alert severity 與 operational priority。",
+      "options": [
+        "告警嚴重度與優先級",
+        "排休",
+        "面試題",
+        "薪資結構"
+      ],
+      "answer": 0,
+      "model": "Critical alerts should represent real customer or service impact, not just noisy technical signals.",
+      "modelZh": "critical alert 應代表真實客戶或服務影響，而不是只是吵雜的技術訊號。",
+      "keywords": [
+        "alert",
+        "customer impact",
+        "criticality"
+      ]
+    },
+    {
+      "id": "listen-engineer-022",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Is this test case covering the failure path or only the happy path?",
+      "textZh": "這個 test case 有涵蓋失敗路徑，還是只測正常流程？",
+      "intent": "工程師在確認測試是否包含 failure scenario。",
+      "options": [
+        "確認失敗情境測試",
+        "面試自我介紹",
+        "薪資期待",
+        "通勤方式"
+      ],
+      "answer": 0,
+      "model": "I would add negative and failure-path tests so the regression suite covers realistic errors.",
+      "modelZh": "我會加入負向與失敗路徑測試，讓 regression suite 涵蓋真實錯誤情境。",
+      "keywords": [
+        "test case",
+        "regression",
+        "testing"
+      ]
+    },
+    {
+      "id": "listen-engineer-023",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How do you know this is a code defect and not bad data?",
+      "textZh": "你怎麼確認這是 code defect，而不是壞資料造成的？",
+      "intent": "工程師在問 code defect 與 data issue 的隔離方法。",
+      "options": [
+        "區分程式與資料問題",
+        "安排面試",
+        "詢問福利",
+        "改工作地點"
+      ],
+      "answer": 0,
+      "model": "I would reproduce the behavior with controlled input and compare it with known-good data.",
+      "modelZh": "我會使用可控輸入重現問題，並和已知正常資料比較。",
+      "keywords": [
+        "defect",
+        "facts",
+        "testing"
+      ]
+    },
+    {
+      "id": "listen-engineer-024",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "What would make you stop a deployment even if the release window is almost over?",
+      "textZh": "即使發布時段快結束了，什麼情況會讓你停止 deployment？",
+      "intent": "工程師在問 deployment stop criteria 與風險判斷。",
+      "options": [
+        "停止部署的風險條件",
+        "薪資條件",
+        "加班規則",
+        "面試流程"
+      ],
+      "answer": 0,
+      "model": "I would stop if validation fails, customer impact appears, rollback becomes unsafe, or we lose observability.",
+      "modelZh": "如果 validation 失敗、出現客戶影響、rollback 變得不安全，或失去 observability，我會停止部署。",
+      "keywords": [
+        "deployment",
+        "customer impact",
+        "rollback"
+      ]
     }
   ]
 };
