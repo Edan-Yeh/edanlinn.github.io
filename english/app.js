@@ -889,6 +889,62 @@
     "issue management": "議題管理",
     "technical coordination": "技術協調",
     "project delivery": "專案交付",
+    "on time": "準時",
+    "maybe": "也許",
+    "nearby": "附近",
+    "still": "仍然；還",
+    "motivation": "動機",
+    "priority": "優先順序",
+    "assumptions": "多個假設",
+    "challenge": "挑戰",
+    "assumption": "假設",
+    "sign-off": "正式簽核",
+    "handoff": "交接",
+    "blocker": "阻塞問題",
+    "approval": "核准",
+    "deadline": "截止日期",
+    "root cause": "根本原因",
+    "mitigation": "風險緩解措施",
+    "request": "請求",
+    "response": "回應",
+    "trace": "追蹤資料",
+    "transaction": "交易／事務",
+    "environment": "環境",
+    "permission": "權限",
+    "query": "查詢",
+    "index": "索引",
+    "lock": "鎖定",
+    "message": "訊息",
+    "service": "服務",
+    "endpoint": "API 端點",
+    "cache": "快取",
+    "database": "資料庫",
+    "queue": "佇列",
+    "deployment": "部署",
+    "schema": "資料結構",
+    "log": "日誌",
+    "alert": "告警",
+    "test case": "測試案例",
+    "regression": "回歸測試",
+    "defect": "缺陷",
+    "cloud": "雲端",
+    "high availability": "高可用性",
+    "failover": "容錯切換",
+    "RPO": "復原點目標",
+    "RTO": "復原時間目標",
+    "serverless": "無伺服器架構",
+    "latency": "延遲",
+    "least privilege": "最小權限原則",
+    "IAM": "身分與存取管理",
+    "grounding": "依據／事實落地",
+    "embedding": "向量嵌入",
+    "retrieval": "檢索",
+    "evaluation": "評估",
+    "dataset": "資料集",
+    "authorization": "授權",
+    "vector database": "向量資料庫",
+    "secret": "機密資訊",
+    "agent": "AI 代理",
     "system integration": "系統整合",
     "idempotency": "冪等性／避免重複執行",
     "model latency": "模型延遲",
@@ -1537,8 +1593,13 @@
     }
     $('listeningLevelValue').textContent = `L${state.skills.listening.toFixed(1)}`;
     $('interviewLevelValue').textContent = `L${Math.max(state.skills.interview,state.skills.speaking).toFixed(1)}`;
+    const listeningBankCount=(CONTENT.questions||[]).filter(q=>q.type==='listening_intent').length;
+    const vocabBankCount=(CONTENT.vocabulary||[]).length;
     $('contentVersionBadge').textContent = `題庫 ${CONTENT.contentVersion}`;
-    $('versionText').textContent = `${CONTENT.contentVersion} · ${CONTENT.questions.length} 題 · ${CONTENT.chunks.length} chunks · ${(CONTENT.vocabulary||[]).length} words`;
+    $('versionText').textContent = `${CONTENT.contentVersion} · Listening ${listeningBankCount} 題 · Vocab ${vocabBankCount} · ${CONTENT.questions.length} 總題數 · ${CONTENT.chunks.length} chunks`;
+    const listeningCountEl=$('listeningBankCount');if(listeningCountEl)listeningCountEl.textContent=`${listeningBankCount} 題`;
+    const vocabCountEl=$('vocabBankCount');if(vocabCountEl)vocabCountEl.textContent=`${vocabBankCount} 個`;
+    const vocabSectionCount=$('vocabSectionCount');if(vocabSectionCount)vocabSectionCount.textContent=`${vocabBankCount} 個核心字詞`;
     renderSkills();
     renderSkillHistoryChart();
     renderHistory();
