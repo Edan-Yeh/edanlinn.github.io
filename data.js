@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-10-27",
-  "completedDays": 27,
-  "currentTrack": "Cloud × AI / Day 27 已完成 · Day 28 Python 資料品質待作答",
+  "completedDays": 28,
+  "currentTrack": "Cloud × AI / Day 28 已完成 · Day 29 待安排",
   "scores": [
     {
       "day": 1,
@@ -110,6 +110,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 27,
       "score": 78
+    },
+    {
+      "day": 28,
+      "score": 91
     }
   ],
   "roadmap": [
@@ -4437,6 +4441,129 @@ window.CLOUD_SA_DATA = {
         "Data Leakage：不可使用預測時間點尚未產生的未來資訊。",
         "類別不平衡時不能只看 Accuracy，需看 Precision、Recall、F1 與 Confusion Matrix。",
         "模型版本 Rollback、應用程式 Rollback、DB Transaction Rollback 與金融交易沖正並不相同。"
+      ]
+    },
+    {
+      "day": 28,
+      "date": "2026-10-27",
+      "topic": "AI Programming: Python Data Quality, Deduplication and Feature Engineering for AI Tutor",
+      "status": "completed",
+      "score": 91,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "C",
+          "D",
+          "F"
+        ],
+        "Q3": "1→B、2→A、3→C、4→D",
+        "practiceSelections": {
+          "source": "A",
+          "deduplication": "A",
+          "failureHandling": "A",
+          "cloudChoice": "A"
+        },
+        "practice": "1.讀取已授權的資料\n2.整理資料的統一性，檢查必要欄位\n3.如有格式錯誤，先將原始資料紀錄，並將異常資料排除隔離\n4.排除重複並依日期排序，如有資料重複也會依據後蓋前\n5.依據學生條件區分交易或正式成績\n6.紀錄正確資料"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "CSV elapsed_sec 含 45、N/A、70，如何安全轉換？",
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "pd.to_numeric(errors='coerce') 將無效值轉成 NaN，再依訓練規則處理。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "合成練習事件含格式錯誤、重複 event_id、topic 缺值，選擇合理治理方法。",
+          "answer": [
+            "A",
+            "C",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "C",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "依事件 ID 去重、驗證 Schema、記錄及隔離異常、保留來源追溯。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 drop_duplicates、to_numeric、isna、groupby.mean 的目的。",
+          "answer": "1→B、2→A、3→C、4→D",
+          "correct": "1→B、2→A、3→C、4→D",
+          "earned": 20,
+          "explanation": "依序為去重、無效數字轉 NaN、缺值檢查、依學生平均值彙整。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 36,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "架構選型四題",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "Python 資料處理流程",
+              "earned": 16,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "pandas 數值轉換與缺值檢查",
+        "事件去重及 Schema Validation",
+        "資料異常隔離與來源追溯",
+        "NAS 優先的低成本雲端選型"
+      ],
+      "corrections": [
+        [
+          "同 event_id 直接後蓋前有風險",
+          "依事件版本、可信來源及事件時間決定保留哪筆；不可僅依匯入順序覆寫"
+        ],
+        [
+          "資料分析與正式成績權限邊界",
+          "Python 產生衍生特徵，不直接更新正式成績；正式成績由 Spring Boot 業務規則管理"
+        ],
+        [
+          "特徵工程輸出尚未具體",
+          "依 student_id 與 topic 彙整近七日正確率、平均作答時間及錯題數，保存可追溯特徵版本"
+        ],
+        [
+          "缺少可執行的 pandas 寫法",
+          "練習 pd.to_numeric、drop_duplicates、groupby 及缺值隔離流程"
+        ]
+      ],
+      "memory": [
+        "DataFrame 清洗必須先驗證 Schema、型別、允許範圍。",
+        "Deduplication 依 event_id 和事件版本判斷，不可無條件後蓋前。",
+        "Feature Engineering 從原始事件產生學生主題層級特徵，不能改寫正式成績。",
+        "保留原始事件、異常隔離、清洗版本及處理日誌以利追溯。"
       ]
     }
   ],
