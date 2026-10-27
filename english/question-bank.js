@@ -6325,6 +6325,390 @@ window.EDAN_ENGLISH_CONTENT = {
         "customer impact",
         "rollback"
       ]
+    },
+    {
+      "id": "listen-ai-009",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which part of this workload really needs to run in the cloud, and which part could stay where it is?",
+      "textZh": "這個 workload 哪些部分真的需要上雲？哪些部分可以維持現狀？",
+      "intent": "對方在問 workload placement 與 cloud migration 邊界。",
+      "options": [
+        "判斷哪些工作負載需要上雲",
+        "詢問薪資",
+        "安排面試",
+        "請假"
+      ],
+      "answer": 0,
+      "model": "I would compare scalability, integration, security, and operational needs before deciding what to move.",
+      "modelZh": "我會比較擴展性、整合、安全與營運需求，再決定哪些部分需要搬移。",
+      "keywords": [
+        "cloud",
+        "trade-offs",
+        "technical design"
+      ]
+    },
+    {
+      "id": "listen-ai-010",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If one availability zone fails, what should happen to the service?",
+      "textZh": "如果一個 availability zone 故障，服務應該怎麼處理？",
+      "intent": "對方在問高可用與 AZ failure 行為。",
+      "options": [
+        "可用區故障時的高可用行為",
+        "修改履歷",
+        "調薪",
+        "排休"
+      ],
+      "answer": 0,
+      "model": "Traffic should shift to healthy capacity in another zone without a major customer interruption.",
+      "modelZh": "流量應切到另一個可用區的健康容量，避免造成重大客戶中斷。",
+      "keywords": [
+        "high availability",
+        "customer impact",
+        "failover"
+      ]
+    },
+    {
+      "id": "listen-ai-011",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you explain the difference between RPO and RTO to a business stakeholder?",
+      "textZh": "你會如何向業務利害關係人解釋 RPO 與 RTO 的差異？",
+      "intent": "對方在問如何用業務語言解釋災難復原目標。",
+      "options": [
+        "解釋 RPO 與 RTO",
+        "解釋薪資",
+        "解釋面試流程",
+        "解釋辦公室規定"
+      ],
+      "answer": 0,
+      "model": "RPO is how much data loss the business can accept, while RTO is how quickly the service must recover.",
+      "modelZh": "RPO 是業務可接受多少資料損失，RTO 則是服務必須多快恢復。",
+      "keywords": [
+        "RPO",
+        "RTO",
+        "business impact"
+      ]
+    },
+    {
+      "id": "listen-ai-012",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Why would you choose serverless for this function instead of keeping a service running all the time?",
+      "textZh": "為什麼這個功能你會選 serverless，而不是讓 service 一直運行？",
+      "intent": "對方在問 serverless 選型與 workload 特性。",
+      "options": [
+        "serverless 選型理由",
+        "工作地點",
+        "薪資談判",
+        "面試時間"
+      ],
+      "answer": 0,
+      "model": "Serverless can fit short event-driven work with variable demand when we want less infrastructure management.",
+      "modelZh": "如果工作是短時間事件驅動、需求波動大，而且希望降低基礎設施管理，serverless 很適合。",
+      "keywords": [
+        "serverless",
+        "trade-off",
+        "resource use"
+      ]
+    },
+    {
+      "id": "listen-ai-013",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would you monitor to know whether autoscaling is actually helping?",
+      "textZh": "你會監控哪些指標，來確認 autoscaling 真的有幫助？",
+      "intent": "對方在問 autoscaling 的效果衡量。",
+      "options": [
+        "衡量 autoscaling 效果",
+        "比較履歷",
+        "安排聚餐",
+        "談薪資"
+      ],
+      "answer": 0,
+      "model": "I would monitor latency, utilization, queue depth, scaling events, and cost around traffic peaks.",
+      "modelZh": "我會監控延遲、使用率、queue depth、擴縮事件，以及尖峰期間的成本。",
+      "keywords": [
+        "latency",
+        "resource utilization",
+        "observability"
+      ]
+    },
+    {
+      "id": "listen-ai-014",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Which permissions would you remove if a service account only needs to read from one bucket?",
+      "textZh": "如果 service account 只需要讀取一個 bucket，你會移除哪些權限？",
+      "intent": "對方在問 least privilege 與 IAM 權限縮減。",
+      "options": [
+        "最小權限與 IAM",
+        "薪資福利",
+        "面試題型",
+        "通勤方式"
+      ],
+      "answer": 0,
+      "model": "I would keep only the minimum read permissions for the required resource and remove broader access.",
+      "modelZh": "我只會保留必要資源的最小讀取權限，移除更廣泛的存取。",
+      "keywords": [
+        "least privilege",
+        "IAM",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-ai-015",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the primary database fails, how do you know the replica is ready to take over?",
+      "textZh": "如果 primary database 故障，你如何確認 replica 已準備好接手？",
+      "intent": "對方在問 database failover readiness。",
+      "options": [
+        "資料庫容錯切換準備度",
+        "面試流程",
+        "薪資結構",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "I would check replication health, lag, failover testing, and application connection behavior.",
+      "modelZh": "我會檢查 replication health、lag、failover 測試與應用程式連線行為。",
+      "keywords": [
+        "failover",
+        "database",
+        "testing"
+      ]
+    },
+    {
+      "id": "listen-ai-016",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "How would you prove a RAG answer came from an approved source?",
+      "textZh": "你會如何證明一個 RAG 回答來自經核准的來源？",
+      "intent": "對方在問 RAG grounding 與來源可追溯性。",
+      "options": [
+        "RAG 來源可追溯性",
+        "薪資期待",
+        "面試安排",
+        "休假規則"
+      ],
+      "answer": 0,
+      "model": "I would return source metadata with the answer and keep the retrieval path traceable.",
+      "modelZh": "我會讓回答帶回來源 metadata，並讓 retrieval path 可以追蹤。",
+      "keywords": [
+        "RAG",
+        "evidence",
+        "grounding"
+      ]
+    },
+    {
+      "id": "listen-ai-017",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "When would you use embeddings instead of a traditional keyword search?",
+      "textZh": "什麼時候你會使用 embedding，而不是傳統 keyword search？",
+      "intent": "對方在問 semantic retrieval 與 keyword search 的選型。",
+      "options": [
+        "語意檢索與關鍵字搜尋的選型",
+        "排休",
+        "談薪資",
+        "改履歷"
+      ],
+      "answer": 0,
+      "model": "I would use embeddings when semantic similarity matters more than exact keyword matching.",
+      "modelZh": "當語意相似度比精確關鍵字匹配更重要時，我會使用 embedding。",
+      "keywords": [
+        "embedding",
+        "retrieval",
+        "trade-off"
+      ]
+    },
+    {
+      "id": "listen-ai-018",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would make you reject a model even if its benchmark score is the highest?",
+      "textZh": "即使模型 benchmark 分數最高，什麼情況會讓你不選它？",
+      "intent": "對方在問 model selection 不只看 quality score。",
+      "options": [
+        "模型選型的非分數考量",
+        "工作地點",
+        "薪資福利",
+        "面試時間"
+      ],
+      "answer": 0,
+      "model": "I might reject it if latency, cost, safety, or operational complexity does not fit the use case.",
+      "modelZh": "如果延遲、成本、安全或營運複雜度不符合使用案例，我可能不會選它。",
+      "keywords": [
+        "model selection",
+        "latency",
+        "operational risk"
+      ]
+    },
+    {
+      "id": "listen-ai-019",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "If retrieval returns the wrong document, should the model still answer?",
+      "textZh": "如果 retrieval 找到錯的文件，模型還應該回答嗎？",
+      "intent": "對方在問 RAG retrieval quality 與安全降級。",
+      "options": [
+        "錯誤檢索時是否應回答",
+        "薪資調整",
+        "安排面試",
+        "工作排程"
+      ],
+      "answer": 0,
+      "model": "For high-risk use cases, the system should avoid confident answers when grounding is weak and use a safer fallback.",
+      "modelZh": "高風險情境中，如果 grounding 不可靠，系統不應自信回答，而應使用較安全的 fallback。",
+      "keywords": [
+        "retrieval",
+        "fallback",
+        "grounding"
+      ]
+    },
+    {
+      "id": "listen-ai-020",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What data would you use to evaluate whether the model improved after a prompt change?",
+      "textZh": "修改 prompt 後，你會用哪些資料評估模型是否真的改善？",
+      "intent": "對方在問 prompt change 的 evaluation data。",
+      "options": [
+        "評估 prompt 變更成效",
+        "安排會議",
+        "請假",
+        "談薪資"
+      ],
+      "answer": 0,
+      "model": "I would use a representative evaluation set and compare quality, failure rate, latency, and cost.",
+      "modelZh": "我會使用具代表性的 evaluation set，比較品質、失敗率、延遲與成本。",
+      "keywords": [
+        "evaluation",
+        "dataset",
+        "latency"
+      ]
+    },
+    {
+      "id": "listen-ai-021",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "How do you stop an AI agent from taking an action it is not authorized to perform?",
+      "textZh": "你要怎麼避免 AI agent 執行未被授權的動作？",
+      "intent": "對方在問 agent 權限邊界與 authorization。",
+      "options": [
+        "限制 AI agent 權限",
+        "面試自我介紹",
+        "薪資談判",
+        "旅遊安排"
+      ],
+      "answer": 0,
+      "model": "I would enforce tool permissions outside the model, apply least privilege, and require approval for sensitive actions.",
+      "modelZh": "我會在模型外強制執行 tool permission、使用最小權限，並對敏感動作要求人工核准。",
+      "keywords": [
+        "authorization",
+        "least privilege",
+        "approval"
+      ]
+    },
+    {
+      "id": "listen-ai-022",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is your fallback if the vector database is unavailable?",
+      "textZh": "如果 vector database 無法使用，你的 fallback 是什麼？",
+      "intent": "對方在問 RAG infrastructure failure 的 fallback。",
+      "options": [
+        "向量資料庫故障時的降級方案",
+        "薪資福利",
+        "面試流程",
+        "排休"
+      ],
+      "answer": 0,
+      "model": "I would fail safely, use a simpler search if appropriate, or route the request to a manual path.",
+      "modelZh": "我會安全失敗；適合時使用較簡單的搜尋，或把 request 導到人工流程。",
+      "keywords": [
+        "fallback",
+        "vector database",
+        "operational risk"
+      ]
+    },
+    {
+      "id": "listen-ai-023",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you keep secrets out of prompts and application logs?",
+      "textZh": "你會如何避免 secret 出現在 prompt 與 application log 裡？",
+      "intent": "對方在問 secret handling 與資料外洩防護。",
+      "options": [
+        "保護 secret 不進 prompt/log",
+        "修改履歷",
+        "安排面試",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "I would use secret management, redact sensitive values, and avoid logging raw credentials or tokens.",
+      "modelZh": "我會使用 secret management、遮蔽敏感值，並避免記錄原始 credential 或 token。",
+      "keywords": [
+        "secret",
+        "log",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-ai-024",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "What would you measure to decide whether an AI agent should stay autonomous or require more human approval?",
+      "textZh": "你會衡量哪些指標，來決定 AI agent 可以維持自主，還是需要更多人工核准？",
+      "intent": "對方在問 agent autonomy 與 human approval 的治理門檻。",
+      "options": [
+        "AI agent 自主程度治理",
+        "薪資調整",
+        "工作地點",
+        "面試日期"
+      ],
+      "answer": 0,
+      "model": "I would track error severity, reversibility, customer impact, and how often humans need to correct the agent.",
+      "modelZh": "我會追蹤錯誤嚴重度、可逆性、客戶影響，以及人工需要修正 agent 的頻率。",
+      "keywords": [
+        "agent",
+        "reversibility",
+        "customer impact"
+      ]
     }
   ]
 };
