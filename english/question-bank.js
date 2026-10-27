@@ -6709,6 +6709,636 @@ window.EDAN_ENGLISH_CONTENT = {
         "reversibility",
         "customer impact"
       ]
+    },
+    {
+      "id": "dlg-life-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "生活會話",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "scenario": "餐廳訂位更改",
+      "turns": [
+        {
+          "speaker": "Guest",
+          "en": "Hi, I have a reservation for two at seven tonight.",
+          "zh": "您好，我今晚七點訂了兩位。"
+        },
+        {
+          "speaker": "Staff",
+          "en": "Of course. Could I have your name, please?",
+          "zh": "當然，請問您的姓名？"
+        },
+        {
+          "speaker": "Guest",
+          "en": "It's under Edan. Could we move it to seven thirty?",
+          "zh": "訂位姓名是 Edan。可以改到七點半嗎？"
+        },
+        {
+          "speaker": "Staff",
+          "en": "Let me check. Yes, seven thirty is available.",
+          "zh": "我確認一下。可以，七點半有位子。"
+        }
+      ],
+      "text": "Guest: Hi, I have a reservation for two at seven tonight.\nStaff: Of course. Could I have your name, please?\nGuest: It's under Edan. Could we move it to seven thirty?\nStaff: Let me check. Yes, seven thirty is available.",
+      "textZh": "Guest：您好，我今晚七點訂了兩位。\nStaff：當然，請問您的姓名？\nGuest：訂位姓名是 Edan。可以改到七點半嗎？\nStaff：我確認一下。可以，七點半有位子。",
+      "intent": "What change did the guest request?（來賓提出什麼更改要求？）",
+      "comprehensionQuestion": "What change did the guest request?",
+      "comprehensionQuestionZh": "來賓提出什麼更改要求？",
+      "options": [
+        "把訂位延後半小時",
+        "取消訂位",
+        "增加兩位人數",
+        "改成外帶"
+      ],
+      "answer": 0,
+      "model": "Could we move our reservation to seven thirty?",
+      "modelZh": "可以把訂位改到七點半嗎？",
+      "keywords": [
+        "timeframe",
+        "confirm meaning"
+      ]
+    },
+    {
+      "id": "dlg-life-002",
+      "source": "v68 Multi-turn Listening",
+      "category": "生活會話",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "scenario": "同事週末聚會",
+      "turns": [
+        {
+          "speaker": "Alex",
+          "en": "Are you free this Saturday? A few of us are getting together.",
+          "zh": "這星期六有空嗎？我們幾個人要聚一聚。"
+        },
+        {
+          "speaker": "Edan",
+          "en": "I might be. What time are you thinking?",
+          "zh": "可能有，你們想約幾點？"
+        },
+        {
+          "speaker": "Alex",
+          "en": "Around six, but we haven't picked a place yet.",
+          "zh": "大概六點，但地點還沒決定。"
+        },
+        {
+          "speaker": "Edan",
+          "en": "Sounds good. Let me know when it's confirmed.",
+          "zh": "聽起來不錯，確認後再跟我說。"
+        }
+      ],
+      "text": "Alex: Are you free this Saturday? A few of us are getting together.\nEdan: I might be. What time are you thinking?\nAlex: Around six, but we haven't picked a place yet.\nEdan: Sounds good. Let me know when it's confirmed.",
+      "textZh": "Alex：這星期六有空嗎？我們幾個人要聚一聚。\nEdan：可能有，你們想約幾點？\nAlex：大概六點，但地點還沒決定。\nEdan：聽起來不錯，確認後再跟我說。",
+      "intent": "What information is still undecided?（還有哪個資訊尚未決定？）",
+      "comprehensionQuestion": "What information is still undecided?",
+      "comprehensionQuestionZh": "還有哪個資訊尚未決定？",
+      "options": [
+        "聚會地點",
+        "參加人數已增加",
+        "聚會日期",
+        "是否取消"
+      ],
+      "answer": 0,
+      "model": "The place hasn't been decided yet. Please let me know once it's confirmed.",
+      "modelZh": "地點還沒決定，確認後請告訴我。",
+      "keywords": [
+        "not sure yet",
+        "check"
+      ]
+    },
+    {
+      "id": "dlg-interview-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "面試職涯",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "scenario": "面試深入追問",
+      "turns": [
+        {
+          "speaker": "Interviewer",
+          "en": "You mentioned leading a batch monitoring workstream. What was the hardest part?",
+          "zh": "你剛提到帶領批次監控工作流，最困難的是什麼？"
+        },
+        {
+          "speaker": "Candidate",
+          "en": "Coordinating several teams when the issue owner wasn't clear.",
+          "zh": "當問題負責人不明確時，協調多個團隊最困難。"
+        },
+        {
+          "speaker": "Interviewer",
+          "en": "What did you personally do to resolve that?",
+          "zh": "你個人做了什麼來解決？"
+        },
+        {
+          "speaker": "Candidate",
+          "en": "I collected logs, clarified the impact, and confirmed who owned each action.",
+          "zh": "我收集日誌、釐清影響，並確認每個行動的負責人。"
+        }
+      ],
+      "text": "Interviewer: You mentioned leading a batch monitoring workstream. What was the hardest part?\nCandidate: Coordinating several teams when the issue owner wasn't clear.\nInterviewer: What did you personally do to resolve that?\nCandidate: I collected logs, clarified the impact, and confirmed who owned each action.",
+      "textZh": "Interviewer：你剛提到帶領批次監控工作流，最困難的是什麼？\nCandidate：當問題負責人不明確時，協調多個團隊最困難。\nInterviewer：你個人做了什麼來解決？\nCandidate：我收集日誌、釐清影響，並確認每個行動的負責人。",
+      "intent": "What did the interviewer ask the candidate to clarify?（面試官要求候選人釐清什麼？）",
+      "comprehensionQuestion": "What did the interviewer ask the candidate to clarify?",
+      "comprehensionQuestionZh": "面試官要求候選人釐清什麼？",
+      "options": [
+        "個人採取的具體行動",
+        "上一份薪水",
+        "上班地點",
+        "取得的證照"
+      ],
+      "answer": 0,
+      "model": "I personally clarified the impact and action owners before coordinating the fix.",
+      "modelZh": "我親自釐清影響與行動負責人，再協調修復。",
+      "keywords": [
+        "owner",
+        "facts",
+        "next actions"
+      ]
+    },
+    {
+      "id": "dlg-interview-002",
+      "source": "v68 Multi-turn Listening",
+      "category": "面試職涯",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "scenario": "面試候選人反問",
+      "turns": [
+        {
+          "speaker": "Recruiter",
+          "en": "Before we wrap up, do you have any questions for us?",
+          "zh": "結束前，你有什麼問題想問我們嗎？"
+        },
+        {
+          "speaker": "Candidate",
+          "en": "Yes. What would success look like in the first ninety days?",
+          "zh": "有，前九十天要達到什麼成果才算成功？"
+        },
+        {
+          "speaker": "Recruiter",
+          "en": "We'd expect you to understand our customer environment and own a small delivery.",
+          "zh": "我們期待你熟悉客戶環境，並獨立負責一項小型交付。"
+        },
+        {
+          "speaker": "Candidate",
+          "en": "That helps. How does the team measure delivery quality?",
+          "zh": "了解，那團隊如何衡量交付品質？"
+        }
+      ],
+      "text": "Recruiter: Before we wrap up, do you have any questions for us?\nCandidate: Yes. What would success look like in the first ninety days?\nRecruiter: We'd expect you to understand our customer environment and own a small delivery.\nCandidate: That helps. How does the team measure delivery quality?",
+      "textZh": "Recruiter：結束前，你有什麼問題想問我們嗎？\nCandidate：有，前九十天要達到什麼成果才算成功？\nRecruiter：我們期待你熟悉客戶環境，並獨立負責一項小型交付。\nCandidate：了解，那團隊如何衡量交付品質？",
+      "intent": "What does the recruiter expect in the first ninety days?（招募人員對前九十天的期待是什麼？）",
+      "comprehensionQuestion": "What does the recruiter expect in the first ninety days?",
+      "comprehensionQuestionZh": "招募人員對前九十天的期待是什麼？",
+      "options": [
+        "了解客戶環境並負責小型交付",
+        "完成一張證照",
+        "立即管理全部團隊",
+        "停止客戶互動"
+      ],
+      "answer": 0,
+      "model": "I understand that I should learn the environment and deliver a small outcome early.",
+      "modelZh": "我了解應先熟悉環境並及早交付一項小成果。",
+      "keywords": [
+        "customer engagement",
+        "delivery",
+        "success"
+      ]
+    },
+    {
+      "id": "dlg-project-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "專案顧問",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "scenario": "跨團隊相依風險",
+      "turns": [
+        {
+          "speaker": "PM",
+          "en": "Can we still finish integration testing by Friday?",
+          "zh": "我們還能在星期五前完成整合測試嗎？"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "Not unless the upstream team delivers the interface fix today.",
+          "zh": "除非上游團隊今天交付介面修正，否則不行。"
+        },
+        {
+          "speaker": "PM",
+          "en": "Who owns that fix and when can we get confirmation?",
+          "zh": "這項修正誰負責？何時能得到確認？"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "The API team owns it. I'll follow up after this meeting.",
+          "zh": "由 API 團隊負責。我會在這次會議後追蹤。"
+        }
+      ],
+      "text": "PM: Can we still finish integration testing by Friday?\nEngineer: Not unless the upstream team delivers the interface fix today.\nPM: Who owns that fix and when can we get confirmation?\nEngineer: The API team owns it. I'll follow up after this meeting.",
+      "textZh": "PM：我們還能在星期五前完成整合測試嗎？\nEngineer：除非上游團隊今天交付介面修正，否則不行。\nPM：這項修正誰負責？何時能得到確認？\nEngineer：由 API 團隊負責。我會在這次會議後追蹤。",
+      "intent": "What is blocking the Friday milestone?（什麼阻礙了星期五的里程碑？）",
+      "comprehensionQuestion": "What is blocking the Friday milestone?",
+      "comprehensionQuestionZh": "什麼阻礙了星期五的里程碑？",
+      "options": [
+        "上游介面修正尚未交付",
+        "沒有會議室",
+        "人員請假已核准",
+        "薪資尚未談妥"
+      ],
+      "answer": 0,
+      "model": "The upstream API fix is a dependency for completing integration testing.",
+      "modelZh": "上游 API 修正是完成整合測試的相依項目。",
+      "keywords": [
+        "dependencies",
+        "milestone",
+        "owner"
+      ]
+    },
+    {
+      "id": "dlg-project-002",
+      "source": "v68 Multi-turn Listening",
+      "category": "專案顧問",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "scenario": "變更需求取捨",
+      "turns": [
+        {
+          "speaker": "Client",
+          "en": "Could we add another validation rule before go-live?",
+          "zh": "正式上線前可以再新增一項驗證規則嗎？"
+        },
+        {
+          "speaker": "Consultant",
+          "en": "We can assess it, but it may affect testing and the release date.",
+          "zh": "我們可以評估，但可能影響測試與發布日期。"
+        },
+        {
+          "speaker": "Client",
+          "en": "What would you recommend?",
+          "zh": "你會怎麼建議？"
+        },
+        {
+          "speaker": "Consultant",
+          "en": "Let's estimate the effort and compare an immediate change with a post-launch release.",
+          "zh": "先估算工作量，並比較立即變更與上線後發布的選項。"
+        }
+      ],
+      "text": "Client: Could we add another validation rule before go-live?\nConsultant: We can assess it, but it may affect testing and the release date.\nClient: What would you recommend?\nConsultant: Let's estimate the effort and compare an immediate change with a post-launch release.",
+      "textZh": "Client：正式上線前可以再新增一項驗證規則嗎？\nConsultant：我們可以評估，但可能影響測試與發布日期。\nClient：你會怎麼建議？\nConsultant：先估算工作量，並比較立即變更與上線後發布的選項。",
+      "intent": "What trade-off does the consultant propose?（顧問提出比較哪兩種取捨？）",
+      "comprehensionQuestion": "What trade-off does the consultant propose?",
+      "comprehensionQuestionZh": "顧問提出比較哪兩種取捨？",
+      "options": [
+        "現在變更或上線後再發布",
+        "取消所有測試或增加薪資",
+        "換辦公室或改為遠端",
+        "改英文口音或改用中文"
+      ],
+      "answer": 0,
+      "model": "We should compare the effort and risk of a pre-launch change with a later release.",
+      "modelZh": "應比較上線前變更與後續發布的工作量和風險。",
+      "keywords": [
+        "effort",
+        "trade-offs",
+        "risk"
+      ]
+    },
+    {
+      "id": "dlg-engineer-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "工程師英文",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "scenario": "API 401 排錯",
+      "turns": [
+        {
+          "speaker": "Developer",
+          "en": "The loan API keeps returning HTTP 401 in UAT.",
+          "zh": "放款 API 在 UAT 一直回傳 HTTP 401。"
+        },
+        {
+          "speaker": "Analyst",
+          "en": "Is the access token present and still valid?",
+          "zh": "有帶 access token 嗎？還有效嗎？"
+        },
+        {
+          "speaker": "Developer",
+          "en": "It's there, but it expired ten minutes ago.",
+          "zh": "有帶，但十分鐘前就過期了。"
+        },
+        {
+          "speaker": "Analyst",
+          "en": "Refresh the token and retry once. If it still fails, compare the permissions.",
+          "zh": "更新 token 後重試一次。如果還失敗，就比較權限。"
+        }
+      ],
+      "text": "Developer: The loan API keeps returning HTTP 401 in UAT.\nAnalyst: Is the access token present and still valid?\nDeveloper: It's there, but it expired ten minutes ago.\nAnalyst: Refresh the token and retry once. If it still fails, compare the permissions.",
+      "textZh": "Developer：放款 API 在 UAT 一直回傳 HTTP 401。\nAnalyst：有帶 access token 嗎？還有效嗎？\nDeveloper：有帶，但十分鐘前就過期了。\nAnalyst：更新 token 後重試一次。如果還失敗，就比較權限。",
+      "intent": "What is the most likely immediate cause?（最可能的直接原因是什麼？）",
+      "comprehensionQuestion": "What is the most likely immediate cause?",
+      "comprehensionQuestionZh": "最可能的直接原因是什麼？",
+      "options": [
+        "存取權杖過期",
+        "資料庫死鎖",
+        "畫面沒有載入",
+        "輸入日期錯誤"
+      ],
+      "answer": 0,
+      "model": "The token expired, so we should refresh it and retry the request.",
+      "modelZh": "token 過期了，所以應更新後重試請求。",
+      "keywords": [
+        "authentication",
+        "retry",
+        "permission"
+      ]
+    },
+    {
+      "id": "dlg-engineer-002",
+      "source": "v68 Multi-turn Listening",
+      "category": "工程師英文",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "scenario": "部署回滾",
+      "turns": [
+        {
+          "speaker": "Engineer",
+          "en": "Error rates increased right after the deployment.",
+          "zh": "部署後錯誤率立刻上升。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "Have we checked whether the database migration is backward compatible?",
+          "zh": "我們確認資料庫 migration 是否向後相容了嗎？"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "The new column is optional, and the old version can still read the table.",
+          "zh": "新欄位是選填，舊版本仍可讀取資料表。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "Then prepare a rollback while we inspect the traces.",
+          "zh": "那就先準備 rollback，同時檢查 trace。"
+        }
+      ],
+      "text": "Engineer: Error rates increased right after the deployment.\nLead: Have we checked whether the database migration is backward compatible?\nEngineer: The new column is optional, and the old version can still read the table.\nLead: Then prepare a rollback while we inspect the traces.",
+      "textZh": "Engineer：部署後錯誤率立刻上升。\nLead：我們確認資料庫 migration 是否向後相容了嗎？\nEngineer：新欄位是選填，舊版本仍可讀取資料表。\nLead：那就先準備 rollback，同時檢查 trace。",
+      "intent": "What action did the lead request?（組長要求採取什麼行動？）",
+      "comprehensionQuestion": "What action did the lead request?",
+      "comprehensionQuestionZh": "組長要求採取什麼行動？",
+      "options": [
+        "準備回滾並檢查追蹤資料",
+        "立即刪除資料庫",
+        "增加新功能",
+        "取消告警"
+      ],
+      "answer": 0,
+      "model": "We should prepare a rollback and inspect the traces before making another change.",
+      "modelZh": "在做其他變更前，應準備回滾並檢查 trace。",
+      "keywords": [
+        "rollback",
+        "technical risk",
+        "evidence"
+      ]
+    },
+    {
+      "id": "dlg-ai-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "Cloud／AI",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "scenario": "RAG 權限與來源",
+      "turns": [
+        {
+          "speaker": "Architect",
+          "en": "Our RAG assistant is retrieving documents outside the user's access scope.",
+          "zh": "我們的 RAG 助理檢索到使用者權限外的文件。"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "The vector search runs with a service account that has broad access.",
+          "zh": "向量搜尋使用權限很廣的服務帳號執行。"
+        },
+        {
+          "speaker": "Architect",
+          "en": "We need document-level authorization before passing context to the model.",
+          "zh": "我們需要在把脈絡傳給模型前做文件層級授權。"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "I'll add an access filter and test it with restricted accounts.",
+          "zh": "我會新增存取過濾並用受限帳號測試。"
+        }
+      ],
+      "text": "Architect: Our RAG assistant is retrieving documents outside the user's access scope.\nEngineer: The vector search runs with a service account that has broad access.\nArchitect: We need document-level authorization before passing context to the model.\nEngineer: I'll add an access filter and test it with restricted accounts.",
+      "textZh": "Architect：我們的 RAG 助理檢索到使用者權限外的文件。\nEngineer：向量搜尋使用權限很廣的服務帳號執行。\nArchitect：我們需要在把脈絡傳給模型前做文件層級授權。\nEngineer：我會新增存取過濾並用受限帳號測試。",
+      "intent": "What must happen before documents reach the model?（文件送到模型前必須進行什麼？）",
+      "comprehensionQuestion": "What must happen before documents reach the model?",
+      "comprehensionQuestionZh": "文件送到模型前必須進行什麼？",
+      "options": [
+        "文件層級的授權檢查",
+        "提高模型溫度",
+        "改頁面顏色",
+        "刪除所有向量"
+      ],
+      "answer": 0,
+      "model": "We must enforce document-level access controls before providing retrieved content to the model.",
+      "modelZh": "把檢索內容交給模型前，必須執行文件層級的存取控制。",
+      "keywords": [
+        "authorization",
+        "RAG",
+        "risk"
+      ]
+    },
+    {
+      "id": "dlg-ai-002",
+      "source": "v68 Multi-turn Listening",
+      "category": "Cloud／AI",
+      "format": "conversation",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "scenario": "AI Timeout 降級",
+      "turns": [
+        {
+          "speaker": "PM",
+          "en": "Users are waiting too long for the AI review result.",
+          "zh": "使用者等 AI 審查結果等太久了。"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "The model sometimes takes more than thirty seconds to respond.",
+          "zh": "模型有時要超過三十秒才回應。"
+        },
+        {
+          "speaker": "PM",
+          "en": "Can we avoid blocking the whole workflow?",
+          "zh": "我們可以避免整個流程被卡住嗎？"
+        },
+        {
+          "speaker": "Engineer",
+          "en": "Yes. We can set a timeout, save the job state, and route failures to manual review.",
+          "zh": "可以，設定 timeout、儲存 job 狀態，再把失敗案例送人工審查。"
+        }
+      ],
+      "text": "PM: Users are waiting too long for the AI review result.\nEngineer: The model sometimes takes more than thirty seconds to respond.\nPM: Can we avoid blocking the whole workflow?\nEngineer: Yes. We can set a timeout, save the job state, and route failures to manual review.",
+      "textZh": "PM：使用者等 AI 審查結果等太久了。\nEngineer：模型有時要超過三十秒才回應。\nPM：我們可以避免整個流程被卡住嗎？\nEngineer：可以，設定 timeout、儲存 job 狀態，再把失敗案例送人工審查。",
+      "intent": "What fallback does the engineer propose?（工程師提出什麼降級做法？）",
+      "comprehensionQuestion": "What fallback does the engineer propose?",
+      "comprehensionQuestionZh": "工程師提出什麼降級做法？",
+      "options": [
+        "保存任務狀態並改走人工審查",
+        "無限等待模型回應",
+        "重送所有資料不檢查",
+        "刪除異常紀錄"
+      ],
+      "answer": 0,
+      "model": "We can time out safely, preserve job state, and send failed cases to manual review.",
+      "modelZh": "可以安全逾時、保存任務狀態，並將失敗案件送交人工審查。",
+      "keywords": [
+        "timeout",
+        "fallback",
+        "operational risk"
+      ]
+    },
+    {
+      "id": "brief-engineer-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "工程師英文",
+      "format": "briefing",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "scenario": "批次效能事件報告",
+      "turns": [
+        {
+          "speaker": "Lead",
+          "en": "Here's the update on the overnight batch incident.",
+          "zh": "以下是昨夜批次事件更新。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "The batch normally finishes before ten in the morning, but yesterday it ended several hours late.",
+          "zh": "批次通常在早上十點前完成，但昨天晚了好幾個小時。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "We checked the Control-M job chain and compared the start and end times with the previous week.",
+          "zh": "我們檢查了 Control-M 工作鏈，並與前一週比較開始和結束時間。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "The delay appears after a downstream data load, but the root cause is not confirmed yet.",
+          "zh": "延遲似乎出現在下游資料載入之後，但根因尚未確認。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "The team will collect execution logs and database wait metrics before requesting a rerun.",
+          "zh": "團隊會先收集執行日誌與資料庫等待指標，再提出重跑需求。"
+        },
+        {
+          "speaker": "Lead",
+          "en": "The client needs a status update with the impact, owner, and next checkpoint by noon.",
+          "zh": "客戶需要在中午前收到包含影響、負責人與下一個檢查點的狀態更新。"
+        }
+      ],
+      "text": "Lead: Here's the update on the overnight batch incident.\nLead: The batch normally finishes before ten in the morning, but yesterday it ended several hours late.\nLead: We checked the Control-M job chain and compared the start and end times with the previous week.\nLead: The delay appears after a downstream data load, but the root cause is not confirmed yet.\nLead: The team will collect execution logs and database wait metrics before requesting a rerun.\nLead: The client needs a status update with the impact, owner, and next checkpoint by noon.",
+      "textZh": "Lead：以下是昨夜批次事件更新。\nLead：批次通常在早上十點前完成，但昨天晚了好幾個小時。\nLead：我們檢查了 Control-M 工作鏈，並與前一週比較開始和結束時間。\nLead：延遲似乎出現在下游資料載入之後，但根因尚未確認。\nLead：團隊會先收集執行日誌與資料庫等待指標，再提出重跑需求。\nLead：客戶需要在中午前收到包含影響、負責人與下一個檢查點的狀態更新。",
+      "intent": "What is the main unresolved item in the briefing?（這段簡報中最主要尚未解決的事項是什麼？）",
+      "comprehensionQuestion": "What is the main unresolved item in the briefing?",
+      "comprehensionQuestionZh": "這段簡報中最主要尚未解決的事項是什麼？",
+      "options": [
+        "延遲的根本原因尚未確認",
+        "客戶已取消所有批次",
+        "資料庫已永久停用",
+        "團隊已完成全部改善"
+      ],
+      "answer": 0,
+      "model": "The root cause is still being investigated, and we will report the impact and next checkpoint.",
+      "modelZh": "根本原因仍在調查中，我們會回報影響與下一個檢查點。",
+      "keywords": [
+        "root cause",
+        "issue aging",
+        "business impact"
+      ]
+    },
+    {
+      "id": "brief-interview-001",
+      "source": "v68 Multi-turn Listening",
+      "category": "面試職涯",
+      "format": "briefing",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "scenario": "面試職務說明",
+      "turns": [
+        {
+          "speaker": "Interviewer",
+          "en": "Let me explain what this consulting role involves.",
+          "zh": "讓我介紹這個顧問職位的工作內容。"
+        },
+        {
+          "speaker": "Interviewer",
+          "en": "You will work with enterprise customers to understand business requirements and recommend technical approaches.",
+          "zh": "你會與企業客戶合作，了解業務需求並建議技術方案。"
+        },
+        {
+          "speaker": "Interviewer",
+          "en": "The team handles architecture discussions, delivery planning, and risk escalation across multiple workstreams.",
+          "zh": "團隊會處理架構討論、交付規劃，以及多個工作流的風險升級。"
+        },
+        {
+          "speaker": "Interviewer",
+          "en": "We are not expecting one person to build every component, but you need enough depth to challenge assumptions.",
+          "zh": "我們不期待一個人打造所有元件，但你需要足夠深度來質疑假設。"
+        },
+        {
+          "speaker": "Interviewer",
+          "en": "In the first few months, success means building trust with stakeholders and delivering a realistic plan.",
+          "zh": "前幾個月的成功是建立利害關係人的信任並交付可行計畫。"
+        },
+        {
+          "speaker": "Interviewer",
+          "en": "After that, we would expect you to take ownership of customer outcomes with less supervision.",
+          "zh": "之後我們會期待你在較少監督下對客戶成果負起責任。"
+        }
+      ],
+      "text": "Interviewer: Let me explain what this consulting role involves.\nInterviewer: You will work with enterprise customers to understand business requirements and recommend technical approaches.\nInterviewer: The team handles architecture discussions, delivery planning, and risk escalation across multiple workstreams.\nInterviewer: We are not expecting one person to build every component, but you need enough depth to challenge assumptions.\nInterviewer: In the first few months, success means building trust with stakeholders and delivering a realistic plan.\nInterviewer: After that, we would expect you to take ownership of customer outcomes with less supervision.",
+      "textZh": "Interviewer：讓我介紹這個顧問職位的工作內容。\nInterviewer：你會與企業客戶合作，了解業務需求並建議技術方案。\nInterviewer：團隊會處理架構討論、交付規劃，以及多個工作流的風險升級。\nInterviewer：我們不期待一個人打造所有元件，但你需要足夠深度來質疑假設。\nInterviewer：前幾個月的成功是建立利害關係人的信任並交付可行計畫。\nInterviewer：之後我們會期待你在較少監督下對客戶成果負起責任。",
+      "intent": "What is the interviewer's main expectation for the role?（面試官對此職務的主要期待是什麼？）",
+      "comprehensionQuestion": "What is the interviewer's main expectation for the role?",
+      "comprehensionQuestionZh": "面試官對此職務的主要期待是什麼？",
+      "options": [
+        "具備技術判斷力並能推動客戶交付",
+        "獨立寫出所有軟體元件",
+        "只負責內部行政",
+        "不需要與客戶接觸"
+      ],
+      "answer": 0,
+      "model": "The role requires technical judgment, stakeholder alignment, and ownership of customer delivery.",
+      "modelZh": "這個角色需要技術判斷、利害關係人對齊，以及客戶交付責任。",
+      "keywords": [
+        "technical depth",
+        "customer delivery",
+        "stakeholders"
+      ]
     }
   ]
 };
