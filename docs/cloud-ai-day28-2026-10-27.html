@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cloud × AI Day 28｜Python 資料品質與特徵處理｜待作答</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#172b40;background:#f3f7fc}
+*{box-sizing:border-box}body{margin:0}main{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.2}h2{font-size:1.25rem}h3{font-size:1.07rem}
+a{color:#1659a2}header{background:linear-gradient(130deg,#112d4b,#21578b);color:white;padding:32px 20px;border-radius:20px}
+header a{color:#d7eaff}header p{color:#e6effa;line-height:1.7}
+.card{background:white;border:1px solid #d7e3ef;border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 5px 18px #173a6310}
+p,li{line-height:1.75}.muted{color:#526980}.note{padding:13px 16px;border-left:4px solid #1c73bb;background:#edf5ff;border-radius:8px}
+code{background:#eff4f8;padding:2px 5px;border-radius:4px}pre{white-space:pre-wrap;background:#142a42;color:#eef6ff;padding:16px;border-radius:12px;overflow:auto}
+table{width:100%;border-collapse:collapse}td,th{border:1px solid #dbe5ef;padding:10px;text-align:left;vertical-align:top}
+fieldset{border:0;padding:0;margin:0}legend{font-weight:700;margin-bottom:12px}
+.option{display:flex;align-items:flex-start;gap:12px;border:1px solid #cdddeb;border-radius:12px;padding:13px;margin:10px 0;cursor:pointer;line-height:1.5}
+.option:has(input:checked){border-color:#2677bd;background:#edf6ff}.option input{width:19px;height:19px;flex:none;accent-color:#246fb4;margin-top:2px}
+label.field{display:block;margin:14px 0 8px;font-weight:600}
+select,textarea{width:100%;padding:12px;border:1px solid #bacfe2;border-radius:10px;font:inherit;background:#fff;color:#183249}
+textarea{min-height:150px;resize:vertical}button{border:0;border-radius:10px;background:#1669b2;color:white;font:inherit;font-weight:650;padding:13px 18px;cursor:pointer}
+button.secondary{background:#e5eff8;color:#16416c}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #7cb7e8;outline-offset:2px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}.status{font-weight:600;margin:14px 0;min-height:24px}
+.badge{display:inline-block;background:#fff0cf;color:#6d4a00;border-radius:999px;padding:6px 12px;font-weight:700}
+#preview{white-space:pre-wrap;overflow-wrap:anywhere;background:#edf4fb;border-radius:12px;padding:15px;display:none}
+.small{font-size:.9rem}.warning{color:#8a4600}.foot{color:#637b8c;font-size:.88rem}
+@media(max-width:550px){.card{padding:16px}header{padding:23px 16px}.actions button{width:100%}}
+</style></head><body><main>
+<header>
+<a href="../index.html#ladder">← 返回 Cloud × AI 學習天梯</a>
+<p class="badge">DAY 28 · 待作答 · 尚未計分</p>
+<h1>Python 資料品質與特徵處理</h1>
+<p>2026/10/27（二）｜AI Programming｜約 20 分鐘｜100 分<br>延續 Day 27，但改成真正操作資料處理，不重複考 Training / Inference 定義。</p>
+</header>
+<section class="card"><h2>核心觀念｜資料先可靠，模型才有意義</h2>
+<p>Cloud SA Academy 的 AI Tutor 想分析學生需要補強的單元。<strong>模型訓練之前，Python 必須先把事件資料轉成可靠的 Features（特徵）</strong>。否則重複上傳、格式錯誤、缺值會讓模型學到錯誤訊號。</p>
+<p><strong>DataFrame</strong> 可以想成有欄位名稱的 Excel 表格；<strong>Series</strong> 是其中一欄。<strong>Schema Validation</strong> 確保欄位存在、型別正確；<strong>Deduplication</strong> 避免同一事件重複計入；<strong>Feature Engineering</strong> 將原始資料轉成模型能用的欄位。</p>
+<pre>import pandas as pd
+events = pd.DataFrame([
+    {"event_id":"E01","student_id":"S01","accuracy":0.8},
+    {"event_id":"E02","student_id":"S01","accuracy":0.6}
+])
+events["accuracy_pct"] = events["accuracy"] * 100
+print(events[["student_id","accuracy_pct"]])</pre>
+<p class="note">注意：正式成績由 Spring Boot 的業務規則管理。Python 清洗資料與模型預測都不能直接修改正式成績。資料示範只用合成內容，不上傳公司或客戶資料。</p>
+<h3>雲端對照與取捨</h3>
+<table><tr><th>環境</th><th>適合的資料處理方案</th><th>取捨</th></tr>
+<tr><td>本機 / NAS（優先）</td><td>Python + pandas + scikit-learn</td><td>零新增雲端費用；須自行維護排程與監控</td></tr>
+<tr><td>AWS</td><td>S3 + SageMaker Processing / SageMaker Pipelines</td><td>託管工作與流程整合較方便；需控制計費與 IAM</td></tr>
+<tr><td>Azure</td><td>Azure Machine Learning data preparation / pipelines</td><td>整合 Azure 身分治理；作業與資源計費方式不同</td></tr>
+<tr><td>GCP</td><td>Vertex AI Pipelines / custom training jobs</td><td>適合 GCP AI 工作流程；與 AWS、Azure 非一對一等價</td></tr></table>
+<p>今天只需在既有 NAS / CPU 理解流程，不需啟動付費 GPU。</p></section>
+<form id="day28" autocomplete="off">
+<section class="card"><h2>Q1｜單選（15 分）</h2>
+<fieldset><legend>學生練習事件匯入 CSV 後，<code>elapsed_sec</code> 有字串「45」、「N/A」、「70」。要保留資料並安全處理無效數值，哪一個方向最合理？</legend>
+<label class="option"><input type="radio" name="q1" value="A">A. 直接用 <code>astype(int)</code>，有錯誤就整批忽略</label>
+<label class="option"><input type="radio" name="q1" value="B">B. 先用 <code>pd.to_numeric(..., errors="coerce")</code>，再依訓練資料規則處理缺值</label>
+<label class="option"><input type="radio" name="q1" value="C">C. 將所有無效字串當成 999999 秒，避免缺值</label>
+<label class="option"><input type="radio" name="q1" value="D">D. 把欄位全部轉成字串，直接輸入數值模型</label>
+</fieldset></section>
+<section class="card"><h2>Q2｜複選（20 分）</h2>
+<fieldset><legend>AI Tutor 每天收到 3,000 筆合成練習事件，其中 2% 的作答秒數格式錯誤、部分 <code>event_id</code> 重複、5% 缺少 <code>topic</code>。哪些處理合理？（可複選）</legend>
+<label class="option"><input type="checkbox" name="q2" value="A">A. 依事件唯一識別碼檢查重複，避免重複計入</label>
+<label class="option"><input type="checkbox" name="q2" value="B">B. 只要有任一欄缺值，就永久刪除該學生所有紀錄</label>
+<label class="option"><input type="checkbox" name="q2" value="C">C. 驗證欄位名稱、型別、允許範圍與必要欄位</label>
+<label class="option"><input type="checkbox" name="q2" value="D">D. 記錄缺值比例與異常原因，依事先定義的規則清洗或隔離</label>
+<label class="option"><input type="checkbox" name="q2" value="E">E. 將無法辨識的題目一律標記為答對，以提升模型準確率</label>
+<label class="option"><input type="checkbox" name="q2" value="F">F. 保留原始事件與清洗後資料的版本或可追溯關聯</label>
+</fieldset></section>
+<section class="card"><h2>Q3｜配對（20 分）</h2>
+<p>選擇下列 Python 操作最主要的目的。每個選項使用一次。</p>
+<label class="field" for="m1">1. <code>df.drop_duplicates(subset=["event_id"])</code></label><select id="m1" name="m1"><option value="">請選擇</option><option value="A">A. 將無效數字轉為缺值</option><option value="B">B. 排除同一事件重複計入</option><option value="C">C. 檢查欄位是否為缺值</option><option value="D">D. 產生依學生彙整的平均值</option></select>
+<label class="field" for="m2">2. <code>pd.to_numeric(df["elapsed_sec"], errors="coerce")</code></label><select id="m2" name="m2"><option value="">請選擇</option><option value="A">A. 將無效數字轉為缺值</option><option value="B">B. 排除同一事件重複計入</option><option value="C">C. 檢查欄位是否為缺值</option><option value="D">D. 產生依學生彙整的平均值</option></select>
+<label class="field" for="m3">3. <code>df["topic"].isna()</code></label><select id="m3" name="m3"><option value="">請選擇</option><option value="A">A. 將無效數字轉為缺值</option><option value="B">B. 排除同一事件重複計入</option><option value="C">C. 檢查欄位是否為缺值</option><option value="D">D. 產生依學生彙整的平均值</option></select>
+<label class="field" for="m4">4. <code>df.groupby("student_id")["accuracy"].mean()</code></label><select id="m4" name="m4"><option value="">請選擇</option><option value="A">A. 將無效數字轉為缺值</option><option value="B">B. 排除同一事件重複計入</option><option value="C">C. 檢查欄位是否為缺值</option><option value="D">D. 產生依學生彙整的平均值</option></select>
+</section>
+<section class="card"><h2>實作｜AI Tutor Data Pipeline V1（45 分）</h2>
+<p>不需要真的部署。請設計每天將合成練習事件清洗、彙整為學生特徵的最小流程。用下拉選單作架構決策，再在文字框填入 3–6 行 Python 程式或偽程式。</p>
+<label class="field" for="p1">① 資料來源（可先選一個最合理的 V1）</label><select id="p1" name="p1"><option value="">請選擇</option><option value="A">A. Postgres 已授權的練習事件資料（唯讀查詢）</option><option value="B">B. 外部未授權的真實銀行客戶資料</option><option value="C">C. 讓 FastAPI 直接讀取正式成績資料表並修改分數</option></select>
+<label class="field" for="p2">② 重複事件的判斷依據</label><select id="p2" name="p2"><option value="">請選擇</option><option value="A">A. 依 event_id 去重並保留來源追溯</option><option value="B">B. 依 accuracy 值去重（相同分數視為同一事件）</option><option value="C">C. 不需處理重複事件</option></select>
+<label class="field" for="p3">③ 清洗資料失敗時</label><select id="p3" name="p3"><option value="">請選擇</option><option value="A">A. 先記錄錯誤、隔離異常事件，正式成績保持不變</option><option value="B">B. 直接刪除所有學生正式成績並重算</option><option value="C">C. 無條件把異常資料當成成功</option></select>
+<label class="field" for="p4">④ 什麼情況才考慮託管雲端資料處理？</label><select id="p4" name="p4"><option value="">請選擇</option><option value="A">A. NAS 無法滿足負載、維運、SLA 或治理需求，且預算經評估可接受</option><option value="B">B. 只要使用 Python 就必須改用 GPU 雲端機器</option><option value="C">C. 一開始就使用最昂貴的託管服務，無需評估成本</option></select>
+<label class="field" for="practice">⑤ 你的 Python 資料處理流程（3–6 行即可）</label>
+<textarea id="practice" name="practice" placeholder="例如先描述：讀取已授權事件 → 驗證欄位 → 處理重複/缺值 → 依學生彙整特徵 → 儲存可追溯結果。請用你自己的程式或偽程式完成。"></textarea>
+<p class="muted small">評分會看資料品質、Python 表達、權限與可追溯性。尚未提交前不顯示答案，也不產生正式分數。</p></section>
+<section class="card">
+<h2>整理作答（不會自動計分）</h2>
+<p>先完成上方欄位，按下按鈕即可自動整理成 Day 28 答案。無需手動逐題輸入選項。接著將複製內容貼回 ChatGPT，才會正式批改與同步學習紀錄。</p>
+<div class="actions"><button type="submit">檢查並複製我的答案</button><button type="button" class="secondary" id="share">手機分享作答</button><button type="button" class="secondary" id="reset">清除本頁草稿</button></div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<div id="preview" aria-label="作答內容預覽"></div>
+<p class="warning small">本頁僅將未提交草稿暫存於目前瀏覽器，並不代表已送交 ChatGPT 或寫入正式資料庫。Day 28 正式成績必須在批改後才更新 GitHub。請勿輸入 IBM、CTBC 或其他未授權資料。</p>
+</section></form>
+<p class="foot">Cloud × AI Solutions Architect Learning Journey · Day 28 pending assessment · No answer key is embedded in this page.</p>
+</main>
+<script>
+(function(){
+'use strict';
+var key='cloud-ai-day28-draft-20261027-v1',form=document.getElementById('day28'),status=document.getElementById('status'),preview=document.getElementById('preview');
+function serialize(){var data=new FormData(form),q2=data.getAll('q2');return {q1:data.get('q1')||'',q2:q2,q3:[data.get('m1')||'',data.get('m2')||'',data.get('m3')||'',data.get('m4')||''],practice:[data.get('p1')||'',data.get('p2')||'',data.get('p3')||'',data.get('p4')||'',data.get('practice')||'']};}
+function validate(x){if(!x.q1)return '請完成 Q1 單選題。';if(!x.q2.length)return '請至少選擇一個 Q2 答案。';if(x.q3.some(function(a){return !a;}))return '請完成 Q3 所有配對。';if(x.practice.some(function(a){return !a.trim();}))return '請完成實作的四個選擇與文字框。';return '';}
+function output(x){return 'Cloud × AI Day 28 正式作答（請批改後才計分）\n日期：2026-10-27\nQ1：'+x.q1+'\nQ2：'+x.q2.join('、')+'\nQ3：1→'+x.q3[0]+'、2→'+x.q3[1]+'、3→'+x.q3[2]+'、4→'+x.q3[3]+'\n實作：\n1. 資料來源：'+x.practice[0]+'\n2. 去重策略：'+x.practice[1]+'\n3. 失敗處理：'+x.practice[2]+'\n4. 雲端選型：'+x.practice[3]+'\n5. Python 流程：\n'+x.practice[4]+'\n\n請先檢查官方 GitHub data.js 避免重複計分，按 Q1 15、Q2 20、Q3 20、實作 45 逐題批改；保留歷史資料。';}
+function save(){try{localStorage.setItem(key,JSON.stringify(serialize()));status.textContent='草稿已暫存在本機；尚未正式提交。';}catch(e){status.textContent='此瀏覽器無法保存草稿，請完成後直接複製作答。';}}
+function restore(){try{var x=JSON.parse(localStorage.getItem(key)||'null');if(!x)return;var q1=form.querySelector('input[name="q1"][value="'+x.q1+'"]');if(q1)q1.checked=true;(x.q2||[]).forEach(function(v){var c=form.querySelector('input[name="q2"][value="'+v+'"]');if(c)c.checked=true;});(x.q3||[]).forEach(function(v,i){var e=form.querySelector('#m'+(i+1));if(e)e.value=v;});['p1','p2','p3','p4','practice'].forEach(function(id,i){var e=document.getElementById(id);if(e)e.value=(x.practice||[])[i]||'';});status.textContent='已還原上次未提交的草稿。';}catch(e){}}
+form.addEventListener('input',save);form.addEventListener('change',save);
+form.addEventListener('submit',async function(e){e.preventDefault();var x=serialize(),error=validate(x);if(error){status.textContent=error;return;}var text=output(x);preview.style.display='block';preview.textContent=text;try{await navigator.clipboard.writeText(text);status.textContent='答案已複製！請貼到 ChatGPT 對話送出，才會正式批改。';}catch(e){status.textContent='已整理答案，請長按下方預覽內容複製後貼到 ChatGPT。';}});
+document.getElementById('share').addEventListener('click',async function(){var x=serialize(),error=validate(x);if(error){status.textContent=error;return;}if(!navigator.share){status.textContent='此裝置不支援分享，請使用「檢查並複製我的答案」。';return;}try{await navigator.share({title:'Cloud × AI Day 28 作答',text:output(x)});status.textContent='已開啟分享功能；請確認是否真的送出。';}catch(e){status.textContent='未完成分享，可改用複製答案。';}});
+document.getElementById('reset').addEventListener('click',function(){if(!confirm('確定清除本機 Day 28 草稿？不會影響任何正式成績。'))return;form.reset();try{localStorage.removeItem(key);}catch(e){}preview.style.display='none';status.textContent='草稿已清除，正式學習紀錄未受影響。';});
+restore();
+})();
+</script></body></html>
