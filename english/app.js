@@ -352,6 +352,8 @@
     if(/今日複習/.test(title))return 'due';
     if(/錯題複習/.test(title))return 'wrong';
     if(/聽力特訓/.test(title))return 'listening';
+    if(/情境連續對話/.test(title))return 'conversation';
+    if(/專業簡報聽力/.test(title))return 'briefing';
     if(/口說快練/.test(title))return 'speaking';
     if(/Interview Mock|Personalized Interview Mock/.test(title))return 'mock';
     if(/自適應挑戰/.test(title))return 'adaptive';
@@ -2667,6 +2669,12 @@
   }
 
   function buildSessionQuestions(mode,size){
+    if(mode==='conversation'||mode==='briefing'){
+      const pool=diversifyCandidatePool(CONTENT.questions.filter(q=>q.type==='listening_intent'&&q.format===mode),mode,size);
+      const selected=[];let available=pool.slice();
+      while(selected.length<size&&available.length){const q=weightedPick(available,'listening',selected);selected.push(q);available=available.filter(x=>x.id!==q.id);}
+      return selected;
+    }
     if(mode==='diagnostic')return DIAGNOSTIC_IDS.map(id=>CONTENT.questions.find(q=>q.id===id)).filter(Boolean);
     if(mode==='mock') return buildInterviewMock(size);
     let pool = diversifyCandidatePool(candidatePool(mode),mode,size);
@@ -2741,7 +2749,7 @@
     const requestedSize=sizeOverride===null?(mode==='mock'?8:mode==='diagnostic'?5:state.settings.sessionSize):sizeOverride;
     const minSize=meta?.missionTaskKey?1:2;
     const size = clamp(parseInt(requestedSize,10)||10,minSize,15);
-    const titles={adaptive:'自適應挑戰',listening:'聽力特訓',wrong:'錯題複習',due:'今日複習',mock:(privateQuestionIds.size?'Personalized Interview Mock':'Interview Mock'),diagnostic:'5 分鐘能力診斷',speaking:'口說快練'};
+    const titles={adaptive:'自適應挑戰',listening:'聽力特訓',conversation:'情境連續對話',briefing:'專業簡報聽力',wrong:'錯題複習',due:'今日複習',mock:(privateQuestionIds.size?'Personalized Interview Mock':'Interview Mock'),diagnostic:'5 分鐘能力診斷',speaking:'口說快練'};
     session={mode,title:titles[mode]||'自適應挑戰',questions:buildSessionQuestions(mode,size),index:0,answers:[],startedAt:new Date().toISOString(),currentMeta:null,missionTaskKey:meta?.missionTaskKey||null,missionDate:meta?.missionDate||null,missionOriginDate:meta?.missionOriginDate||null,missionTargetSize:meta?.missionTargetSize||null,missionRequestedSize:size};
     $('resultSection').classList.remove('show');
     $('challengeSection').classList.add('active');
@@ -2769,7 +2777,11 @@
 
   function renderListeningQuestion(q){
     const qZh=questionTranslation(q);
-    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">先不要看文字，聽懂「他在問什麼」</div><div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字＋繁中</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox"><div class="transcript-en">${esc(q.text)}</div>${qZh?`<div class="transcript-zh"><span>繁體中文</span>${esc(qZh)}</div>`:''}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div>${modelAnswerHtml(q,'可以這樣回答').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 再練這題</button></div></article>`;
+    const isMultiTurn=Array.isArray(q.turns)&&q.turns.length>1;
+    const formatNote=isMultiTurn?`<div class="listening-scenario-note"><strong>${esc(q.scenario||'連續情境聽力')}</strong><span>${q.format==='briefing'?'專業簡報':'多人對話'} · ${q.turns.length} 段 · 先聽完再回答</span></div>`:'';
+    const transcriptHtml=isMultiTurn?q.turns.map(turn=>`<div class="listening-turn"><strong>${esc(turn.speaker)}</strong><span>${esc(turn.en)}</span><small>${esc(turn.zh)}</small></div>`).join(''):`<div class="transcript-en">${esc(q.text)}</div>${qZh?`<div class="transcript-zh"><span>繁體中文</span>${esc(qZh)}</div>`:''}`;
+    const comprehensionHtml=isMultiTurn?`<div class="listening-comprehension"><strong>聽完後回答</strong><p>${esc(q.comprehensionQuestion)}</p><span>${esc(q.comprehensionQuestionZh)}</span></div>`:'';
+    $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">${isMultiTurn?'先聽懂完整對話，再回答重點':'先不要看文字，聽懂「他在問什麼」'}</div>${formatNote}<div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字＋繁中</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox">${transcriptHtml}</div></div>${comprehensionHtml}<div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div>${modelAnswerHtml(q,'可以這樣回答').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 再練這題</button></div></article>`;
     const enabledAccents=enabledPracticeAccents();
     $('playNorthAmericaBtn').classList.toggle('hidden',!enabledAccents.includes('northAmerica'));
     $('playIndiaBtn').classList.toggle('hidden',!enabledAccents.includes('india'));
