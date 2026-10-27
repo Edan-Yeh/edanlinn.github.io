@@ -1834,6 +1834,456 @@ window.EDAN_ENGLISH_CONTENT = {
       "zh": "結果",
       "example": "As a result, we resolved the issue before the deadline.",
       "exampleZh": "結果我們在截止日前解決了問題。"
+    },
+    {
+      "id": "v151",
+      "word": "scope",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "範圍",
+      "example": "We need to confirm the scope before estimating the effort.",
+      "exampleZh": "在估算工作量前，我們需要先確認範圍。"
+    },
+    {
+      "id": "v152",
+      "word": "milestone",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "里程碑",
+      "example": "The next milestone is system integration testing.",
+      "exampleZh": "下一個里程碑是系統整合測試。"
+    },
+    {
+      "id": "v153",
+      "word": "deliverable",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "交付成果",
+      "example": "This document is one of the key project deliverables.",
+      "exampleZh": "這份文件是專案的重要交付成果之一。"
+    },
+    {
+      "id": "v154",
+      "word": "deadline",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "截止日期",
+      "example": "The team is working toward a tight deadline.",
+      "exampleZh": "團隊正在趕一個很緊的截止日期。"
+    },
+    {
+      "id": "v155",
+      "word": "dependency",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "相依關係",
+      "example": "This task has a dependency on the upstream system.",
+      "exampleZh": "這項工作相依於上游系統。"
+    },
+    {
+      "id": "v156",
+      "word": "blocker",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "阻塞問題",
+      "example": "The missing test data is our main blocker.",
+      "exampleZh": "缺少測試資料是目前最大的阻塞問題。"
+    },
+    {
+      "id": "v157",
+      "word": "risk",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "風險",
+      "example": "We should review the risk before making the change.",
+      "exampleZh": "做變更前我們應該先檢視風險。"
+    },
+    {
+      "id": "v158",
+      "word": "issue",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "問題；議題",
+      "example": "The issue is affecting several downstream teams.",
+      "exampleZh": "這個問題正在影響多個下游團隊。"
+    },
+    {
+      "id": "v159",
+      "word": "escalation",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "升級處理",
+      "example": "This issue may need management escalation.",
+      "exampleZh": "這個問題可能需要升級到管理層處理。"
+    },
+    {
+      "id": "v160",
+      "word": "stakeholder",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "利害關係人",
+      "example": "We need to align the key stakeholders before the decision.",
+      "exampleZh": "做決策前需要先讓關鍵利害關係人對齊。"
+    },
+    {
+      "id": "v161",
+      "word": "alignment",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "對齊；共識",
+      "example": "We reached alignment on the next steps.",
+      "exampleZh": "我們已對下一步取得共識。"
+    },
+    {
+      "id": "v162",
+      "word": "requirement",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "需求",
+      "example": "The business requirement is still being clarified.",
+      "exampleZh": "業務需求仍在釐清中。"
+    },
+    {
+      "id": "v163",
+      "word": "assumption",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "假設",
+      "example": "Let’s make the assumptions explicit before we estimate.",
+      "exampleZh": "估算前先把假設條件說清楚。"
+    },
+    {
+      "id": "v164",
+      "word": "constraint",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "限制條件",
+      "example": "Time is the biggest constraint for this release.",
+      "exampleZh": "時間是這次發布最大的限制。"
+    },
+    {
+      "id": "v165",
+      "word": "priority",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "優先順序",
+      "example": "Customer impact is our highest priority.",
+      "exampleZh": "客戶影響是我們最高的優先事項。"
+    },
+    {
+      "id": "v166",
+      "word": "timeline",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "時程",
+      "example": "The timeline depends on test data readiness.",
+      "exampleZh": "時程取決於測試資料是否準備完成。"
+    },
+    {
+      "id": "v167",
+      "word": "roadmap",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "路線圖；規劃",
+      "example": "The roadmap shows the major releases for this year.",
+      "exampleZh": "路線圖列出今年主要的發布計畫。"
+    },
+    {
+      "id": "v168",
+      "word": "backlog",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "待辦清單",
+      "example": "We added the new requirement to the backlog.",
+      "exampleZh": "我們把新需求加入待辦清單。"
+    },
+    {
+      "id": "v169",
+      "word": "sprint",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "敏捷衝刺週期",
+      "example": "We plan to complete this work in the next sprint.",
+      "exampleZh": "我們計畫在下一個 sprint 完成這項工作。"
+    },
+    {
+      "id": "v170",
+      "word": "iteration",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "迭代",
+      "example": "We improved the design in the second iteration.",
+      "exampleZh": "我們在第二次迭代改善了設計。"
+    },
+    {
+      "id": "v171",
+      "word": "estimate",
+      "pos": "n./v.",
+      "category": "專案顧問",
+      "zh": "估算",
+      "example": "We need a technical estimate before committing to the date.",
+      "exampleZh": "承諾日期前需要先有技術估算。"
+    },
+    {
+      "id": "v172",
+      "word": "effort",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "工作量",
+      "example": "The change requires more effort than expected.",
+      "exampleZh": "這項變更需要比預期更多的工作量。"
+    },
+    {
+      "id": "v173",
+      "word": "resource",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "資源",
+      "example": "We may need an additional resource for testing.",
+      "exampleZh": "測試可能需要額外資源。"
+    },
+    {
+      "id": "v174",
+      "word": "capacity",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "產能；可用工時",
+      "example": "The team does not have enough capacity this week.",
+      "exampleZh": "團隊這週沒有足夠的可用工時。"
+    },
+    {
+      "id": "v175",
+      "word": "workload",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "工作量；負荷",
+      "example": "We need to balance the workload across the team.",
+      "exampleZh": "我們需要平衡團隊內的工作負荷。"
+    },
+    {
+      "id": "v176",
+      "word": "status",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "狀態",
+      "example": "I’ll send a status update after the meeting.",
+      "exampleZh": "會議後我會發一份狀態更新。"
+    },
+    {
+      "id": "v177",
+      "word": "progress",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "進度",
+      "example": "We’re making good progress on the migration.",
+      "exampleZh": "移轉工作目前進展順利。"
+    },
+    {
+      "id": "v178",
+      "word": "update",
+      "pos": "n./v.",
+      "category": "專案顧問",
+      "zh": "更新",
+      "example": "Here’s a quick update on the current issue.",
+      "exampleZh": "這裡快速更新一下目前的問題。"
+    },
+    {
+      "id": "v179",
+      "word": "action item",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "待辦事項",
+      "example": "Each action item needs an owner and due date.",
+      "exampleZh": "每一個待辦事項都需要負責人與到期日。"
+    },
+    {
+      "id": "v180",
+      "word": "owner",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "負責人",
+      "example": "We need one clear owner for this decision.",
+      "exampleZh": "這個決策需要一位明確負責人。"
+    },
+    {
+      "id": "v181",
+      "word": "handoff",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "交接",
+      "example": "The handoff between the two teams was not clear.",
+      "exampleZh": "兩個團隊之間的交接不夠清楚。"
+    },
+    {
+      "id": "v182",
+      "word": "approval",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "核准",
+      "example": "We are waiting for client approval.",
+      "exampleZh": "我們正在等待客戶核准。"
+    },
+    {
+      "id": "v183",
+      "word": "sign-off",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "正式簽核",
+      "example": "We need final sign-off before go-live.",
+      "exampleZh": "正式上線前需要最終簽核。"
+    },
+    {
+      "id": "v184",
+      "word": "change request",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "變更需求",
+      "example": "The client submitted a new change request.",
+      "exampleZh": "客戶提出了一個新的變更需求。"
+    },
+    {
+      "id": "v185",
+      "word": "impact assessment",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "影響評估",
+      "example": "We should complete an impact assessment before accepting the change.",
+      "exampleZh": "接受變更前應先完成影響評估。"
+    },
+    {
+      "id": "v186",
+      "word": "contingency",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "應變方案",
+      "example": "We prepared a contingency in case the release fails.",
+      "exampleZh": "我們準備了發布失敗時的應變方案。"
+    },
+    {
+      "id": "v187",
+      "word": "mitigation",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "風險緩解",
+      "example": "The mitigation reduces the operational risk.",
+      "exampleZh": "這項緩解措施降低了營運風險。"
+    },
+    {
+      "id": "v188",
+      "word": "root cause",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "根本原因",
+      "example": "We are still investigating the root cause.",
+      "exampleZh": "我們仍在調查根本原因。"
+    },
+    {
+      "id": "v189",
+      "word": "workaround",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "暫時替代方案",
+      "example": "We have a workaround while the permanent fix is being developed.",
+      "exampleZh": "在永久修正完成前，我們有一個暫時替代方案。"
+    },
+    {
+      "id": "v190",
+      "word": "resolution",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "解決方案；處理結果",
+      "example": "The team agreed on a resolution this morning.",
+      "exampleZh": "團隊今天早上已對解決方案取得共識。"
+    },
+    {
+      "id": "v191",
+      "word": "rollout",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "逐步推出；部署",
+      "example": "We’ll use a gradual rollout to reduce risk.",
+      "exampleZh": "我們會採逐步推出來降低風險。"
+    },
+    {
+      "id": "v192",
+      "word": "cutover",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "切換作業",
+      "example": "The cutover is planned for Saturday night.",
+      "exampleZh": "系統切換預計在星期六晚上進行。"
+    },
+    {
+      "id": "v193",
+      "word": "go-live",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "正式上線",
+      "example": "The go-live date is still on track.",
+      "exampleZh": "正式上線日期目前仍按計畫進行。"
+    },
+    {
+      "id": "v194",
+      "word": "rollback",
+      "pos": "n./v.",
+      "category": "專案顧問",
+      "zh": "回滾；回復",
+      "example": "We have a rollback plan if the deployment fails.",
+      "exampleZh": "如果部署失敗，我們有回滾計畫。"
+    },
+    {
+      "id": "v195",
+      "word": "governance",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "治理機制",
+      "example": "The project needs clear governance and decision rights.",
+      "exampleZh": "專案需要清楚的治理機制與決策權限。"
+    },
+    {
+      "id": "v196",
+      "word": "decision log",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "決策紀錄",
+      "example": "We record major decisions in the decision log.",
+      "exampleZh": "我們會把重大決策記錄在決策紀錄中。"
+    },
+    {
+      "id": "v197",
+      "word": "meeting minutes",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "會議紀錄",
+      "example": "I’ll send the meeting minutes with the action items.",
+      "exampleZh": "我會把會議紀錄和待辦事項一起寄出。"
+    },
+    {
+      "id": "v198",
+      "word": "follow-up",
+      "pos": "n./adj.",
+      "category": "專案顧問",
+      "zh": "後續追蹤",
+      "example": "I scheduled a follow-up for next week.",
+      "exampleZh": "我安排了下週的後續追蹤。"
+    },
+    {
+      "id": "v199",
+      "word": "accountable",
+      "pos": "adj.",
+      "category": "專案顧問",
+      "zh": "負最終責任的",
+      "example": "One person should be accountable for the final decision.",
+      "exampleZh": "最終決策應該由一個人負最終責任。"
+    },
+    {
+      "id": "v200",
+      "word": "responsible",
+      "pos": "adj.",
+      "category": "專案顧問",
+      "zh": "負責的",
+      "example": "The application team is responsible for the code change.",
+      "exampleZh": "應用團隊負責程式碼變更。"
     }
   ],
   "questions": [
