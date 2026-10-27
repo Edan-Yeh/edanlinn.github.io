@@ -946,11 +946,11 @@ window.EDAN_ENGLISH_CONTENT = {
     },
     {
       "id": "v052",
-      "word": "available",
+      "word": "free",
       "pos": "adj.",
       "category": "生活會話",
-      "zh": "有空的；可用的",
-      "example": "Are you available after work today?",
+      "zh": "有空的；空閒的",
+      "example": "Are you free after work today?",
       "exampleZh": "你今天下班後有空嗎？"
     },
     {
@@ -1378,12 +1378,12 @@ window.EDAN_ENGLISH_CONTENT = {
     },
     {
       "id": "v100",
-      "word": "figure out",
+      "word": "work out",
       "pos": "phrase",
       "category": "生活會話",
-      "zh": "弄清楚；想出辦法",
-      "example": "I’ll figure out how to get there.",
-      "exampleZh": "我會想辦法弄清楚怎麼到那裡。"
+      "zh": "順利解決；想出辦法",
+      "example": "Don’t worry. We’ll work out a solution.",
+      "exampleZh": "別擔心，我們會想出解決辦法。"
     },
     {
       "id": "v101",
