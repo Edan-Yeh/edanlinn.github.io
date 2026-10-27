@@ -122,10 +122,10 @@
           <span class="badge">推薦</span><h3>自適應挑戰</h3><p>10 題混合：聽力、口說、Chunks、救援句。優先弱項與到期複習，難度跟著你走。</p><button class="btn primary start-mode" data-mode="adaptive" type="button">開始 10 題</button>
         </article>
         <article class="panel mode-card">
-          <span class="badge good">Listening</span><h3>聽力特訓</h3><p>先只聽聲音抓意圖。每一題都提供兩個版本：北美口音＋印度口音。等級越高，問法越長、語速越快。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
+          <span class="badge good">Listening</span><span class="badge dark" id="listeningBankCount">— 題</span><h3>聽力特訓</h3><p>涵蓋生活、面試、專案、工程師、Cloud／AI。每一題都有北美＋印度雙口音，並依近期曝光與弱點自動輪替。</p><button class="btn secondary start-mode" data-mode="listening" type="button">開始聽力</button>
         </article>
         <article class="panel mode-card">
-          <span class="badge">Vocabulary</span><h3>單字練習</h3><p>依熟悉度自動降頻：答錯最優先、猜對其次、新字再來；穩定答對的字會越來越少出現。</p><button class="btn secondary" id="jumpVocabBtn" type="button">開始刷單字</button>
+          <span class="badge">Vocabulary</span><span class="badge dark" id="vocabBankCount">— 個</span><h3>單字練習</h3><p>核心字詞涵蓋生活、面試、專案、工程師與 Cloud／AI；依熟悉度自動降頻，穩定答對的字會越來越少出現。</p><button class="btn secondary" id="jumpVocabBtn" type="button">開始刷單字</button>
         </article>
         <article class="panel mode-card">
           <span class="badge warn">Review</span><h3>錯題複習</h3><p>只挑曾答錯、需要提示、口說很卡，或你手動標註「我是猜的」的題目，直到真正熟。</p><button class="btn ghost start-mode" data-mode="wrong" type="button">複習弱項</button>
@@ -306,8 +306,8 @@
     <section class="section" id="vocabularySection">
       <div class="section-head">
         <div>
-          <h2>基礎單字｜Daily Vocabulary</h2>
-          <p>同一批單字用不同方式練，並依長期熟悉度調整頻率：<b>錯的 ＞ 猜的 ＞ 新的 ＞ 對的</b>。答對會拉長複習間隔；如果其實是猜的，可直接標註，系統會提高後續出現頻率。</p>
+          <h2>核心單字｜Core Vocabulary <span class="badge dark" id="vocabSectionCount">— 個核心字詞</span></h2>
+          <p>從生活會話一路到面試、專案、工程師與 Cloud／AI；同一批字詞用卡片、選擇、句型與聽力反覆練，並依長期熟悉度調整頻率：<b>錯的 ＞ 猜的 ＞ 新的 ＞ 對的</b>。</p>
         </div>
         <div class="filters vocab-filters">
           <select id="vocabFilter" aria-label="單字分類">
@@ -318,6 +318,11 @@
             <option value="口說副詞">口說副詞</option>
             <option value="連接表達">連接表達</option>
             <option value="口說片語">口說片語</option>
+            <option value="生活會話">生活會話</option>
+            <option value="面試職涯">面試職涯</option>
+            <option value="專案顧問">專案顧問</option>
+            <option value="工程師英文">工程師英文</option>
+            <option value="Cloud／AI">Cloud／AI</option>
           </select>
           <button class="btn secondary" id="randomVocabBtn" type="button">隨機 8 個</button>
           <button class="btn ghost" id="learningVocabBtn" type="button">只看不熟</button>
