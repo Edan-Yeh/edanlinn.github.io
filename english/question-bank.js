@@ -5557,6 +5557,390 @@ window.EDAN_ENGLISH_CONTENT = {
         "customer impact",
         "overall package"
       ]
+    },
+    {
+      "id": "listen-project-009",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which assumption in the plan is most likely to be wrong, and how would that affect delivery?",
+      "textZh": "計畫裡哪個假設最可能不成立？如果不成立會如何影響交付？",
+      "intent": "對方在要求你找出高風險假設與交付影響。",
+      "options": [
+        "高風險假設與交付影響",
+        "薪資期待",
+        "團隊聚餐",
+        "技術證照"
+      ],
+      "answer": 0,
+      "model": "I would identify the assumption with the highest delivery impact and define a validation point as early as possible.",
+      "modelZh": "我會找出對交付影響最大的假設，並盡早設定驗證點。",
+      "keywords": [
+        "assumption",
+        "delivery",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-project-010",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What exactly needs to be true before we can call this milestone complete?",
+      "textZh": "要滿足哪些條件，我們才能把這個里程碑視為完成？",
+      "intent": "對方在詢問 milestone 的完成／驗收條件。",
+      "options": [
+        "里程碑完成條件",
+        "薪資條件",
+        "辦公室規定",
+        "面試流程"
+      ],
+      "answer": 0,
+      "model": "We should agree on measurable acceptance criteria, evidence, and final sign-off.",
+      "modelZh": "我們應該先對可衡量的驗收標準、證據與最終簽核取得共識。",
+      "keywords": [
+        "milestone",
+        "evidence",
+        "sign-off"
+      ]
+    },
+    {
+      "id": "listen-project-011",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "If we move this task forward, which other team will be blocked or need to adjust?",
+      "textZh": "如果我們提前這項工作，哪個其他團隊會被阻塞或需要調整？",
+      "intent": "對方在問調整時程對其他團隊 dependency 的影響。",
+      "options": [
+        "時程調整對其他團隊的影響",
+        "工作地點",
+        "薪資福利",
+        "英文程度"
+      ],
+      "answer": 0,
+      "model": "I would check downstream dependencies and confirm whether any team needs a revised handoff date.",
+      "modelZh": "我會檢查下游相依關係，並確認是否有團隊需要調整交接日期。",
+      "keywords": [
+        "dependencies",
+        "handoff",
+        "timeline"
+      ]
+    },
+    {
+      "id": "listen-project-012",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is the smallest decision we can make today that keeps the project moving without creating unnecessary risk?",
+      "textZh": "今天我們可以做的最小決策是什麼，既能讓專案前進又不增加不必要風險？",
+      "intent": "對方在問可逆、低風險的最小前進決策。",
+      "options": [
+        "低風險的最小前進決策",
+        "全面改架構",
+        "取消專案",
+        "延後所有工作"
+      ],
+      "answer": 0,
+      "model": "I would choose a reversible decision that removes the current blocker while preserving options for later.",
+      "modelZh": "我會選擇可逆的決策，先解除目前阻塞，同時保留之後的選項。",
+      "keywords": [
+        "reversibility",
+        "blocker",
+        "options"
+      ]
+    },
+    {
+      "id": "listen-project-013",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Who needs to approve this change, and by when do we need that decision?",
+      "textZh": "這項變更需要誰核准？我們最晚何時需要這個決策？",
+      "intent": "對方在確認 change approval owner 與 decision deadline。",
+      "options": [
+        "核准人與決策期限",
+        "午餐時間",
+        "工作地點",
+        "薪資範圍"
+      ],
+      "answer": 0,
+      "model": "I would identify the decision owner and set a clear approval deadline based on downstream impact.",
+      "modelZh": "我會確認決策負責人，並依下游影響設定明確的核准期限。",
+      "keywords": [
+        "decision owner",
+        "approval",
+        "timeline"
+      ]
+    },
+    {
+      "id": "listen-project-014",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the deadline cannot move, which part of the scope would you challenge first?",
+      "textZh": "如果截止日期不能改，你會優先挑戰哪一部分範圍？",
+      "intent": "對方在問固定 deadline 下如何做 scope trade-off。",
+      "options": [
+        "固定期限下的範圍取捨",
+        "加薪談判",
+        "資料庫備份",
+        "休假排程"
+      ],
+      "answer": 0,
+      "model": "I would separate must-have outcomes from lower-value scope and make the trade-offs explicit.",
+      "modelZh": "我會把必要成果與較低價值的範圍分開，並把取捨說清楚。",
+      "keywords": [
+        "scope",
+        "trade-offs",
+        "deadline"
+      ]
+    },
+    {
+      "id": "listen-project-015",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What are we waiting on from the vendor, and what can we do while we wait?",
+      "textZh": "我們目前在等供應商提供什麼？等待期間有哪些事情可以先做？",
+      "intent": "對方在問 vendor dependency 與可平行工作的事項。",
+      "options": [
+        "供應商相依與等待期間可做工作",
+        "薪資期待",
+        "面試回饋",
+        "交通安排"
+      ],
+      "answer": 0,
+      "model": "I would clarify the vendor dependency and identify workstreams we can run in parallel.",
+      "modelZh": "我會先釐清供應商相依項目，再找出可以平行進行的工作流。",
+      "keywords": [
+        "vendors",
+        "dependency",
+        "parallel"
+      ]
+    },
+    {
+      "id": "listen-project-016",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you know whether this issue is getting better or just being discussed more often?",
+      "textZh": "你如何判斷這個問題是真的在改善，而不是只是被更頻繁討論？",
+      "intent": "對方在問如何用 evidence 判斷 issue 是否真的改善。",
+      "options": [
+        "用證據判斷問題改善",
+        "安排更多會議",
+        "更換工具",
+        "調整薪資"
+      ],
+      "answer": 0,
+      "model": "I would track measurable indicators such as error rate, aging, and completion of corrective actions.",
+      "modelZh": "我會追蹤錯誤率、問題 aging 與修正行動完成度等可衡量指標。",
+      "keywords": [
+        "evidence",
+        "issue aging",
+        "success"
+      ]
+    },
+    {
+      "id": "listen-project-017",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would you put in the executive update if you only had two minutes?",
+      "textZh": "如果你只有兩分鐘，你會在高階主管更新中放哪些內容？",
+      "intent": "對方在問如何把專案狀態濃縮成 executive update。",
+      "options": [
+        "高階主管兩分鐘狀態更新",
+        "完整技術設計",
+        "所有會議紀錄",
+        "個人工作日誌"
+      ],
+      "answer": 0,
+      "model": "I would cover business impact, major risk, decision needed, and whether the timeline is still credible.",
+      "modelZh": "我會涵蓋業務影響、主要風險、需要的決策，以及時程是否仍可信。",
+      "keywords": [
+        "business impact",
+        "risk",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-project-018",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which action item has been open the longest, and why has it not moved?",
+      "textZh": "哪一個待辦事項開著最久？為什麼一直沒有推進？",
+      "intent": "對方在追問 action item aging 與阻塞原因。",
+      "options": [
+        "最久未完成待辦與阻塞原因",
+        "薪資明細",
+        "面試安排",
+        "餐廳訂位"
+      ],
+      "answer": 0,
+      "model": "I would check the owner, dependency, and decision needed for the oldest open action.",
+      "modelZh": "我會檢查最久未完成事項的 owner、相依關係與所需決策。",
+      "keywords": [
+        "owner",
+        "dependencies",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-project-019",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What should we stop doing if the team is already over capacity?",
+      "textZh": "如果團隊已經超出負荷，我們應該停止做哪些事情？",
+      "intent": "對方在問 capacity 不足時如何重新優先排序。",
+      "options": [
+        "產能不足時重新排序",
+        "增加所有工作",
+        "改變薪資",
+        "安排出差"
+      ],
+      "answer": 0,
+      "model": "I would protect critical-path work and pause lower-priority activities that do not affect near-term outcomes.",
+      "modelZh": "我會保護關鍵路徑工作，暫停不影響近期成果的低優先事項。",
+      "keywords": [
+        "resource constraints",
+        "critical path",
+        "priority"
+      ]
+    },
+    {
+      "id": "listen-project-020",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you explain a three-week delay to a customer without losing confidence?",
+      "textZh": "如果專案延遲三週，你會如何向客戶說明而不失去信任？",
+      "intent": "對方在問延誤溝通與客戶信心管理。",
+      "options": [
+        "延誤溝通與客戶信心",
+        "隱瞞延誤",
+        "責怪團隊",
+        "取消會議"
+      ],
+      "answer": 0,
+      "model": "I would explain the cause, business impact, recovery plan, and what controls we added to prevent another slip.",
+      "modelZh": "我會說明原因、業務影響、復原計畫，以及新增哪些控制避免再次延誤。",
+      "keywords": [
+        "customer confidence",
+        "recovery plan",
+        "business impact"
+      ]
+    },
+    {
+      "id": "listen-project-021",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Are we measuring completion by activity, or by an actual customer outcome?",
+      "textZh": "我們是在用做了多少活動衡量完成度，還是用真正的客戶成果？",
+      "intent": "對方在區分 activity completion 與 customer outcome。",
+      "options": [
+        "活動完成與客戶成果差異",
+        "薪資調整",
+        "工作地點",
+        "程式語言"
+      ],
+      "answer": 0,
+      "model": "I prefer outcome-based measures because activity alone does not prove the customer received value.",
+      "modelZh": "我偏好用成果衡量，因為只完成活動不代表客戶真的得到價值。",
+      "keywords": [
+        "customer outcomes",
+        "visible outcomes",
+        "success"
+      ]
+    },
+    {
+      "id": "listen-project-022",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the same risk keeps reopening, what does that tell you about the mitigation?",
+      "textZh": "如果同一個風險一直重新出現，這代表原本的緩解措施可能有什麼問題？",
+      "intent": "對方在問反覆風險是否代表 mitigation 無效。",
+      "options": [
+        "反覆風險與緩解成效",
+        "安排更多會議",
+        "換辦公室",
+        "改薪資"
+      ],
+      "answer": 0,
+      "model": "It suggests the mitigation may only be treating the symptom instead of the root cause.",
+      "modelZh": "這可能代表緩解措施只處理症狀，而沒有解決根本原因。",
+      "keywords": [
+        "risk",
+        "root cause",
+        "mitigation"
+      ]
+    },
+    {
+      "id": "listen-project-023",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What is the handoff criteria between testing and production readiness?",
+      "textZh": "測試完成到正式環境準備之間的交接標準是什麼？",
+      "intent": "對方在問 testing 到 production readiness 的 handoff criteria。",
+      "options": [
+        "測試到正式環境的交接標準",
+        "薪資福利",
+        "面試時段",
+        "休假規則"
+      ],
+      "answer": 0,
+      "model": "I would define test completion, unresolved defect thresholds, sign-off, and rollback readiness.",
+      "modelZh": "我會定義測試完成條件、未解缺陷門檻、簽核與 rollback 準備度。",
+      "keywords": [
+        "testing",
+        "sign-off",
+        "rollback"
+      ]
+    },
+    {
+      "id": "listen-project-024",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Which project metric would make you change the plan rather than just report the status?",
+      "textZh": "哪一個專案指標會讓你真的改變計畫，而不是只回報狀態？",
+      "intent": "對方在問哪些指標會觸發實際管理行動。",
+      "options": [
+        "會觸發計畫調整的指標",
+        "所有狀態報告",
+        "個人績效",
+        "薪資資訊"
+      ],
+      "answer": 0,
+      "model": "I would act on metrics that show delivery risk, issue aging, resource constraints, or declining customer confidence.",
+      "modelZh": "當指標顯示交付風險、問題 aging、資源限制或客戶信心下降時，我會調整計畫。",
+      "keywords": [
+        "issue aging",
+        "resource constraints",
+        "customer confidence"
+      ]
     }
   ]
 };
