@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-22",
+  "updatedAt": "2026-10-27",
   "completedDays": 27,
-  "currentTrack": "Cloud × AI Solutions Architect / Day 24 AI Tutor Async Reliability",
+  "currentTrack": "Cloud × AI / Day 27 已完成 · Day 28 Python 資料品質待作答",
   "scores": [
     {
       "day": 1,
