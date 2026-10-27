@@ -1384,6 +1384,456 @@ window.EDAN_ENGLISH_CONTENT = {
       "zh": "弄清楚；想出辦法",
       "example": "I’ll figure out how to get there.",
       "exampleZh": "我會想辦法弄清楚怎麼到那裡。"
+    },
+    {
+      "id": "v101",
+      "word": "achievement",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成就",
+      "example": "My biggest achievement was improving a critical delivery process.",
+      "exampleZh": "我最大的成就是改善一個關鍵交付流程。"
+    },
+    {
+      "id": "v102",
+      "word": "accomplishment",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成果；成就",
+      "example": "I’m proud of that accomplishment because it helped the whole team.",
+      "exampleZh": "我很為那項成果感到驕傲，因為它幫助了整個團隊。"
+    },
+    {
+      "id": "v103",
+      "word": "strength",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "優勢；強項",
+      "example": "One of my strengths is cross-team coordination.",
+      "exampleZh": "我的其中一個強項是跨團隊協調。"
+    },
+    {
+      "id": "v104",
+      "word": "weakness",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "弱點",
+      "example": "I’m working on my weakness by practicing English every day.",
+      "exampleZh": "我每天練英文來改善自己的弱點。"
+    },
+    {
+      "id": "v105",
+      "word": "responsibility",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "職責",
+      "example": "My main responsibility is system analysis and delivery coordination.",
+      "exampleZh": "我的主要職責是系統分析與交付協調。"
+    },
+    {
+      "id": "v106",
+      "word": "ownership",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "責任承擔；主責",
+      "example": "I take ownership when an issue affects my workstream.",
+      "exampleZh": "當問題影響我的工作流時，我會主動承擔責任。"
+    },
+    {
+      "id": "v107",
+      "word": "leadership",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "領導能力",
+      "example": "Leadership is also about making decisions clear for the team.",
+      "exampleZh": "領導也包含讓團隊清楚知道決策。"
+    },
+    {
+      "id": "v108",
+      "word": "collaboration",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "協作",
+      "example": "Cross-team collaboration is important in large projects.",
+      "exampleZh": "跨團隊協作在大型專案中很重要。"
+    },
+    {
+      "id": "v109",
+      "word": "conflict",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "衝突",
+      "example": "I try to understand both sides before resolving a conflict.",
+      "exampleZh": "在處理衝突前，我會先理解雙方立場。"
+    },
+    {
+      "id": "v110",
+      "word": "challenge",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "挑戰",
+      "example": "The main challenge was unclear ownership across several teams.",
+      "exampleZh": "主要挑戰是多個團隊之間責任歸屬不清。"
+    },
+    {
+      "id": "v111",
+      "word": "initiative",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "主動性",
+      "example": "I took the initiative to organize the issue review.",
+      "exampleZh": "我主動安排了問題檢視會議。"
+    },
+    {
+      "id": "v112",
+      "word": "prioritize",
+      "pos": "v.",
+      "category": "面試職涯",
+      "zh": "排定優先順序",
+      "example": "I prioritize work based on impact and urgency.",
+      "exampleZh": "我依影響與急迫性排定工作優先順序。"
+    },
+    {
+      "id": "v113",
+      "word": "adapt",
+      "pos": "v.",
+      "category": "面試職涯",
+      "zh": "適應；調整",
+      "example": "I can adapt quickly when project priorities change.",
+      "exampleZh": "專案優先順序改變時，我能快速調整。"
+    },
+    {
+      "id": "v114",
+      "word": "feedback",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "回饋",
+      "example": "I use feedback to improve the way I communicate.",
+      "exampleZh": "我利用回饋改善自己的溝通方式。"
+    },
+    {
+      "id": "v115",
+      "word": "improvement",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "改善；進步",
+      "example": "The change led to a clear improvement in response time.",
+      "exampleZh": "這項改變明顯改善了回應時間。"
+    },
+    {
+      "id": "v116",
+      "word": "measurable",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "可衡量的",
+      "example": "I try to describe my results with measurable outcomes.",
+      "exampleZh": "我會盡量用可衡量的成果描述我的結果。"
+    },
+    {
+      "id": "v117",
+      "word": "outcome",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成果；結果",
+      "example": "I focus on the customer outcome, not only the technical task.",
+      "exampleZh": "我關注客戶成果，而不只是技術任務。"
+    },
+    {
+      "id": "v118",
+      "word": "impact",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "影響",
+      "example": "I first assess the business impact of the issue.",
+      "exampleZh": "我會先評估問題的業務影響。"
+    },
+    {
+      "id": "v119",
+      "word": "contribution",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "貢獻",
+      "example": "My contribution was connecting the business and technical teams.",
+      "exampleZh": "我的貢獻是連結業務與技術團隊。"
+    },
+    {
+      "id": "v120",
+      "word": "qualification",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "資格；條件",
+      "example": "My experience matches most of the qualifications for this role.",
+      "exampleZh": "我的經驗符合這個職位大部分的條件。"
+    },
+    {
+      "id": "v121",
+      "word": "relevant",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "相關的",
+      "example": "I have relevant experience in banking and system integration.",
+      "exampleZh": "我有銀行與系統整合相關經驗。"
+    },
+    {
+      "id": "v122",
+      "word": "experience",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "經驗",
+      "example": "I have over eight years of experience in financial IT.",
+      "exampleZh": "我有超過八年的金融 IT 經驗。"
+    },
+    {
+      "id": "v123",
+      "word": "expertise",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "專業能力",
+      "example": "My expertise is in system analysis and cross-team delivery.",
+      "exampleZh": "我的專業在系統分析與跨團隊交付。"
+    },
+    {
+      "id": "v124",
+      "word": "motivation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "動機",
+      "example": "My motivation is to grow into a more cloud-focused role.",
+      "exampleZh": "我的動機是往更聚焦雲端的角色發展。"
+    },
+    {
+      "id": "v125",
+      "word": "opportunity",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "機會",
+      "example": "This role is a good opportunity to work with global customers.",
+      "exampleZh": "這個職位是與全球客戶合作的好機會。"
+    },
+    {
+      "id": "v126",
+      "word": "career path",
+      "pos": "phrase",
+      "category": "面試職涯",
+      "zh": "職涯路徑",
+      "example": "I’m looking for a career path that combines technology and consulting.",
+      "exampleZh": "我在尋找結合技術與顧問工作的職涯路徑。"
+    },
+    {
+      "id": "v127",
+      "word": "growth",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成長",
+      "example": "I’m looking for more technical and customer-facing growth.",
+      "exampleZh": "我希望有更多技術與客戶面的成長。"
+    },
+    {
+      "id": "v128",
+      "word": "transition",
+      "pos": "n./v.",
+      "category": "面試職涯",
+      "zh": "轉換；轉型",
+      "example": "I’m preparing for a transition into cloud consulting.",
+      "exampleZh": "我正在準備轉向雲端顧問工作。"
+    },
+    {
+      "id": "v129",
+      "word": "expectation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "期待；預期",
+      "example": "I’d like to understand the expectations for the first six months.",
+      "exampleZh": "我想了解前六個月的職務期待。"
+    },
+    {
+      "id": "v130",
+      "word": "compensation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "薪酬",
+      "example": "I’m open to discussing the overall compensation package.",
+      "exampleZh": "我願意討論整體薪酬方案。"
+    },
+    {
+      "id": "v131",
+      "word": "negotiate",
+      "pos": "v.",
+      "category": "面試職涯",
+      "zh": "協商；談判",
+      "example": "I prefer to negotiate based on the total package and role scope.",
+      "exampleZh": "我傾向依整體方案與職務範圍來協商。"
+    },
+    {
+      "id": "v132",
+      "word": "flexibility",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "彈性",
+      "example": "I value flexibility, but I can also support important on-site work.",
+      "exampleZh": "我重視彈性，但重要工作需要時也可以到現場。"
+    },
+    {
+      "id": "v133",
+      "word": "remote",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "遠端的",
+      "example": "I’m comfortable working with remote teams.",
+      "exampleZh": "我很習慣與遠端團隊合作。"
+    },
+    {
+      "id": "v134",
+      "word": "hybrid",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "混合辦公的",
+      "example": "A hybrid working model works well for me.",
+      "exampleZh": "混合辦公模式很適合我。"
+    },
+    {
+      "id": "v135",
+      "word": "relocation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "搬遷",
+      "example": "Relocation would depend on the role and location.",
+      "exampleZh": "是否搬遷會取決於職位與地點。"
+    },
+    {
+      "id": "v136",
+      "word": "availability",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "可到職時間；可用性",
+      "example": "My availability would be after my notice period.",
+      "exampleZh": "我的可到職時間會是在通知期結束後。"
+    },
+    {
+      "id": "v137",
+      "word": "notice period",
+      "pos": "phrase",
+      "category": "面試職涯",
+      "zh": "離職通知期",
+      "example": "I need to complete my notice period before joining.",
+      "exampleZh": "我需要完成離職通知期後才能加入。"
+    },
+    {
+      "id": "v138",
+      "word": "interviewer",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "面試官",
+      "example": "The interviewer asked me about a difficult project situation.",
+      "exampleZh": "面試官問了我一個困難的專案情境。"
+    },
+    {
+      "id": "v139",
+      "word": "recruiter",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "招募人員",
+      "example": "The recruiter explained the next steps in the process.",
+      "exampleZh": "招募人員說明了接下來的流程。"
+    },
+    {
+      "id": "v140",
+      "word": "hiring manager",
+      "pos": "phrase",
+      "category": "面試職涯",
+      "zh": "用人主管",
+      "example": "I’d like to understand what the hiring manager expects from this role.",
+      "exampleZh": "我想了解用人主管對這個職位的期待。"
+    },
+    {
+      "id": "v141",
+      "word": "candidate",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "候選人",
+      "example": "A strong candidate should show both technical depth and communication skills.",
+      "exampleZh": "好的候選人應同時展現技術深度與溝通能力。"
+    },
+    {
+      "id": "v142",
+      "word": "position",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "職位",
+      "example": "I’m interested in the position because it matches my next career step.",
+      "exampleZh": "我對這個職位有興趣，因為它符合我的下一個職涯階段。"
+    },
+    {
+      "id": "v143",
+      "word": "role",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "角色；職位",
+      "example": "This role combines technical work with customer communication.",
+      "exampleZh": "這個角色結合技術工作與客戶溝通。"
+    },
+    {
+      "id": "v144",
+      "word": "fit",
+      "pos": "n./v.",
+      "category": "面試職涯",
+      "zh": "適配；適合",
+      "example": "I think my background is a strong fit for the role.",
+      "exampleZh": "我認為自己的背景很符合這個職位。"
+    },
+    {
+      "id": "v145",
+      "word": "culture",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "文化",
+      "example": "I’m interested in a culture that values ownership and learning.",
+      "exampleZh": "我喜歡重視責任與學習的文化。"
+    },
+    {
+      "id": "v146",
+      "word": "value",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "價值",
+      "example": "I want to create value through practical technical solutions.",
+      "exampleZh": "我希望透過實際的技術方案創造價值。"
+    },
+    {
+      "id": "v147",
+      "word": "example",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "例子",
+      "example": "Let me give you a specific example from my current project.",
+      "exampleZh": "讓我用目前專案的一個具體例子說明。"
+    },
+    {
+      "id": "v148",
+      "word": "situation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "情況；情境",
+      "example": "The situation involved several teams and a tight timeline.",
+      "exampleZh": "那個情況涉及多個團隊與緊迫時程。"
+    },
+    {
+      "id": "v149",
+      "word": "action",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "行動",
+      "example": "My first action was to clarify the impact and owner.",
+      "exampleZh": "我的第一個行動是釐清影響與負責人。"
+    },
+    {
+      "id": "v150",
+      "word": "result",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "結果",
+      "example": "As a result, we resolved the issue before the deadline.",
+      "exampleZh": "結果我們在截止日前解決了問題。"
     }
   ],
   "questions": [
