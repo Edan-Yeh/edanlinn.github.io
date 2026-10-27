@@ -2824,6 +2824,366 @@ window.EDAN_ENGLISH_CONTENT = {
       "zh": "正式環境",
       "example": "The fix has not been deployed to production yet.",
       "exampleZh": "修正還沒有部署到正式環境。"
+    },
+    {
+      "id": "v261",
+      "word": "cloud",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "雲端",
+      "example": "We run the new service in the cloud.",
+      "exampleZh": "我們把新服務運行在雲端。"
+    },
+    {
+      "id": "v262",
+      "word": "region",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "區域",
+      "example": "The primary workload runs in one cloud region.",
+      "exampleZh": "主要 workload 運行在一個雲端區域。"
+    },
+    {
+      "id": "v263",
+      "word": "availability zone",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "可用區",
+      "example": "We distribute the service across multiple availability zones.",
+      "exampleZh": "我們把服務分散到多個可用區。"
+    },
+    {
+      "id": "v264",
+      "word": "load balancer",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "負載平衡器",
+      "example": "The load balancer distributes traffic across the instances.",
+      "exampleZh": "負載平衡器把流量分散到多個 instance。"
+    },
+    {
+      "id": "v265",
+      "word": "autoscaling",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "自動擴縮",
+      "example": "Autoscaling adds capacity when traffic increases.",
+      "exampleZh": "流量增加時 autoscaling 會自動增加容量。"
+    },
+    {
+      "id": "v266",
+      "word": "serverless",
+      "pos": "adj.",
+      "category": "Cloud／AI",
+      "zh": "無伺服器架構的",
+      "example": "A serverless function works well for short event-driven tasks.",
+      "exampleZh": "短時間的事件驅動工作很適合使用 serverless function。"
+    },
+    {
+      "id": "v267",
+      "word": "function",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "函式；雲端函式",
+      "example": "The function is triggered by a new file upload.",
+      "exampleZh": "新檔案上傳時會觸發這個 function。"
+    },
+    {
+      "id": "v268",
+      "word": "object storage",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "物件儲存",
+      "example": "We keep large files in object storage.",
+      "exampleZh": "我們把大型檔案放在 object storage。"
+    },
+    {
+      "id": "v269",
+      "word": "block storage",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "區塊儲存",
+      "example": "The database uses block storage for low-latency access.",
+      "exampleZh": "資料庫使用 block storage 來提供低延遲存取。"
+    },
+    {
+      "id": "v270",
+      "word": "database replica",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "資料庫副本",
+      "example": "A read replica reduces load on the primary database.",
+      "exampleZh": "read replica 可以降低主要資料庫的負載。"
+    },
+    {
+      "id": "v271",
+      "word": "failover",
+      "pos": "n./v.",
+      "category": "Cloud／AI",
+      "zh": "容錯切換",
+      "example": "The service can fail over to a secondary instance.",
+      "exampleZh": "服務可以切換到次要 instance。"
+    },
+    {
+      "id": "v272",
+      "word": "high availability",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "高可用性",
+      "example": "We designed the service for high availability.",
+      "exampleZh": "我們把服務設計成高可用架構。"
+    },
+    {
+      "id": "v273",
+      "word": "disaster recovery",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "災難復原",
+      "example": "The disaster recovery plan is tested every year.",
+      "exampleZh": "災難復原計畫每年都會測試。"
+    },
+    {
+      "id": "v274",
+      "word": "RPO",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "復原點目標",
+      "example": "The business requires an RPO of five minutes.",
+      "exampleZh": "業務要求 RPO 為五分鐘。"
+    },
+    {
+      "id": "v275",
+      "word": "RTO",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "復原時間目標",
+      "example": "The target RTO is thirty minutes.",
+      "exampleZh": "目標 RTO 是三十分鐘。"
+    },
+    {
+      "id": "v276",
+      "word": "encryption",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "加密",
+      "example": "Sensitive data is protected with encryption.",
+      "exampleZh": "敏感資料會使用加密保護。"
+    },
+    {
+      "id": "v277",
+      "word": "secret",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "機密資訊",
+      "example": "API keys should be stored as secrets, not in source code.",
+      "exampleZh": "API key 應存放在 secret，而不是原始碼裡。"
+    },
+    {
+      "id": "v278",
+      "word": "key management",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "金鑰管理",
+      "example": "We use a managed key management service for encryption keys.",
+      "exampleZh": "我們使用受管理的金鑰管理服務保存加密金鑰。"
+    },
+    {
+      "id": "v279",
+      "word": "IAM",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "身分與存取管理",
+      "example": "IAM controls who can access each cloud resource.",
+      "exampleZh": "IAM 控制誰可以存取各項雲端資源。"
+    },
+    {
+      "id": "v280",
+      "word": "least privilege",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "最小權限原則",
+      "example": "Service accounts should follow the principle of least privilege.",
+      "exampleZh": "服務帳號應遵循最小權限原則。"
+    },
+    {
+      "id": "v281",
+      "word": "network",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "網路",
+      "example": "The application and database are in the same private network.",
+      "exampleZh": "應用程式和資料庫位於同一個私有網路。"
+    },
+    {
+      "id": "v282",
+      "word": "subnet",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "子網路",
+      "example": "The database is deployed in a private subnet.",
+      "exampleZh": "資料庫部署在 private subnet。"
+    },
+    {
+      "id": "v283",
+      "word": "gateway",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "閘道",
+      "example": "Traffic leaves the network through the gateway.",
+      "exampleZh": "流量透過 gateway 離開網路。"
+    },
+    {
+      "id": "v284",
+      "word": "firewall",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "防火牆",
+      "example": "The firewall only allows approved ports.",
+      "exampleZh": "防火牆只允許核准的連接埠。"
+    },
+    {
+      "id": "v285",
+      "word": "observability",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "可觀測性",
+      "example": "Good observability helps us find failures faster.",
+      "exampleZh": "良好的可觀測性可以幫助我們更快找到故障。"
+    },
+    {
+      "id": "v286",
+      "word": "inference",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "推論",
+      "example": "The model performs inference for each incoming request.",
+      "exampleZh": "模型會對每一個進來的 request 執行推論。"
+    },
+    {
+      "id": "v287",
+      "word": "training",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "訓練",
+      "example": "Model training requires clean and representative data.",
+      "exampleZh": "模型訓練需要乾淨且具代表性的資料。"
+    },
+    {
+      "id": "v288",
+      "word": "model",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "模型",
+      "example": "We evaluate the model before using it in production.",
+      "exampleZh": "模型在 production 使用前需要先評估。"
+    },
+    {
+      "id": "v289",
+      "word": "prompt",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "提示詞",
+      "example": "The prompt should clearly describe the expected output.",
+      "exampleZh": "prompt 應清楚描述期望的輸出。"
+    },
+    {
+      "id": "v290",
+      "word": "embedding",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "向量嵌入",
+      "example": "We create an embedding for each document chunk.",
+      "exampleZh": "我們會為每個文件切片建立 embedding。"
+    },
+    {
+      "id": "v291",
+      "word": "vector database",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "向量資料庫",
+      "example": "The vector database stores document embeddings for retrieval.",
+      "exampleZh": "向量資料庫儲存文件 embedding 供檢索使用。"
+    },
+    {
+      "id": "v292",
+      "word": "retrieval",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "檢索",
+      "example": "Retrieval finds the most relevant documents before generation.",
+      "exampleZh": "生成前，retrieval 會先找出最相關的文件。"
+    },
+    {
+      "id": "v293",
+      "word": "RAG",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "檢索增強生成",
+      "example": "RAG can ground answers in approved company documents.",
+      "exampleZh": "RAG 可以讓回答依據經核准的公司文件。"
+    },
+    {
+      "id": "v294",
+      "word": "hallucination",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "模型幻覺",
+      "example": "We need checks to reduce hallucination in high-risk answers.",
+      "exampleZh": "高風險回答需要檢查機制來降低模型幻覺。"
+    },
+    {
+      "id": "v295",
+      "word": "guardrail",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "防護機制",
+      "example": "A guardrail can block unsafe or unsupported output.",
+      "exampleZh": "guardrail 可以阻擋不安全或沒有依據的輸出。"
+    },
+    {
+      "id": "v296",
+      "word": "grounding",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "依據；事實落地",
+      "example": "Grounding helps the model answer with verifiable information.",
+      "exampleZh": "grounding 能幫助模型依據可驗證資訊回答。"
+    },
+    {
+      "id": "v297",
+      "word": "evaluation",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "評估",
+      "example": "We use an evaluation set to compare model quality.",
+      "exampleZh": "我們使用評估資料集比較模型品質。"
+    },
+    {
+      "id": "v298",
+      "word": "dataset",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "資料集",
+      "example": "The dataset should represent real user cases.",
+      "exampleZh": "資料集應該能代表真實使用者情境。"
+    },
+    {
+      "id": "v299",
+      "word": "fine-tuning",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "微調",
+      "example": "Fine-tuning can help when the task needs specialized behavior.",
+      "exampleZh": "當任務需要特定行為時，fine-tuning 可能有幫助。"
+    },
+    {
+      "id": "v300",
+      "word": "agent",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "AI 代理",
+      "example": "The agent can call tools to complete a multi-step task.",
+      "exampleZh": "agent 可以呼叫工具完成多步驟任務。"
     }
   ],
   "questions": [
