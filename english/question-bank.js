@@ -934,6 +934,2256 @@ window.EDAN_ENGLISH_CONTENT = {
       "category": "口說片語",
       "zh": "確認；確保",
       "example": "Let me make sure I understand."
+    },
+    {
+      "id": "v051",
+      "word": "appointment",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "預約；約會",
+      "example": "I have a doctor’s appointment this afternoon.",
+      "exampleZh": "我今天下午有一個看醫生的預約。"
+    },
+    {
+      "id": "v052",
+      "word": "free",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "有空的；空閒的",
+      "example": "Are you free after work today?",
+      "exampleZh": "你今天下班後有空嗎？"
+    },
+    {
+      "id": "v053",
+      "word": "convenient",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "方便的",
+      "example": "Is six o’clock convenient for you?",
+      "exampleZh": "六點對你方便嗎？"
+    },
+    {
+      "id": "v054",
+      "word": "schedule",
+      "pos": "n./v.",
+      "category": "生活會話",
+      "zh": "行程；安排",
+      "example": "My schedule is pretty full this week.",
+      "exampleZh": "我這週的行程很滿。"
+    },
+    {
+      "id": "v055",
+      "word": "reschedule",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "重新安排時間",
+      "example": "Can we reschedule the meeting to Friday?",
+      "exampleZh": "我們可以把會議改到星期五嗎？"
+    },
+    {
+      "id": "v056",
+      "word": "cancel",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "取消",
+      "example": "I need to cancel my reservation tonight.",
+      "exampleZh": "我需要取消今晚的預約。"
+    },
+    {
+      "id": "v057",
+      "word": "confirm",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "確認",
+      "example": "Please confirm the time before you leave.",
+      "exampleZh": "離開前請確認時間。"
+    },
+    {
+      "id": "v058",
+      "word": "remind",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "提醒",
+      "example": "Please remind me to call him later.",
+      "exampleZh": "請提醒我晚點打給他。"
+    },
+    {
+      "id": "v059",
+      "word": "nearby",
+      "pos": "adv./adj.",
+      "category": "生活會話",
+      "zh": "附近的",
+      "example": "Is there a convenience store nearby?",
+      "exampleZh": "附近有便利商店嗎？"
+    },
+    {
+      "id": "v060",
+      "word": "commute",
+      "pos": "n./v.",
+      "category": "生活會話",
+      "zh": "通勤",
+      "example": "My commute takes about thirty minutes.",
+      "exampleZh": "我的通勤大約需要三十分鐘。"
+    },
+    {
+      "id": "v061",
+      "word": "crowded",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "擁擠的",
+      "example": "The train is usually crowded in the morning.",
+      "exampleZh": "早上的火車通常很擁擠。"
+    },
+    {
+      "id": "v062",
+      "word": "quiet",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "安靜的",
+      "example": "I’m looking for a quiet place to work.",
+      "exampleZh": "我在找一個安靜的地方工作。"
+    },
+    {
+      "id": "v063",
+      "word": "noisy",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "吵雜的",
+      "example": "It’s too noisy to have a call here.",
+      "exampleZh": "這裡太吵，不適合講電話。"
+    },
+    {
+      "id": "v064",
+      "word": "borrow",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "借入",
+      "example": "Can I borrow your charger for a minute?",
+      "exampleZh": "我可以借一下你的充電器嗎？"
+    },
+    {
+      "id": "v065",
+      "word": "lend",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "借出",
+      "example": "Could you lend me an umbrella?",
+      "exampleZh": "你可以借我一把雨傘嗎？"
+    },
+    {
+      "id": "v066",
+      "word": "return",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "歸還；返回",
+      "example": "I’ll return the book tomorrow.",
+      "exampleZh": "我明天會把書還回去。"
+    },
+    {
+      "id": "v067",
+      "word": "order",
+      "pos": "v./n.",
+      "category": "生活會話",
+      "zh": "點餐；訂單",
+      "example": "I’d like to order the chicken, please.",
+      "exampleZh": "我想點雞肉，謝謝。"
+    },
+    {
+      "id": "v068",
+      "word": "receipt",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "收據",
+      "example": "Could I get a receipt, please?",
+      "exampleZh": "可以給我收據嗎？"
+    },
+    {
+      "id": "v069",
+      "word": "bill",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "帳單",
+      "example": "Could we have the bill, please?",
+      "exampleZh": "可以幫我們結帳嗎？"
+    },
+    {
+      "id": "v070",
+      "word": "split the bill",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "分開付帳",
+      "example": "Let’s split the bill this time.",
+      "exampleZh": "這次我們分開付帳吧。"
+    },
+    {
+      "id": "v071",
+      "word": "reservation",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "預約；訂位",
+      "example": "I have a reservation for two at seven.",
+      "exampleZh": "我訂了七點兩位。"
+    },
+    {
+      "id": "v072",
+      "word": "seat",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "座位",
+      "example": "Is this seat available?",
+      "exampleZh": "這個座位有人坐嗎？"
+    },
+    {
+      "id": "v073",
+      "word": "takeout",
+      "pos": "n./adj.",
+      "category": "生活會話",
+      "zh": "外帶",
+      "example": "Can I get this for takeout?",
+      "exampleZh": "這個可以幫我做外帶嗎？"
+    },
+    {
+      "id": "v074",
+      "word": "dine in",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "內用",
+      "example": "We’ll dine in today.",
+      "exampleZh": "我們今天要內用。"
+    },
+    {
+      "id": "v075",
+      "word": "recommend",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "推薦",
+      "example": "What do you recommend here?",
+      "exampleZh": "你推薦這裡的什麼？"
+    },
+    {
+      "id": "v076",
+      "word": "prefer",
+      "pos": "v.",
+      "category": "生活會話",
+      "zh": "比較喜歡",
+      "example": "I prefer something less sweet.",
+      "exampleZh": "我比較喜歡沒那麼甜的。"
+    },
+    {
+      "id": "v077",
+      "word": "allergy",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "過敏",
+      "example": "I have a seafood allergy.",
+      "exampleZh": "我對海鮮過敏。"
+    },
+    {
+      "id": "v078",
+      "word": "spicy",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "辣的",
+      "example": "Is this dish very spicy?",
+      "exampleZh": "這道菜很辣嗎？"
+    },
+    {
+      "id": "v079",
+      "word": "refill",
+      "pos": "n./v.",
+      "category": "生活會話",
+      "zh": "續杯；補充",
+      "example": "Could I get a water refill?",
+      "exampleZh": "可以幫我再加水嗎？"
+    },
+    {
+      "id": "v080",
+      "word": "package",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "包裹",
+      "example": "A package arrived for you this morning.",
+      "exampleZh": "今天早上有你的包裹送到。"
+    },
+    {
+      "id": "v081",
+      "word": "delivery",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "配送；交付",
+      "example": "The delivery should arrive before noon.",
+      "exampleZh": "配送應該會在中午前到。"
+    },
+    {
+      "id": "v082",
+      "word": "address",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "地址",
+      "example": "Let me confirm the delivery address.",
+      "exampleZh": "讓我確認一下配送地址。"
+    },
+    {
+      "id": "v083",
+      "word": "entrance",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "入口",
+      "example": "I’ll meet you at the main entrance.",
+      "exampleZh": "我會在正門入口跟你碰面。"
+    },
+    {
+      "id": "v084",
+      "word": "elevator",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "電梯",
+      "example": "Take the elevator to the eighth floor.",
+      "exampleZh": "搭電梯到八樓。"
+    },
+    {
+      "id": "v085",
+      "word": "floor",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "樓層",
+      "example": "Our office is on the tenth floor.",
+      "exampleZh": "我們辦公室在十樓。"
+    },
+    {
+      "id": "v086",
+      "word": "neighborhood",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "社區；街區",
+      "example": "It’s a quiet neighborhood at night.",
+      "exampleZh": "這個街區晚上很安靜。"
+    },
+    {
+      "id": "v087",
+      "word": "weather",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "天氣",
+      "example": "The weather looks better this afternoon.",
+      "exampleZh": "今天下午天氣看起來會比較好。"
+    },
+    {
+      "id": "v088",
+      "word": "umbrella",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "雨傘",
+      "example": "Don’t forget your umbrella.",
+      "exampleZh": "別忘了帶雨傘。"
+    },
+    {
+      "id": "v089",
+      "word": "traffic",
+      "pos": "n.",
+      "category": "生活會話",
+      "zh": "交通；車流",
+      "example": "Traffic is heavy during rush hour.",
+      "exampleZh": "尖峰時段交通很塞。"
+    },
+    {
+      "id": "v090",
+      "word": "delayed",
+      "pos": "adj.",
+      "category": "生活會話",
+      "zh": "延誤的",
+      "example": "My train was delayed by twenty minutes.",
+      "exampleZh": "我的火車延誤了二十分鐘。"
+    },
+    {
+      "id": "v091",
+      "word": "on time",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "準時",
+      "example": "I should be there on time.",
+      "exampleZh": "我應該會準時到。"
+    },
+    {
+      "id": "v092",
+      "word": "hurry",
+      "pos": "v./n.",
+      "category": "生活會話",
+      "zh": "趕快；匆忙",
+      "example": "We need to hurry or we’ll miss the train.",
+      "exampleZh": "我們得快一點，不然會錯過火車。"
+    },
+    {
+      "id": "v093",
+      "word": "take your time",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "慢慢來；不用急",
+      "example": "Take your time. There’s no rush.",
+      "exampleZh": "慢慢來，不用急。"
+    },
+    {
+      "id": "v094",
+      "word": "catch up",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "聊近況；趕上",
+      "example": "Let’s catch up over coffee this weekend.",
+      "exampleZh": "這週末一起喝咖啡聊聊近況吧。"
+    },
+    {
+      "id": "v095",
+      "word": "hang out",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "一起出去；相處",
+      "example": "Do you want to hang out after dinner?",
+      "exampleZh": "晚餐後要不要一起出去？"
+    },
+    {
+      "id": "v096",
+      "word": "get ready",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "準備好",
+      "example": "I need ten minutes to get ready.",
+      "exampleZh": "我需要十分鐘準備。"
+    },
+    {
+      "id": "v097",
+      "word": "run out of",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "用完；耗盡",
+      "example": "We ran out of milk this morning.",
+      "exampleZh": "我們今天早上牛奶用完了。"
+    },
+    {
+      "id": "v098",
+      "word": "pick up",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "接人；取件",
+      "example": "I’ll pick you up at the station.",
+      "exampleZh": "我會到車站接你。"
+    },
+    {
+      "id": "v099",
+      "word": "drop off",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "送到；放下",
+      "example": "Can you drop me off near the office?",
+      "exampleZh": "你可以載我到辦公室附近嗎？"
+    },
+    {
+      "id": "v100",
+      "word": "work out",
+      "pos": "phrase",
+      "category": "生活會話",
+      "zh": "順利解決；想出辦法",
+      "example": "Don’t worry. We’ll work out a solution.",
+      "exampleZh": "別擔心，我們會想出解決辦法。"
+    },
+    {
+      "id": "v101",
+      "word": "achievement",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成就",
+      "example": "My biggest achievement was improving a critical delivery process.",
+      "exampleZh": "我最大的成就是改善一個關鍵交付流程。"
+    },
+    {
+      "id": "v102",
+      "word": "accomplishment",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成果；成就",
+      "example": "I’m proud of that accomplishment because it helped the whole team.",
+      "exampleZh": "我很為那項成果感到驕傲，因為它幫助了整個團隊。"
+    },
+    {
+      "id": "v103",
+      "word": "strength",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "優勢；強項",
+      "example": "One of my strengths is cross-team coordination.",
+      "exampleZh": "我的其中一個強項是跨團隊協調。"
+    },
+    {
+      "id": "v104",
+      "word": "weakness",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "弱點",
+      "example": "I’m working on my weakness by practicing English every day.",
+      "exampleZh": "我每天練英文來改善自己的弱點。"
+    },
+    {
+      "id": "v105",
+      "word": "responsibility",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "職責",
+      "example": "My main responsibility is system analysis and delivery coordination.",
+      "exampleZh": "我的主要職責是系統分析與交付協調。"
+    },
+    {
+      "id": "v106",
+      "word": "ownership",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "責任承擔；主責",
+      "example": "I take ownership when an issue affects my workstream.",
+      "exampleZh": "當問題影響我的工作流時，我會主動承擔責任。"
+    },
+    {
+      "id": "v107",
+      "word": "leadership",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "領導能力",
+      "example": "Leadership is also about making decisions clear for the team.",
+      "exampleZh": "領導也包含讓團隊清楚知道決策。"
+    },
+    {
+      "id": "v108",
+      "word": "collaboration",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "協作",
+      "example": "Cross-team collaboration is important in large projects.",
+      "exampleZh": "跨團隊協作在大型專案中很重要。"
+    },
+    {
+      "id": "v109",
+      "word": "conflict",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "衝突",
+      "example": "I try to understand both sides before resolving a conflict.",
+      "exampleZh": "在處理衝突前，我會先理解雙方立場。"
+    },
+    {
+      "id": "v110",
+      "word": "challenge",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "挑戰",
+      "example": "The main challenge was unclear ownership across several teams.",
+      "exampleZh": "主要挑戰是多個團隊之間責任歸屬不清。"
+    },
+    {
+      "id": "v111",
+      "word": "initiative",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "主動性",
+      "example": "I took the initiative to organize the issue review.",
+      "exampleZh": "我主動安排了問題檢視會議。"
+    },
+    {
+      "id": "v112",
+      "word": "prioritize",
+      "pos": "v.",
+      "category": "面試職涯",
+      "zh": "排定優先順序",
+      "example": "I prioritize work based on impact and urgency.",
+      "exampleZh": "我依影響與急迫性排定工作優先順序。"
+    },
+    {
+      "id": "v113",
+      "word": "adapt",
+      "pos": "v.",
+      "category": "面試職涯",
+      "zh": "適應；調整",
+      "example": "I can adapt quickly when project priorities change.",
+      "exampleZh": "專案優先順序改變時，我能快速調整。"
+    },
+    {
+      "id": "v114",
+      "word": "feedback",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "回饋",
+      "example": "I use feedback to improve the way I communicate.",
+      "exampleZh": "我利用回饋改善自己的溝通方式。"
+    },
+    {
+      "id": "v115",
+      "word": "improvement",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "改善；進步",
+      "example": "The change led to a clear improvement in response time.",
+      "exampleZh": "這項改變明顯改善了回應時間。"
+    },
+    {
+      "id": "v116",
+      "word": "measurable",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "可衡量的",
+      "example": "I try to describe my results with measurable outcomes.",
+      "exampleZh": "我會盡量用可衡量的成果描述我的結果。"
+    },
+    {
+      "id": "v117",
+      "word": "outcome",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成果；結果",
+      "example": "I focus on the customer outcome, not only the technical task.",
+      "exampleZh": "我關注客戶成果，而不只是技術任務。"
+    },
+    {
+      "id": "v118",
+      "word": "impact",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "影響",
+      "example": "I first assess the business impact of the issue.",
+      "exampleZh": "我會先評估問題的業務影響。"
+    },
+    {
+      "id": "v119",
+      "word": "contribution",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "貢獻",
+      "example": "My contribution was connecting the business and technical teams.",
+      "exampleZh": "我的貢獻是連結業務與技術團隊。"
+    },
+    {
+      "id": "v120",
+      "word": "qualification",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "資格；條件",
+      "example": "My experience matches most of the qualifications for this role.",
+      "exampleZh": "我的經驗符合這個職位大部分的條件。"
+    },
+    {
+      "id": "v121",
+      "word": "relevant",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "相關的",
+      "example": "I have relevant experience in banking and system integration.",
+      "exampleZh": "我有銀行與系統整合相關經驗。"
+    },
+    {
+      "id": "v122",
+      "word": "experience",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "經驗",
+      "example": "I have over eight years of experience in financial IT.",
+      "exampleZh": "我有超過八年的金融 IT 經驗。"
+    },
+    {
+      "id": "v123",
+      "word": "expertise",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "專業能力",
+      "example": "My expertise is in system analysis and cross-team delivery.",
+      "exampleZh": "我的專業在系統分析與跨團隊交付。"
+    },
+    {
+      "id": "v124",
+      "word": "motivation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "動機",
+      "example": "My motivation is to grow into a more cloud-focused role.",
+      "exampleZh": "我的動機是往更聚焦雲端的角色發展。"
+    },
+    {
+      "id": "v125",
+      "word": "opportunity",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "機會",
+      "example": "This role is a good opportunity to work with global customers.",
+      "exampleZh": "這個職位是與全球客戶合作的好機會。"
+    },
+    {
+      "id": "v126",
+      "word": "career path",
+      "pos": "phrase",
+      "category": "面試職涯",
+      "zh": "職涯路徑",
+      "example": "I’m looking for a career path that combines technology and consulting.",
+      "exampleZh": "我在尋找結合技術與顧問工作的職涯路徑。"
+    },
+    {
+      "id": "v127",
+      "word": "growth",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "成長",
+      "example": "I’m looking for more technical and customer-facing growth.",
+      "exampleZh": "我希望有更多技術與客戶面的成長。"
+    },
+    {
+      "id": "v128",
+      "word": "transition",
+      "pos": "n./v.",
+      "category": "面試職涯",
+      "zh": "轉換；轉型",
+      "example": "I’m preparing for a transition into cloud consulting.",
+      "exampleZh": "我正在準備轉向雲端顧問工作。"
+    },
+    {
+      "id": "v129",
+      "word": "expectation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "期待；預期",
+      "example": "I’d like to understand the expectations for the first six months.",
+      "exampleZh": "我想了解前六個月的職務期待。"
+    },
+    {
+      "id": "v130",
+      "word": "compensation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "薪酬",
+      "example": "I’m open to discussing the overall compensation package.",
+      "exampleZh": "我願意討論整體薪酬方案。"
+    },
+    {
+      "id": "v131",
+      "word": "negotiate",
+      "pos": "v.",
+      "category": "面試職涯",
+      "zh": "協商；談判",
+      "example": "I prefer to negotiate based on the total package and role scope.",
+      "exampleZh": "我傾向依整體方案與職務範圍來協商。"
+    },
+    {
+      "id": "v132",
+      "word": "flexibility",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "彈性",
+      "example": "I value flexibility, but I can also support important on-site work.",
+      "exampleZh": "我重視彈性，但重要工作需要時也可以到現場。"
+    },
+    {
+      "id": "v133",
+      "word": "remote",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "遠端的",
+      "example": "I’m comfortable working with remote teams.",
+      "exampleZh": "我很習慣與遠端團隊合作。"
+    },
+    {
+      "id": "v134",
+      "word": "hybrid",
+      "pos": "adj.",
+      "category": "面試職涯",
+      "zh": "混合辦公的",
+      "example": "A hybrid working model works well for me.",
+      "exampleZh": "混合辦公模式很適合我。"
+    },
+    {
+      "id": "v135",
+      "word": "relocation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "搬遷",
+      "example": "Relocation would depend on the role and location.",
+      "exampleZh": "是否搬遷會取決於職位與地點。"
+    },
+    {
+      "id": "v136",
+      "word": "availability",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "可到職時間；可用性",
+      "example": "My availability would be after my notice period.",
+      "exampleZh": "我的可到職時間會是在通知期結束後。"
+    },
+    {
+      "id": "v137",
+      "word": "notice period",
+      "pos": "phrase",
+      "category": "面試職涯",
+      "zh": "離職通知期",
+      "example": "I need to complete my notice period before joining.",
+      "exampleZh": "我需要完成離職通知期後才能加入。"
+    },
+    {
+      "id": "v138",
+      "word": "interviewer",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "面試官",
+      "example": "The interviewer asked me about a difficult project situation.",
+      "exampleZh": "面試官問了我一個困難的專案情境。"
+    },
+    {
+      "id": "v139",
+      "word": "recruiter",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "招募人員",
+      "example": "The recruiter explained the next steps in the process.",
+      "exampleZh": "招募人員說明了接下來的流程。"
+    },
+    {
+      "id": "v140",
+      "word": "hiring manager",
+      "pos": "phrase",
+      "category": "面試職涯",
+      "zh": "用人主管",
+      "example": "I’d like to understand what the hiring manager expects from this role.",
+      "exampleZh": "我想了解用人主管對這個職位的期待。"
+    },
+    {
+      "id": "v141",
+      "word": "candidate",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "候選人",
+      "example": "A strong candidate should show both technical depth and communication skills.",
+      "exampleZh": "好的候選人應同時展現技術深度與溝通能力。"
+    },
+    {
+      "id": "v142",
+      "word": "position",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "職位",
+      "example": "I’m interested in the position because it matches my next career step.",
+      "exampleZh": "我對這個職位有興趣，因為它符合我的下一個職涯階段。"
+    },
+    {
+      "id": "v143",
+      "word": "role",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "角色；職位",
+      "example": "This role combines technical work with customer communication.",
+      "exampleZh": "這個角色結合技術工作與客戶溝通。"
+    },
+    {
+      "id": "v144",
+      "word": "fit",
+      "pos": "n./v.",
+      "category": "面試職涯",
+      "zh": "適配；適合",
+      "example": "I think my background is a strong fit for the role.",
+      "exampleZh": "我認為自己的背景很符合這個職位。"
+    },
+    {
+      "id": "v145",
+      "word": "culture",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "文化",
+      "example": "I’m interested in a culture that values ownership and learning.",
+      "exampleZh": "我喜歡重視責任與學習的文化。"
+    },
+    {
+      "id": "v146",
+      "word": "value",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "價值",
+      "example": "I want to create value through practical technical solutions.",
+      "exampleZh": "我希望透過實際的技術方案創造價值。"
+    },
+    {
+      "id": "v147",
+      "word": "example",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "例子",
+      "example": "Let me give you a specific example from my current project.",
+      "exampleZh": "讓我用目前專案的一個具體例子說明。"
+    },
+    {
+      "id": "v148",
+      "word": "situation",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "情況；情境",
+      "example": "The situation involved several teams and a tight timeline.",
+      "exampleZh": "那個情況涉及多個團隊與緊迫時程。"
+    },
+    {
+      "id": "v149",
+      "word": "action",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "行動",
+      "example": "My first action was to clarify the impact and owner.",
+      "exampleZh": "我的第一個行動是釐清影響與負責人。"
+    },
+    {
+      "id": "v150",
+      "word": "result",
+      "pos": "n.",
+      "category": "面試職涯",
+      "zh": "結果",
+      "example": "As a result, we resolved the issue before the deadline.",
+      "exampleZh": "結果我們在截止日前解決了問題。"
+    },
+    {
+      "id": "v151",
+      "word": "scope",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "範圍",
+      "example": "We need to confirm the scope before estimating the effort.",
+      "exampleZh": "在估算工作量前，我們需要先確認範圍。"
+    },
+    {
+      "id": "v152",
+      "word": "milestone",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "里程碑",
+      "example": "The next milestone is system integration testing.",
+      "exampleZh": "下一個里程碑是系統整合測試。"
+    },
+    {
+      "id": "v153",
+      "word": "deliverable",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "交付成果",
+      "example": "This document is one of the key project deliverables.",
+      "exampleZh": "這份文件是專案的重要交付成果之一。"
+    },
+    {
+      "id": "v154",
+      "word": "deadline",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "截止日期",
+      "example": "The team is working toward a tight deadline.",
+      "exampleZh": "團隊正在趕一個很緊的截止日期。"
+    },
+    {
+      "id": "v155",
+      "word": "dependency",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "相依關係",
+      "example": "This task has a dependency on the upstream system.",
+      "exampleZh": "這項工作相依於上游系統。"
+    },
+    {
+      "id": "v156",
+      "word": "blocker",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "阻塞問題",
+      "example": "The missing test data is our main blocker.",
+      "exampleZh": "缺少測試資料是目前最大的阻塞問題。"
+    },
+    {
+      "id": "v157",
+      "word": "risk",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "風險",
+      "example": "We should review the risk before making the change.",
+      "exampleZh": "做變更前我們應該先檢視風險。"
+    },
+    {
+      "id": "v158",
+      "word": "issue",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "問題；議題",
+      "example": "The issue is affecting several downstream teams.",
+      "exampleZh": "這個問題正在影響多個下游團隊。"
+    },
+    {
+      "id": "v159",
+      "word": "escalation",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "升級處理",
+      "example": "This issue may need management escalation.",
+      "exampleZh": "這個問題可能需要升級到管理層處理。"
+    },
+    {
+      "id": "v160",
+      "word": "stakeholder",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "利害關係人",
+      "example": "We need to align the key stakeholders before the decision.",
+      "exampleZh": "做決策前需要先讓關鍵利害關係人對齊。"
+    },
+    {
+      "id": "v161",
+      "word": "alignment",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "對齊；共識",
+      "example": "We reached alignment on the next steps.",
+      "exampleZh": "我們已對下一步取得共識。"
+    },
+    {
+      "id": "v162",
+      "word": "requirement",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "需求",
+      "example": "The business requirement is still being clarified.",
+      "exampleZh": "業務需求仍在釐清中。"
+    },
+    {
+      "id": "v163",
+      "word": "assumption",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "假設",
+      "example": "Let’s make the assumptions explicit before we estimate.",
+      "exampleZh": "估算前先把假設條件說清楚。"
+    },
+    {
+      "id": "v164",
+      "word": "constraint",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "限制條件",
+      "example": "Time is the biggest constraint for this release.",
+      "exampleZh": "時間是這次發布最大的限制。"
+    },
+    {
+      "id": "v165",
+      "word": "priority",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "優先順序",
+      "example": "Customer impact is our highest priority.",
+      "exampleZh": "客戶影響是我們最高的優先事項。"
+    },
+    {
+      "id": "v166",
+      "word": "timeline",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "時程",
+      "example": "The timeline depends on test data readiness.",
+      "exampleZh": "時程取決於測試資料是否準備完成。"
+    },
+    {
+      "id": "v167",
+      "word": "roadmap",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "路線圖；規劃",
+      "example": "The roadmap shows the major releases for this year.",
+      "exampleZh": "路線圖列出今年主要的發布計畫。"
+    },
+    {
+      "id": "v168",
+      "word": "backlog",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "待辦清單",
+      "example": "We added the new requirement to the backlog.",
+      "exampleZh": "我們把新需求加入待辦清單。"
+    },
+    {
+      "id": "v169",
+      "word": "sprint",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "敏捷衝刺週期",
+      "example": "We plan to complete this work in the next sprint.",
+      "exampleZh": "我們計畫在下一個 sprint 完成這項工作。"
+    },
+    {
+      "id": "v170",
+      "word": "iteration",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "迭代",
+      "example": "We improved the design in the second iteration.",
+      "exampleZh": "我們在第二次迭代改善了設計。"
+    },
+    {
+      "id": "v171",
+      "word": "estimate",
+      "pos": "n./v.",
+      "category": "專案顧問",
+      "zh": "估算",
+      "example": "We need a technical estimate before committing to the date.",
+      "exampleZh": "承諾日期前需要先有技術估算。"
+    },
+    {
+      "id": "v172",
+      "word": "effort",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "工作量",
+      "example": "The change requires more effort than expected.",
+      "exampleZh": "這項變更需要比預期更多的工作量。"
+    },
+    {
+      "id": "v173",
+      "word": "resource",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "資源",
+      "example": "We may need an additional resource for testing.",
+      "exampleZh": "測試可能需要額外資源。"
+    },
+    {
+      "id": "v174",
+      "word": "capacity",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "產能；可用工時",
+      "example": "The team does not have enough capacity this week.",
+      "exampleZh": "團隊這週沒有足夠的可用工時。"
+    },
+    {
+      "id": "v175",
+      "word": "workload",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "工作量；負荷",
+      "example": "We need to balance the workload across the team.",
+      "exampleZh": "我們需要平衡團隊內的工作負荷。"
+    },
+    {
+      "id": "v176",
+      "word": "status",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "狀態",
+      "example": "I’ll send a status update after the meeting.",
+      "exampleZh": "會議後我會發一份狀態更新。"
+    },
+    {
+      "id": "v177",
+      "word": "progress",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "進度",
+      "example": "We’re making good progress on the migration.",
+      "exampleZh": "移轉工作目前進展順利。"
+    },
+    {
+      "id": "v178",
+      "word": "update",
+      "pos": "n./v.",
+      "category": "專案顧問",
+      "zh": "更新",
+      "example": "Here’s a quick update on the current issue.",
+      "exampleZh": "這裡快速更新一下目前的問題。"
+    },
+    {
+      "id": "v179",
+      "word": "action item",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "待辦事項",
+      "example": "Each action item needs an owner and due date.",
+      "exampleZh": "每一個待辦事項都需要負責人與到期日。"
+    },
+    {
+      "id": "v180",
+      "word": "owner",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "負責人",
+      "example": "We need one clear owner for this decision.",
+      "exampleZh": "這個決策需要一位明確負責人。"
+    },
+    {
+      "id": "v181",
+      "word": "handoff",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "交接",
+      "example": "The handoff between the two teams was not clear.",
+      "exampleZh": "兩個團隊之間的交接不夠清楚。"
+    },
+    {
+      "id": "v182",
+      "word": "approval",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "核准",
+      "example": "We are waiting for client approval.",
+      "exampleZh": "我們正在等待客戶核准。"
+    },
+    {
+      "id": "v183",
+      "word": "sign-off",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "正式簽核",
+      "example": "We need final sign-off before go-live.",
+      "exampleZh": "正式上線前需要最終簽核。"
+    },
+    {
+      "id": "v184",
+      "word": "change request",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "變更需求",
+      "example": "The client submitted a new change request.",
+      "exampleZh": "客戶提出了一個新的變更需求。"
+    },
+    {
+      "id": "v185",
+      "word": "impact assessment",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "影響評估",
+      "example": "We should complete an impact assessment before accepting the change.",
+      "exampleZh": "接受變更前應先完成影響評估。"
+    },
+    {
+      "id": "v186",
+      "word": "contingency",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "應變方案",
+      "example": "We prepared a contingency in case the release fails.",
+      "exampleZh": "我們準備了發布失敗時的應變方案。"
+    },
+    {
+      "id": "v187",
+      "word": "mitigation",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "風險緩解",
+      "example": "The mitigation reduces the operational risk.",
+      "exampleZh": "這項緩解措施降低了營運風險。"
+    },
+    {
+      "id": "v188",
+      "word": "root cause",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "根本原因",
+      "example": "We are still investigating the root cause.",
+      "exampleZh": "我們仍在調查根本原因。"
+    },
+    {
+      "id": "v189",
+      "word": "workaround",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "暫時替代方案",
+      "example": "We have a workaround while the permanent fix is being developed.",
+      "exampleZh": "在永久修正完成前，我們有一個暫時替代方案。"
+    },
+    {
+      "id": "v190",
+      "word": "resolution",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "解決方案；處理結果",
+      "example": "The team agreed on a resolution this morning.",
+      "exampleZh": "團隊今天早上已對解決方案取得共識。"
+    },
+    {
+      "id": "v191",
+      "word": "rollout",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "逐步推出；部署",
+      "example": "We’ll use a gradual rollout to reduce risk.",
+      "exampleZh": "我們會採逐步推出來降低風險。"
+    },
+    {
+      "id": "v192",
+      "word": "cutover",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "切換作業",
+      "example": "The cutover is planned for Saturday night.",
+      "exampleZh": "系統切換預計在星期六晚上進行。"
+    },
+    {
+      "id": "v193",
+      "word": "go-live",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "正式上線",
+      "example": "The go-live date is still on track.",
+      "exampleZh": "正式上線日期目前仍按計畫進行。"
+    },
+    {
+      "id": "v194",
+      "word": "rollback",
+      "pos": "n./v.",
+      "category": "專案顧問",
+      "zh": "回滾；回復",
+      "example": "We have a rollback plan if the deployment fails.",
+      "exampleZh": "如果部署失敗，我們有回滾計畫。"
+    },
+    {
+      "id": "v195",
+      "word": "governance",
+      "pos": "n.",
+      "category": "專案顧問",
+      "zh": "治理機制",
+      "example": "The project needs clear governance and decision rights.",
+      "exampleZh": "專案需要清楚的治理機制與決策權限。"
+    },
+    {
+      "id": "v196",
+      "word": "decision log",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "決策紀錄",
+      "example": "We record major decisions in the decision log.",
+      "exampleZh": "我們會把重大決策記錄在決策紀錄中。"
+    },
+    {
+      "id": "v197",
+      "word": "meeting minutes",
+      "pos": "phrase",
+      "category": "專案顧問",
+      "zh": "會議紀錄",
+      "example": "I’ll send the meeting minutes with the action items.",
+      "exampleZh": "我會把會議紀錄和待辦事項一起寄出。"
+    },
+    {
+      "id": "v198",
+      "word": "follow-up",
+      "pos": "n./adj.",
+      "category": "專案顧問",
+      "zh": "後續追蹤",
+      "example": "I scheduled a follow-up for next week.",
+      "exampleZh": "我安排了下週的後續追蹤。"
+    },
+    {
+      "id": "v199",
+      "word": "accountable",
+      "pos": "adj.",
+      "category": "專案顧問",
+      "zh": "負最終責任的",
+      "example": "One person should be accountable for the final decision.",
+      "exampleZh": "最終決策應該由一個人負最終責任。"
+    },
+    {
+      "id": "v200",
+      "word": "responsible",
+      "pos": "adj.",
+      "category": "專案顧問",
+      "zh": "負責的",
+      "example": "The application team is responsible for the code change.",
+      "exampleZh": "應用團隊負責程式碼變更。"
+    },
+    {
+      "id": "v201",
+      "word": "bug",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "程式錯誤",
+      "example": "We found a bug in the payment flow.",
+      "exampleZh": "我們在付款流程中發現了一個程式錯誤。"
+    },
+    {
+      "id": "v202",
+      "word": "defect",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "缺陷",
+      "example": "The defect only appears under a specific condition.",
+      "exampleZh": "這個缺陷只會在特定條件下出現。"
+    },
+    {
+      "id": "v203",
+      "word": "incident",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "事件；事故",
+      "example": "We opened an incident after the service became unavailable.",
+      "exampleZh": "服務無法使用後，我們建立了一筆事故事件。"
+    },
+    {
+      "id": "v204",
+      "word": "outage",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "服務中斷",
+      "example": "The outage lasted for about fifteen minutes.",
+      "exampleZh": "服務中斷大約持續了十五分鐘。"
+    },
+    {
+      "id": "v205",
+      "word": "latency",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "延遲",
+      "example": "API latency increased after the release.",
+      "exampleZh": "發布後 API 延遲增加了。"
+    },
+    {
+      "id": "v206",
+      "word": "throughput",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "吞吐量",
+      "example": "We improved batch throughput by optimizing the process.",
+      "exampleZh": "我們透過流程優化提升了批次吞吐量。"
+    },
+    {
+      "id": "v207",
+      "word": "timeout",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "逾時",
+      "example": "The request failed because of a timeout.",
+      "exampleZh": "這個 request 因為逾時而失敗。"
+    },
+    {
+      "id": "v208",
+      "word": "retry",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "重試",
+      "example": "We retry the request only when it is safe.",
+      "exampleZh": "只有在安全的情況下我們才會重試 request。"
+    },
+    {
+      "id": "v209",
+      "word": "idempotent",
+      "pos": "adj.",
+      "category": "工程師英文",
+      "zh": "冪等的",
+      "example": "The API should be idempotent so retries do not create duplicates.",
+      "exampleZh": "API 應具備冪等性，讓重試不會產生重複資料。"
+    },
+    {
+      "id": "v210",
+      "word": "duplicate",
+      "pos": "n./adj.",
+      "category": "工程師英文",
+      "zh": "重複資料；重複的",
+      "example": "We need to prevent duplicate transactions.",
+      "exampleZh": "我們需要避免重複交易。"
+    },
+    {
+      "id": "v211",
+      "word": "request",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "請求",
+      "example": "The request includes the customer identifier.",
+      "exampleZh": "這個 request 包含客戶識別碼。"
+    },
+    {
+      "id": "v212",
+      "word": "response",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "回應",
+      "example": "The API returned an unexpected response.",
+      "exampleZh": "API 回傳了非預期的 response。"
+    },
+    {
+      "id": "v213",
+      "word": "payload",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "傳輸內容",
+      "example": "The payload is missing a required field.",
+      "exampleZh": "payload 缺少一個必要欄位。"
+    },
+    {
+      "id": "v214",
+      "word": "endpoint",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "API 端點",
+      "example": "This endpoint is used to update the account status.",
+      "exampleZh": "這個 endpoint 用來更新帳戶狀態。"
+    },
+    {
+      "id": "v215",
+      "word": "API",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "應用程式介面",
+      "example": "The frontend calls the API to retrieve the data.",
+      "exampleZh": "前端透過 API 取得資料。"
+    },
+    {
+      "id": "v216",
+      "word": "authentication",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "身分驗證",
+      "example": "Authentication failed because the token expired.",
+      "exampleZh": "因為 token 過期，所以身分驗證失敗。"
+    },
+    {
+      "id": "v217",
+      "word": "authorization",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "授權",
+      "example": "Authorization determines what the user can access.",
+      "exampleZh": "授權決定使用者可以存取什麼。"
+    },
+    {
+      "id": "v218",
+      "word": "permission",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "權限",
+      "example": "The service account does not have permission to write the file.",
+      "exampleZh": "服務帳號沒有寫入檔案的權限。"
+    },
+    {
+      "id": "v219",
+      "word": "token",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "權杖",
+      "example": "The access token expires after one hour.",
+      "exampleZh": "存取 token 一小時後會過期。"
+    },
+    {
+      "id": "v220",
+      "word": "session",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "工作階段",
+      "example": "The user session expired after a long period of inactivity.",
+      "exampleZh": "使用者長時間未操作後 session 過期了。"
+    },
+    {
+      "id": "v221",
+      "word": "cache",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "快取",
+      "example": "We use a cache to reduce repeated database reads.",
+      "exampleZh": "我們使用快取來減少重複讀取資料庫。"
+    },
+    {
+      "id": "v222",
+      "word": "queue",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "佇列",
+      "example": "Failed messages are sent to a separate queue.",
+      "exampleZh": "失敗的訊息會送到另一個 queue。"
+    },
+    {
+      "id": "v223",
+      "word": "message",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "訊息",
+      "example": "Each message has a unique identifier.",
+      "exampleZh": "每一則訊息都有唯一識別碼。"
+    },
+    {
+      "id": "v224",
+      "word": "event",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "事件",
+      "example": "The service publishes an event after the transaction completes.",
+      "exampleZh": "交易完成後服務會發布一個 event。"
+    },
+    {
+      "id": "v225",
+      "word": "log",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "日誌",
+      "example": "I checked the application log to find the error.",
+      "exampleZh": "我查看應用程式 log 來找錯誤。"
+    },
+    {
+      "id": "v226",
+      "word": "trace",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "追蹤資料",
+      "example": "The trace shows where the request spent most of its time.",
+      "exampleZh": "trace 顯示 request 大部分時間花在哪一段。"
+    },
+    {
+      "id": "v227",
+      "word": "metric",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "指標",
+      "example": "We monitor latency and error rate as key metrics.",
+      "exampleZh": "我們把延遲和錯誤率當成關鍵指標監控。"
+    },
+    {
+      "id": "v228",
+      "word": "monitor",
+      "pos": "v.",
+      "category": "工程師英文",
+      "zh": "監控",
+      "example": "We monitor the service during the release window.",
+      "exampleZh": "我們會在發布時段監控服務。"
+    },
+    {
+      "id": "v229",
+      "word": "alert",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "告警",
+      "example": "An alert was triggered when the error rate increased.",
+      "exampleZh": "錯誤率上升時觸發了告警。"
+    },
+    {
+      "id": "v230",
+      "word": "dashboard",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "監控儀表板",
+      "example": "The dashboard shows the current service health.",
+      "exampleZh": "dashboard 顯示目前服務健康狀況。"
+    },
+    {
+      "id": "v231",
+      "word": "database",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "資料庫",
+      "example": "The application stores customer data in the database.",
+      "exampleZh": "應用程式把客戶資料存進資料庫。"
+    },
+    {
+      "id": "v232",
+      "word": "query",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "查詢",
+      "example": "This query is taking longer than expected.",
+      "exampleZh": "這個 query 執行時間比預期久。"
+    },
+    {
+      "id": "v233",
+      "word": "schema",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "資料結構；綱要",
+      "example": "The schema change needs backward compatibility.",
+      "exampleZh": "schema 變更需要保持向後相容。"
+    },
+    {
+      "id": "v234",
+      "word": "index",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "索引",
+      "example": "Adding an index improved the query performance.",
+      "exampleZh": "新增索引改善了查詢效能。"
+    },
+    {
+      "id": "v235",
+      "word": "transaction",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "交易；事務",
+      "example": "The transaction should either fully succeed or roll back.",
+      "exampleZh": "這筆 transaction 應該要全部成功，否則就回滾。"
+    },
+    {
+      "id": "v236",
+      "word": "commit",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "提交",
+      "example": "The fix is included in the latest commit.",
+      "exampleZh": "修正已包含在最新 commit 中。"
+    },
+    {
+      "id": "v237",
+      "word": "lock",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "鎖定",
+      "example": "The process is waiting for a database lock.",
+      "exampleZh": "這個 process 正在等待資料庫 lock。"
+    },
+    {
+      "id": "v238",
+      "word": "deadlock",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "死鎖",
+      "example": "The two transactions caused a deadlock.",
+      "exampleZh": "這兩筆 transaction 造成了 deadlock。"
+    },
+    {
+      "id": "v239",
+      "word": "connection",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "連線",
+      "example": "The database connection was closed unexpectedly.",
+      "exampleZh": "資料庫連線意外中斷。"
+    },
+    {
+      "id": "v240",
+      "word": "thread",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "執行緒",
+      "example": "The worker uses a separate thread for the task.",
+      "exampleZh": "worker 使用獨立 thread 處理工作。"
+    },
+    {
+      "id": "v241",
+      "word": "process",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "程序；處理程序",
+      "example": "The process restarted automatically after the failure.",
+      "exampleZh": "process 在失敗後自動重新啟動。"
+    },
+    {
+      "id": "v242",
+      "word": "service",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "服務",
+      "example": "The service is healthy again.",
+      "exampleZh": "服務已恢復正常。"
+    },
+    {
+      "id": "v243",
+      "word": "microservice",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "微服務",
+      "example": "Each microservice owns a specific business capability.",
+      "exampleZh": "每個微服務負責特定的業務能力。"
+    },
+    {
+      "id": "v244",
+      "word": "container",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "容器",
+      "example": "The application runs inside a container.",
+      "exampleZh": "應用程式在 container 中執行。"
+    },
+    {
+      "id": "v245",
+      "word": "image",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "映像檔",
+      "example": "We built a new container image for the release.",
+      "exampleZh": "我們為這次發布建立了新的 container image。"
+    },
+    {
+      "id": "v246",
+      "word": "deployment",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "部署",
+      "example": "The deployment completed without errors.",
+      "exampleZh": "部署已完成且沒有錯誤。"
+    },
+    {
+      "id": "v247",
+      "word": "release",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "發布版本",
+      "example": "The new release includes several bug fixes.",
+      "exampleZh": "新版本包含數個 bug 修正。"
+    },
+    {
+      "id": "v248",
+      "word": "version",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "版本",
+      "example": "Please confirm which version is running in production.",
+      "exampleZh": "請確認 production 現在跑的是哪個版本。"
+    },
+    {
+      "id": "v249",
+      "word": "configuration",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "設定",
+      "example": "The issue was caused by an incorrect configuration.",
+      "exampleZh": "問題是由錯誤設定造成的。"
+    },
+    {
+      "id": "v250",
+      "word": "environment",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "環境",
+      "example": "The issue only happens in the production environment.",
+      "exampleZh": "這個問題只發生在 production 環境。"
+    },
+    {
+      "id": "v251",
+      "word": "integration",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "整合",
+      "example": "The integration failed because the upstream API changed.",
+      "exampleZh": "因為上游 API 改變，整合失敗了。"
+    },
+    {
+      "id": "v252",
+      "word": "build",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "建置",
+      "example": "The latest build passed all tests.",
+      "exampleZh": "最新 build 通過所有測試。"
+    },
+    {
+      "id": "v253",
+      "word": "pipeline",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "自動化流程；管線",
+      "example": "The deployment pipeline runs after the merge.",
+      "exampleZh": "merge 後會執行部署 pipeline。"
+    },
+    {
+      "id": "v254",
+      "word": "repository",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "程式碼儲存庫",
+      "example": "The source code is stored in the repository.",
+      "exampleZh": "原始碼存放在 repository。"
+    },
+    {
+      "id": "v255",
+      "word": "branch",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "分支",
+      "example": "I created a branch for the fix.",
+      "exampleZh": "我為這個修正建立了一個 branch。"
+    },
+    {
+      "id": "v256",
+      "word": "merge",
+      "pos": "n./v.",
+      "category": "工程師英文",
+      "zh": "合併",
+      "example": "We can merge the change after the review.",
+      "exampleZh": "review 完成後就可以 merge 變更。"
+    },
+    {
+      "id": "v257",
+      "word": "pull request",
+      "pos": "phrase",
+      "category": "工程師英文",
+      "zh": "合併請求",
+      "example": "The pull request is ready for review.",
+      "exampleZh": "pull request 已準備好進行 review。"
+    },
+    {
+      "id": "v258",
+      "word": "test case",
+      "pos": "phrase",
+      "category": "工程師英文",
+      "zh": "測試案例",
+      "example": "We added a test case for the failure scenario.",
+      "exampleZh": "我們為失敗情境新增了一個 test case。"
+    },
+    {
+      "id": "v259",
+      "word": "regression",
+      "pos": "n.",
+      "category": "工程師英文",
+      "zh": "回歸問題；回歸測試",
+      "example": "The regression test caught the issue before release.",
+      "exampleZh": "回歸測試在發布前抓到了問題。"
+    },
+    {
+      "id": "v260",
+      "word": "production",
+      "pos": "n./adj.",
+      "category": "工程師英文",
+      "zh": "正式環境",
+      "example": "The fix has not been deployed to production yet.",
+      "exampleZh": "修正還沒有部署到正式環境。"
+    },
+    {
+      "id": "v261",
+      "word": "cloud",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "雲端",
+      "example": "We run the new service in the cloud.",
+      "exampleZh": "我們把新服務運行在雲端。"
+    },
+    {
+      "id": "v262",
+      "word": "region",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "區域",
+      "example": "The primary workload runs in one cloud region.",
+      "exampleZh": "主要 workload 運行在一個雲端區域。"
+    },
+    {
+      "id": "v263",
+      "word": "availability zone",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "可用區",
+      "example": "We distribute the service across multiple availability zones.",
+      "exampleZh": "我們把服務分散到多個可用區。"
+    },
+    {
+      "id": "v264",
+      "word": "load balancer",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "負載平衡器",
+      "example": "The load balancer distributes traffic across the instances.",
+      "exampleZh": "負載平衡器把流量分散到多個 instance。"
+    },
+    {
+      "id": "v265",
+      "word": "autoscaling",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "自動擴縮",
+      "example": "Autoscaling adds capacity when traffic increases.",
+      "exampleZh": "流量增加時 autoscaling 會自動增加容量。"
+    },
+    {
+      "id": "v266",
+      "word": "serverless",
+      "pos": "adj.",
+      "category": "Cloud／AI",
+      "zh": "無伺服器架構的",
+      "example": "A serverless function works well for short event-driven tasks.",
+      "exampleZh": "短時間的事件驅動工作很適合使用 serverless function。"
+    },
+    {
+      "id": "v267",
+      "word": "function",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "函式；雲端函式",
+      "example": "The function is triggered by a new file upload.",
+      "exampleZh": "新檔案上傳時會觸發這個 function。"
+    },
+    {
+      "id": "v268",
+      "word": "object storage",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "物件儲存",
+      "example": "We keep large files in object storage.",
+      "exampleZh": "我們把大型檔案放在 object storage。"
+    },
+    {
+      "id": "v269",
+      "word": "block storage",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "區塊儲存",
+      "example": "The database uses block storage for low-latency access.",
+      "exampleZh": "資料庫使用 block storage 來提供低延遲存取。"
+    },
+    {
+      "id": "v270",
+      "word": "database replica",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "資料庫副本",
+      "example": "A read replica reduces load on the primary database.",
+      "exampleZh": "read replica 可以降低主要資料庫的負載。"
+    },
+    {
+      "id": "v271",
+      "word": "failover",
+      "pos": "n./v.",
+      "category": "Cloud／AI",
+      "zh": "容錯切換",
+      "example": "The service can fail over to a secondary instance.",
+      "exampleZh": "服務可以切換到次要 instance。"
+    },
+    {
+      "id": "v272",
+      "word": "high availability",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "高可用性",
+      "example": "We designed the service for high availability.",
+      "exampleZh": "我們把服務設計成高可用架構。"
+    },
+    {
+      "id": "v273",
+      "word": "disaster recovery",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "災難復原",
+      "example": "The disaster recovery plan is tested every year.",
+      "exampleZh": "災難復原計畫每年都會測試。"
+    },
+    {
+      "id": "v274",
+      "word": "RPO",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "復原點目標",
+      "example": "The business requires an RPO of five minutes.",
+      "exampleZh": "業務要求 RPO 為五分鐘。"
+    },
+    {
+      "id": "v275",
+      "word": "RTO",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "復原時間目標",
+      "example": "The target RTO is thirty minutes.",
+      "exampleZh": "目標 RTO 是三十分鐘。"
+    },
+    {
+      "id": "v276",
+      "word": "encryption",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "加密",
+      "example": "Sensitive data is protected with encryption.",
+      "exampleZh": "敏感資料會使用加密保護。"
+    },
+    {
+      "id": "v277",
+      "word": "secret",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "機密資訊",
+      "example": "API keys should be stored as secrets, not in source code.",
+      "exampleZh": "API key 應存放在 secret，而不是原始碼裡。"
+    },
+    {
+      "id": "v278",
+      "word": "key management",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "金鑰管理",
+      "example": "We use a managed key management service for encryption keys.",
+      "exampleZh": "我們使用受管理的金鑰管理服務保存加密金鑰。"
+    },
+    {
+      "id": "v279",
+      "word": "IAM",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "身分與存取管理",
+      "example": "IAM controls who can access each cloud resource.",
+      "exampleZh": "IAM 控制誰可以存取各項雲端資源。"
+    },
+    {
+      "id": "v280",
+      "word": "least privilege",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "最小權限原則",
+      "example": "Service accounts should follow the principle of least privilege.",
+      "exampleZh": "服務帳號應遵循最小權限原則。"
+    },
+    {
+      "id": "v281",
+      "word": "network",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "網路",
+      "example": "The application and database are in the same private network.",
+      "exampleZh": "應用程式和資料庫位於同一個私有網路。"
+    },
+    {
+      "id": "v282",
+      "word": "subnet",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "子網路",
+      "example": "The database is deployed in a private subnet.",
+      "exampleZh": "資料庫部署在 private subnet。"
+    },
+    {
+      "id": "v283",
+      "word": "gateway",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "閘道",
+      "example": "Traffic leaves the network through the gateway.",
+      "exampleZh": "流量透過 gateway 離開網路。"
+    },
+    {
+      "id": "v284",
+      "word": "firewall",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "防火牆",
+      "example": "The firewall only allows approved ports.",
+      "exampleZh": "防火牆只允許核准的連接埠。"
+    },
+    {
+      "id": "v285",
+      "word": "observability",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "可觀測性",
+      "example": "Good observability helps us find failures faster.",
+      "exampleZh": "良好的可觀測性可以幫助我們更快找到故障。"
+    },
+    {
+      "id": "v286",
+      "word": "inference",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "推論",
+      "example": "The model performs inference for each incoming request.",
+      "exampleZh": "模型會對每一個進來的 request 執行推論。"
+    },
+    {
+      "id": "v287",
+      "word": "training",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "訓練",
+      "example": "Model training requires clean and representative data.",
+      "exampleZh": "模型訓練需要乾淨且具代表性的資料。"
+    },
+    {
+      "id": "v288",
+      "word": "model",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "模型",
+      "example": "We evaluate the model before using it in production.",
+      "exampleZh": "模型在 production 使用前需要先評估。"
+    },
+    {
+      "id": "v289",
+      "word": "prompt",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "提示詞",
+      "example": "The prompt should clearly describe the expected output.",
+      "exampleZh": "prompt 應清楚描述期望的輸出。"
+    },
+    {
+      "id": "v290",
+      "word": "embedding",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "向量嵌入",
+      "example": "We create an embedding for each document chunk.",
+      "exampleZh": "我們會為每個文件切片建立 embedding。"
+    },
+    {
+      "id": "v291",
+      "word": "vector database",
+      "pos": "phrase",
+      "category": "Cloud／AI",
+      "zh": "向量資料庫",
+      "example": "The vector database stores document embeddings for retrieval.",
+      "exampleZh": "向量資料庫儲存文件 embedding 供檢索使用。"
+    },
+    {
+      "id": "v292",
+      "word": "retrieval",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "檢索",
+      "example": "Retrieval finds the most relevant documents before generation.",
+      "exampleZh": "生成前，retrieval 會先找出最相關的文件。"
+    },
+    {
+      "id": "v293",
+      "word": "RAG",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "檢索增強生成",
+      "example": "RAG can ground answers in approved company documents.",
+      "exampleZh": "RAG 可以讓回答依據經核准的公司文件。"
+    },
+    {
+      "id": "v294",
+      "word": "hallucination",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "模型幻覺",
+      "example": "We need checks to reduce hallucination in high-risk answers.",
+      "exampleZh": "高風險回答需要檢查機制來降低模型幻覺。"
+    },
+    {
+      "id": "v295",
+      "word": "guardrail",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "防護機制",
+      "example": "A guardrail can block unsafe or unsupported output.",
+      "exampleZh": "guardrail 可以阻擋不安全或沒有依據的輸出。"
+    },
+    {
+      "id": "v296",
+      "word": "grounding",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "依據；事實落地",
+      "example": "Grounding helps the model answer with verifiable information.",
+      "exampleZh": "grounding 能幫助模型依據可驗證資訊回答。"
+    },
+    {
+      "id": "v297",
+      "word": "evaluation",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "評估",
+      "example": "We use an evaluation set to compare model quality.",
+      "exampleZh": "我們使用評估資料集比較模型品質。"
+    },
+    {
+      "id": "v298",
+      "word": "dataset",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "資料集",
+      "example": "The dataset should represent real user cases.",
+      "exampleZh": "資料集應該能代表真實使用者情境。"
+    },
+    {
+      "id": "v299",
+      "word": "fine-tuning",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "微調",
+      "example": "Fine-tuning can help when the task needs specialized behavior.",
+      "exampleZh": "當任務需要特定行為時，fine-tuning 可能有幫助。"
+    },
+    {
+      "id": "v300",
+      "word": "agent",
+      "pos": "n.",
+      "category": "Cloud／AI",
+      "zh": "AI 代理",
+      "example": "The agent can call tools to complete a multi-step task.",
+      "exampleZh": "agent 可以呼叫工具完成多步驟任務。"
     }
   ],
   "questions": [
@@ -2554,6 +4804,1910 @@ window.EDAN_ENGLISH_CONTENT = {
         "fallback",
         "business impact",
         "operational risk"
+      ]
+    },
+    {
+      "id": "listen-life-001",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Are you free for dinner after work, or do you already have plans?",
+      "textZh": "你下班後有空一起吃晚餐嗎？還是已經有安排了？",
+      "intent": "辨認對方在詢問下班後是否有空聚餐。",
+      "options": [
+        "詢問下班後是否有空",
+        "詢問工作內容",
+        "詢問薪資",
+        "詢問地址"
+      ],
+      "answer": 0,
+      "model": "I’m free after work. Dinner sounds good.",
+      "modelZh": "我下班後有空，一起吃晚餐不錯。",
+      "keywords": [
+        "after work",
+        "usually"
+      ]
+    },
+    {
+      "id": "listen-life-002",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Would you rather eat here or get something to take away?",
+      "textZh": "你比較想在這裡吃，還是買外帶？",
+      "intent": "辨認對方在詢問內用或外帶偏好。",
+      "options": [
+        "詢問用餐方式偏好",
+        "詢問交通方式",
+        "詢問工作進度",
+        "詢問時間"
+      ],
+      "answer": 0,
+      "model": "I’d rather eat here if we have enough time.",
+      "modelZh": "如果時間夠，我比較想在這裡吃。",
+      "keywords": [
+        "would you rather",
+        "okay with that"
+      ]
+    },
+    {
+      "id": "listen-life-003",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "The train is delayed again. Do you want to take a taxi instead?",
+      "textZh": "火車又延誤了，你要不要改搭計程車？",
+      "intent": "辨認對方在提出交通替代方案。",
+      "options": [
+        "提出替代交通方式",
+        "取消面試",
+        "要求加班",
+        "詢問餐廳"
+      ],
+      "answer": 0,
+      "model": "Yes, let’s take a taxi so we can arrive on time.",
+      "modelZh": "好，我們搭計程車吧，這樣可以準時到。",
+      "keywords": [
+        "on time",
+        "maybe"
+      ]
+    },
+    {
+      "id": "listen-life-004",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Can you pick me up at the station around seven?",
+      "textZh": "你可以大約七點到車站接我嗎？",
+      "intent": "辨認對方在請你到車站接人。",
+      "options": [
+        "請你接人",
+        "請你買東西",
+        "請你改會議",
+        "請你寄信"
+      ],
+      "answer": 0,
+      "model": "Sure. I’ll meet you near the main entrance at seven.",
+      "modelZh": "可以，我七點會在正門附近跟你碰面。",
+      "keywords": [
+        "how long",
+        "okay with that"
+      ]
+    },
+    {
+      "id": "listen-life-005",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "I’m running a little late. Is it okay if we meet at seven thirty instead?",
+      "textZh": "我有點晚了，我們改成七點半見可以嗎？",
+      "intent": "辨認對方因遲到而想延後見面時間。",
+      "options": [
+        "延後約定時間",
+        "取消工作",
+        "詢問地址",
+        "借東西"
+      ],
+      "answer": 0,
+      "model": "That’s fine. Seven thirty works for me.",
+      "modelZh": "沒問題，七點半我可以。",
+      "keywords": [
+        "works for me",
+        "okay with that"
+      ]
+    },
+    {
+      "id": "listen-life-006",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Do you know anywhere nearby that’s quiet enough for a video call?",
+      "textZh": "你知道附近哪裡夠安靜，可以進行視訊通話嗎？",
+      "intent": "辨認對方在找附近適合視訊通話的安靜地點。",
+      "options": [
+        "找安靜的附近地點",
+        "找停車位",
+        "找工程師",
+        "找面試題"
+      ],
+      "answer": 0,
+      "model": "There’s a quiet café across the street. It should work.",
+      "modelZh": "街對面有一家安靜的咖啡店，應該可以。",
+      "keywords": [
+        "nearby",
+        "what do you mean"
+      ]
+    },
+    {
+      "id": "listen-life-007",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Could you remind me to bring the documents tomorrow morning?",
+      "textZh": "你可以提醒我明天早上帶文件嗎？",
+      "intent": "辨認對方在請你明天提醒帶文件。",
+      "options": [
+        "請你提醒事情",
+        "請你翻譯文件",
+        "請你取消會議",
+        "請你加班"
+      ],
+      "answer": 0,
+      "model": "Sure. I’ll remind you tomorrow morning.",
+      "modelZh": "可以，我明天早上會提醒你。",
+      "keywords": [
+        "remind me",
+        "tomorrow"
+      ]
+    },
+    {
+      "id": "listen-life-008",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "I’m not sure what to order. What do you usually get here?",
+      "textZh": "我不確定要點什麼，你平常來這裡都點什麼？",
+      "intent": "辨認對方在詢問餐點推薦。",
+      "options": [
+        "詢問餐點推薦",
+        "詢問工作內容",
+        "詢問薪資",
+        "詢問交通"
+      ],
+      "answer": 0,
+      "model": "I usually get the chicken. It’s simple and not too spicy.",
+      "modelZh": "我通常點雞肉，口味簡單而且不會太辣。",
+      "keywords": [
+        "usually",
+        "not sure yet"
+      ]
+    },
+    {
+      "id": "listen-life-009",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Do you mind if I borrow your charger for about twenty minutes?",
+      "textZh": "你介意我借你的充電器大約二十分鐘嗎？",
+      "intent": "辨認對方在禮貌詢問是否可以借充電器。",
+      "options": [
+        "借充電器",
+        "借錢",
+        "改時間",
+        "問路"
+      ],
+      "answer": 0,
+      "model": "No problem. You can use it until I leave.",
+      "modelZh": "沒問題，我離開前你都可以用。",
+      "keywords": [
+        "how long",
+        "works for me"
+      ]
+    },
+    {
+      "id": "listen-life-010",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "The package says it was delivered, but I can’t find it anywhere.",
+      "textZh": "包裹顯示已送達，但我到處都找不到。",
+      "intent": "辨認對方在描述包裹顯示送達但找不到的問題。",
+      "options": [
+        "包裹遺失問題",
+        "餐廳訂位",
+        "工作面試",
+        "系統故障"
+      ],
+      "answer": 0,
+      "model": "Let’s check the entrance and ask the front desk first.",
+      "modelZh": "我們先檢查入口，再問一下櫃台。",
+      "keywords": [
+        "check",
+        "confirm meaning"
+      ]
+    },
+    {
+      "id": "listen-life-011",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Are you okay with walking, or should we take the bus?",
+      "textZh": "你可以走路嗎？還是我們應該搭公車？",
+      "intent": "辨認對方在詢問步行或搭公車的交通偏好。",
+      "options": [
+        "詢問交通偏好",
+        "詢問飲食偏好",
+        "詢問工作偏好",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "Walking is fine if it’s not too far.",
+      "modelZh": "如果不會太遠，走路沒問題。",
+      "keywords": [
+        "okay with that",
+        "how long"
+      ]
+    },
+    {
+      "id": "listen-life-012",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "I haven’t seen you in a while. Want to catch up this weekend?",
+      "textZh": "好一陣子沒見了，這週末要不要聚一下聊近況？",
+      "intent": "辨認對方在邀請週末見面聊近況。",
+      "options": [
+        "邀請週末聚會",
+        "安排面試",
+        "詢問工作進度",
+        "要求協助"
+      ],
+      "answer": 0,
+      "model": "Sure. I’m free on Saturday afternoon.",
+      "modelZh": "好啊，我星期六下午有空。",
+      "keywords": [
+        "weekends",
+        "friends"
+      ]
+    },
+    {
+      "id": "listen-life-013",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "Could you say that again a little more slowly?",
+      "textZh": "你可以再說一次，稍微慢一點嗎？",
+      "intent": "辨認對方在要求重複並放慢語速。",
+      "options": [
+        "要求重複並放慢",
+        "要求更大聲",
+        "要求翻譯",
+        "要求停止"
+      ],
+      "answer": 0,
+      "model": "Of course. I’ll say it again more slowly.",
+      "modelZh": "當然，我會再慢一點說一次。",
+      "keywords": [
+        "slower",
+        "repeat"
+      ]
+    },
+    {
+      "id": "listen-life-014",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 1,
+      "text": "Do you need anything from the convenience store? I’m going now.",
+      "textZh": "你需要我從便利商店帶什麼嗎？我現在要去。",
+      "intent": "辨認對方在主動詢問是否需要順便買東西。",
+      "options": [
+        "詢問是否需要代買",
+        "詢問工作內容",
+        "詢問地址",
+        "詢問交通"
+      ],
+      "answer": 0,
+      "model": "Could you get me a bottle of water, please?",
+      "modelZh": "可以幫我買一瓶水嗎？",
+      "keywords": [
+        "maybe",
+        "get back to you"
+      ]
+    },
+    {
+      "id": "listen-life-015",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "The restaurant is fully booked tonight. Should we try somewhere else?",
+      "textZh": "這家餐廳今晚都訂滿了，我們要不要換一家？",
+      "intent": "辨認對方因餐廳客滿而提出更換地點。",
+      "options": [
+        "更換餐廳",
+        "取消所有行程",
+        "改工作內容",
+        "安排會議"
+      ],
+      "answer": 0,
+      "model": "Yes. Let’s find another place nearby.",
+      "modelZh": "好，我們找附近另一家吧。",
+      "keywords": [
+        "nearby",
+        "maybe"
+      ]
+    },
+    {
+      "id": "listen-life-016",
+      "source": "Life Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "I’m still getting ready. Can you give me another ten minutes?",
+      "textZh": "我還在準備，可以再給我十分鐘嗎？",
+      "intent": "辨認對方因尚未準備好而需要多十分鐘。",
+      "options": [
+        "需要多一點準備時間",
+        "要求提前到",
+        "要求取消",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "Sure. Take your time. I’ll wait here.",
+      "modelZh": "可以，慢慢來，我在這裡等。",
+      "keywords": [
+        "still",
+        "how long"
+      ]
+    },
+    {
+      "id": "listen-interview-009",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What made you start looking for a new opportunity at this point in your career?",
+      "textZh": "是什麼原因讓你在職涯這個階段開始尋找新的機會？",
+      "intent": "面試官在問你現在尋找新工作的動機。",
+      "options": [
+        "轉職動機",
+        "薪資明細",
+        "通勤方式",
+        "休假安排"
+      ],
+      "answer": 0,
+      "model": "I’m looking for a role with more cloud exposure, customer ownership, and room to grow.",
+      "modelZh": "我希望下一個角色有更多雲端經驗、客戶責任與成長空間。",
+      "keywords": [
+        "next stage",
+        "motivation",
+        "customer-facing delivery"
+      ]
+    },
+    {
+      "id": "listen-interview-010",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Walk me through a project where the original plan did not work and you had to adjust.",
+      "textZh": "請說明一個原本計畫沒有奏效、你必須調整做法的專案。",
+      "intent": "面試官要你說明遇到計畫失效時如何調整。",
+      "options": [
+        "計畫失效後如何調整",
+        "工作年資",
+        "英文程度",
+        "薪資期待"
+      ],
+      "answer": 0,
+      "model": "I would explain what changed, how I reassessed the risk, and what actions I took to keep delivery moving.",
+      "modelZh": "我會說明發生了什麼改變、如何重新評估風險，以及採取哪些行動讓交付持續推進。",
+      "keywords": [
+        "risk",
+        "next actions",
+        "delivery"
+      ]
+    },
+    {
+      "id": "listen-interview-011",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you make sure you understand the real business need before proposing a technical solution?",
+      "textZh": "在提出技術方案前，你如何確認自己理解真正的業務需求？",
+      "intent": "面試官在問你如何從需求釐清走到技術方案。",
+      "options": [
+        "如何釐清真正業務需求",
+        "如何談薪資",
+        "如何安排假期",
+        "如何學英文"
+      ],
+      "answer": 0,
+      "model": "I clarify the business outcome, constraints, and priority first, then translate them into technical options.",
+      "modelZh": "我會先釐清業務成果、限制與優先順序，再轉成技術選項。",
+      "keywords": [
+        "scope",
+        "business impact",
+        "options"
+      ]
+    },
+    {
+      "id": "listen-interview-012",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Tell me about a time you had to push back on a request from a customer or stakeholder.",
+      "textZh": "請分享一次你必須對客戶或利害關係人的要求提出不同意見的經驗。",
+      "intent": "面試官在問你如何專業地 push back。",
+      "options": [
+        "如何對不合理要求提出不同意見",
+        "如何介紹自己",
+        "如何詢問福利",
+        "如何請假"
+      ],
+      "answer": 0,
+      "model": "I would acknowledge the objective, explain the risk, and offer safer alternatives instead of simply saying no.",
+      "modelZh": "我會先認同目標，說明風險，再提出較安全的替代方案，而不是直接拒絕。",
+      "keywords": [
+        "acknowledge objective",
+        "risk",
+        "alternatives"
+      ]
+    },
+    {
+      "id": "listen-interview-013",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What do you do when two senior stakeholders give you conflicting priorities?",
+      "textZh": "當兩位高階利害關係人給你互相衝突的優先順序時，你會怎麼做？",
+      "intent": "面試官在測試你處理高階優先順序衝突的能力。",
+      "options": [
+        "處理高階優先順序衝突",
+        "處理電腦故障",
+        "安排通勤",
+        "談薪資"
+      ],
+      "answer": 0,
+      "model": "I make the trade-offs visible and ask the decision owner to confirm the priority.",
+      "modelZh": "我會把取捨透明化，並請決策負責人確認優先順序。",
+      "keywords": [
+        "trade-offs",
+        "decision owner",
+        "priority"
+      ]
+    },
+    {
+      "id": "listen-interview-014",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What kind of work gives you the most energy?",
+      "textZh": "哪一類工作最能讓你有動力？",
+      "intent": "面試官在了解你的工作偏好與動機。",
+      "options": [
+        "工作動機與偏好",
+        "工作地點",
+        "薪資明細",
+        "離職手續"
+      ],
+      "answer": 0,
+      "model": "I enjoy work that combines technical problem solving, coordination, and visible customer impact.",
+      "modelZh": "我喜歡結合技術解題、協調與可見客戶影響的工作。",
+      "keywords": [
+        "technical depth",
+        "customer impact",
+        "motivation"
+      ]
+    },
+    {
+      "id": "listen-interview-015",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "How would your teammates describe the way you work under pressure?",
+      "textZh": "你的同事會如何形容你在壓力下的工作方式？",
+      "intent": "面試官在問壓力情境下的工作風格。",
+      "options": [
+        "壓力下的工作風格",
+        "薪資期待",
+        "學歷背景",
+        "休假偏好"
+      ],
+      "answer": 0,
+      "model": "They would probably say I stay calm, clarify priorities, and keep communication structured.",
+      "modelZh": "他們大概會說我能保持冷靜、釐清優先順序，並維持有結構的溝通。",
+      "keywords": [
+        "priority",
+        "customer communication",
+        "reliably"
+      ]
+    },
+    {
+      "id": "listen-interview-016",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is a decision you made that turned out to be wrong, and what did you learn from it?",
+      "textZh": "請分享一個你做錯的決策，以及你從中學到什麼。",
+      "intent": "面試官在測試你是否能承認錯誤並反思。",
+      "options": [
+        "錯誤決策與學習",
+        "薪資談判",
+        "技術證照",
+        "通勤方式"
+      ],
+      "answer": 0,
+      "model": "I would explain the assumption I got wrong, how I corrected it, and what check I added afterward.",
+      "modelZh": "我會說明哪個假設判斷錯了、如何修正，以及後來加入什麼檢查機制。",
+      "keywords": [
+        "assumptions",
+        "learned a lot",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-interview-017",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you balance being hands-on technically with coordinating the broader project?",
+      "textZh": "你如何平衡親自處理技術細節與協調整體專案？",
+      "intent": "面試官在問技術深度與專案協調的平衡。",
+      "options": [
+        "技術實作與專案協調的平衡",
+        "工作地點",
+        "薪資福利",
+        "英文口音"
+      ],
+      "answer": 0,
+      "model": "I go deep when the team needs technical clarity, but I step back when alignment and delivery need more attention.",
+      "modelZh": "團隊需要技術釐清時我會深入，但需要對齊與交付時我會拉高視角。",
+      "keywords": [
+        "technical depth",
+        "delivery alignment",
+        "scope"
+      ]
+    },
+    {
+      "id": "listen-interview-018",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What would you do if you joined and discovered the role was less clearly defined than expected?",
+      "textZh": "如果你加入後發現這個角色的定義比預期模糊，你會怎麼做？",
+      "intent": "面試官在測試你面對模糊角色邊界的做法。",
+      "options": [
+        "處理角色模糊",
+        "申請調薪",
+        "改面試時間",
+        "安排休假"
+      ],
+      "answer": 0,
+      "model": "I would clarify success criteria, ownership, and the most important outcomes with my manager and stakeholders.",
+      "modelZh": "我會和主管與利害關係人釐清成功標準、責任歸屬與最重要的成果。",
+      "keywords": [
+        "ownership",
+        "success",
+        "stakeholders"
+      ]
+    },
+    {
+      "id": "listen-interview-019",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What is one skill you are actively trying to improve right now?",
+      "textZh": "你目前正在積極改善哪一項能力？",
+      "intent": "面試官在問目前正在發展的能力。",
+      "options": [
+        "目前正在改善的能力",
+        "離職原因",
+        "薪資期待",
+        "工作地址"
+      ],
+      "answer": 0,
+      "model": "I’m actively improving my English listening and speaking for global customer communication.",
+      "modelZh": "我正在積極提升英文聽力與口說，以應對全球客戶溝通。",
+      "keywords": [
+        "improving",
+        "English at work",
+        "customer communication"
+      ]
+    },
+    {
+      "id": "listen-interview-020",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If I asked you to lead a customer workshop tomorrow, how would you prepare?",
+      "textZh": "如果我請你明天主持一場客戶工作坊，你會怎麼準備？",
+      "intent": "面試官在測試你快速準備客戶 workshop 的方法。",
+      "options": [
+        "準備客戶工作坊",
+        "準備薪資談判",
+        "準備旅行",
+        "準備休假"
+      ],
+      "answer": 0,
+      "model": "I would clarify the objective, audience, decisions needed, and expected output, then prepare a simple structure and examples.",
+      "modelZh": "我會先釐清目標、對象、需要做的決策與預期產出，再準備簡單架構與例子。",
+      "keywords": [
+        "audience",
+        "decision needed",
+        "customer engagement"
+      ]
+    },
+    {
+      "id": "listen-interview-021",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you know when a problem needs your involvement instead of staying with the engineering team?",
+      "textZh": "你如何判斷一個問題需要你介入，而不是留在工程團隊內處理？",
+      "intent": "面試官在問介入與 escalation 的判斷。",
+      "options": [
+        "何時需要介入工程問題",
+        "如何寫履歷",
+        "如何安排會議室",
+        "如何請假"
+      ],
+      "answer": 0,
+      "model": "I get involved when the issue affects delivery, customers, ownership, or requires a cross-team decision.",
+      "modelZh": "當問題影響交付、客戶、責任歸屬，或需要跨團隊決策時，我會介入。",
+      "keywords": [
+        "customer impact",
+        "ownership",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-interview-022",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What would you want your first ninety days in this role to accomplish?",
+      "textZh": "你希望在這個角色的前九十天完成什麼？",
+      "intent": "面試官在問入職前三個月的具體目標。",
+      "options": [
+        "前三個月目標",
+        "上一份薪資",
+        "假期安排",
+        "通勤時間"
+      ],
+      "answer": 0,
+      "model": "I would aim to understand the environment, build stakeholder trust, and deliver one visible outcome.",
+      "modelZh": "我會以了解環境、建立利害關係人信任，以及交付一個可見成果為目標。",
+      "keywords": [
+        "visible outcomes",
+        "stakeholders",
+        "success"
+      ]
+    },
+    {
+      "id": "listen-interview-023",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 2,
+      "text": "What questions do you have for us about the team or the role?",
+      "textZh": "你對團隊或這個角色有什麼想問我們的？",
+      "intent": "辨認面試官正在邀請你反問問題。",
+      "options": [
+        "邀請候選人反問",
+        "要求自我介紹",
+        "要求技術測試",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "I’d like to understand the team structure, success criteria, and the biggest challenge for this role.",
+      "modelZh": "我想了解團隊結構、成功標準，以及這個角色目前最大的挑戰。",
+      "keywords": [
+        "success",
+        "challenge",
+        "scope"
+      ]
+    },
+    {
+      "id": "listen-interview-024",
+      "source": "Interview Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would make you choose one offer over another if you had multiple options?",
+      "textZh": "如果你同時有多個 offer，什麼因素會讓你選擇其中一個？",
+      "intent": "面試官在了解你選擇職位的主要考量。",
+      "options": [
+        "選擇 offer 的考量",
+        "目前薪資",
+        "休假餘額",
+        "交通工具"
+      ],
+      "answer": 0,
+      "model": "I would compare role scope, learning potential, team quality, customer impact, and the overall package.",
+      "modelZh": "我會比較職務範圍、學習潛力、團隊品質、客戶影響與整體薪酬方案。",
+      "keywords": [
+        "scope",
+        "customer impact",
+        "overall package"
+      ]
+    },
+    {
+      "id": "listen-project-009",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which assumption in the plan is most likely to be wrong, and how would that affect delivery?",
+      "textZh": "計畫裡哪個假設最可能不成立？如果不成立會如何影響交付？",
+      "intent": "對方在要求你找出高風險假設與交付影響。",
+      "options": [
+        "高風險假設與交付影響",
+        "薪資期待",
+        "團隊聚餐",
+        "技術證照"
+      ],
+      "answer": 0,
+      "model": "I would identify the assumption with the highest delivery impact and define a validation point as early as possible.",
+      "modelZh": "我會找出對交付影響最大的假設，並盡早設定驗證點。",
+      "keywords": [
+        "assumption",
+        "delivery",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-project-010",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What exactly needs to be true before we can call this milestone complete?",
+      "textZh": "要滿足哪些條件，我們才能把這個里程碑視為完成？",
+      "intent": "對方在詢問 milestone 的完成／驗收條件。",
+      "options": [
+        "里程碑完成條件",
+        "薪資條件",
+        "辦公室規定",
+        "面試流程"
+      ],
+      "answer": 0,
+      "model": "We should agree on measurable acceptance criteria, evidence, and final sign-off.",
+      "modelZh": "我們應該先對可衡量的驗收標準、證據與最終簽核取得共識。",
+      "keywords": [
+        "milestone",
+        "evidence",
+        "sign-off"
+      ]
+    },
+    {
+      "id": "listen-project-011",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "If we move this task forward, which other team will be blocked or need to adjust?",
+      "textZh": "如果我們提前這項工作，哪個其他團隊會被阻塞或需要調整？",
+      "intent": "對方在問調整時程對其他團隊 dependency 的影響。",
+      "options": [
+        "時程調整對其他團隊的影響",
+        "工作地點",
+        "薪資福利",
+        "英文程度"
+      ],
+      "answer": 0,
+      "model": "I would check downstream dependencies and confirm whether any team needs a revised handoff date.",
+      "modelZh": "我會檢查下游相依關係，並確認是否有團隊需要調整交接日期。",
+      "keywords": [
+        "dependencies",
+        "handoff",
+        "timeline"
+      ]
+    },
+    {
+      "id": "listen-project-012",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is the smallest decision we can make today that keeps the project moving without creating unnecessary risk?",
+      "textZh": "今天我們可以做的最小決策是什麼，既能讓專案前進又不增加不必要風險？",
+      "intent": "對方在問可逆、低風險的最小前進決策。",
+      "options": [
+        "低風險的最小前進決策",
+        "全面改架構",
+        "取消專案",
+        "延後所有工作"
+      ],
+      "answer": 0,
+      "model": "I would choose a reversible decision that removes the current blocker while preserving options for later.",
+      "modelZh": "我會選擇可逆的決策，先解除目前阻塞，同時保留之後的選項。",
+      "keywords": [
+        "reversibility",
+        "blocker",
+        "options"
+      ]
+    },
+    {
+      "id": "listen-project-013",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Who needs to approve this change, and by when do we need that decision?",
+      "textZh": "這項變更需要誰核准？我們最晚何時需要這個決策？",
+      "intent": "對方在確認 change approval owner 與 decision deadline。",
+      "options": [
+        "核准人與決策期限",
+        "午餐時間",
+        "工作地點",
+        "薪資範圍"
+      ],
+      "answer": 0,
+      "model": "I would identify the decision owner and set a clear approval deadline based on downstream impact.",
+      "modelZh": "我會確認決策負責人，並依下游影響設定明確的核准期限。",
+      "keywords": [
+        "decision owner",
+        "approval",
+        "timeline"
+      ]
+    },
+    {
+      "id": "listen-project-014",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the deadline cannot move, which part of the scope would you challenge first?",
+      "textZh": "如果截止日期不能改，你會優先挑戰哪一部分範圍？",
+      "intent": "對方在問固定 deadline 下如何做 scope trade-off。",
+      "options": [
+        "固定期限下的範圍取捨",
+        "加薪談判",
+        "資料庫備份",
+        "休假排程"
+      ],
+      "answer": 0,
+      "model": "I would separate must-have outcomes from lower-value scope and make the trade-offs explicit.",
+      "modelZh": "我會把必要成果與較低價值的範圍分開，並把取捨說清楚。",
+      "keywords": [
+        "scope",
+        "trade-offs",
+        "deadline"
+      ]
+    },
+    {
+      "id": "listen-project-015",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What are we waiting on from the vendor, and what can we do while we wait?",
+      "textZh": "我們目前在等供應商提供什麼？等待期間有哪些事情可以先做？",
+      "intent": "對方在問 vendor dependency 與可平行工作的事項。",
+      "options": [
+        "供應商相依與等待期間可做工作",
+        "薪資期待",
+        "面試回饋",
+        "交通安排"
+      ],
+      "answer": 0,
+      "model": "I would clarify the vendor dependency and identify workstreams we can run in parallel.",
+      "modelZh": "我會先釐清供應商相依項目，再找出可以平行進行的工作流。",
+      "keywords": [
+        "vendors",
+        "dependency",
+        "parallel"
+      ]
+    },
+    {
+      "id": "listen-project-016",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "How do you know whether this issue is getting better or just being discussed more often?",
+      "textZh": "你如何判斷這個問題是真的在改善，而不是只是被更頻繁討論？",
+      "intent": "對方在問如何用 evidence 判斷 issue 是否真的改善。",
+      "options": [
+        "用證據判斷問題改善",
+        "安排更多會議",
+        "更換工具",
+        "調整薪資"
+      ],
+      "answer": 0,
+      "model": "I would track measurable indicators such as error rate, aging, and completion of corrective actions.",
+      "modelZh": "我會追蹤錯誤率、問題 aging 與修正行動完成度等可衡量指標。",
+      "keywords": [
+        "evidence",
+        "issue aging",
+        "success"
+      ]
+    },
+    {
+      "id": "listen-project-017",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would you put in the executive update if you only had two minutes?",
+      "textZh": "如果你只有兩分鐘，你會在高階主管更新中放哪些內容？",
+      "intent": "對方在問如何把專案狀態濃縮成 executive update。",
+      "options": [
+        "高階主管兩分鐘狀態更新",
+        "完整技術設計",
+        "所有會議紀錄",
+        "個人工作日誌"
+      ],
+      "answer": 0,
+      "model": "I would cover business impact, major risk, decision needed, and whether the timeline is still credible.",
+      "modelZh": "我會涵蓋業務影響、主要風險、需要的決策，以及時程是否仍可信。",
+      "keywords": [
+        "business impact",
+        "risk",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-project-018",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which action item has been open the longest, and why has it not moved?",
+      "textZh": "哪一個待辦事項開著最久？為什麼一直沒有推進？",
+      "intent": "對方在追問 action item aging 與阻塞原因。",
+      "options": [
+        "最久未完成待辦與阻塞原因",
+        "薪資明細",
+        "面試安排",
+        "餐廳訂位"
+      ],
+      "answer": 0,
+      "model": "I would check the owner, dependency, and decision needed for the oldest open action.",
+      "modelZh": "我會檢查最久未完成事項的 owner、相依關係與所需決策。",
+      "keywords": [
+        "owner",
+        "dependencies",
+        "decision needed"
+      ]
+    },
+    {
+      "id": "listen-project-019",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What should we stop doing if the team is already over capacity?",
+      "textZh": "如果團隊已經超出負荷，我們應該停止做哪些事情？",
+      "intent": "對方在問 capacity 不足時如何重新優先排序。",
+      "options": [
+        "產能不足時重新排序",
+        "增加所有工作",
+        "改變薪資",
+        "安排出差"
+      ],
+      "answer": 0,
+      "model": "I would protect critical-path work and pause lower-priority activities that do not affect near-term outcomes.",
+      "modelZh": "我會保護關鍵路徑工作，暫停不影響近期成果的低優先事項。",
+      "keywords": [
+        "resource constraints",
+        "critical path",
+        "priority"
+      ]
+    },
+    {
+      "id": "listen-project-020",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you explain a three-week delay to a customer without losing confidence?",
+      "textZh": "如果專案延遲三週，你會如何向客戶說明而不失去信任？",
+      "intent": "對方在問延誤溝通與客戶信心管理。",
+      "options": [
+        "延誤溝通與客戶信心",
+        "隱瞞延誤",
+        "責怪團隊",
+        "取消會議"
+      ],
+      "answer": 0,
+      "model": "I would explain the cause, business impact, recovery plan, and what controls we added to prevent another slip.",
+      "modelZh": "我會說明原因、業務影響、復原計畫，以及新增哪些控制避免再次延誤。",
+      "keywords": [
+        "customer confidence",
+        "recovery plan",
+        "business impact"
+      ]
+    },
+    {
+      "id": "listen-project-021",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Are we measuring completion by activity, or by an actual customer outcome?",
+      "textZh": "我們是在用做了多少活動衡量完成度，還是用真正的客戶成果？",
+      "intent": "對方在區分 activity completion 與 customer outcome。",
+      "options": [
+        "活動完成與客戶成果差異",
+        "薪資調整",
+        "工作地點",
+        "程式語言"
+      ],
+      "answer": 0,
+      "model": "I prefer outcome-based measures because activity alone does not prove the customer received value.",
+      "modelZh": "我偏好用成果衡量，因為只完成活動不代表客戶真的得到價值。",
+      "keywords": [
+        "customer outcomes",
+        "visible outcomes",
+        "success"
+      ]
+    },
+    {
+      "id": "listen-project-022",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the same risk keeps reopening, what does that tell you about the mitigation?",
+      "textZh": "如果同一個風險一直重新出現，這代表原本的緩解措施可能有什麼問題？",
+      "intent": "對方在問反覆風險是否代表 mitigation 無效。",
+      "options": [
+        "反覆風險與緩解成效",
+        "安排更多會議",
+        "換辦公室",
+        "改薪資"
+      ],
+      "answer": 0,
+      "model": "It suggests the mitigation may only be treating the symptom instead of the root cause.",
+      "modelZh": "這可能代表緩解措施只處理症狀，而沒有解決根本原因。",
+      "keywords": [
+        "risk",
+        "root cause",
+        "mitigation"
+      ]
+    },
+    {
+      "id": "listen-project-023",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "What is the handoff criteria between testing and production readiness?",
+      "textZh": "測試完成到正式環境準備之間的交接標準是什麼？",
+      "intent": "對方在問 testing 到 production readiness 的 handoff criteria。",
+      "options": [
+        "測試到正式環境的交接標準",
+        "薪資福利",
+        "面試時段",
+        "休假規則"
+      ],
+      "answer": 0,
+      "model": "I would define test completion, unresolved defect thresholds, sign-off, and rollback readiness.",
+      "modelZh": "我會定義測試完成條件、未解缺陷門檻、簽核與 rollback 準備度。",
+      "keywords": [
+        "testing",
+        "sign-off",
+        "rollback"
+      ]
+    },
+    {
+      "id": "listen-project-024",
+      "source": "Project Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Which project metric would make you change the plan rather than just report the status?",
+      "textZh": "哪一個專案指標會讓你真的改變計畫，而不是只回報狀態？",
+      "intent": "對方在問哪些指標會觸發實際管理行動。",
+      "options": [
+        "會觸發計畫調整的指標",
+        "所有狀態報告",
+        "個人績效",
+        "薪資資訊"
+      ],
+      "answer": 0,
+      "model": "I would act on metrics that show delivery risk, issue aging, resource constraints, or declining customer confidence.",
+      "modelZh": "當指標顯示交付風險、問題 aging、資源限制或客戶信心下降時，我會調整計畫。",
+      "keywords": [
+        "issue aging",
+        "resource constraints",
+        "customer confidence"
+      ]
+    },
+    {
+      "id": "listen-engineer-009",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Can you show me the exact request and response that failed?",
+      "textZh": "你可以給我看實際失敗的 request 和 response 嗎？",
+      "intent": "工程師在要求具體失敗請求與回應證據。",
+      "options": [
+        "查看失敗 request / response",
+        "安排會議",
+        "詢問薪資",
+        "修改履歷"
+      ],
+      "answer": 0,
+      "model": "Yes. I’ll provide the request payload, response code, and relevant log entries.",
+      "modelZh": "可以，我會提供 request payload、response code 與相關 log。",
+      "keywords": [
+        "request",
+        "response",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-engineer-010",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Does the failure happen before the database write or after the transaction starts?",
+      "textZh": "錯誤是在寫入資料庫前發生，還是在 transaction 開始後發生？",
+      "intent": "工程師在定位 failure 發生於 transaction 流程的哪個階段。",
+      "options": [
+        "定位 transaction 失敗階段",
+        "安排面試",
+        "詢問工作地點",
+        "討論薪資"
+      ],
+      "answer": 0,
+      "model": "I would trace the request and confirm the last successful step before the failure.",
+      "modelZh": "我會追蹤 request，確認失敗前最後成功的步驟。",
+      "keywords": [
+        "trace",
+        "transaction",
+        "facts"
+      ]
+    },
+    {
+      "id": "listen-engineer-011",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What changed in configuration between test and production?",
+      "textZh": "測試環境和正式環境之間有哪些設定不同？",
+      "intent": "工程師在比較 test 與 production configuration 差異。",
+      "options": [
+        "比較環境設定差異",
+        "比較薪資",
+        "比較履歷",
+        "比較面試官"
+      ],
+      "answer": 0,
+      "model": "I would compare environment variables, endpoints, permissions, and feature settings.",
+      "modelZh": "我會比較環境變數、endpoint、權限與功能設定。",
+      "keywords": [
+        "configuration issue",
+        "environment",
+        "permission"
+      ]
+    },
+    {
+      "id": "listen-engineer-012",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If this query is slow only in production, what would you check first?",
+      "textZh": "如果這個 query 只在正式環境很慢，你會先檢查什麼？",
+      "intent": "工程師在問 production-only query latency 的排查方式。",
+      "options": [
+        "正式環境 query 慢的排查",
+        "UI 配色",
+        "面試流程",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "I would compare execution plans, data volume, indexes, locks, and current load.",
+      "modelZh": "我會比較 execution plan、資料量、index、lock 與目前負載。",
+      "keywords": [
+        "query",
+        "index",
+        "lock"
+      ]
+    },
+    {
+      "id": "listen-engineer-013",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Can we reproduce the timeout with the same payload in a lower environment?",
+      "textZh": "我們可以用相同 payload 在較低環境重現 timeout 嗎？",
+      "intent": "工程師在問能否以相同輸入重現 timeout。",
+      "options": [
+        "重現 timeout",
+        "調薪",
+        "排休",
+        "改履歷"
+      ],
+      "answer": 0,
+      "model": "I would replay the same payload and compare timing across environments.",
+      "modelZh": "我會重放相同 payload，並比較不同環境的耗時。",
+      "keywords": [
+        "timeout",
+        "reproduce issue",
+        "environment"
+      ]
+    },
+    {
+      "id": "listen-engineer-014",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What prevents two workers from processing the same message at the same time?",
+      "textZh": "什麼機制可以避免兩個 worker 同時處理同一則 message？",
+      "intent": "工程師在問並行處理時如何避免重複消費。",
+      "options": [
+        "避免重複處理 message",
+        "加薪流程",
+        "面試準備",
+        "工作排程"
+      ],
+      "answer": 0,
+      "model": "I would use a unique message identifier, idempotent processing, or a locking mechanism.",
+      "modelZh": "我會使用唯一 message ID、冪等處理或 locking 機制。",
+      "keywords": [
+        "idempotency",
+        "message",
+        "lock"
+      ]
+    },
+    {
+      "id": "listen-engineer-015",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which service owns this endpoint, and who should we contact for the fix?",
+      "textZh": "這個 endpoint 是哪個 service 負責？需要找誰處理修正？",
+      "intent": "工程師在確認 service ownership 與修正窗口。",
+      "options": [
+        "確認 service owner",
+        "安排聚餐",
+        "詢問薪資",
+        "請假"
+      ],
+      "answer": 0,
+      "model": "I would identify the owning service and contact the team responsible for that endpoint.",
+      "modelZh": "我會確認負責該 endpoint 的 service 與團隊。",
+      "keywords": [
+        "owner",
+        "service",
+        "endpoint"
+      ]
+    },
+    {
+      "id": "listen-engineer-016",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the cache is stale, how do we know whether the database is still correct?",
+      "textZh": "如果 cache 是舊的，我們要怎麼確認 database 裡的資料仍然正確？",
+      "intent": "工程師在問 cache 與 source of truth 的一致性驗證。",
+      "options": [
+        "驗證 cache 與 database 一致性",
+        "重新面試",
+        "調整薪資",
+        "更換辦公室"
+      ],
+      "answer": 0,
+      "model": "I would compare the cached value with the source-of-truth record in the database.",
+      "modelZh": "我會把 cache 值與 database 裡的來源資料做比較。",
+      "keywords": [
+        "cache",
+        "database",
+        "evidence"
+      ]
+    },
+    {
+      "id": "listen-engineer-017",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What happens to queued messages if the consumer is down for an hour?",
+      "textZh": "如果 consumer 中斷一小時，queue 裡的 message 會怎麼處理？",
+      "intent": "工程師在問 queue backlog 與 consumer outage 行為。",
+      "options": [
+        "consumer 中斷時的 message 處理",
+        "面試流程",
+        "薪資談判",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "The messages should remain queued and be processed after recovery, with retry and dead-letter handling if needed.",
+      "modelZh": "message 應保留在 queue，恢復後再處理；需要時搭配 retry 與 dead-letter 機制。",
+      "keywords": [
+        "queue",
+        "retry",
+        "message"
+      ]
+    },
+    {
+      "id": "listen-engineer-018",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Can we deploy this change without changing the database schema first?",
+      "textZh": "這個變更可以在不先修改 database schema 的情況下部署嗎？",
+      "intent": "工程師在問 deployment 與 schema compatibility。",
+      "options": [
+        "部署與 schema 相容性",
+        "薪資與獎金",
+        "會議時間",
+        "出差安排"
+      ],
+      "answer": 0,
+      "model": "I would check backward compatibility and whether the new code can work with the existing schema.",
+      "modelZh": "我會檢查向後相容性，以及新程式是否能搭配現有 schema。",
+      "keywords": [
+        "deployment",
+        "schema",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-engineer-019",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which log line proves the request reached the downstream service?",
+      "textZh": "哪一行 log 可以證明 request 已經到達下游 service？",
+      "intent": "工程師在要求具體 log evidence 確認請求路徑。",
+      "options": [
+        "用 log 證明 request 路徑",
+        "詢問薪資",
+        "安排會議",
+        "更新履歷"
+      ],
+      "answer": 0,
+      "model": "I would use a correlation ID to match the upstream request with the downstream log.",
+      "modelZh": "我會用 correlation ID 對應上游 request 與下游 log。",
+      "keywords": [
+        "log",
+        "evidence",
+        "service"
+      ]
+    },
+    {
+      "id": "listen-engineer-020",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If we retry this transaction, what stops us from charging the customer twice?",
+      "textZh": "如果我們重試這筆 transaction，什麼可以避免客戶被扣款兩次？",
+      "intent": "工程師在問 retry 與 duplicate transaction 防護。",
+      "options": [
+        "避免重複交易",
+        "增加 timeout",
+        "改面試時間",
+        "調整薪資"
+      ],
+      "answer": 0,
+      "model": "I would require an idempotency key and verify the existing transaction state before retrying.",
+      "modelZh": "我會要求 idempotency key，並在 retry 前確認既有 transaction 狀態。",
+      "keywords": [
+        "retry",
+        "idempotency",
+        "transaction"
+      ]
+    },
+    {
+      "id": "listen-engineer-021",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What alert should wake someone up at night, and what can wait until morning?",
+      "textZh": "哪些 alert 值得半夜叫醒人？哪些可以等到早上再處理？",
+      "intent": "工程師在問 alert severity 與 operational priority。",
+      "options": [
+        "告警嚴重度與優先級",
+        "排休",
+        "面試題",
+        "薪資結構"
+      ],
+      "answer": 0,
+      "model": "Critical alerts should represent real customer or service impact, not just noisy technical signals.",
+      "modelZh": "critical alert 應代表真實客戶或服務影響，而不是只是吵雜的技術訊號。",
+      "keywords": [
+        "alert",
+        "customer impact",
+        "criticality"
+      ]
+    },
+    {
+      "id": "listen-engineer-022",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Is this test case covering the failure path or only the happy path?",
+      "textZh": "這個 test case 有涵蓋失敗路徑，還是只測正常流程？",
+      "intent": "工程師在確認測試是否包含 failure scenario。",
+      "options": [
+        "確認失敗情境測試",
+        "面試自我介紹",
+        "薪資期待",
+        "通勤方式"
+      ],
+      "answer": 0,
+      "model": "I would add negative and failure-path tests so the regression suite covers realistic errors.",
+      "modelZh": "我會加入負向與失敗路徑測試，讓 regression suite 涵蓋真實錯誤情境。",
+      "keywords": [
+        "test case",
+        "regression",
+        "testing"
+      ]
+    },
+    {
+      "id": "listen-engineer-023",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How do you know this is a code defect and not bad data?",
+      "textZh": "你怎麼確認這是 code defect，而不是壞資料造成的？",
+      "intent": "工程師在問 code defect 與 data issue 的隔離方法。",
+      "options": [
+        "區分程式與資料問題",
+        "安排面試",
+        "詢問福利",
+        "改工作地點"
+      ],
+      "answer": 0,
+      "model": "I would reproduce the behavior with controlled input and compare it with known-good data.",
+      "modelZh": "我會使用可控輸入重現問題，並和已知正常資料比較。",
+      "keywords": [
+        "defect",
+        "facts",
+        "testing"
+      ]
+    },
+    {
+      "id": "listen-engineer-024",
+      "source": "Engineering Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "What would make you stop a deployment even if the release window is almost over?",
+      "textZh": "即使發布時段快結束了，什麼情況會讓你停止 deployment？",
+      "intent": "工程師在問 deployment stop criteria 與風險判斷。",
+      "options": [
+        "停止部署的風險條件",
+        "薪資條件",
+        "加班規則",
+        "面試流程"
+      ],
+      "answer": 0,
+      "model": "I would stop if validation fails, customer impact appears, rollback becomes unsafe, or we lose observability.",
+      "modelZh": "如果 validation 失敗、出現客戶影響、rollback 變得不安全，或失去 observability，我會停止部署。",
+      "keywords": [
+        "deployment",
+        "customer impact",
+        "rollback"
+      ]
+    },
+    {
+      "id": "listen-ai-009",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 3,
+      "text": "Which part of this workload really needs to run in the cloud, and which part could stay where it is?",
+      "textZh": "這個 workload 哪些部分真的需要上雲？哪些部分可以維持現狀？",
+      "intent": "對方在問 workload placement 與 cloud migration 邊界。",
+      "options": [
+        "判斷哪些工作負載需要上雲",
+        "詢問薪資",
+        "安排面試",
+        "請假"
+      ],
+      "answer": 0,
+      "model": "I would compare scalability, integration, security, and operational needs before deciding what to move.",
+      "modelZh": "我會比較擴展性、整合、安全與營運需求，再決定哪些部分需要搬移。",
+      "keywords": [
+        "cloud",
+        "trade-offs",
+        "technical design"
+      ]
+    },
+    {
+      "id": "listen-ai-010",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If one availability zone fails, what should happen to the service?",
+      "textZh": "如果一個 availability zone 故障，服務應該怎麼處理？",
+      "intent": "對方在問高可用與 AZ failure 行為。",
+      "options": [
+        "可用區故障時的高可用行為",
+        "修改履歷",
+        "調薪",
+        "排休"
+      ],
+      "answer": 0,
+      "model": "Traffic should shift to healthy capacity in another zone without a major customer interruption.",
+      "modelZh": "流量應切到另一個可用區的健康容量，避免造成重大客戶中斷。",
+      "keywords": [
+        "high availability",
+        "customer impact",
+        "failover"
+      ]
+    },
+    {
+      "id": "listen-ai-011",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you explain the difference between RPO and RTO to a business stakeholder?",
+      "textZh": "你會如何向業務利害關係人解釋 RPO 與 RTO 的差異？",
+      "intent": "對方在問如何用業務語言解釋災難復原目標。",
+      "options": [
+        "解釋 RPO 與 RTO",
+        "解釋薪資",
+        "解釋面試流程",
+        "解釋辦公室規定"
+      ],
+      "answer": 0,
+      "model": "RPO is how much data loss the business can accept, while RTO is how quickly the service must recover.",
+      "modelZh": "RPO 是業務可接受多少資料損失，RTO 則是服務必須多快恢復。",
+      "keywords": [
+        "RPO",
+        "RTO",
+        "business impact"
+      ]
+    },
+    {
+      "id": "listen-ai-012",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Why would you choose serverless for this function instead of keeping a service running all the time?",
+      "textZh": "為什麼這個功能你會選 serverless，而不是讓 service 一直運行？",
+      "intent": "對方在問 serverless 選型與 workload 特性。",
+      "options": [
+        "serverless 選型理由",
+        "工作地點",
+        "薪資談判",
+        "面試時間"
+      ],
+      "answer": 0,
+      "model": "Serverless can fit short event-driven work with variable demand when we want less infrastructure management.",
+      "modelZh": "如果工作是短時間事件驅動、需求波動大，而且希望降低基礎設施管理，serverless 很適合。",
+      "keywords": [
+        "serverless",
+        "trade-off",
+        "resource use"
+      ]
+    },
+    {
+      "id": "listen-ai-013",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would you monitor to know whether autoscaling is actually helping?",
+      "textZh": "你會監控哪些指標，來確認 autoscaling 真的有幫助？",
+      "intent": "對方在問 autoscaling 的效果衡量。",
+      "options": [
+        "衡量 autoscaling 效果",
+        "比較履歷",
+        "安排聚餐",
+        "談薪資"
+      ],
+      "answer": 0,
+      "model": "I would monitor latency, utilization, queue depth, scaling events, and cost around traffic peaks.",
+      "modelZh": "我會監控延遲、使用率、queue depth、擴縮事件，以及尖峰期間的成本。",
+      "keywords": [
+        "latency",
+        "resource utilization",
+        "observability"
+      ]
+    },
+    {
+      "id": "listen-ai-014",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "Which permissions would you remove if a service account only needs to read from one bucket?",
+      "textZh": "如果 service account 只需要讀取一個 bucket，你會移除哪些權限？",
+      "intent": "對方在問 least privilege 與 IAM 權限縮減。",
+      "options": [
+        "最小權限與 IAM",
+        "薪資福利",
+        "面試題型",
+        "通勤方式"
+      ],
+      "answer": 0,
+      "model": "I would keep only the minimum read permissions for the required resource and remove broader access.",
+      "modelZh": "我只會保留必要資源的最小讀取權限，移除更廣泛的存取。",
+      "keywords": [
+        "least privilege",
+        "IAM",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-ai-015",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "If the primary database fails, how do you know the replica is ready to take over?",
+      "textZh": "如果 primary database 故障，你如何確認 replica 已準備好接手？",
+      "intent": "對方在問 database failover readiness。",
+      "options": [
+        "資料庫容錯切換準備度",
+        "面試流程",
+        "薪資結構",
+        "工作地點"
+      ],
+      "answer": 0,
+      "model": "I would check replication health, lag, failover testing, and application connection behavior.",
+      "modelZh": "我會檢查 replication health、lag、failover 測試與應用程式連線行為。",
+      "keywords": [
+        "failover",
+        "database",
+        "testing"
+      ]
+    },
+    {
+      "id": "listen-ai-016",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "How would you prove a RAG answer came from an approved source?",
+      "textZh": "你會如何證明一個 RAG 回答來自經核准的來源？",
+      "intent": "對方在問 RAG grounding 與來源可追溯性。",
+      "options": [
+        "RAG 來源可追溯性",
+        "薪資期待",
+        "面試安排",
+        "休假規則"
+      ],
+      "answer": 0,
+      "model": "I would return source metadata with the answer and keep the retrieval path traceable.",
+      "modelZh": "我會讓回答帶回來源 metadata，並讓 retrieval path 可以追蹤。",
+      "keywords": [
+        "RAG",
+        "evidence",
+        "grounding"
+      ]
+    },
+    {
+      "id": "listen-ai-017",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "When would you use embeddings instead of a traditional keyword search?",
+      "textZh": "什麼時候你會使用 embedding，而不是傳統 keyword search？",
+      "intent": "對方在問 semantic retrieval 與 keyword search 的選型。",
+      "options": [
+        "語意檢索與關鍵字搜尋的選型",
+        "排休",
+        "談薪資",
+        "改履歷"
+      ],
+      "answer": 0,
+      "model": "I would use embeddings when semantic similarity matters more than exact keyword matching.",
+      "modelZh": "當語意相似度比精確關鍵字匹配更重要時，我會使用 embedding。",
+      "keywords": [
+        "embedding",
+        "retrieval",
+        "trade-off"
+      ]
+    },
+    {
+      "id": "listen-ai-018",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What would make you reject a model even if its benchmark score is the highest?",
+      "textZh": "即使模型 benchmark 分數最高，什麼情況會讓你不選它？",
+      "intent": "對方在問 model selection 不只看 quality score。",
+      "options": [
+        "模型選型的非分數考量",
+        "工作地點",
+        "薪資福利",
+        "面試時間"
+      ],
+      "answer": 0,
+      "model": "I might reject it if latency, cost, safety, or operational complexity does not fit the use case.",
+      "modelZh": "如果延遲、成本、安全或營運複雜度不符合使用案例，我可能不會選它。",
+      "keywords": [
+        "model selection",
+        "latency",
+        "operational risk"
+      ]
+    },
+    {
+      "id": "listen-ai-019",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "If retrieval returns the wrong document, should the model still answer?",
+      "textZh": "如果 retrieval 找到錯的文件，模型還應該回答嗎？",
+      "intent": "對方在問 RAG retrieval quality 與安全降級。",
+      "options": [
+        "錯誤檢索時是否應回答",
+        "薪資調整",
+        "安排面試",
+        "工作排程"
+      ],
+      "answer": 0,
+      "model": "For high-risk use cases, the system should avoid confident answers when grounding is weak and use a safer fallback.",
+      "modelZh": "高風險情境中，如果 grounding 不可靠，系統不應自信回答，而應使用較安全的 fallback。",
+      "keywords": [
+        "retrieval",
+        "fallback",
+        "grounding"
+      ]
+    },
+    {
+      "id": "listen-ai-020",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What data would you use to evaluate whether the model improved after a prompt change?",
+      "textZh": "修改 prompt 後，你會用哪些資料評估模型是否真的改善？",
+      "intent": "對方在問 prompt change 的 evaluation data。",
+      "options": [
+        "評估 prompt 變更成效",
+        "安排會議",
+        "請假",
+        "談薪資"
+      ],
+      "answer": 0,
+      "model": "I would use a representative evaluation set and compare quality, failure rate, latency, and cost.",
+      "modelZh": "我會使用具代表性的 evaluation set，比較品質、失敗率、延遲與成本。",
+      "keywords": [
+        "evaluation",
+        "dataset",
+        "latency"
+      ]
+    },
+    {
+      "id": "listen-ai-021",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "How do you stop an AI agent from taking an action it is not authorized to perform?",
+      "textZh": "你要怎麼避免 AI agent 執行未被授權的動作？",
+      "intent": "對方在問 agent 權限邊界與 authorization。",
+      "options": [
+        "限制 AI agent 權限",
+        "面試自我介紹",
+        "薪資談判",
+        "旅遊安排"
+      ],
+      "answer": 0,
+      "model": "I would enforce tool permissions outside the model, apply least privilege, and require approval for sensitive actions.",
+      "modelZh": "我會在模型外強制執行 tool permission、使用最小權限，並對敏感動作要求人工核准。",
+      "keywords": [
+        "authorization",
+        "least privilege",
+        "approval"
+      ]
+    },
+    {
+      "id": "listen-ai-022",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "What is your fallback if the vector database is unavailable?",
+      "textZh": "如果 vector database 無法使用，你的 fallback 是什麼？",
+      "intent": "對方在問 RAG infrastructure failure 的 fallback。",
+      "options": [
+        "向量資料庫故障時的降級方案",
+        "薪資福利",
+        "面試流程",
+        "排休"
+      ],
+      "answer": 0,
+      "model": "I would fail safely, use a simpler search if appropriate, or route the request to a manual path.",
+      "modelZh": "我會安全失敗；適合時使用較簡單的搜尋，或把 request 導到人工流程。",
+      "keywords": [
+        "fallback",
+        "vector database",
+        "operational risk"
+      ]
+    },
+    {
+      "id": "listen-ai-023",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 4,
+      "text": "How would you keep secrets out of prompts and application logs?",
+      "textZh": "你會如何避免 secret 出現在 prompt 與 application log 裡？",
+      "intent": "對方在問 secret handling 與資料外洩防護。",
+      "options": [
+        "保護 secret 不進 prompt/log",
+        "修改履歷",
+        "安排面試",
+        "詢問薪資"
+      ],
+      "answer": 0,
+      "model": "I would use secret management, redact sensitive values, and avoid logging raw credentials or tokens.",
+      "modelZh": "我會使用 secret management、遮蔽敏感值，並避免記錄原始 credential 或 token。",
+      "keywords": [
+        "secret",
+        "log",
+        "risk"
+      ]
+    },
+    {
+      "id": "listen-ai-024",
+      "source": "Cloud AI Listening Core",
+      "skill": "listening",
+      "type": "listening_intent",
+      "level": 5,
+      "text": "What would you measure to decide whether an AI agent should stay autonomous or require more human approval?",
+      "textZh": "你會衡量哪些指標，來決定 AI agent 可以維持自主，還是需要更多人工核准？",
+      "intent": "對方在問 agent autonomy 與 human approval 的治理門檻。",
+      "options": [
+        "AI agent 自主程度治理",
+        "薪資調整",
+        "工作地點",
+        "面試日期"
+      ],
+      "answer": 0,
+      "model": "I would track error severity, reversibility, customer impact, and how often humans need to correct the agent.",
+      "modelZh": "我會追蹤錯誤嚴重度、可逆性、客戶影響，以及人工需要修正 agent 的頻率。",
+      "keywords": [
+        "agent",
+        "reversibility",
+        "customer impact"
       ]
     }
   ]
