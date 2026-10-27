@@ -490,8 +490,10 @@ assert.ok(publicIds.has('gen-l3-002'));
 assert.ok(publicIds.has('diag-l1-001'));
 assert.ok(publicIds.has('diag-l2-002'));
 assert.equal(content.questions.filter(q=>q.diagnosticOnly).length,5);
-const listeningQuestions=content.questions.filter(q=>q.type==='listening_intent'&&!q.diagnosticOnly);
-assert.equal(listeningQuestions.length,48,'v66 should provide 48 non-diagnostic listening-intent questions');
+const allListeningQuestions=content.questions.filter(q=>q.type==='listening_intent');
+const listeningQuestions=allListeningQuestions.filter(q=>!q.diagnosticOnly);
+assert.equal(allListeningQuestions.length,48,'v66 should provide 48 total listening-intent questions including diagnostics');
+assert.equal(listeningQuestions.length,46,'v66 should provide 46 non-diagnostic listening-intent questions');
 for(const source of ['Project Listening Expansion','Interview Listening Expansion','AI Listening Expansion','Engineering Listening Expansion']){
   assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 questions for '+source);
 }
@@ -577,4 +579,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v66 Listening Expansion grows non-diagnostic listening-intent coverage to 48 questions, adds 8 each for project, interview, AI, and engineering scenarios, keeps zh-TW question/model support and cue translations complete, and preserves prior regressions.');
+console.log('PASS: v66 Listening Expansion grows listening-intent coverage to 48 total questions (46 regular + 2 diagnostic), adds 8 each for project, interview, AI, and engineering scenarios, keeps zh-TW question/model support and cue translations complete, and preserves prior regressions.');
