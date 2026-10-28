@@ -536,7 +536,7 @@ for(const [category,count] of [['生活會話',50],['面試職涯',50],['專案�
 }
 assert.ok(html.includes('<script src="corpus-v71.js"></script>'));
 assert.equal(content.questions.filter(q=>q.source==='v71 Curated Listening').length,40);
-assert.equal(content.vocabulary.filter(v=>/^v3[0-6][0-9]$/.test(v.id)).length,68);
+assert.equal(content.vocabulary.filter(v=>Number(String(v.id).slice(1))>=301&&Number(String(v.id).slice(1))<=368).length,68);
 assert.ok(html.includes('id="listeningBankCount"'));
 assert.ok(html.includes('id="vocabBankCount"'));
 assert.ok(html.includes('id="vocabSectionCount"'));
