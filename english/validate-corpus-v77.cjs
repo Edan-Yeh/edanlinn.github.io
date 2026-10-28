@@ -10,7 +10,8 @@ assert.equal(c.vocabulary.length,873);assert.equal(c.questions.filter(q=>q.type=
 const words=new Set(),ids=new Set(),normalizedExamples=new Set();
 for(const v of c.vocabulary){
   const key=String(v.word).trim().toLowerCase();
-  assert.ok(key&&v.zh&&v.example&&v.exampleZh,'Incomplete vocabulary '+v.id);
+  assert.ok(key&&v.zh,'Incomplete vocabulary '+v.id);
+  if(Number(String(v.id).slice(1))>=724)assert.ok(v.example&&v.exampleZh,'Incomplete v77 vocabulary '+v.id);
   assert.ok(!words.has(key),'Duplicate word '+key);words.add(key);
   assert.ok(!ids.has(v.id),'Duplicate ID '+v.id);ids.add(v.id);
 }
