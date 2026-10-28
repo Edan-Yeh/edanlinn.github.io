@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-10-28",
-  "completedDays": 28,
-  "currentTrack": "Cloud × AI / Day 28 已完成 · Day 29 Agent Tool Calling 待作答（尚未計分）",
+  "completedDays": 29,
+  "currentTrack": "Cloud × AI / Day 29 已完成（89/100）· 下一個工作日接續 Day 30",
   "scores": [
     {
       "day": 1,
@@ -114,6 +114,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 28,
       "score": 91
+    },
+    {
+      "day": 29,
+      "score": 89
     }
   ],
   "roadmap": [
@@ -4564,6 +4568,121 @@ window.CLOUD_SA_DATA = {
         "Deduplication 依 event_id 和事件版本判斷，不可無條件後蓋前。",
         "Feature Engineering 從原始事件產生學生主題層級特徵，不能改寫正式成績。",
         "保留原始事件、異常隔離、清洗版本及處理日誌以利追溯。"
+      ]
+    },
+    {
+      "day": 29,
+      "date": "2026-10-28",
+      "topic": "Cloud × AI: AI Agent Tool Calling, Prompt Injection and Safe Tool Gateway",
+      "status": "completed",
+      "score": 89,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "C",
+          "E"
+        ],
+        "Q3": "1→C、2→A、3→D、4→B",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue：學生登入並從介面提出問題\n2.Spring Boot：驗證身分與取得此帳號的權限\n3.FastAPI：模型產生工具呼叫提案\n4.LLM : 理解問題、提出工具呼叫建議、根據工具結果生成回答，但不可以直接修改答案\n5.Tool Gateway : 驗證允許的工具、參數、權限及必要的人工核准。\n6.Postgres 的責任 : 執行允許的唯讀查詢\n7.FastAPI：根據安全回傳的資料產生回答\n8.Vue：查詢畫面呈現結果"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "RAG 文件含惡意指令要求直接發布滿分，如何處理？",
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "外部文件為不可信輸入，必須通過白名單、身分與業務授權檢查。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "AI Tutor 安全架構合理設計複選",
+          "answer": [
+            "A",
+            "C",
+            "E"
+          ],
+          "correct": [
+            "A",
+            "C",
+            "E"
+          ],
+          "earned": 20,
+          "explanation": "身分綁定、Schema/RBAC/擁有權檢查及正式寫入核准與稽核。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "Tool-call Proposal、Authorization、Sanitized Tool Result、Idempotency 責任配對",
+          "answer": "1→C、2→A、3→D、4→B",
+          "correct": "1→C、2→B、3→D、4→A",
+          "earned": 10,
+          "explanation": "Authorization 是存取權限；Idempotency 是重試避免重複效果。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 10,
+          "max": 20
+        },
+        "practice": {
+          "earned": 44,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作架構選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "安全工具流程設計",
+              "earned": 24,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Prompt Injection 防護",
+        "RBAC 與 Tool Gateway",
+        "Agent 工具呼叫責任分工",
+        "Spring Boot + FastAPI 架構"
+      ],
+      "corrections": [
+        [
+          "Authorization 與 Idempotency 配對混淆",
+          "Authorization 驗證誰能執行；Idempotency 防止重試重複寫入"
+        ],
+        [
+          "實作未具體描述 Timeout/Retry/Fallback",
+          "工具呼叫需設定逾時、有界重試、退避與安全降級"
+        ],
+        [
+          "正式成績交易安全尚需補強",
+          "成績寫入須獨立授權、核准、稽核及 Idempotency Key"
+        ]
+      ],
+      "memory": [
+        "LLM 提議工具呼叫不等於授權執行。",
+        "模型不可直接修改正式成績。",
+        "Tool Gateway 必須檢查白名單、Schema、RBAC 與資料擁有權。"
       ]
     }
   ],
