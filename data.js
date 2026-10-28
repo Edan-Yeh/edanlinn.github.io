@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-27",
+  "updatedAt": "2026-10-28",
   "completedDays": 28,
-  "currentTrack": "Cloud × AI / Day 28 已完成 · Day 29 待安排",
+  "currentTrack": "Cloud × AI / Day 28 已完成 · Day 29 Agent Tool Calling 待作答（尚未計分）",
   "scores": [
     {
       "day": 1,
