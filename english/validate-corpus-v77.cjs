@@ -2,11 +2,11 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=__dirname, sandbox={window:{EDAN_APP_VERSION:{release:'test',date:'test'}}};
-for(const filename of ['question-bank.js','corpus-v71.js','corpus-v72.js','corpus-v73.js','corpus-v74.js','corpus-v75.js','corpus-v76.js','corpus-v77-vocabulary.js','corpus-v77-dialogues.js','corpus-v78.js']){
+for(const filename of ['question-bank.js','corpus-v71.js','corpus-v72.js','corpus-v73.js','corpus-v74.js','corpus-v75.js','corpus-v76.js','corpus-v77-vocabulary.js','corpus-v77-dialogues.js','corpus-v78.js','corpus-v79.js']){
   vm.runInNewContext(fs.readFileSync(path.join(root,filename),'utf8'),sandbox,{filename});
 }
 const c=sandbox.window.EDAN_ENGLISH_CONTENT;
-assert.equal(c.vocabulary.length,1093);assert.equal(c.questions.filter(q=>q.type==='listening_intent').length,370);
+assert.equal(c.vocabulary.length,1143);assert.equal(c.questions.filter(q=>q.type==='listening_intent').length,375);
 const words=new Set(),ids=new Set(),normalizedExamples=new Set();
 for(const v of c.vocabulary){
   const key=String(v.word).trim().toLowerCase();
@@ -29,4 +29,4 @@ for(const q of c.questions){
     normalizedExamples.add(q.text);
   }
 }
-console.log('PASS v78 corpus: 1093 distinct vocabulary entries, 370 listening intents and unique IDs');
+console.log('PASS v79 corpus: 1143 distinct vocabulary entries, 375 listening intents and unique IDs');
