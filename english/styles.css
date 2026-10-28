@@ -1875,3 +1875,10 @@ body.auth-locked .little-e-panel{display:none!important}
 .listening-turn strong{font-size:11px;letter-spacing:.04em}.listening-turn span{font-size:13px;line-height:1.6}.listening-turn small{font-size:11px;line-height:1.5;opacity:.78}
 .listening-comprehension{margin:14px 0 10px;padding:12px;border:1px solid rgba(125,125,125,.18);border-radius:12px}
 .listening-comprehension p{margin:7px 0;font-weight:650}.listening-comprehension span{display:block;font-size:12px;opacity:.8}
+
+/* v70 stable learning dashboard */
+.listening-readiness-panel{margin:12px 0 18px;padding:15px}
+.listening-readiness-panel strong{display:block;margin-bottom:8px}
+.listening-readiness-track{height:9px;overflow:hidden;border-radius:9px;background:rgba(128,128,128,.19);margin:10px 0}
+.listening-readiness-fill{height:100%;width:0%;border-radius:inherit;background:#3979ce;transition:width .25s ease}
+.listening-line-replay{align-self:flex-start;margin:4px 0 3px;font-size:11px}

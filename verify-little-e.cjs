@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.28-v68');
-assert.equal(version.cache,'edan-english-coach-20261028-v68');
+assert.equal(version.release,'2026.10.28-v70');
+assert.equal(version.cache,'edan-english-coach-20261028-v70');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -505,6 +505,16 @@ for(const id of ['listen-life-001','listen-life-016','listen-interview-009','lis
 }
 const multiTurn=content.questions.filter(q=>q.source==='v68 Multi-turn Listening');
 assert.equal(multiTurn.length,12,'v68 adds 12 realistic multi-turn listening scenarios');
+assert.match(app,/function listeningReadinessSnapshot\(/);
+assert.match(app,/function listeningModePool\(/);
+assert.match(app,/data-turn-index/);
+assert.match(app,/showComprehensionZh/);
+assert.match(app,/listeningReadinessBar/);
+assert.ok(html.includes('id="listeningReadinessText"'));
+assert.ok(html.includes('id="listeningReadinessBar"'));
+assert.match(css,/\.listening-readiness-panel/);
+assert.match(css,/\.listening-line-replay/);
+
 assert.equal(multiTurn.filter(q=>q.format==='conversation').length,10);
 assert.equal(multiTurn.filter(q=>q.format==='briefing').length,2);
 for(const q of multiTurn){
@@ -607,4 +617,4 @@ for(const q of quoteDeck.quotes){
   }
 }
 
-console.log('PASS: v68 Multi-turn Listening adds 10 dialogues and 2 briefings, preserves translation/hint behavior, 300 core words, and previous regression checks.');
+console.log('PASS: v70 stable learning: readiness dashboard, dialogue and briefing pools, per-line replay, independent translation hint, 140 listening questions and 300 core words; preceding regressions preserved.');
