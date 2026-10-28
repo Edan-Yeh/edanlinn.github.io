@@ -358,6 +358,8 @@ const dailyStyle=document.createElement('style');
 dailyStyle.textContent='.daily-controls{display:flex;flex-wrap:wrap;align-items:end;gap:14px;margin:22px 0 16px;padding:18px;background:#eef7ff;border:1px solid #c9e3f6;border-radius:16px}.daily-controls label{display:grid;gap:7px;font-size:13px;font-weight:600;color:#34566e;min-width:0}.daily-controls label:nth-child(2){flex:1;min-width:220px}.daily-controls select{width:100%;max-width:100%;font:inherit;color:#24465e;background:#fff;border:1px solid #b9d7ed;border-radius:10px;padding:11px 32px 11px 12px;min-height:44px}.daily-controls select:focus-visible{outline:3px solid #8dc5ec;outline-offset:2px}#daily-count{font-size:12px;color:#536f82;padding-bottom:12px}@media(max-width:600px){.daily-controls{padding:14px;gap:12px}.daily-controls label,.daily-controls label:nth-child(2){flex:1 1 100%;min-width:0}.daily-controls button{min-height:44px}}';
 document.head.appendChild(dailyStyle);
 const root=document.querySelector('#days');
+function safeRecord(v){const str=Array.isArray(v)?v.join('、'):String(v??'');return str.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
 function render(filter='all',q=''){
   const query=q.trim().toLowerCase();
   const selectedDay=dailyDay.value;
@@ -378,6 +380,7 @@ function render(filter='all',q=''){
       <div class="day-body">
         <div class="chips">${(Array.isArray(day.mastered)?day.mastered:[]).map(x=>`<span class="chip">已掌握 · ${x}</span>`).join('')}</div>
         ${day.reinforcement?`<section class="reinforcement-panel" style="margin:16px 0;padding:16px;border:1px solid #b9d8c4;border-radius:12px;background:#f1faf4;color:#193e2b"><h3 style="margin:0 0 8px;color:#17623c">補強練習 · ${day.reinforcement.status==='passed'?'已通過':'待完成'}</h3><p><b>${day.reinforcement.title}</b> · ${day.reinforcement.score}</p><p><b>情境：</b>${day.reinforcement.question}</p><ul>${day.reinforcement.options.map(v=>`<li>${v}</li>`).join('')}</ul><p><b>你的答案：</b>${day.reinforcement.answer}　<b>正解：</b>${day.reinforcement.correct}</p><p><b>解析：</b>${day.reinforcement.explanation}</p><p><b>處理步驟：</b></p><ol>${day.reinforcement.steps.map(v=>`<li>${v}</li>`).join('')}</ol><p><b>重點：</b>${day.reinforcement.concepts.join('；')}</p><small>補強練習不重新計入正式 Day 分數。</small></section>`:''}
+        ${day.questions?.length?`<section class="day-questions"><h3>原題、作答與批改</h3>${day.questions.map(q=>`<div class="correction"><div class="box"><b>${safeRecord(q.id)} · ${safeRecord(q.earned)}/${safeRecord(q.points)} 分</b><div>${safeRecord(q.question)}</div><p>你的答案：${safeRecord(q.answer)}</p><p>正確答案：${safeRecord(q.correct)}</p><p>解析：${safeRecord(q.explanation)}</p></div></div>`).join('')}${day.answers?.practice?`<h3>當初的實作作答</h3><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${safeRecord(day.answers.practice)}</pre>`:''}</section>`:''}
         <h3>需要持續修正</h3>
         ${(Array.isArray(day.corrections)?day.corrections:[]).map(c=>`<div class="correction"><div class="box bad"><b>容易混淆</b><div>${Array.isArray(c)?c[0]:c}</div></div><div class="box good"><b>正確 SA 思維</b><div>${Array.isArray(c)?c[1]||'待補充': '詳見完整課程紀錄'}</div></div></div>`).join('')}
         <div class="memory"><b>必背</b><ul>${(Array.isArray(day.memory)?day.memory:[]).map(x=>`<li>${x}</li>`).join('')}</ul></div>
