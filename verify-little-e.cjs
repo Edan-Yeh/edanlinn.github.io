@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.28-v70');
-assert.equal(version.cache,'edan-english-coach-20261028-v70');
+assert.equal(version.release,'2026.10.28-v71');
+assert.equal(version.cache,'edan-english-coach-20261028-v71');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -474,6 +474,7 @@ assert.match(phonemizer,/self\.createPiperPhonemize=createPiperPhonemize/);
 
 const qbSandbox={window:{EDAN_APP_VERSION:{release:version.release}}};
 vm.runInNewContext(qb,qbSandbox,{filename:'question-bank.js'});
+vm.runInNewContext(fs.readFileSync(path.join(__dirname,'english/corpus-v71.js'),'utf8'),qbSandbox,{filename:'corpus-v71.js'});
 const content=qbSandbox.window.EDAN_ENGLISH_CONTENT;
 assert.ok(content&&Array.isArray(content.questions)&&content.questions.length>0);
 const publicIds=new Set(content.questions.map(q=>q.id));
@@ -492,8 +493,8 @@ assert.ok(publicIds.has('diag-l2-002'));
 assert.equal(content.questions.filter(q=>q.diagnosticOnly).length,5);
 const allListeningQuestions=content.questions.filter(q=>q.type==='listening_intent');
 const listeningQuestions=allListeningQuestions.filter(q=>!q.diagnosticOnly);
-assert.equal(allListeningQuestions.length,140,'v68 should provide 140 listening-intent questions including diagnostics');
-assert.equal(listeningQuestions.length,138,'v68 should provide 138 non-diagnostic listening-intent questions');
+assert.equal(allListeningQuestions.length,180,'v68 should provide 140 listening-intent questions including diagnostics');
+assert.equal(listeningQuestions.length,178,'v68 should provide 138 non-diagnostic listening-intent questions');
 for(const source of ['Project Listening Expansion','Interview Listening Expansion','AI Listening Expansion','Engineering Listening Expansion']){
   assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 v66 questions for '+source);
 }
@@ -528,11 +529,14 @@ assert.match(app,/function renderListeningQuestion/);
 assert.match(app,/id="comprehensionQuestionZh"/);
 assert.ok(html.includes('data-mode="conversation"'));
 assert.ok(html.includes('data-mode="briefing"'));
-assert.equal((content.vocabulary||[]).length,300,'v67 should provide 300 core vocabulary items');
-assert.equal(new Set(content.vocabulary.map(v=>String(v.word||'').toLowerCase())).size,300,'v67 core vocabulary words must be unique');
+assert.equal((content.vocabulary||[]).length,368,'v67 should provide 300 core vocabulary items');
+assert.equal(new Set(content.vocabulary.map(v=>String(v.word||'').toLowerCase())).size,368,'v71 vocabulary words must be unique');
 for(const [category,count] of [['生活會話',50],['面試職涯',50],['專案顧問',50],['工程師英文',60],['Cloud／AI',40]]){
-  assert.equal(content.vocabulary.filter(v=>v.category===category).length,count,'Unexpected v67 vocabulary count for '+category);
+  assert.ok(content.vocabulary.filter(v=>v.category===category).length>=count,'Lost earlier category vocabulary '+category);
 }
+assert.ok(html.includes('<script src="corpus-v71.js"></script>'));
+assert.equal(content.questions.filter(q=>q.source==='v71 Curated Listening').length,40);
+assert.equal(content.vocabulary.filter(v=>/^v3[0-6][0-9]$/.test(v.id)).length,68);
 assert.ok(html.includes('id="listeningBankCount"'));
 assert.ok(html.includes('id="vocabBankCount"'));
 assert.ok(html.includes('id="vocabSectionCount"'));
