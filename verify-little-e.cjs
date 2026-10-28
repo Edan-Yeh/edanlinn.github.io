@@ -5,8 +5,8 @@ const root=__dirname;
 const version=require(path.join(root,'english/version.js'));
 const core=require(path.join(root,'english/little-e-core.js'));
 
-assert.equal(version.release,'2026.10.28-v77');
-assert.equal(version.cache,'edan-english-coach-20261028-v77');
+assert.equal(version.release,'2026.10.29-v78');
+assert.equal(version.cache,'edan-english-coach-20261029-v78');
 
 const hello=core.directReply('你好',[]);
 assert.ok(hello);assert.match(hello.zh,/你好/);assert.doesNotMatch(hello.en,/24|book|Edan|dais/i);
@@ -481,6 +481,7 @@ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'english/corpus-v74.js'),
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'english/corpus-v75.js'),'utf8'),qbSandbox,{filename:'corpus-v75.js'});
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'english/corpus-v76.js'),'utf8'),qbSandbox,{filename:'corpus-v76.js'});
 for(const name of ['corpus-v77-vocabulary.js','corpus-v77-dialogues.js'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'english',name),'utf8'),qbSandbox,{filename:name});
+vm.runInNewContext(fs.readFileSync(path.join(__dirname,'english/corpus-v78.js'),'utf8'),qbSandbox,{filename:'corpus-v78.js'});
 const content=qbSandbox.window.EDAN_ENGLISH_CONTENT;
 assert.ok(content&&Array.isArray(content.questions)&&content.questions.length>0);
 const publicIds=new Set(content.questions.map(q=>q.id));
@@ -499,8 +500,8 @@ assert.ok(publicIds.has('diag-l2-002'));
 assert.equal(content.questions.filter(q=>q.diagnosticOnly).length,5);
 const allListeningQuestions=content.questions.filter(q=>q.type==='listening_intent');
 const listeningQuestions=allListeningQuestions.filter(q=>!q.diagnosticOnly);
-assert.equal(allListeningQuestions.length,345,'v68 should provide 140 listening-intent questions including diagnostics');
-assert.equal(listeningQuestions.length,343,'v68 should provide 138 non-diagnostic listening-intent questions');
+assert.equal(allListeningQuestions.length,370,'v68 should provide 140 listening-intent questions including diagnostics');
+assert.equal(listeningQuestions.length,368,'v68 should provide 138 non-diagnostic listening-intent questions');
 for(const source of ['Project Listening Expansion','Interview Listening Expansion','AI Listening Expansion','Engineering Listening Expansion']){
   assert.equal(listeningQuestions.filter(q=>q.source===source).length,8,'Expected 8 v66 questions for '+source);
 }
@@ -535,8 +536,8 @@ assert.match(app,/function renderListeningQuestion/);
 assert.match(app,/id="comprehensionQuestionZh"/);
 assert.ok(html.includes('data-mode="conversation"'));
 assert.ok(html.includes('data-mode="briefing"'));
-assert.equal((content.vocabulary||[]).length,873,'v67 should provide 300 core vocabulary items');
-assert.equal(new Set(content.vocabulary.map(v=>String(v.word||'').toLowerCase())).size,873,'v77 vocabulary words must be unique');
+assert.equal((content.vocabulary||[]).length,1093,'v67 should provide 300 core vocabulary items');
+assert.equal(new Set(content.vocabulary.map(v=>String(v.word||'').toLowerCase())).size,1093,'v78 vocabulary words must be unique');
 for(const [category,count] of [['生活會話',50],['面試職涯',50],['專案顧問',50],['工程師英文',60],['Cloud／AI',40]]){
   assert.ok(content.vocabulary.filter(v=>v.category===category).length>=count,'Lost earlier category vocabulary '+category);
 }
@@ -548,6 +549,9 @@ assert.ok(html.includes('<script src="corpus-v75.js"></script>'));
 assert.ok(html.includes('<script src="corpus-v76.js"></script>'));
 assert.ok(html.includes('<script src="corpus-v77-vocabulary.js"></script>'));
 assert.ok(html.includes('<script src="corpus-v77-dialogues.js"></script>'));
+assert.ok(html.includes('<script src="corpus-v78.js"></script>'));
+assert.equal(content.questions.filter(q=>q.source==='v78 Contextual Listening').length,25);
+assert.equal(content.vocabulary.filter(v=>Number(String(v.id).slice(1))>=874&&Number(String(v.id).slice(1))<=1093).length,220);
 assert.equal(content.questions.filter(q=>q.source==='v77 Curated Dialogues').length,19);
 assert.equal(content.vocabulary.filter(v=>Number(String(v.id).slice(1))>=724&&Number(String(v.id).slice(1))<=873).length,150);
 require('node:child_process').execFileSync(process.execPath,[require('node:path').join(__dirname,'english/validate-corpus-v77.cjs')],{stdio:'pipe'});
