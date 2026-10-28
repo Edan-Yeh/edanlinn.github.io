@@ -2808,7 +2808,7 @@
     const qZh=questionTranslation(q);
     const isMultiTurn=Array.isArray(q.turns)&&q.turns.length>1;
     const formatNote=isMultiTurn?`<div class="listening-scenario-note"><strong>${esc(q.scenario||'連續情境聽力')}</strong><span>${q.format==='briefing'?'專業簡報':'多人對話'} · ${q.turns.length} 段 · 先聽完再回答</span></div>`:'';
-    const transcriptHtml=isMultiTurn?q.turns.map(turn=>`<div class="listening-turn"><strong>${esc(turn.speaker)}</strong><span>${esc(turn.en)}</span><small>${esc(turn.zh)}</small></div>`).join(''):`<div class="transcript-en">${esc(q.text)}</div>${qZh?`<div class="transcript-zh"><span>繁體中文</span>${esc(qZh)}</div>`:''}`;
+    const transcriptHtml=isMultiTurn?q.turns.map((turn,i)=>`<div class="listening-turn"><strong>${esc(turn.speaker)}</strong><span>${esc(turn.en)}</span><small>${esc(turn.zh)}</small><button class="btn ghost listening-line-replay" data-turn-index="${i}" type="button">▶ 重聽這句</button></div>`).join(''):`<div class="transcript-en">${esc(q.text)}</div>${qZh?`<div class="transcript-zh"><span>繁體中文</span>${esc(qZh)}</div>`:''}`;
     const comprehensionHtml=isMultiTurn?`<div class="listening-comprehension hidden" id="listeningComprehension"><strong>聽完後回答</strong><p>${esc(q.comprehensionQuestion)}</p><span class="hidden" id="comprehensionQuestionZh">${esc(q.comprehensionQuestionZh)}</span><button class="btn ghost" id="showComprehensionZh" type="button">顯示題目繁中</button></div>`:'';
     $('questionHost').innerHTML=`<article class="question-card"><div class="question-top"><div><span class="badge good">LISTEN FIRST</span><div class="question-title">${isMultiTurn?'先聽懂完整對話，再回答重點':'先不要看文字，聽懂「他在問什麼」'}</div>${formatNote}<div class="question-intent">L${q.level} · 每題都有北美＋印度兩種口音。每種口音第一次播放不算重播；重複同一口音才會影響熟練度判定。</div></div></div><div class="audio-stage"><div class="audio-main"><button class="btn primary" id="playNorthAmericaBtn" type="button">▶ 北美口音</button><button class="btn secondary" id="playIndiaBtn" type="button">▶ 印度口音</button><button class="btn ghost" id="showTranscriptBtn" type="button">顯示文字＋繁中</button><span class="audio-status" id="audioStatus">尚未播放 · 建議兩種都聽一次</span></div><div class="transcript" id="transcriptBox">${transcriptHtml}</div></div>${comprehensionHtml}<div class="options">${q.options.map((o,i)=>`<button class="option" data-index="${i}" type="button">${esc(o)}</button>`).join('')}</div><div class="feedback" id="feedbackBox"></div>${modelAnswerHtml(q,'可以這樣回答').replace('<div class="model-answer">','<div class="model-answer" id="modelAnswer">')}<div class="btn-row" style="margin-top:16px"><button class="btn primary hidden" id="nextBtn" type="button">下一題 →</button><button class="btn ghost hidden" id="retrySameSpeakingBtn" type="button">↻ 再練這題</button></div></article>`;
     const enabledAccents=enabledPracticeAccents();
@@ -2829,6 +2829,21 @@
         if(!session.currentMeta.hint){session.currentMeta.hint=true;qstat(q.id).hints++;save();}
         $('comprehensionQuestionZh')?.classList.remove('hidden');
         $('showComprehensionZh')?.classList.add('hidden');
+      });
+    }
+    if(isMultiTurn){
+      $('transcriptBox')?.addEventListener('click',async event=>{
+        const button=event.target.closest?.('[data-turn-index]');
+        if(!button||!$('transcriptBox')?.classList.contains('show'))return;
+        const index=Number(button.dataset.turnIndex);
+        const line=q.turns?.[index]?.en;
+        if(!line)return;
+        session.currentMeta.listens++;
+        qstat(q.id).listens++;
+        const status=$('audioStatus');
+        if(status)status.textContent=`重聽第 ${index+1} 句 · 北美口音`;
+        await speakNorthAmerican(line,playbackRate(q.level,'question'));
+        save();
       });
     }
     bindOptionButtons(q,true);
