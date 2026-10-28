@@ -59,6 +59,6 @@
     release:'2026.10.28-v72',
     date:'2026-10-28',
     assetTag:'20261028v72',
-    cache:'edan-english-coach-20261028-v71'
+    cache:'edan-english-coach-20261028-v72'
   });
 });
