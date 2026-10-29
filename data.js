@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-29",
-  "completedDays": 29,
-  "currentTrack": "Cloud × AI / Day 29 已完成（89/100）· Day 30 Embedding / RAG Retrieval 待作答",
+  "updatedAt": "2026-10-30",
+  "completedDays": 30,
+  "currentTrack": "Cloud × AI / Day 30 已完成（86/100）· 下個工作日接續 Day 31",
   "scores": [
     {
       "day": 1,
@@ -118,6 +118,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 29,
       "score": 89
+    },
+    {
+      "day": 30,
+      "score": 86
     }
   ],
   "roadmap": [
@@ -144,11 +148,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–29"
+        "value": "Day 1–30"
       },
       {
         "label": "目前主題",
-        "value": "Day 30 / Embedding 與 RAG 檢索品質（待作答）"
+        "value": "Day 30 / Embedding 與 RAG 檢索品質（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -156,7 +160,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "RAG Retrieval Evaluation / AI Tutor Safe Tool Gateway"
+        "value": "Vector Search vs Retrieval Evaluation / RAG Evidence Quality"
       }
     ],
     "domains": [
@@ -3086,6 +3090,51 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "Idempotency Key 或唯一業務鍵避免同一請求重複執行；Authorization 是檢查誰有權執行。",
       "memory": "Authorization 管誰能做；Idempotency 管重試不重複生效。"
+    },
+    {
+      "id": "D30-Q1-REVIEW",
+      "category": "Cloud × AI / RAG",
+      "difficulty": "中等",
+      "question": "語意相近但用詞不同的教材，適合如何檢索？",
+      "options": [
+        "每次重新訓練 LLM",
+        "使用相容 Embedding 與向量相似度檢索",
+        "僅用完全一致字串",
+        "忽略資料授權"
+      ],
+      "answer": 1,
+      "explanation": "Embedding 與向量索引可檢索語意相近片段，仍需授權與來源驗證。",
+      "memory": "Embedding ≠ 正確答案，也不取代權限檢查。"
+    },
+    {
+      "id": "D30-Q3-REVIEW",
+      "category": "Cloud × AI / RAG",
+      "difficulty": "中等",
+      "question": "衡量 Top-K 是否命中標準相關文件的指標是？",
+      "options": [
+        "Chunking",
+        "Vector Search",
+        "Recall@K",
+        "Tokenization"
+      ],
+      "answer": 2,
+      "explanation": "Vector Search 取回候選文件；Recall@K 是評估檢索品質的指標。",
+      "memory": "Search 負責找；Evaluation 負責驗證找得好不好。"
+    },
+    {
+      "id": "D30-PRACTICE-REVIEW",
+      "category": "Cloud × AI / RAG",
+      "difficulty": "中等",
+      "question": "哪個是正確的 RAG 索引與查詢流程？",
+      "options": [
+        "每次查詢都重新切割全部教材",
+        "文件預先切塊並向量索引，查詢時向量化問題並搜尋",
+        "只依 LLM 自評信心，不用來源",
+        "直接用未授權銀行資料建索引"
+      ],
+      "answer": 1,
+      "explanation": "索引建立和查詢分離，並應依權限過濾、引用來源與版本。",
+      "memory": "索引階段 Chunk+Embed；查詢階段 Embed query+Top-K。"
     }
   ],
   "days": [
@@ -4771,6 +4820,151 @@ window.CLOUD_SA_DATA = {
         "Tool Gateway 必須檢查白名單、Schema、RBAC 與資料擁有權。"
       ],
       "archive": "docs/cloud-ai-day29-2026-10-28.html"
+    },
+    {
+      "day": 30,
+      "date": "2026-10-29",
+      "topic": "AI Deep Dive: Embedding, Vector Similarity and RAG Retrieval Quality",
+      "status": "completed",
+      "score": 86,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "C",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→D、4→C",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue 接收問題\n2.Spring Boot 權限驗證\n3.FastAPI 協調檢索與模型推論；逾時、錯誤與低信心需安全降級\n4.Embedding/Vector Search 將整串字切割後向量化，Top-K 檢索\n5.LLM 將命中生成出答案，如果信心度不足可以註記，如果低於設定指數，不該回答\n5.Vue顯示最終結果"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI Tutor 收到循環額度問題，但教材使用可恢復額度用詞，最合理的語意檢索方式？",
+          "options": [
+            "A. 僅用字串完全相同的 SQL LIKE 查詢",
+            "B. 將問題與授權教材轉成相容的 Embedding，再進行向量相似度檢索",
+            "C. 直接讓 LLM 產生銀行正式交易資料",
+            "D. 每次查詢都重新訓練完整大型語言模型"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "Embedding 讓不同用詞的語意相近問題與文件可被相似度檢索。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "RAG 回答可信且安全的合理做法（複選）",
+          "options": [
+            "A. 檢索前套用使用者授權與文件可見範圍",
+            "B. 相似度高就代表答案必定正確，不需要引用來源",
+            "C. 使用 Recall@K 或人工標註測試集評估檢索品質",
+            "D. 無結果或低信心時回覆查無足夠依據，而非捏造",
+            "E. 把正式銀行客戶個資直接放進外部 Embedding API",
+            "F. 保存 chunk、文件版本與引用來源，以利追溯"
+          ],
+          "answer": [
+            "A",
+            "C",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "C",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "權限過濾、可評估的檢索品質、拒答及來源追溯是可靠 RAG 的關鍵。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Chunking、Embedding、Vector Search、Retrieval Evaluation",
+          "options": [
+            "A. Chunking",
+            "B. Embedding",
+            "C. Vector Search",
+            "D. Retrieval Evaluation"
+          ],
+          "prompts": [
+            "1. 將長篇 SOP 切成可檢索片段",
+            "2. 將片段轉成數值向量",
+            "3. 從索引找出 Top-K 相關片段",
+            "4. 比對測試問題與應命中的文件，衡量 Recall@K"
+          ],
+          "answer": "1→A、2→B、3→D、4→C",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 10,
+          "explanation": "Top-K 是 Vector Search；Recall@K 衡量檢索品質，屬 Retrieval Evaluation。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 10,
+          "max": 20
+        },
+        "practice": {
+          "earned": 41,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作架構選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "RAG 流程設計",
+              "earned": 21,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Embedding 與語意檢索",
+        "RAG 文件授權與拒答",
+        "NAS Postgres + pgvector 低成本選型",
+        "FastAPI 與 Spring Boot 職責分離"
+      ],
+      "corrections": [
+        [
+          "Vector Search 與 Retrieval Evaluation 混淆",
+          "Vector Search 負責 Top-K 檢索；Retrieval Evaluation 用 Recall@K 等指標評估是否找到正確文件"
+        ],
+        [
+          "Chunking 與查詢向量化流程不清",
+          "文件在索引建置階段 Chunking、Embedding；查詢時將問題向量化後搜尋索引"
+        ],
+        [
+          "來源與信心判定不足",
+          "回傳引用文件與版本，根據檢索品質及證據充足度決定回答或拒答，不僅依 LLM 自評信心"
+        ]
+      ],
+      "memory": [
+        "Embedding 用於語意表示，不代表內容真實。",
+        "Top-K 搜尋是 Vector Search；Recall@K 是檢索評估。",
+        "索引建置與查詢流程分開，並保留來源及文件版本。"
+      ],
+      "archive": "docs/cloud-ai-day30-2026-10-29.html"
     }
   ],
   "cloudComparison": {
