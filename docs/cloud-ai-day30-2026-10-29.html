@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cloud × AI Day 30｜Embedding 與 RAG 檢索品質｜互動課程</title>
+<style>
+:root{font-family:system-ui,"Noto Sans TC",sans-serif;background:#f2f6fc;color:#182f45}*{box-sizing:border-box}body{margin:0}main{max-width:920px;margin:0 auto;padding:22px 16px 70px}
+header{padding:28px;background:linear-gradient(115deg,#15304e,#216c84);color:#fff;border-radius:18px}header a{color:#e0f5ff}h1{font-size:clamp(1.5rem,4vw,2.1rem)}h2{font-size:1.2rem}.card{background:white;border:1px solid #d6e2ee;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 3px 14px #1234}
+.muted{color:#54687d}.badge{display:inline-block;padding:5px 10px;background:#fff0c6;color:#704b00;border-radius:20px;font-weight:700}
+button,.btn{font:inherit;cursor:pointer;border:1px solid #adc4d8;border-radius:10px;padding:10px 14px;background:#fff;color:#143b59}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #57a7df}button.primary,.btn.primary{background:#1768a9;color:white;border-color:#1768a9}button[disabled]{opacity:.5;cursor:not-allowed}.tabs,.tools{display:flex;flex-wrap:wrap;gap:8px}.tabs button[aria-selected=true],.tools button[aria-pressed=true]{background:#1669ab;color:white}
+.panel{padding:15px;background:#eef6ff;border-radius:12px;margin:12px 0;min-height:125px}p,li{line-height:1.65}.flow{display:flex;gap:8px;flex-wrap:wrap}.flow button{flex:1;min-width:125px}fieldset{border:0;padding:0;margin:0 0 18px}legend{font-weight:750;margin-bottom:12px}label.choice{display:block;padding:10px;border:1px solid #d9e4ee;border-radius:10px;margin:7px 0;cursor:pointer}label.choice:has(input:checked){background:#e7f3ff;border-color:#3a8bc5}input{margin-right:8px}select,textarea{font:inherit;border:1px solid #b9ccdd;border-radius:9px;padding:10px;width:100%}textarea{min-height:160px}table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid #e2eaf1;text-align:left}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#132d47;color:white;padding:16px;border-radius:12px}
+#status{padding:12px;background:#fff3d9;border-radius:9px;margin:12px 0}#status.ok{background:#e2f7e9}.footer{color:#556b80;font-size:.9rem}
+</style></head>
+<body><main>
+<header><div class="badge">DAY 30 · 待作答 · 不提前計分</div><h1>Embedding、向量相似度與 RAG 檢索品質</h1>
+<p>2026/10/29（四）｜AI Deep Dive｜約 20 分鐘｜滿分 100 分</p>
+<p>接續 Day 29 的安全 Tool Gateway，今天要學 AI Tutor 如何找到「真正相關」的教材，而不是只找到字面相同的內容。</p>
+<a href="../#ladder">← 回官方 Cloud × AI Learning Journey</a></header>
+<section class="card"><h2>① 互動式觀念探索</h2><p class="muted">依序點選三個觀念，閱讀後再進入架構探索。</p>
+<div class="tabs" role="tablist" aria-label="觀念切換">
+<button type="button" role="tab" aria-selected="true" data-tab="0">1. Embedding</button>
+<button type="button" role="tab" aria-selected="false" data-tab="1">2. Similarity</button>
+<button type="button" role="tab" aria-selected="false" data-tab="2">3. Retrieval 評估</button></div>
+<div class="panel" id="concept" aria-live="polite"></div></section>
+<section class="card"><h2>② 點選架構元件</h2>
+<p>Cloud SA Academy AI Tutor：Vue → Spring Boot → FastAPI → Embedding/Vector Search → LLM → Vue。</p>
+<div class="flow">
+<button type="button" data-node="vue">Vue</button><button type="button" data-node="spring">Spring Boot</button><button type="button" data-node="fastapi">FastAPI</button><button type="button" data-node="vector">Embedding / Vector Search</button><button type="button" data-node="llm">LLM</button>
+</div><div class="panel" id="nodeinfo" aria-live="polite">點選上方任一元件，查看責任與風險。</div>
+<p class="muted">AWS 主線：Bedrock Knowledge Bases + S3 / 向量儲存；Azure：Azure AI Search + Azure AI Foundry；GCP：Vertex AI RAG Engine / Vector Search。服務不完全等價，需比較資料權限、索引成本、維運與延遲。零成本優先可先用 NAS Postgres + pgvector。</p></section>
+<form id="exam" class="card" novalidate><h2>③ 正式測驗｜先作答，後解析</h2><p class="muted">本頁不提供正解，也不會自動寫入官方分數。提交前先檢查完整性。</p>
+<fieldset><legend>Q1｜單選（15 分）</legend><p>AI Tutor 收到「循環額度與非循環額度差在哪？」但教材用詞是「可恢復額度／不可恢復額度」。若要找語意相關內容，最合理的第一步是？</p>
+<label class="choice"><input type="radio" name="q1" value="A">A. 僅用字串完全相同的 SQL LIKE 查詢</label>
+<label class="choice"><input type="radio" name="q1" value="B">B. 將問題與授權教材轉成相容的 Embedding，再進行向量相似度檢索</label>
+<label class="choice"><input type="radio" name="q1" value="C">C. 直接讓 LLM 產生銀行正式交易資料</label>
+<label class="choice"><input type="radio" name="q1" value="D">D. 每次查詢都重新訓練完整大型語言模型</label></fieldset>
+<fieldset><legend>Q2｜複選（20 分）</legend><p>為了讓 AI Tutor 的 RAG 回答可信且安全，哪些做法合理？（可複選）</p>
+<label class="choice"><input type="checkbox" name="q2" value="A">A. 檢索前套用使用者授權與文件可見範圍</label>
+<label class="choice"><input type="checkbox" name="q2" value="B">B. 相似度高就代表答案必定正確，不需要引用來源</label>
+<label class="choice"><input type="checkbox" name="q2" value="C">C. 使用 Recall@K 或人工標註測試集評估檢索品質</label>
+<label class="choice"><input type="checkbox" name="q2" value="D">D. 無結果或低信心時回覆查無足夠依據，而非捏造</label>
+<label class="choice"><input type="checkbox" name="q2" value="E">E. 把正式銀行客戶個資直接放進外部 Embedding API</label>
+<label class="choice"><input type="checkbox" name="q2" value="F">F. 保存 chunk、文件版本與引用來源，以利追溯</label></fieldset>
+<fieldset><legend>Q3｜責任配對（20 分）</legend><p>將情境配對到 A–D 技術：A Chunking；B Embedding；C Vector Search；D Retrieval Evaluation。</p>
+<table><thead><tr><th>情境</th><th>選擇</th></tr></thead><tbody>
+<tr><td>1. 將長篇 SOP 切成可檢索片段</td><td><select name="m1"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+<tr><td>2. 將片段轉成數值向量</td><td><select name="m2"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+<tr><td>3. 從索引找出 Top-K 相關片段</td><td><select name="m3"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+<tr><td>4. 比對測試問題與應命中的文件，衡量 Recall@K</td><td><select name="m4"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+</tbody></table></fieldset>
+<fieldset><legend>實作｜AI Tutor RAG MVP（45 分）</legend>
+<p>先決定四個架構選項，再用 4–8 行描述資料流、權限、檢索品質與低信心處理。請只使用合成或有權使用的去識別資料。</p>
+<table><tbody>
+<tr><td>1. 初期低成本向量儲存</td><td><select name="p1"><option value="">請選擇</option><option value="A">A. 現有 Postgres + pgvector</option><option value="B">B. 直接採高成本多區 GPU 訓練叢集</option></select></td></tr>
+<tr><td>2. 文件權限檢查</td><td><select name="p2"><option value="">請選擇</option><option value="A">A. 先依使用者授權篩選可檢索文件</option><option value="B">B. 讓 LLM 自行猜測授權</option></select></td></tr>
+<tr><td>3. 找不到可靠證據</td><td><select name="p3"><option value="">請選擇</option><option value="A">A. 生成看似完整的答案</option><option value="B">B. 明示證據不足，回傳來源與後續建議</option></select></td></tr>
+<tr><td>4. 評估檢索成效</td><td><select name="p4"><option value="">請選擇</option><option value="A">A. 只看 LLM 回答字數</option><option value="B">B. 只看向量維度</option><option value="C">C. 建立合成測試題與正確文件對照，評估 Recall@K</option></select></td></tr>
+</tbody></table>
+<label for="practice"><strong>你的流程設計</strong></label><textarea name="practice" id="practice" placeholder="1. Vue 接收問題&#10;2. Spring Boot 驗證...&#10;3. FastAPI..."></textarea></fieldset>
+<div id="status" role="status" aria-live="polite">尚未提交。請完成 Q1、Q2、Q3、實作四個選項及流程設計。</div>
+<button type="button" class="primary" id="submit">檢查並複製正式作答</button>
+<button type="button" id="download">匯出作答 TXT 備份</button>
+<pre id="result" hidden></pre>
+</form>
+<p class="footer">紀錄原則：只有在 ChatGPT 完成批改、確認官方 data.js 沒有重複紀錄並成功更新後，才視為正式完成。此靜態頁不會自動修改 GitHub，也不會把答案僅留在瀏覽器 localStorage。</p>
+</main>
+<script>
+const concepts=[
+'<strong>Embedding = 語意向量。</strong><p>把文字轉成數值表示，語意相近的句子在向量空間可能較接近。它不是答案，也不是資料庫權限。</p><p>例：循環額度與可恢復額度用詞不同，但在合適模型中可能靠近。</p>',
+'<strong>Similarity ≠ Truth。</strong><p>Cosine similarity 比較向量方向是否相近；高相似不保證內容正確、最新或已授權。</p><p>Top-K 只是選出候選文件，還需來源、權限與內容檢查。</p>',
+'<strong>Retrieval Evaluation。</strong><p>先用合成問答建立標準相關文件，再檢查 Top-K 是否命中。Recall@K 衡量應找到的相關文件有多少被找出。</p><p>此外要測試來源版本、越權檢索、無答案及幻覺風險。</p>'
+];
+const nodes={vue:'接收學生問題與顯示引用來源；不直接連資料庫或暴露金鑰。',spring:'驗證身分、RBAC、文件擁有權及 Tool Gateway；寫入成績另需授權。',fastapi:'協調檢索與模型推論；逾時、錯誤與低信心需安全降級。',vector:'對授權教材做 Chunking、Embedding 與 Top-K 檢索；Postgres + pgvector 可作低成本起點。',llm:'依已檢索到的證據生成回答並引用來源；不能自行取得越權資料或修改正式成績。'};
+document.getElementById('concept').innerHTML=concepts[0];
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));document.getElementById('concept').innerHTML=concepts[Number(b.dataset.tab)];}));
+document.querySelectorAll('[data-node]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-node]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.getElementById('nodeinfo').textContent=nodes[b.dataset.node];}));
+let output='';
+function collect(){const f=new FormData(document.getElementById('exam'));const q1=f.get('q1');const q2=f.getAll('q2');const ms=[1,2,3,4].map(i=>f.get('m'+i));const ps=[1,2,3,4].map(i=>f.get('p'+i));const practice=String(f.get('practice')||'').trim();const missing=[];if(!q1)missing.push('Q1');if(!q2.length)missing.push('Q2');if(ms.some(x=>!x))missing.push('Q3');if(ps.some(x=>!x))missing.push('實作選項');if(practice.length<35)missing.push('流程設計（至少 35 字）');if(missing.length){const st=document.getElementById('status');st.className='';st.textContent='尚缺：'+missing.join('、');return null;}return 'Cloud × AI Day 30 正式作答（2026-10-29；請先確認官方紀錄，勿重複寫入）\nQ1：'+q1+'\nQ2：'+q2.join('、')+'\nQ3：'+ms.map((x,i)=>(i+1)+'→'+x).join('、')+'\n實作選項：'+ps.map((x,i)=>(i+1)+'→'+x).join('、')+'\n流程設計：\n'+practice+'\n請先批改，再依權限同步官方網站的完整歷史、挑戰、紀錄與能力地圖。';}
+document.getElementById('submit').addEventListener('click',async()=>{output=collect()||'';if(!output)return;const st=document.getElementById('status');st.className='ok';st.textContent='作答已整理。請複製到 ChatGPT 進行正式批改；目前未計分，也未寫入網站。';const box=document.getElementById('result');box.hidden=false;box.textContent=output;try{await navigator.clipboard.writeText(output);st.textContent='已複製完整作答，請貼到 ChatGPT 批改。尚未正式計分。';}catch(e){st.textContent='瀏覽器未允許自動複製，請手動複製下方文字貼到 ChatGPT。';}});
+document.getElementById('download').addEventListener('click',()=>{const data=collect();if(!data)return;const a=document.createElement('a');const url=URL.createObjectURL(new Blob([data],{type:'text/plain;charset=utf-8'}));a.href=url;a.download='Cloud_AI_Day30_answers_20261029.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+</script></body></html>
