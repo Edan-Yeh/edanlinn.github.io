@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-28",
+  "updatedAt": "2026-10-29",
   "completedDays": 29,
-  "currentTrack": "Cloud × AI / Day 29 已完成（89/100）· 下一個工作日接續 Day 30",
+  "currentTrack": "Cloud × AI / Day 29 已完成（89/100）· Day 30 Embedding / RAG Retrieval 待作答",
   "scores": [
     {
       "day": 1,
@@ -4698,5 +4698,14 @@ window.CLOUD_SA_DATA = {
     "historicalDays": "Day 1–21：依現存紀錄補檔，部分原始題目與作答無法核實，不冒充原題",
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
+  },
+  "pendingLesson": {
+    "day": 30,
+    "date": "2026-10-29",
+    "topic": "AI Deep Dive: Embedding, Vector Similarity and RAG Retrieval Evaluation",
+    "status": "pending",
+    "interactiveUrl": "docs/cloud-ai-day30-2026-10-29.html",
+    "score": null,
+    "note": "僅發布課程，尚未收到作答，不計入完成天數或平均分數。"
   }
 };
