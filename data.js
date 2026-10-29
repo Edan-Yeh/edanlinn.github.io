@@ -4551,7 +4551,13 @@ window.CLOUD_SA_DATA = {
           "answer": "1→B、2→A、3→C、4→D",
           "correct": "1→B、2→A、3→C、4→D",
           "earned": 20,
-          "explanation": "依序為去重、無效數字轉 NaN、缺值檢查、依學生平均值彙整。"
+          "explanation": "依序為去重、無效數字轉 NaN、缺值檢查、依學生平均值彙整。",
+          "options": [
+            "A. 將無效數字轉為缺值",
+            "B. 排除同一事件重複計入",
+            "C. 檢查欄位是否為缺值",
+            "D. 產生依學生彙整的平均值"
+          ]
         }
       ],
       "grading": {
@@ -4613,7 +4619,8 @@ window.CLOUD_SA_DATA = {
         "Deduplication 依 event_id 和事件版本判斷，不可無條件後蓋前。",
         "Feature Engineering 從原始事件產生學生主題層級特徵，不能改寫正式成績。",
         "保留原始事件、異常隔離、清洗版本及處理日誌以利追溯。"
-      ]
+      ],
+      "archive": "docs/cloud-ai-day28-2026-10-27.html"
     },
     {
       "day": 29,
@@ -4671,7 +4678,13 @@ window.CLOUD_SA_DATA = {
           "answer": "1→C、2→A、3→D、4→B",
           "correct": "1→C、2→B、3→D、4→A",
           "earned": 10,
-          "explanation": "Authorization 是存取權限；Idempotency 是重試避免重複效果。"
+          "explanation": "Authorization 是存取權限；Idempotency 是重試避免重複效果。",
+          "options": [
+            "A. Idempotency / 防重複執行",
+            "B. Authorization / 權限檢查",
+            "C. Tool-call proposal / 工具呼叫提案",
+            "D. Sanitized tool result / 最小化工具回傳"
+          ]
         }
       ],
       "grading": {
@@ -4728,7 +4741,8 @@ window.CLOUD_SA_DATA = {
         "LLM 提議工具呼叫不等於授權執行。",
         "模型不可直接修改正式成績。",
         "Tool Gateway 必須檢查白名單、Schema、RBAC 與資料擁有權。"
-      ]
+      ],
+      "archive": "docs/cloud-ai-day29-2026-10-28.html"
     }
   ],
   "cloudComparison": {
