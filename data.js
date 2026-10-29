@@ -4523,7 +4523,13 @@ window.CLOUD_SA_DATA = {
           "answer": "B",
           "correct": "B",
           "earned": 15,
-          "explanation": "pd.to_numeric(errors='coerce') 將無效值轉成 NaN，再依訓練規則處理。"
+          "explanation": "pd.to_numeric(errors='coerce') 將無效值轉成 NaN，再依訓練規則處理。",
+          "options": [
+            "A. 直接用 astype(int)，有錯誤就整批忽略",
+            "B. 先用 pd.to_numeric(..., errors=\"coerce\")，再依訓練資料規則處理缺值",
+            "C. 將所有無效字串當成 999999 秒，避免缺值",
+            "D. 把欄位全部轉成字串，直接輸入數值模型"
+          ]
         },
         {
           "id": "Q2",
@@ -4542,7 +4548,15 @@ window.CLOUD_SA_DATA = {
             "F"
           ],
           "earned": 20,
-          "explanation": "依事件 ID 去重、驗證 Schema、記錄及隔離異常、保留來源追溯。"
+          "explanation": "依事件 ID 去重、驗證 Schema、記錄及隔離異常、保留來源追溯。",
+          "options": [
+            "A. 依事件唯一識別碼檢查重複，避免重複計入",
+            "B. 只要有任一欄缺值，就永久刪除該學生所有紀錄",
+            "C. 驗證欄位名稱、型別、允許範圍與必要欄位",
+            "D. 記錄缺值比例與異常原因，依事先定義的規則清洗或隔離",
+            "E. 將無法辨識的題目一律標記為答對，以提升模型準確率",
+            "F. 保留原始事件與清洗後資料的版本或可追溯關聯"
+          ]
         },
         {
           "id": "Q3",
@@ -4652,7 +4666,13 @@ window.CLOUD_SA_DATA = {
           "answer": "B",
           "correct": "B",
           "earned": 15,
-          "explanation": "外部文件為不可信輸入，必須通過白名單、身分與業務授權檢查。"
+          "explanation": "外部文件為不可信輸入，必須通過白名單、身分與業務授權檢查。",
+          "options": [
+            "A. 既然檢索到這句話，模型就直接執行工具",
+            "B. 將筆記視為不可信資料，工具仍須經白名單、授權與業務規則檢查",
+            "C. 只在 Prompt 寫「請注意安全」，就允許模型使用資料庫管理員權限",
+            "D. 把正式成績資料庫憑證提供給模型，由模型自行判斷"
+          ]
         },
         {
           "id": "Q2",
@@ -4669,7 +4689,15 @@ window.CLOUD_SA_DATA = {
             "E"
           ],
           "earned": 20,
-          "explanation": "身分綁定、Schema/RBAC/擁有權檢查及正式寫入核准與稽核。"
+          "explanation": "身分綁定、Schema/RBAC/擁有權檢查及正式寫入核准與稽核。",
+          "options": [
+            "A. get_weak_topics 的學生 ID 由驗證後的身分與權限決定，不直接相信模型輸入",
+            "B. 模型信心分數高於 0.95，就直接呼叫寫入正式成績的 API",
+            "C. Tool Gateway 驗證工具白名單、參數 Schema、RBAC 與資料擁有權",
+            "D. RAG 文件可以覆蓋 Spring Boot 的權限規則",
+            "E. 寫入動作需明確核准、業務規則驗證與稽核紀錄",
+            "F. 為了方便除錯，將所有學生個資及資料庫密碼完整寫入 Prompt Log"
+          ]
         },
         {
           "id": "Q3",
