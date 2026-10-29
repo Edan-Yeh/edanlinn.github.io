@@ -59,6 +59,6 @@
     release:'2026.10.30-v88',
     date:'2026-10-30',
     assetTag:'20261030v88',
-    cache:'edan-english-coach-20261030-v87'
+    cache:'edan-english-coach-20261030-v88'
   });
 });
