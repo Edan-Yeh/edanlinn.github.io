@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-10-30",
-  "completedDays": 30,
-  "currentTrack": "Cloud × AI / Day 30 已完成（86/100）· 下個工作日接續 Day 31",
+  "completedDays": 31,
+  "currentTrack": "Cloud × AI / Day 31 已完成（98/100）· 下個工作日接續 Day 32",
   "scores": [
     {
       "day": 1,
@@ -122,6 +122,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 30,
       "score": 86
+    },
+    {
+      "day": 31,
+      "score": 98
     }
   ],
   "roadmap": [
@@ -148,11 +152,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–30"
+        "value": "Day 1–31"
       },
       {
         "label": "目前主題",
-        "value": "Day 30 / Embedding 與 RAG 檢索品質（已完成）"
+        "value": "Day 31 / RAG × Agent × 交易安全（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -160,7 +164,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Vector Search vs Retrieval Evaluation / RAG Evidence Quality"
+        "value": "RAG Index Lifecycle / Application Rollback / Schema Compatibility"
       }
     ],
     "domains": [
@@ -3135,6 +3139,36 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "索引建立和查詢分離，並應依權限過濾、引用來源與版本。",
       "memory": "索引階段 Chunk+Embed；查詢階段 Embed query+Top-K。"
+    },
+    {
+      "id": "D31-Q1-REVIEW",
+      "category": "Cloud × AI / Transaction Safety",
+      "difficulty": "中等",
+      "question": "正式成績核准寫入遇網路逾時後重試，避免重複入帳最重要的機制？",
+      "options": [
+        "提高 LLM 信心",
+        "Idempotency Key 與唯一業務鍵",
+        "增加 Top-K",
+        "隱藏前端按鈕"
+      ],
+      "answer": 1,
+      "explanation": "重試不應重複生效，需後端唯一限制與交易狀態紀錄。",
+      "memory": "Authorization 管權限；Idempotency 管重試防重複。"
+    },
+    {
+      "id": "D31-PRACTICE-REVIEW",
+      "category": "Cloud × AI / Rollback",
+      "difficulty": "中等",
+      "question": "新版 FastAPI 部署後異常，正確的應用回退方式是？",
+      "options": [
+        "直接 SQL ROLLBACK 已提交交易",
+        "切回已驗證穩定映像並檢查 Schema 相容性",
+        "直接刪除所有資料",
+        "讓 LLM 修改資料庫"
+      ],
+      "answer": 1,
+      "explanation": "Application Rollback 回退服務版本；DB rollback 只適用尚未提交的交易。",
+      "memory": "容器回退 ≠ 資料庫回退 ≠ 已提交業務沖正。"
     }
   ],
   "days": [
@@ -4965,6 +4999,147 @@ window.CLOUD_SA_DATA = {
         "索引建置與查詢流程分開，並保留來源及文件版本。"
       ],
       "archive": "docs/cloud-ai-day30-2026-10-29.html"
+    },
+    {
+      "day": 31,
+      "date": "2026-10-30",
+      "topic": "Architecture Review: RAG × Agent × Transaction Safety and Rollback",
+      "status": "completed",
+      "score": 98,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "C",
+          "E",
+          "F"
+        ],
+        "Q3": "1→C、2→D、3→A、4→B",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue 畫面上發送和收集問題、顯示引用與提交狀態，不直接保存正式成績或資料庫金鑰。\n2.Spring Boot 驗證身分、RBAC、文件權限、正式成績核准與交易安全\n3.FastAPI 協調 RAG 與 LLM；設定 Timeout、有限 Retry/Backoff、低信心拒答。每個案件唯一值\n4.Authorized Vector Retrieval \n依權限過濾文件，Embedding 問題、Top-K 搜尋，回傳來源與版本；另以 Recall@K 評估品質。\n5.LLM 生成最終結果\n6.Spring Boot 由 Spring Boot 經授權與 Idempotency Key 執行寫入；已提交錯誤需業務補償/沖正，不能靠 SQL ROLLBACK。\n7.Vue 顯示最後結果"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "老師已核准發布正式成績，但網路逾時，前端重送相同請求。如何避免重複入帳？",
+          "options": [
+            "A. 只提高 LLM 的信心分數",
+            "B. 以 Idempotency Key / 唯一業務鍵識別相同寫入",
+            "C. 將 Top-K 從 5 提升到 20",
+            "D. 只在前端隱藏提交按鈕"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "同一業務請求重試使用 Idempotency Key 和唯一約束，避免重複寫入。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "哪些做法適合有正式成績資料的 AI Tutor？",
+          "options": [
+            "A. 檢索前依身分及文件權限過濾",
+            "B. 模型信心高就可以繞過核准直接修改正式成績",
+            "C. 以測試題和標準文件評估 Recall@K，並檢查引用來源",
+            "D. 已提交的銀行交易只要執行 SQL ROLLBACK 就能撤銷",
+            "E. 工具重試要有上限、退避、Idempotency 與稽核",
+            "F. 證據不足時拒答或安全降級，並保留追溯來源"
+          ],
+          "answer": [
+            "A",
+            "C",
+            "E",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "C",
+            "E",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "授權、檢索評估、有界重試及安全降級均必要；已提交交易需要業務補償。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Vector Search、Retrieval Evaluation、Application Rollback、DB Transaction Rollback",
+          "options": [
+            "A. Application Rollback",
+            "B. DB Transaction Rollback",
+            "C. Vector Search",
+            "D. Retrieval Evaluation"
+          ],
+          "prompts": [
+            "1. 在索引中取得 Top-K 相關文件",
+            "2. 以標準相關文件計算 Recall@K",
+            "3. 新版 FastAPI 容器異常，切回上一個穩定映像",
+            "4. 尚未 COMMIT 的資料庫交易失敗並回復"
+          ],
+          "answer": "1→C、2→D、3→A、4→B",
+          "correct": "1→C、2→D、3→A、4→B",
+          "earned": 20,
+          "explanation": "檢索、檢索品質評估、容器回退、未提交資料庫交易回退分屬不同責任。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 43,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作架構選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "安全查詢與交易復原流程",
+              "earned": 23,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Authorization 與 Idempotency",
+        "Vector Search 與 Retrieval Evaluation",
+        "RAG 低信心拒答與來源追溯",
+        "金融交易補償與沖正",
+        "Spring Boot/FastAPI 職責分離"
+      ],
+      "corrections": [
+        [
+          "RAG 索引生命週期未完整描述",
+          "教材先 Chunking、Embedding、建索引；查詢時向量化問題並檢索 Top-K"
+        ],
+        [
+          "Application Rollback 與 Schema 相容性",
+          "FastAPI 部署異常時回退至穩定映像，確認資料庫 Schema 相容性；不等於 DB Transaction Rollback"
+        ]
+      ],
+      "memory": [
+        "已能正確區分 Vector Search、Retrieval Evaluation、Application Rollback 與 DB Transaction Rollback。",
+        "Idempotency Key 應搭配唯一限制及交易狀態紀錄。"
+      ],
+      "archive": "docs/cloud-ai-day31-2026-10-30.html"
     }
   ],
   "cloudComparison": {
