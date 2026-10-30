@@ -56,9 +56,9 @@
   }
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   return Object.freeze({
-    release:'2026.10.30-v92',
-    date:'2026-10-30',
-    assetTag:'20261030v92',
-    cache:'edan-english-coach-20261030-v92'
+    release:'2026.10.31-v92-qa1',
+    date:'2026-10-31',
+    assetTag:'20261031v92qa1',
+    cache:'edan-english-coach-20261031-v92-qa1'
   });
 });
