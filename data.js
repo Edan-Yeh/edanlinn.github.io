@@ -3018,7 +3018,8 @@ window.CLOUD_SA_DATA = {
         5
       ],
       "explanation": "A、B、C、F 正確。容器服務功能有交集但不等價；Rollback 不會自動修復已產生的交易結果。",
-      "memory": "Azure Container Apps：Scale Rules；Cloud Run：Scale to Zero / Minimum Instances；DB 是擴縮瓶頸之一。"
+      "memory": "Azure Container Apps：Scale Rules；Cloud Run：Scale to Zero / Minimum Instances；DB 是擴縮瓶頸之一。",
+      "type": "multi"
     },
     {
       "id": "D22-Q3",
