@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cloud × AI Day 32｜安全部署、Schema 演進與復原｜互動課程</title>
+<style>
+:root{font-family:system-ui,"Noto Sans TC",sans-serif;color:#19344d;background:#f2f6fb}*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:22px 16px 70px}header{background:linear-gradient(115deg,#152e50,#166b83);border-radius:20px;color:white;padding:28px}header a{color:#dcf5ff}h1{font-size:clamp(1.5rem,4vw,2.1rem)}h2{font-size:1.23rem}.card{background:white;border:1px solid #dce5ef;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 2px 12px #15344c0b}.muted{color:#506b80}p,li{line-height:1.7}.badge{display:inline-block;background:#fff0c9;color:#704d00;border-radius:16px;padding:5px 12px;font-weight:700}button,select,textarea{font:inherit}button{cursor:pointer;background:#fff;color:#164b70;border:1px solid #a9c4d6;border-radius:10px;padding:10px 13px}button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #4ba9df}.tabs,.flow{display:flex;gap:8px;flex-wrap:wrap}.tabs button[aria-selected=true],.flow button[aria-pressed=true]{background:#1768a5;color:white}.flow button{flex:1;min-width:130px}.panel{min-height:115px;padding:16px;background:#eff6fd;border-radius:12px;margin:12px 0}fieldset{border:0;border-top:1px solid #e1e9f1;padding:20px 0 5px;margin:0}legend{font-weight:750;padding-top:16px}label.choice{display:block;margin:8px 0;padding:11px;border:1px solid #d4e2ed;border-radius:9px;cursor:pointer}label.choice:has(input:checked){background:#eaf5ff;border-color:#2980bb}input{margin-right:8px}select,textarea{width:100%;padding:10px;border:1px solid #adc7d8;border-radius:9px}textarea{min-height:170px}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #e1eaf2;padding:10px;text-align:left}td:first-child{width:58%}.primary{background:#1768a5;color:white}#status{padding:13px;border-radius:10px;background:#fff1d7;margin:14px 0}#status.ok{background:#dff4e9}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#16324d;color:#fff;padding:15px;border-radius:12px}small{color:#607a90}@media(max-width:550px){td:first-child{width:50%}.card{padding:16px}}
+</style></head><body><main>
+<header><div class="badge">DAY 32 · 待作答 · 不提前計分</div><h1>安全部署、Schema 演進與交易復原</h1><p>2026/11/02（一）｜Cloud Architecture｜約 20–25 分鐘｜100 分</p>
+<p>接續 Day 31，將 AI Tutor 的部署回退、資料庫相容性與金融交易安全整合成可操作的發布方案。</p><a href="../#ladder">← 返回官方 Cloud × AI Learning Journey</a></header>
+<section class="card"><h2>① 核心觀念探索｜Expand–Contract</h2><p class="muted">點選觀念切換；部署回退不等於資料回退。</p><div class="tabs" role="tablist" aria-label="概念切換"><button type="button" data-tab="0" aria-selected="true">1. 相容性</button><button type="button" data-tab="1" aria-selected="false">2. 漸進部署</button><button type="button" data-tab="2" aria-selected="false">3. 交易復原</button></div><div class="panel" id="concept" aria-live="polite"></div></section>
+<section class="card"><h2>② 點選架構元件｜AI Tutor 發布路徑</h2><div class="flow"><button type="button" data-node="vue">Vue</button><button type="button" data-node="spring">Spring Boot</button><button type="button" data-node="fastapi">FastAPI</button><button type="button" data-node="db">Postgres</button><button type="button" data-node="traffic">流量切換</button></div><div class="panel" id="nodeinfo" aria-live="polite">點選元件查看部署責任與故障風險。</div>
+<p><b>雲端對照：</b>AWS ECS/Fargate 可搭配部署策略、ALB 與 CloudWatch；Azure Container Apps 支援 revisions 與 traffic splitting；GCP Cloud Run 支援 revisions 與 traffic splitting。三者的流量管理、容器生命週期、計費、回退和資料庫相容性並非完全等價。先用 NAS Docker + Postgres 模擬兩版本部署，避免不必要的雲端費用。</p></section>
+<form id="exam" class="card" novalidate><h2>③ 正式作答｜先提交後解析</h2><p class="muted">請完成全部選項與流程；本頁不提供標準答案、不直接寫入正式成績。複選題需選出所有合理做法。</p>
+<fieldset><legend>Q1｜單選（15 分）</legend><p>新版 FastAPI 要讀取新增的「引用來源版本」欄位，但舊版仍需能回退。最安全的資料庫 Schema 演進方式是？</p>
+<label class="choice"><input type="radio" name="q1" value="A">A. 先刪除舊欄位，再部署新版，失敗時用容器回退即可</label>
+<label class="choice"><input type="radio" name="q1" value="B">B. 先新增向後相容欄位，逐步讓新舊版本可運作，驗證後再移除舊欄位</label>
+<label class="choice"><input type="radio" name="q1" value="C">C. 每次部署都清空正式 Postgres 再重建</label>
+<label class="choice"><input type="radio" name="q1" value="D">D. 只提高 LLM Temperature 就能保證 Schema 相容</label></fieldset>
+<fieldset><legend>Q2｜複選（20 分）</legend><p>AI Tutor 新版要逐步發布，哪些做法能降低服務與金融交易風險？</p>
+<label class="choice"><input type="checkbox" name="q2" value="A">A. 先用合成資料執行 Smoke Test、權限與引用測試</label>
+<label class="choice"><input type="checkbox" name="q2" value="B">B. 以健康檢查與錯誤率決定是否增加新版本流量</label>
+<label class="choice"><input type="checkbox" name="q2" value="C">C. 切回舊容器後，所有已 COMMIT 的錯誤交易都會自動撤銷</label>
+<label class="choice"><input type="checkbox" name="q2" value="D">D. 寫入 API 使用 Idempotency Key、唯一限制與稽核</label>
+<label class="choice"><input type="checkbox" name="q2" value="E">E. Azure Container Apps 與 Cloud Run 的所有部署細節完全相同，不必驗證</label>
+<label class="choice"><input type="checkbox" name="q2" value="F">F. 回退前確認舊版程式與目前 DB Schema 的相容性</label></fieldset>
+<fieldset><legend>Q3｜配對（20 分）</legend><p>將情境配對到：A Canary/Traffic Shift；B Expand–Contract；C DB Transaction Rollback；D Business Compensation。</p>
+<table><thead><tr><th>情境</th><th>選擇</th></tr></thead><tbody>
+<tr><td>1. 先讓少量流量使用新版本並監控錯誤率</td><td><select name="m1"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+<tr><td>2. 分階段修改欄位，讓新舊程式共存</td><td><select name="m2"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+<tr><td>3. 未 COMMIT 的寫入發生錯誤並撤回</td><td><select name="m3"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+<tr><td>4. 已提交的放款交易需依業務授權沖正</td><td><select name="m4"><option value="">請選擇</option><option>A</option><option>B</option><option>C</option><option>D</option></select></td></tr>
+</tbody></table></fieldset>
+<fieldset><legend>實作｜AI Tutor 安全部署 Runbook（45 分）</legend><p>選擇四項部署決策，再以 5–8 行描述從發布前、灰度流量、監控、回退、交易復原到驗證的步驟。</p>
+<table><tbody>
+<tr><td>1. 初期零成本部署環境</td><td><select name="p1"><option value="">請選擇</option><option value="A">A. NAS Docker 測試雙版本；未來評估 ECS/Fargate</option><option value="B">B. 直接建立多區 EKS GPU 叢集</option></select></td></tr>
+<tr><td>2. DB Schema 變更</td><td><select name="p2"><option value="">請選擇</option><option value="A">A. 先新增相容欄位、逐步遷移</option><option value="B">B. 上線前立即刪除所有舊欄位</option></select></td></tr>
+<tr><td>3. 新版錯誤率突然上升</td><td><select name="p3"><option value="">請選擇</option><option value="A">A. 持續加大新版本流量</option><option value="B">B. 停止擴流、回切穩定版本並檢查 Schema</option></select></td></tr>
+<tr><td>4. 已提交的金融交易有錯誤</td><td><select name="p4"><option value="">請選擇</option><option value="A">A. 只執行容器回退</option><option value="B">B. 直接 SQL ROLLBACK</option><option value="C">C. 依核准流程補償/沖正並保留稽核</option></select></td></tr>
+</tbody></table><label for="practice"><b>你的發布與復原流程</b></label><textarea id="practice" name="practice" placeholder="1. 發布前備份與 Schema 相容性檢查&#10;2. ..."></textarea></fieldset>
+<div id="status" role="status" aria-live="polite">尚未提交。請完成 Q1、Q2、Q3、四項實作選擇及流程設計。</div>
+<button type="button" class="primary" id="submit">檢查並複製正式作答</button> <button type="button" id="download">匯出作答 TXT</button>
+<pre id="result" hidden></pre></form><small>正式計分：將作答貼回 ChatGPT，核對唯一 Day 32 後批改並同步官方 GitHub。請勿使用未授權的銀行或企業資料。</small>
+</main><script>
+const concepts=[
+'<b>Expand–Contract：先擴充、後收斂。</b><p>先加入相容欄位／API，讓舊版與新版程式都能使用；資料回填、雙版本驗證後，最後才移除舊欄位。否則新版部署後，即使回退舊容器也可能因 Schema 不相容而無法啟動。</p>',
+'<b>Canary / Traffic Shift：先少量，再逐步增加。</b><p>先以合成測試資料進行 Smoke Test，再觀察健康檢查、5xx、延遲、RAG 引用品質與資料庫連線。異常時停止擴流並切回穩定版本，不能只靠「部署成功」判定。</p>',
+'<b>三層復原不可混用。</b><p>Application Rollback 回退程式映像；DB Transaction Rollback 回復尚未 COMMIT 的交易；已提交的金融業務必須依授權執行補償或沖正，保留稽核與防重複執行。</p>'
+];
+const nodes={vue:'負責前端問題輸入與顯示。部署新版時須確認 API response schema 與舊版 Spring Boot 相容。',spring:'RBAC、核准與正式寫入邊界；應保持 API backward compatibility、Idempotency 與審計紀錄。',fastapi:'RAG/LLM 推論微服務；可用新舊容器版本做 Smoke Test、健康檢查、限流與安全降級。',db:'Postgres 使用向後相容 Migration；回退程式不等於回退 Schema，避免不可逆 DROP。',traffic:'AWS ALB/ECS、Azure Container Apps revisions、GCP Cloud Run revisions 有不同的流量切換方式，需分別驗證回退與監控。'};
+document.querySelector('#concept').innerHTML=concepts[0];
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));document.querySelector('#concept').innerHTML=concepts[Number(b.dataset.tab)];}));
+document.querySelectorAll('[data-node]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-node]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.querySelector('#nodeinfo').textContent=nodes[b.dataset.node];}));
+function collect(){const f=new FormData(document.querySelector('#exam'));const q1=f.get('q1'),q2=f.getAll('q2'),ms=[1,2,3,4].map(i=>f.get('m'+i)),ps=[1,2,3,4].map(i=>f.get('p'+i)),practice=String(f.get('practice')||'').trim(),missing=[];
+if(!q1)missing.push('Q1');if(!q2.length)missing.push('Q2');if(ms.some(x=>!x))missing.push('Q3');if(new Set(ms).size!==4)missing.push('Q3 配對不可重複');if(ps.some(x=>!x))missing.push('實作選項');if(practice.length<60)missing.push('流程設計至少 60 字');
+if(missing.length){document.querySelector('#status').className='';document.querySelector('#status').textContent='尚缺：'+missing.join('、');return null;}
+return 'Cloud × AI Day 32 正式作答（2026-11-02；請先確認官方紀錄，勿重複寫入）\nQ1：'+q1+'\nQ2：'+q2.join('、')+'\nQ3：'+ms.map((x,i)=>(i+1)+'→'+x).join('、')+'\n實作選項：'+ps.map((x,i)=>(i+1)+'→'+x).join('、')+'\n流程設計：\n'+practice+'\n請先批改，再依權限同步官方網站的完整歷史、挑戰、紀錄與能力地圖。';
+}
+document.querySelector('#submit').addEventListener('click',async()=>{const out=collect();if(!out)return;const box=document.querySelector('#result'),status=document.querySelector('#status');box.hidden=false;box.textContent=out;status.className='ok';status.textContent='作答完整，尚未正式計分。';try{await navigator.clipboard.writeText(out);status.textContent='已複製作答，請貼回 ChatGPT 批改。';}catch(e){status.textContent='請手動複製下方文字貼回 ChatGPT 批改。';}});
+document.querySelector('#download').addEventListener('click',()=>{const out=collect();if(!out)return;const url=URL.createObjectURL(new Blob([out],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='cloud-ai-day32-answer.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);document.querySelector('#status').textContent='作答已匯出，尚未正式計分。';});
+</script></body></html>
