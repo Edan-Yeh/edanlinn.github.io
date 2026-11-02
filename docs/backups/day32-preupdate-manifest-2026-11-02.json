@@ -1,0 +1,11 @@
+{
+  "created": "2026-11-02",
+  "purpose": "Pre-Day32 lesson metadata change, versioned backup via immutable Git blob",
+  "source": "data.js",
+  "blobSha": "9395b780d22dddc53e0c1e78d7c0ea4893f2a97f",
+  "blobUrl": "https://github.com/edan-yeh/edanlinn.github.io/blob/9395b780d22dddc53e0c1e78d7c0ea4893f2a97f/data.js",
+  "days": 31,
+  "scores": 31,
+  "quizBank": 60,
+  "latestScoredDay": 31
+}
