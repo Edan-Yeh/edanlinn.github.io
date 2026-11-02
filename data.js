@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-10-30",
+  "updatedAt": "2026-11-02",
   "completedDays": 31,
-  "currentTrack": "Cloud × AI / Day 31 已完成（98/100）· 下個工作日接續 Day 32",
+  "currentTrack": "Cloud × AI / Day 31 已完成（98/100）· Day 32 互動課程待作答",
   "scores": [
     {
       "day": 1,
@@ -5157,12 +5157,12 @@ window.CLOUD_SA_DATA = {
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
   "pendingLesson": {
-    "day": 30,
-    "date": "2026-10-29",
-    "topic": "AI Deep Dive: Embedding, Vector Similarity and RAG Retrieval Evaluation",
+    "day": 32,
+    "date": "2026-11-02",
+    "topic": "Cloud Architecture: Safe Rollouts, Expand–Contract Schema and Transaction Recovery",
     "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day30-2026-10-29.html",
+    "interactiveUrl": "docs/cloud-ai-day32-2026-11-02.html",
     "score": null,
-    "note": "僅發布課程，尚未收到作答，不計入完成天數或平均分數。"
+    "note": "僅建立 Day 32 互動課程，尚未收到作答，不計入完成天數或平均分數。"
   }
 };
