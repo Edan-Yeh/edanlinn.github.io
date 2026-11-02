@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-02",
-  "completedDays": 31,
-  "currentTrack": "Cloud × AI / Day 31 已完成（98/100）· Day 32 互動課程待作答",
+  "completedDays": 32,
+  "currentTrack": "Cloud × AI / Day 32 已完成（95/100）· 下個工作日接續 Day 33",
   "scores": [
     {
       "day": 1,
@@ -126,6 +126,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 31,
       "score": 98
+    },
+    {
+      "day": 32,
+      "score": 95
     }
   ],
   "roadmap": [
@@ -152,11 +156,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–31"
+        "value": "Day 1–32"
       },
       {
         "label": "目前主題",
-        "value": "Day 31 / RAG × Agent × 交易安全（已完成）"
+        "value": "Day 32 / 安全部署與 Schema 演進（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -164,7 +168,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "RAG Index Lifecycle / Application Rollback / Schema Compatibility"
+        "value": "Canary SLO Gates / Expand–Contract Runbook / AI Programming"
       }
     ],
     "domains": [
@@ -3170,6 +3174,36 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "Application Rollback 回退服務版本；DB rollback 只適用尚未提交的交易。",
       "memory": "容器回退 ≠ 資料庫回退 ≠ 已提交業務沖正。"
+    },
+    {
+      "id": "D32-Q1-REVIEW",
+      "category": "Cloud × AI / Deployment",
+      "difficulty": "中等",
+      "question": "為確保舊版程式可回退，DB Schema 變更應採哪種策略？",
+      "options": [
+        "先 DROP 舊欄位",
+        "先新增相容欄位、回填並驗證後再 Contract",
+        "每次清空 DB",
+        "只回退容器即可"
+      ],
+      "answer": 1,
+      "explanation": "Expand–Contract 讓新舊程式共存，並在確認相容後才移除舊欄位。",
+      "memory": "先 Expand，後 Contract；容器回退不等於 Schema 回退。"
+    },
+    {
+      "id": "D32-PRACTICE-REVIEW",
+      "category": "Cloud × AI / Release Safety",
+      "difficulty": "中等",
+      "question": "Canary 發布時發現新版 5xx 上升，最佳處置？",
+      "options": [
+        "繼續放量",
+        "停止擴流並切回穩定版本，確認 Schema 及交易影響",
+        "直接刪除 DB",
+        "讓 LLM 自行修復已提交交易"
+      ],
+      "answer": 1,
+      "explanation": "停止擴流、回切穩定版、確認 DB Schema 與交易稽核，避免錯誤擴散。",
+      "memory": "Canary 需要可量測放量與回退門檻。"
     }
   ],
   "days": [
@@ -5141,6 +5175,152 @@ window.CLOUD_SA_DATA = {
         "Idempotency Key 應搭配唯一限制及交易狀態紀錄。"
       ],
       "archive": "docs/cloud-ai-day31-2026-10-30.html"
+    },
+    {
+      "day": 32,
+      "date": "2026-11-02",
+      "topic": "Cloud Architecture: Safe Deployment, Expand–Contract Schema and Transaction Recovery",
+      "status": "completed",
+      "score": 95,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.發布前準備好備份和Schema檢查\n2.先控制少量測試錯誤率\n4.檢查負前端問題輸入與顯示。\n5.確認實際交易和log紀錄是否有符合預期。\n6.確認畫面資訊看DB資料是否符合預期\n7.慢慢放大量，檢查新版上線後錯誤的頻率\n\n如果有異常\n1.建立相容欄位，逐步移回\n2.如果已經交易，先記錄起來，並依審核修復資料"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "新版 FastAPI 要讀取新增的引用來源版本欄位，但舊版仍需能回退，最安全的 Schema 演進方式？",
+          "options": [
+            "A. 先刪除舊欄位，再部署新版，失敗時用容器回退即可",
+            "B. 先新增向後相容欄位，逐步讓新舊版本可運作，驗證後再移除舊欄位",
+            "C. 每次部署都清空正式 Postgres 再重建",
+            "D. 只提高 LLM Temperature 就能保證 Schema 相容"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "Expand–Contract 先擴充向後相容欄位、回填並雙版本驗證，最後才移除舊欄位。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "AI Tutor 新版逐步發布，哪些做法能降低服務與金融交易風險？",
+          "options": [
+            "A. 先用合成資料執行 Smoke Test、權限與引用測試",
+            "B. 以健康檢查與錯誤率決定是否增加新版本流量",
+            "C. 切回舊容器後，所有已 COMMIT 的錯誤交易都會自動撤銷",
+            "D. 寫入 API 使用 Idempotency Key、唯一限制與稽核",
+            "E. Azure Container Apps 與 Cloud Run 的所有部署細節完全相同，不必驗證",
+            "F. 回退前確認舊版程式與目前 DB Schema 的相容性"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "需以合成資料測試、健康指標、Idempotency、稽核及 Schema 相容性保障安全部署；應用回退不會自動撤銷已提交交易。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Canary/Traffic Shift、Expand–Contract、DB Transaction Rollback、Business Compensation",
+          "options": [
+            "A. Canary/Traffic Shift",
+            "B. Expand–Contract",
+            "C. DB Transaction Rollback",
+            "D. Business Compensation"
+          ],
+          "prompts": [
+            "1. 先讓少量流量使用新版本並監控錯誤率",
+            "2. 分階段修改欄位，讓新舊程式共存",
+            "3. 未 COMMIT 的寫入發生錯誤並撤回",
+            "4. 已提交的放款交易需依業務授權沖正"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "Canary 管流量、Expand–Contract 管相容性、DB Rollback 管未提交交易、業務補償管已提交交易。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 40,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作架構選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "安全部署與復原 Runbook",
+              "earned": 20,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Expand–Contract Schema 演進",
+        "Canary / Traffic Shift",
+        "部署前備份與 Schema 檢查",
+        "交易稽核與業務補償",
+        "Application Rollback 與 DB Transaction Rollback 區別"
+      ],
+      "corrections": [
+        [
+          "Canary 缺少可量測放量門檻",
+          "示範 5%→25%→100%，每階段以 5xx、P95 Latency、DB Connection 與 RAG 引用品質決定是否繼續；門檻須依實際 SLO 設定"
+        ],
+        [
+          "異常停止與回退順序未具體",
+          "先停止擴流、切回已驗證穩定映像，再確認 DB Schema 相容與交易影響"
+        ],
+        [
+          "Expand–Contract 完整步驟需補強",
+          "先新增相容欄位、回填、雙版本驗證，確認無依賴後才移除舊欄位"
+        ]
+      ],
+      "memory": [
+        "Canary 流量放大應由可量測的錯誤率、延遲、DB 連線及 RAG 引用品質控制。",
+        "Application Rollback 不會自動復原已 COMMIT 交易；需依授權補償或沖正。",
+        "Expand–Contract 的 Contract 應在資料回填及雙版本驗證後進行。"
+      ],
+      "archive": "docs/cloud-ai-day32-2026-11-02.html"
     }
   ],
   "cloudComparison": {
