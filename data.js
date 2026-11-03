@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-02",
-  "completedDays": 32,
-  "currentTrack": "Cloud × AI / Day 32 已完成（95/100）· 下個工作日接續 Day 33",
+  "updatedAt": "2026-11-03",
+  "completedDays": 33,
+  "currentTrack": "Cloud × AI / Day 33 已完成（91/100）· 下個工作日接續 Day 34",
   "scores": [
     {
       "day": 1,
@@ -130,6 +130,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 32,
       "score": 95
+    },
+    {
+      "day": 33,
+      "score": 91
     }
   ],
   "roadmap": [
@@ -156,11 +160,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–32"
+        "value": "Day 1–33"
       },
       {
         "label": "目前主題",
-        "value": "Day 32 / 安全部署與 Schema 演進（已完成）"
+        "value": "Day 33 / Python 資料匯入防護（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -168,7 +172,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Canary SLO Gates / Expand–Contract Runbook / AI Programming"
+        "value": "RBAC 強化複習 / Cloud × AI RAG Authorization"
       }
     ],
     "domains": [
@@ -3204,6 +3208,36 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "停止擴流、回切穩定版、確認 DB Schema 與交易稽核，避免錯誤擴散。",
       "memory": "Canary 需要可量測放量與回退門檻。"
+    },
+    {
+      "id": "D33-RBAC-REVIEW",
+      "category": "Security / RBAC",
+      "difficulty": "中等",
+      "question": "AI Tutor 的 Vue 送出 role=admin，Spring Boot 已驗證登入。FastAPI 能否直接信任前端 role 值並讀取所有教材？",
+      "options": [
+        "可以，前端送 admin 就有權限",
+        "不行，必須由可信後端驗證授權身分、角色及資源範圍",
+        "只要 Postgres 有資料即可",
+        "只要 LLM 回答正確即可"
+      ],
+      "answer": 1,
+      "explanation": "Authentication 不等於 Authorization；前端角色值不可作為授權依據。後端需根據可信 token/session、角色與資源範圍強制檢查，遵循最小權限。",
+      "memory": "RBAC：後端授權、最小權限、預設拒絕；不可信任前端傳入角色。"
+    },
+    {
+      "id": "D33-QUARANTINE-REVIEW",
+      "category": "AI Programming / Data Quality",
+      "difficulty": "中等",
+      "question": "匯入教材缺少 content 欄位，最佳做法是？",
+      "options": [
+        "直接寫入向量索引",
+        "丟棄不留紀錄",
+        "隔離並記錄錯誤原因、來源版本與追蹤 ID",
+        "讓未授權外部 LLM 修正"
+      ],
+      "answer": 2,
+      "explanation": "Quarantine + Lineage 讓資料異常可追溯且不污染正式資料及索引。",
+      "memory": "驗證失敗先隔離並記錄 lineage，不可假裝索引成功。"
     }
   ],
   "days": [
@@ -5321,6 +5355,151 @@ window.CLOUD_SA_DATA = {
         "Expand–Contract 的 Contract 應在資料回填及雙版本驗證後進行。"
       ],
       "archive": "docs/cloud-ai-day32-2026-11-02.html"
+    },
+    {
+      "day": 33,
+      "date": "2026-11-03",
+      "topic": "AI Programming: Python Schema Validation, Idempotency, Quarantine, Lineage and RBAC",
+      "status": "completed",
+      "score": 91,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.讀取已授權的資料來源檔案。\n2.Vue顯示匯入狀態及錯誤明細，不直接寫入正式資料。\n3.Spring boot 驗證登入、RBAC、核准與資料使用權限。\n4.Postgres Pydantic 驗證、去重、隔離、批次處理與錯誤重試\n5.以唯一限制、交易與版本欄位保存可信資料及稽核\n5.1.Schema Validation驗證\n5.2.Idempotency：用 doc_id + version 或明確業務鍵去重；同一批重跑不應重複產生文件與向量。\n5.3.Quarantine + Lineage：錯誤資料隔離並保留原因、來源、版本、批次與追蹤 ID。索引失敗要能安全重試，不得假裝資料已完成匯入。\n6.RAG index : 只對已授權、驗證成功的內容建立索引，保留來源與版本。\n7.Vue 顯示匯入最終結果"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI Tutor 從已授權的合成教材 JSON 匯入資料，哪個順序較安全？",
+          "options": [
+            "A. 直接寫入向量索引，之後再檢查欄位",
+            "B. 先驗證 Schema、權限與必要欄位，清理後再去重與索引",
+            "C. 先把所有錯誤資料丟給外部 LLM 自動修正",
+            "D. 將來源與版本欄位刪除以節省空間"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "先授權與 Schema Validation，後清理去重，再進入可信資料與索引。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "哪幾項能提升 Python 資料匯入可靠性？",
+          "options": [
+            "A. 驗證 doc_id、source、version、content 等必要欄位",
+            "B. 用來源 ID 與版本建立去重鍵，確保重跑不重複寫入",
+            "C. 任意來源資料都可以不經授權送到外部 Embedding API",
+            "D. 異常資料進隔離區，記錄原因並保留追溯資訊",
+            "E. 發生一筆格式錯誤時，直接清空所有正式資料",
+            "F. 對重試與批次寫入加入冪等及交易邊界"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 15,
+          "explanation": "A/B/D/F 正確；D 是 Quarantine + Lineage，錯誤資料須隔離、保留原因與追溯資訊。作答漏選 D，但實作流程已提及此觀念。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Schema Validation、Idempotency、Quarantine、Lineage",
+          "options": [
+            "A. Schema Validation",
+            "B. Idempotency",
+            "C. Quarantine",
+            "D. Lineage"
+          ],
+          "prompts": [
+            "1. 缺少 content 欄位時拒絕匯入",
+            "2. 同一來源版本重跑不重複新增",
+            "3. 格式錯誤資料移到隔離區待處理",
+            "4. 能追蹤文件來源、版本及索引批次"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "Schema Validation 檢查格式，Idempotency 防重複，Quarantine 隔離異常，Lineage 追溯來源與版本。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 15,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 41,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "資料匯入流程設計",
+              "earned": 21,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "授權來源與 Schema Validation",
+        "doc_id + version 冪等去重",
+        "Quarantine + Lineage 實作概念",
+        "Postgres 唯一限制與稽核",
+        "RAG Index 只收可信資料"
+      ],
+      "corrections": [
+        [
+          "Q2 漏選 D",
+          "Quarantine 必須保留異常原因、來源、版本、批次與追蹤 ID；使用者實作 5.3 已提及，屬於題目疏漏"
+        ],
+        [
+          "Pydantic 與 Postgres 元件責任混淆",
+          "Pydantic 在 Python FastAPI 服務層驗證資料；Postgres 負責交易、唯一限制、資料保存與稽核"
+        ],
+        [
+          "RBAC 需要加強",
+          "Authentication ≠ Authorization；Spring Boot 入口檢查身分與角色，FastAPI 仍須驗證可信授權上下文，資料庫落實最小權限與資料範圍；禁止信任 Vue 傳入角色"
+        ]
+      ],
+      "memory": [
+        "RBAC (Role-Based Access Control)：依角色及資源授權，不等於登入驗證；預設拒絕、最小權限、後端強制檢查。",
+        "Cloud SA Academy 角色示例：Student 讀取授權教材、Teacher 提交匯入、Reviewer 核准、Admin 管理角色；Admin 不代表可繞過資料授權。",
+        "Python Pydantic 在 FastAPI 做 Schema Validation；Postgres 用唯一限制與交易保護資料。",
+        "Quarantine + Lineage 保留異常原因、來源、版本、批次、追蹤 ID；索引失敗不可標示成功。"
+      ],
+      "archive": "docs/cloud-ai-day33-2026-11-03.html"
     }
   ],
   "cloudComparison": {
