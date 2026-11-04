@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-03",
-  "completedDays": 33,
-  "currentTrack": "Cloud × AI / Day 33 已完成（91/100）· 下個工作日接續 Day 34",
+  "updatedAt": "2026-11-04",
+  "completedDays": 34,
+  "currentTrack": "Cloud × AI / Day 34 已完成（96/100）· 下個工作日接續 Day 35",
   "scores": [
     {
       "day": 1,
@@ -134,6 +134,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 33,
       "score": 91
+    },
+    {
+      "day": 34,
+      "score": 96
     }
   ],
   "roadmap": [
@@ -160,11 +164,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–33"
+        "value": "Day 1–34"
       },
       {
         "label": "目前主題",
-        "value": "Day 33 / Python 資料匯入防護（已完成）"
+        "value": "Day 34 / RAG × RBAC × Agent Security（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -172,7 +176,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "RBAC 強化複習 / Cloud × AI RAG Authorization"
+        "value": "AI Deep Dive / RAG Authorization & Deny-path Review"
       }
     ],
     "domains": [
@@ -3238,6 +3242,36 @@ window.CLOUD_SA_DATA = {
       "answer": 2,
       "explanation": "Quarantine + Lineage 讓資料異常可追溯且不污染正式資料及索引。",
       "memory": "驗證失敗先隔離並記錄 lineage，不可假裝索引成功。"
+    },
+    {
+      "id": "D34-AUTH-REVIEW",
+      "category": "Cloud × AI / Authorization",
+      "difficulty": "中等",
+      "question": "RAG 已依 ACL 檢索文件，但回覆前文件權限發生變更，最佳做法？",
+      "options": [
+        "直接引用先前檢索結果",
+        "再次確認引用來源版本與目前授權，必要時拒絕或重新檢索",
+        "只讓 Vue 隱藏引用",
+        "交給 LLM 判斷是否授權"
+      ],
+      "answer": 1,
+      "explanation": "授權須在檢索前強制過濾，回覆前再次驗證來源 ACL、版本與使用者權限，避免資料變更導致越權。",
+      "memory": "Authorized Retrieval：檢索前 ACL/tenant 過濾，回覆前引用再驗證。"
+    },
+    {
+      "id": "D34-DENY-REVIEW",
+      "category": "Security / RBAC",
+      "difficulty": "中等",
+      "question": "AI Agent 的工具呼叫超出使用者授權範圍，應如何處理？",
+      "options": [
+        "只在 Prompt 寫不允許",
+        "Gateway 拒絕執行、避免洩漏資料存在與否並記錄適當稽核",
+        "讓 LLM 取得管理員憑證",
+        "先執行再詢問是否授權"
+      ],
+      "answer": 1,
+      "explanation": "Tool Gateway 必須驗證可信授權、工具 allowlist、參數 Schema 和資料範圍；拒絕越權呼叫並記錄稽核。",
+      "memory": "Agent tool denied path：後端拒絕、最小資訊揭露、稽核。"
     }
   ],
   "days": [
@@ -5500,6 +5534,152 @@ window.CLOUD_SA_DATA = {
         "Quarantine + Lineage 保留異常原因、來源、版本、批次、追蹤 ID；索引失敗不可標示成功。"
       ],
       "archive": "docs/cloud-ai-day33-2026-11-03.html"
+    },
+    {
+      "day": 34,
+      "date": "2026-11-04",
+      "topic": "Cloud × AI: RAG Document Authorization, RBAC and Agent Tool Security",
+      "status": "completed",
+      "score": 96,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.vue送出問題，先確認問題來源是否符合規範。\n2.spring boot 驗證登入與 RBAC，建立可信身分及授權上下文。\n3.FastAPI 檢查可信授權上下文，管理 RAG/Agent 流程與拒絕回應。\n4. Authorized Retrieval：先從可信授權上下文產生檢索條件，在向量檢索階段強制文件 A\n5.Tool Gateways 只允許列名工具與合法參數；對每次呼叫執行授權、限額與稽核。\n6. Postgres 以資料庫角色、RLS（適用時）、交易、唯一限制與稽核落實最小權限。\n7.最終結果呈現。"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "學生已登入並擁有 student 角色，要求 AI Tutor 引用其他班級的未授權教材。最佳設計是？",
+          "options": [
+            "A. 只要已登入就可檢索全部文件",
+            "B. 在檢索前依可信身分與文件 ACL 過濾，回覆前再次確保引用來源授權",
+            "C. 只在 Vue 隱藏文件按鈕",
+            "D. 讓 LLM 自行判斷能否洩露內容"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "需在檢索前以可信身分、ACL 與 tenant 過濾；回覆前再次確認引用來源授權。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "AI Agent 要呼叫工具查詢合成放款資料，哪些安全設計合理？",
+          "options": [
+            "A. Tool Gateway 使用明確 allowlist、最小權限與參數 Schema",
+            "B. 根據可信身分驗證角色、操作權限及資料範圍",
+            "C. 只要 Prompt 寫不可越權即可免除後端檢查",
+            "D. 寫入或高風險操作採審核、稽核與冪等",
+            "E. 把 DB 管理員憑證直接交給 LLM",
+            "F. RAG 索引與查詢都保留文件版本、ACL 與追溯資訊"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "Tool Gateway 需 allowlist、Schema、可信授權、最小權限；高風險寫入需核准、冪等及稽核，RAG 保留 ACL 與 lineage。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Authentication、RBAC、Document ACL / ABAC、Tool Gateway",
+          "options": [
+            "A. Authentication",
+            "B. RBAC",
+            "C. Document ACL / ABAC",
+            "D. Tool Gateway"
+          ],
+          "prompts": [
+            "1. 驗證登入者身分",
+            "2. 限制 Teacher 才能提交教材",
+            "3. 限制學生只讀自己班級文件",
+            "4. 限制 Agent 可呼叫的工具與參數"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "Authentication 證明身分；RBAC 管角色操作；ACL/ABAC 管資源範圍；Tool Gateway 管 Agent 可執行的工具與參數。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 41,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "授權與拒絕流程設計",
+              "earned": 21,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Authentication 與 RBAC 差異",
+        "Document ACL / ABAC 與 Tenant 授權",
+        "Tool Gateway allowlist、Schema、授權與稽核",
+        "Postgres RLS 與最小權限",
+        "RAG 檢索前授權過濾"
+      ],
+      "corrections": [
+        [
+          "Authorized Retrieval 第 4 步文字截斷",
+          "在向量檢索階段強制文件 ACL、tenant 與資源範圍過濾；禁止未授權 chunk 進入 Prompt"
+        ],
+        [
+          "越權拒絕處理尚未具體",
+          "拒絕未授權請求，記錄授權失敗與稽核事件，避免洩漏資料是否存在"
+        ],
+        [
+          "引用來源回覆前再驗證",
+          "回覆前確認引用文件 ACL、版本與授權範圍仍有效"
+        ]
+      ],
+      "memory": [
+        "RBAC 只定義角色操作；文件級 ACL/ABAC 與 tenant 隔離需在 RAG retrieval 階段強制套用。",
+        "Tool Gateway 需每次驗證 allowlist、參數 Schema、授權範圍、限額與稽核，不能信任 LLM 自行守規則。",
+        "未授權檢索應在進入 Prompt 前拒絕或過濾，並留下適當稽核；回覆前再次確認引用來源授權。"
+      ],
+      "archive": "docs/cloud-ai-day34-2026-11-04.html"
     }
   ],
   "cloudComparison": {
