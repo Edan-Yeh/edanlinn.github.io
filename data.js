@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-04",
-  "completedDays": 34,
-  "currentTrack": "Cloud × AI / Day 34 已完成（96/100）· 下個工作日接續 Day 35",
+  "updatedAt": "2026-11-05",
+  "completedDays": 35,
+  "currentTrack": "Cloud × AI / Day 35 已完成（96/100）· 下個工作日接續 Day 36",
   "scores": [
     {
       "day": 1,
@@ -138,6 +138,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 34,
       "score": 96
+    },
+    {
+      "day": 35,
+      "score": 96
     }
   ],
   "roadmap": [
@@ -164,11 +168,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–34"
+        "value": "Day 1–35"
       },
       {
         "label": "目前主題",
-        "value": "Day 34 / RAG × RBAC × Agent Security（已完成）"
+        "value": "Day 35 / Embedding × RAG Retrieval Quality（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -176,7 +180,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "AI Deep Dive / RAG Authorization & Deny-path Review"
+        "value": "Architecture Review / RAG Evaluation, RBAC and Rollback"
       }
     ],
     "domains": [
@@ -3272,6 +3276,36 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "Tool Gateway 必須驗證可信授權、工具 allowlist、參數 Schema 和資料範圍；拒絕越權呼叫並記錄稽核。",
       "memory": "Agent tool denied path：後端拒絕、最小資訊揭露、稽核。"
+    },
+    {
+      "id": "D35-QUALITY-REVIEW",
+      "category": "AI Deep Dive / Retrieval Quality",
+      "difficulty": "中等",
+      "question": "Postgres 是否只應儲存 RAG 查詢信心度高的文件？",
+      "options": [
+        "是，信心度低一律不存",
+        "否，資料入庫依授權、Schema 與品質驗證；查詢信心度用於回答決策",
+        "只看 cosine similarity",
+        "讓 LLM 自行決定"
+      ],
+      "answer": 1,
+      "explanation": "資料品質與檢索信心度是不同概念；可信文件的持久化不應被某次查詢的相似度決定。",
+      "memory": "可信資料入庫 ≠ RAG 查詢信心度。"
+    },
+    {
+      "id": "D35-EVAL-REVIEW",
+      "category": "AI Deep Dive / RAG Evaluation",
+      "difficulty": "中等",
+      "question": "如何客觀比較新舊 RAG 檢索版本的品質？",
+      "options": [
+        "只比較 LLM 回答語氣",
+        "固定合成測試集與相關性標註，比較 Recall@K、Precision@K、引用正確率及授權違規",
+        "只比較 token 數",
+        "只看部署是否成功"
+      ],
+      "answer": 1,
+      "explanation": "固定測試集、標註及多指標基準才能驗證檢索改善與授權安全。",
+      "memory": "RAG 需固定測試集、標註、指標與版本對照。"
     }
   ],
   "days": [
@@ -5680,6 +5714,152 @@ window.CLOUD_SA_DATA = {
         "未授權檢索應在進入 Prompt 前拒絕或過濾，並留下適當稽核；回覆前再次確認引用來源授權。"
       ],
       "archive": "docs/cloud-ai-day34-2026-11-04.html"
+    },
+    {
+      "day": 35,
+      "date": "2026-11-05",
+      "topic": "AI Deep Dive: Embedding, Cosine Similarity, Retrieval Quality and Authorized RAG",
+      "status": "completed",
+      "score": 96,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.vue 顯示提問、引用來源及低信心拒答；不作為授權真實來源。\n2.spring boot: 驗證身分、RBAC 與資料範圍，建立可信授權上下文。\n3. 驗證可信授權上下文，控制 embedding、Top-K、reranking、低信心拒答與觀測。\n3.1 embedding：將文字映射成數值向量，讓語意相近的查詢與段落在向量空間中可比較\n3.2 Similarity：衡量向量方向相近程度，常用於候選段落搜尋\n3.3 Retrieval Quality：Recall@K 衡量相關資料是否被找出，Precision@K 衡量前 K 個結果有多少相關；引用正確率與授權違規率需另外測量。\n3.4低信心度可以拒答\n4. Postgres：儲存信心度高且正確資料，儲存文件來源、版本、ACL 與向量（pgvector 可選），使用交易及適用時的 RLS。\n5.vue:呈現最終結果\n\nAuthorized Retrieval\n在檢索階段強制 ACL/tenant 過濾，回覆前再次檢查引用文件權限及版本。"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI Tutor 需要從教材找到語意相近的段落。Embedding 最合理的用途是？",
+          "options": [
+            "A. 將文件轉成密碼，任何人都無法還原",
+            "B. 將查詢與文件轉為向量，用相似度找候選內容，再驗證品質與授權",
+            "C. 自動保證所有相似內容都正確且有授權",
+            "D. 直接取代 Spring Boot 的 RBAC 驗證"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "Embedding 讓語意可比較，但相似度不保證真實性、最新版本或授權。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "學生搜尋貸款提前清償，RAG 常找到舊版本教材或其他班級文件。哪些改善合理？",
+          "options": [
+            "A. 檢索前套用可信 tenant / class / ACL 過濾",
+            "B. 將文件版本、有效日期與來源納入檢索及引用檢查",
+            "C. 只要 cosine similarity 高，就忽略文件授權",
+            "D. 使用合成測試題測量 Recall@K、Precision@K 與引用正確率",
+            "E. 先把所有未授權 chunk 送入 Prompt，再請 LLM 遮蔽",
+            "F. 對專有名詞與精確編號考慮 Keyword + Vector 的 Hybrid Search"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "授權前置、版本/有效日期驗證、固定評估集及 Hybrid Search 可改善品質並避免越權。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Embedding、Cosine Similarity、Recall@K、Reranking",
+          "options": [
+            "A. Embedding",
+            "B. Cosine Similarity",
+            "C. Recall@K",
+            "D. Reranking"
+          ],
+          "prompts": [
+            "1. 把教材文字轉成可比較的數值向量",
+            "2. 比較兩個向量的方向相近程度",
+            "3. 檢查前 K 個結果涵蓋多少相關文件",
+            "4. 對初步候選段落重新排序，提升最終相關性"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "Embedding 建立向量、Cosine 比較方向、Recall@K 衡量相關結果召回、Reranking 重新排序候選段落。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 41,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "檢索品質與授權流程",
+              "earned": 21,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Embedding 與 Cosine Similarity 基礎",
+        "Recall@K / Precision@K 指標",
+        "檢索前 ACL / tenant 強制過濾",
+        "低信心拒答與引用來源驗證",
+        "Hybrid Search 選型"
+      ],
+      "corrections": [
+        [
+          "FastAPI 責任需明確標示",
+          "FastAPI 驗證可信授權上下文，負責 embedding、Top-K、reranking、拒答與觀測"
+        ],
+        [
+          "資料庫保存條件與檢索信心度混淆",
+          "Postgres 保存經授權、Schema 與品質驗證的資料；檢索信心度用於回答與拒答判斷，不應決定是否保存原始可信文件"
+        ],
+        [
+          "檢索品質驗收需可量測",
+          "建立固定合成測試集與相關性標註，記錄 Recall@K、Precision@K、引用正確率及授權違規率，做版本前後比較"
+        ]
+      ],
+      "memory": [
+        "資料品質、檢索相關性、回答可信度、使用者授權是四種不同的驗證面向。",
+        "FastAPI 管 embedding、Top-K、reranking、低信心拒答與觀測；Postgres 管可信資料持久化與版本/ACL。",
+        "RAG 評估需固定合成測試集與基準，追蹤 Recall@K、Precision@K、引用正確率及授權違規數。"
+      ],
+      "archive": "docs/cloud-ai-day35-2026-11-05.html"
     }
   ],
   "cloudComparison": {
