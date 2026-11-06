@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-05",
-  "completedDays": 35,
-  "currentTrack": "Cloud × AI / Day 35 已完成（96/100）· 下個工作日接續 Day 36",
+  "updatedAt": "2026-11-06",
+  "completedDays": 36,
+  "currentTrack": "Cloud × AI / Day 36 已完成（97/100）· 下個工作日接續 Day 37",
   "scores": [
     {
       "day": 1,
@@ -142,6 +142,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 35,
       "score": 96
+    },
+    {
+      "day": 36,
+      "score": 97
     }
   ],
   "roadmap": [
@@ -168,11 +172,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–35"
+        "value": "Day 1–36"
       },
       {
         "label": "目前主題",
-        "value": "Day 35 / Embedding × RAG Retrieval Quality（已完成）"
+        "value": "Day 36 / Architecture Review: RAG × RBAC × Rollback（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -180,7 +184,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Architecture Review / RAG Evaluation, RBAC and Rollback"
+        "value": "Cloud Architecture / Canary SLO & Transaction Recovery"
       }
     ],
     "domains": [
@@ -3306,6 +3310,36 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "固定測試集、標註及多指標基準才能驗證檢索改善與授權安全。",
       "memory": "RAG 需固定測試集、標註、指標與版本對照。"
+    },
+    {
+      "id": "D36-CANARY-REVIEW",
+      "category": "Architecture Review / Canary",
+      "difficulty": "中等",
+      "question": "RAG Canary 發布時，最合理的放量決策依據是？",
+      "options": [
+        "只看容器是否啟動",
+        "用固定測試集與觀測視窗檢查 Recall@K、引用正確率、錯誤率與授權違規門檻",
+        "只看 token 消耗",
+        "只看前端是否顯示"
+      ],
+      "answer": 1,
+      "explanation": "Canary Gate 必須量化品質與安全門檻，未達標即停止擴量或回復。",
+      "memory": "Canary 量化門檻、授權零容忍、回復後再驗收。"
+    },
+    {
+      "id": "D36-TX-RECOVERY-REVIEW",
+      "category": "Architecture Review / Transaction Recovery",
+      "difficulty": "中等",
+      "question": "已提交的金融交易因新服務版本出錯，需要回復，哪種方式正確？",
+      "options": [
+        "只要回退程式碼交易就會消失",
+        "直接修改資料庫欄位，不留紀錄",
+        "依核准流程進行補償／沖正並對帳稽核，與服務回版分開",
+        "刪除 Postgres 所有資料"
+      ],
+      "answer": 2,
+      "explanation": "Committed transaction 不因應用回版撤銷；須走授權補償、沖正或受控修復，保留稽核與對帳。",
+      "memory": "Application Rollback ≠ DB transaction rollback ≠ compensating transaction。"
     }
   ],
   "days": [
@@ -5860,6 +5894,152 @@ window.CLOUD_SA_DATA = {
         "RAG 評估需固定合成測試集與基準，追蹤 Recall@K、Precision@K、引用正確率及授權違規數。"
       ],
       "archive": "docs/cloud-ai-day35-2026-11-05.html"
+    },
+    {
+      "day": 36,
+      "date": "2026-11-06",
+      "topic": "Architecture Review: RAG Quality, RBAC, Agent Security, Canary and Rollback",
+      "status": "completed",
+      "score": 97,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue : 顯示問題、引用、拒答與發布狀態，不作為權限來源。\n2.Spring Boot : 身分驗證、RBAC、資源範圍及可信授權上下文。\n3.Fast API : 驗證授權上下文，執行 RAG、Top-K、reranking、品質門檻與拒答。\n4.Tool Gateway : 工具 allowlist、Schema、授權、限額、審核及稽核。\n5.Postgres  : 交易、唯一限制、Schema 相容性與補償紀錄；已提交交易不因部署回退自動撤銷。\n6.Vue : 顯示最後結果。\n\n故障回復流程\n1.Canary ：設定 Recall@K、確認引用正確率、拒答率與授權違規基準，發布時小流量觀測；未達門檻就停止擴量。\n2.RBAC + ACL：Spring Boot 建立可信上下文，FastAPI 及 Retrieval 強制文件級過濾，Tool Gateway 逐次驗證工具與參數。\n3.Rollback：服務版本回退、RAG 索引版本切換、Schema Expand–Contract 與 DB 交易回復各自獨立。已提交交易須經業務補償或沖正，保留稽核。\n4.如果已經交易的不能Rollback，而是要將交易註記並以充正或是修改資料方式。"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI Tutor 新版 RAG 部署後，Recall@5 下降、引用錯誤增加，但資料庫已有合法的新教材匯入。最合理的第一步？",
+          "options": [
+            "A. 直接清空正式 Postgres，恢復程式碼",
+            "B. 停止擴量、切回健康的應用／索引版本，保留資料與稽核並調查",
+            "C. 忽略指標，讓 LLM 自行修復",
+            "D. 先移除 ACL 過濾以提升召回率"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "停止擴量、切回健康的服務與相容索引版本，保留正式資料及稽核；勿清空資料庫或繞過 ACL。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "銀行合成教材的 RAG/Agent 發布驗收，哪些設計合理？",
+          "options": [
+            "A. 固定合成測試集，追蹤 Recall@K、引用正確率與授權違規",
+            "B. 檢索前套用可信 ACL／tenant，回覆前再確認引用授權",
+            "C. 只要服務健康檢查通過，就可以忽略檢索品質",
+            "D. Tool Gateway 執行 allowlist、Schema、權限、限額及稽核",
+            "E. 部署 Rollback 會自動撤銷所有已提交的金融交易",
+            "F. 將應用版本、索引版本、Schema 變更及 DB 補償策略分開設計"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "品質門檻、文件授權、工具權限及各種回復機制必須分別設計與驗證。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對 Canary Gate、Authorized Retrieval、Application Rollback、Compensating Transaction",
+          "options": [
+            "A. Canary Gate",
+            "B. Authorized Retrieval",
+            "C. Application Rollback",
+            "D. Compensating Transaction"
+          ],
+          "prompts": [
+            "1. 小流量觀測品質／錯誤率，達門檻才擴量",
+            "2. 在向量檢索前限制可讀取文件範圍",
+            "3. 將服務流量切回已驗證的上一版本",
+            "4. 對已提交的業務交易採授權、可稽核的反向處理"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "Canary 管小流量驗證；Authorized Retrieval 管資料存取；Application Rollback 管服務版本；Compensating Transaction 管已提交業務交易。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 42,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "發布與故障回復流程",
+              "earned": 22,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Canary Gate 與 SLO 觀測",
+        "RBAC / ACL 與 Authorized Retrieval",
+        "Agent Tool Gateway 最小權限",
+        "Application Rollback 與 RAG Index 版本切換",
+        "金融已提交交易的補償／沖正"
+      ],
+      "corrections": [
+        [
+          "Canary 品質門檻需具體量化",
+          "定義固定合成測試集、Recall@5 與引用正確率最低值、授權違規零容忍、錯誤率上限與觀測視窗；未達門檻停止擴量"
+        ],
+        [
+          "回復後需驗收",
+          "驗證 Recall@K、引用正確率、拒答率、ACL/tenant 隔離、服務錯誤率、資料一致性與版本相容"
+        ],
+        [
+          "已提交金融交易不能任意修改資料",
+          "透過核准的沖正、補償交易或受控修復流程，保留完整稽核；應用回版不等於交易回復"
+        ]
+      ],
+      "memory": [
+        "Canary Gate 應有可量化品質/安全門檻與回復後驗收。",
+        "應用 Rollback、索引版本切換、Schema Expand–Contract 與已提交交易的業務補償相互獨立。",
+        "已提交金融交易不能直接修改正式資料取代補償/沖正；需核准、留痕、對帳。"
+      ],
+      "archive": "docs/cloud-ai-day36-2026-11-06.html"
     }
   ],
   "cloudComparison": {
