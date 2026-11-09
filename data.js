@@ -6056,12 +6056,12 @@ window.CLOUD_SA_DATA = {
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
   "pendingLesson": {
-    "day": 32,
-    "date": "2026-11-02",
-    "topic": "Cloud Architecture: Safe Rollouts, Expand–Contract Schema and Transaction Recovery",
+    "day": 37,
+    "date": "2026-11-09",
+    "topic": "Cloud Architecture: ECS/Fargate, Canary Gates, RAG Index & Financial Transaction Recovery",
     "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day32-2026-11-02.html",
+    "interactiveUrl": "docs/cloud-ai-day37-2026-11-09.html",
     "score": null,
-    "note": "僅建立 Day 32 互動課程，尚未收到作答，不計入完成天數或平均分數。"
+    "note": "Day 37 僅待作答，不納入完成天數、平均分數與挑戰題庫；Day 32 過期 pending 狀態已更正。"
   }
 };
