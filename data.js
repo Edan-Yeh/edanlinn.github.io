@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-06",
-  "completedDays": 36,
-  "currentTrack": "Cloud × AI / Day 36 已完成（97/100）· 下個工作日接續 Day 37",
+  "updatedAt": "2026-11-09",
+  "completedDays": 37,
+  "currentTrack": "Cloud × AI / Day 37 已完成（93/100）· 下個工作日接續 Day 38",
   "scores": [
     {
       "day": 1,
@@ -146,6 +146,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 36,
       "score": 97
+    },
+    {
+      "day": 37,
+      "score": 93
     }
   ],
   "roadmap": [
@@ -172,11 +176,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–36"
+        "value": "Day 1–37"
       },
       {
         "label": "目前主題",
-        "value": "Day 36 / Architecture Review: RAG × RBAC × Rollback（已完成）"
+        "value": "Day 37 / ECS/Fargate × Canary × RAG Recovery（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -184,7 +188,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Cloud Architecture / Canary SLO & Transaction Recovery"
+        "value": "AI Programming / Python RAG ACL and Retrieval Evaluation"
       }
     ],
     "domains": [
@@ -3340,6 +3344,36 @@ window.CLOUD_SA_DATA = {
       "answer": 2,
       "explanation": "Committed transaction 不因應用回版撤銷；須走授權補償、沖正或受控修復，保留稽核與對帳。",
       "memory": "Application Rollback ≠ DB transaction rollback ≠ compensating transaction。"
+    },
+    {
+      "id": "D37-ACL-TENANT",
+      "category": "Cloud Security / ACL Tenant",
+      "difficulty": "基礎",
+      "question": "Cloud SA Academy 中，Tenant 與 ACL 的差異為何？",
+      "options": [
+        "Tenant 是資料隔離單位；ACL 定義哪些主體可存取特定文件",
+        "Tenant 是向量相似度；ACL 是模型版本",
+        "兩者都是前端顯示設定",
+        "只要登入就能檢索所有 Tenant 文件"
+      ],
+      "answer": 0,
+      "explanation": "Tenant 限定資料歸屬與隔離邊界；ACL 控制特定文件的存取權；RBAC 再按角色控制操作。",
+      "memory": "Tenant 管資料歸屬，ACL 管資源存取，RBAC 管角色操作。"
+    },
+    {
+      "id": "D37-INDEX-RECOVERY",
+      "category": "Cloud Architecture / RAG Recovery",
+      "difficulty": "中等",
+      "question": "Recall@5 下降時，哪個做法較安全？",
+      "options": [
+        "只保存高相似度文件",
+        "先關閉 ACL 讓召回率回升",
+        "比對固定測試集、embedding 模型、索引與文件版本，必要時切回相容索引",
+        "回退容器後刪除所有已提交交易"
+      ],
+      "answer": 2,
+      "explanation": "服務版本與向量索引版本需獨立追蹤；召回率下降應先找出根因並驗證權限。",
+      "memory": "Recall@K 下降不等於資料本身需要刪除。"
     }
   ],
   "days": [
@@ -6040,6 +6074,157 @@ window.CLOUD_SA_DATA = {
         "已提交金融交易不能直接修改正式資料取代補償/沖正；需核准、留痕、對帳。"
       ],
       "archive": "docs/cloud-ai-day36-2026-11-06.html"
+    },
+    {
+      "day": 37,
+      "date": "2026-11-09",
+      "topic": "Cloud Architecture: ECS/Fargate, Canary Gates, RAG Index & Financial Transaction Recovery",
+      "status": "completed",
+      "score": 93,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue : 顯示問題、來源引用、拒答與部署狀態。\n2.Spring boot : 登入、RBAC，權限驗證。\n3.FastAPI : 執行 RAG、reranking、拒答門檻、引用驗證及追蹤。\n4.Retrieval : 在檢索階段執行 ACL/tenant 過濾；避免未授權 chunk 進 Prompt。\n5.Postgres : 資料、交易、唯一限制、Schema 版本、稽核與受控補償。\n6.Vue : 顯示最後結果。\n\n回復流程\n1.發現Recall@5 下降，先確認信心度高的保留。\n2.確認服務映像、健康檢查、流量切換。\n3.確認已提交的交易，註記並保留完整的log。\n4.先將一部分切斷流量，部署回退，不回復已提交交易。\n5.測試驗證是否符合原本預想。\n6.並確認新的教材還保留。\n7.確認正確無誤，把流量慢慢切回來，並開始確認健康和錯誤。\n8.穩定後開始修復交易的授權衝證或是補賞。",
+        "additionalQuestion": "ACL/tenant 條件 我忘記是甚麼"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI Tutor 在 NAS Docker 驗證後，預計移至 AWS。沒有 K8s 經驗、希望降低維運成本且需要可控部署回退，哪個方案最合理？",
+          "options": [
+            "A. 直接自行維護 EKS 控制平面與全部節點",
+            "B. ECS on Fargate 搭配健康檢查、流量切換及部署回退",
+            "C. 將正式資料庫與服務放在同一個暫存容器內",
+            "D. 用 Lambda 取代所有長時間推論與狀態管理"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "ECS on Fargate 減少主機維運，搭配健康檢查、流量切換與回退；仍需管理網路、權限與成本。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "金融教材 RAG 新版本發布時，哪些做法合理？",
+          "options": [
+            "A. Canary 先觀測 Recall@K、引用正確率與授權違規",
+            "B. 檢索前套用可信文件 ACL/tenant 條件",
+            "C. 回退容器映像後，已提交交易自動撤銷",
+            "D. 將應用版本、索引版本、Schema 與資料補償分開規劃",
+            "E. 為提高召回率，暫時關閉 ACL",
+            "F. 設定停止放量與回復後驗證門檻"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "Canary、可信授權、獨立版本回復與回復後驗證是安全發布的核心。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "將以下機制對應到最合適的責任。",
+          "prompts": [
+            "1. ECS/Fargate",
+            "2. Azure Container Apps revisions",
+            "3. Cloud Run revisions",
+            "4. Compensating Transaction"
+          ],
+          "options": [
+            "A. AWS 無伺服器容器運行，仍需設定服務部署與網路",
+            "B. Azure 版本管理與流量分配，但不等於資料庫回復",
+            "C. GCP 修訂版與流量切分，資源模型及限制與 ECS 不完全等價",
+            "D. 已提交業務交易的授權沖正或補償"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "三個雲端容器服務可管理部署版本，但不會自動回復已提交業務交易。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 38,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "部署與回復流程",
+              "earned": 18,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "ECS on Fargate 與受控部署回退",
+        "Canary 基本發布與健康檢查",
+        "應用回退不撤銷已提交交易",
+        "檢索前 ACL/tenant 過濾",
+        "AWS / Azure / GCP 容器版本管理比較"
+      ],
+      "corrections": [
+        [
+          "Canary 品質門檻未量化",
+          "用固定測試集定義 Recall@5、引用正確率、授權違規零容忍、錯誤率與觀測視窗，未達標停止擴量。"
+        ],
+        [
+          "索引回復未說明",
+          "檢查 embedding 模型、索引版本、文件版本與相容性；服務回版與索引切換需獨立設計。"
+        ],
+        [
+          "交易補償需先判斷影響",
+          "只有受影響且符合業務核准條件的已提交交易才需要補償/沖正，不可一律修改或回復。"
+        ],
+        [
+          "ACL/Tenant 概念需複習",
+          "Tenant 決定資料歸屬或隔離邊界；ACL 決定特定主體可讀取哪些資源；RBAC 依角色授權，三者可合併使用。"
+        ]
+      ],
+      "memory": [
+        "ACL = Access Control List，文件級存取權限；Tenant = 資料隔離的組織/客戶/班級範圍；RBAC = 角色權限。",
+        "不要只保留高信心資料；Recall@5 下降應檢查固定測試集、embedding、索引、文件版本與授權過濾。",
+        "服務回版、RAG 索引切換、Schema 相容與金融補償交易分開處理。"
+      ],
+      "archive": "docs/cloud-ai-day37-2026-11-09.html"
     }
   ],
   "cloudComparison": {
@@ -6055,13 +6240,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 37,
-    "date": "2026-11-09",
-    "topic": "Cloud Architecture: ECS/Fargate, Canary Gates, RAG Index & Financial Transaction Recovery",
-    "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day37-2026-11-09.html",
-    "score": null,
-    "note": "Day 37 僅待作答，不納入完成天數、平均分數與挑戰題庫；Day 32 過期 pending 狀態已更正。"
-  }
+  "pendingLesson": null
 };
