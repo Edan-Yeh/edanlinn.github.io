@@ -6240,5 +6240,13 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 38,
+    "date": "2026-11-10",
+    "topic": "AI Programming: Python RAG ACL / Tenant Safe Retrieval",
+    "status": "pending",
+    "interactiveUrl": "docs/cloud-ai-day38-2026-11-10.html",
+    "score": null,
+    "note": "未作答、不計分；Day 37 成績與全部歷史保持不變。"
+  }
 };
