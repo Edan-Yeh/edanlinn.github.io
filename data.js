@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-09",
-  "completedDays": 37,
-  "currentTrack": "Cloud × AI / Day 37 已完成（93/100）· 下個工作日接續 Day 38",
+  "updatedAt": "2026-11-10",
+  "completedDays": 38,
+  "currentTrack": "Cloud × AI / Day 38 已完成（87/100）· 下個工作日接續 Day 39",
   "scores": [
     {
       "day": 1,
@@ -150,6 +150,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 37,
       "score": 93
+    },
+    {
+      "day": 38,
+      "score": 87
     }
   ],
   "roadmap": [
@@ -176,11 +180,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–37"
+        "value": "Day 1–38"
       },
       {
         "label": "目前主題",
-        "value": "Day 37 / ECS/Fargate × Canary × RAG Recovery（已完成）"
+        "value": "Day 38 / Python ACL Tenant Safe Retrieval（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -188,7 +192,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "AI Programming / Python RAG ACL and Retrieval Evaluation"
+        "value": "Cloud × AI / Authorized RAG Evaluation and Cross-Cloud Design"
       }
     ],
     "domains": [
@@ -3374,6 +3378,36 @@ window.CLOUD_SA_DATA = {
       "answer": 2,
       "explanation": "服務版本與向量索引版本需獨立追蹤；召回率下降應先找出根因並驗證權限。",
       "memory": "Recall@K 下降不等於資料本身需要刪除。"
+    },
+    {
+      "id": "D38-ACL-TEST-CASES",
+      "category": "AI Programming / RAG Authorization",
+      "difficulty": "中等",
+      "question": "student-1 的可信 tenant=A，D1 tenant=A ACL student-1；D2 tenant=A ACL teacher-1；D3 tenant=B ACL student-2。可用於 RAG 的文件為？",
+      "options": [
+        "D1、D2",
+        "D1",
+        "D1、D3",
+        "D1、D2、D3"
+      ],
+      "answer": 1,
+      "explanation": "先檢查 tenant 再檢查 ACL；D2 同 tenant 但 ACL 不允許，D3 跨 tenant；僅 D1 合法。",
+      "memory": "tenant + ACL 都要通過，才能進入 Top-K 和 Prompt。"
+    },
+    {
+      "id": "D38-RAG-SECURITY-EVAL",
+      "category": "AI Programming / RAG Testing",
+      "difficulty": "中等",
+      "question": "安全檢索系統上線前，哪一種驗收最完整？",
+      "options": [
+        "只看 HTTP 200",
+        "只看向量分數",
+        "只測試合法文件召回",
+        "使用合成資料測試合法召回、跨租戶越權、同租戶 ACL 拒絕、無授權拒答及引用授權"
+      ],
+      "answer": 3,
+      "explanation": "必須用可重現的合成測試集同時檢驗品質與授權隔離。",
+      "memory": "安全測試不只測功能成功，也要測越權拒絕。"
     }
   ],
   "days": [
@@ -6225,6 +6259,154 @@ window.CLOUD_SA_DATA = {
         "服務回版、RAG 索引切換、Schema 相容與金融補償交易分開處理。"
       ],
       "archive": "docs/cloud-ai-day37-2026-11-09.html"
+    },
+    {
+      "day": 38,
+      "date": "2026-11-10",
+      "topic": "AI Programming: Python RAG ACL / Tenant Safe Retrieval",
+      "status": "completed",
+      "score": 87,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue : 呈現問題、引用與拒答；不可當作授權來源。\n2.Spring boot : 權限驗證，文件授權範圍，簽發或安全傳遞可信上下文。\n3.FastAPI : 驗證上下文與服務間信任，實作 RAG、Top-K、reranking、拒答與引用驗證。\n4.Retrieval : 在檢索查詢階段強制 tenant_id + ACL；只對授權候選文件排序，以外的都要排除。\n5.判斷tenant_id的值，規則 D1 tenant=A、允許 student-1；D2 tenant=A、只允許 teacher-1；D3 tenant=B、允許 student-2。student-1 \n5.Postgre : 存取最後符合資料，儲存文件 metadata、tenant_id、ACL、版本與 pgvector 索引，配合 DB 層授權與稽核。\n6.Vue : 顯示最後結果。"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "Vue 發送 tenant_id='B'，但已登入使用者的可信授權上下文屬於 tenant='A'。FastAPI 應如何處理？",
+          "options": [
+            "A. 使用 Vue 的 tenant_id，以利使用者切換班級",
+            "B. 驗證後端簽發的可信上下文，拒絕不一致請求並記錄適當稽核",
+            "C. 同時查 A、B，請 LLM 避免洩漏",
+            "D. 先關閉 ACL 以提高 Recall@5"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "不可信任前端可修改的 tenant_id；應驗證後端授權上下文並拒絕不一致請求。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "Python RAG 的文件級授權檢索，哪些做法合理？",
+          "options": [
+            "A. tenant_id 與 principal_id 來自可信且經驗證的後端上下文",
+            "B. 在 Retrieval 階段先過濾 tenant / ACL，再把 chunk 放進 Prompt",
+            "C. 向量分數高就能跨租戶讀取",
+            "D. 預設拒絕（deny by default），沒有授權就不返回內容",
+            "E. 只在 Vue 隱藏文件就足夠",
+            "F. 用合成測試集測試跨租戶越權、合法召回與拒答"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 15,
+          "explanation": "A/B/D 正確，但漏選 F；需要以合成測試集驗證跨租戶隔離、合法召回與拒答，不可只靠設計宣稱安全。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "將左側責任配對右側元件（A–D 各用一次）。",
+          "prompts": [
+            "1. 建立登入者的可信授權上下文",
+            "2. 強制 ACL/tenant 過濾與引用檢查",
+            "3. 儲存文件 metadata、版本與向量索引",
+            "4. 顯示問題、授權後引用與拒答訊息"
+          ],
+          "options": [
+            "A. Spring Boot",
+            "B. FastAPI / Retrieval",
+            "C. Postgres / pgvector",
+            "D. Vue"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "可信身份在 Spring Boot；檢索授權在 FastAPI/Retrieval；metadata/index 在 Postgres；Vue 僅呈現。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 15,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 37,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "Python 安全檢索流程",
+              "earned": 17,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "可信 tenant_id / principal_id 來源",
+        "Spring Boot 與 FastAPI 的授權責任分離",
+        "檢索前 ACL/tenant 過濾",
+        "deny by default",
+        "pgvector 文件 metadata 與版本管理"
+      ],
+      "corrections": [
+        [
+          "Q2 漏選 F",
+          "使用合成測試集驗證跨租戶越權、同租戶不同 ACL、合法召回與拒答，並保留測試結果。"
+        ],
+        [
+          "student-1 的 D1/D2/D3 判定未完成",
+          "student-1 只能取得 D1；D2 雖同 tenant A 但 ACL 不允許，D3 tenant B 不符，兩者必須排除。"
+        ],
+        [
+          "流程缺少明確測試案例",
+          "至少測試 student-1→D1 允許、student-1→D2 拒絕，並測試 D3 跨租戶拒絕與無結果時拒答。"
+        ],
+        [
+          "需要明確定義無授權結果與引用二次驗證",
+          "授權集合為空時不回傳任何 chunk，回覆拒答並稽核；引用輸出前再次驗證 tenant/ACL。"
+        ]
+      ],
+      "memory": [
+        "D1 tenant=A ACL student-1；D2 tenant=A ACL teacher-1；D3 tenant=B ACL student-2；student-1 只能讀 D1。",
+        "安全 RAG 必須使用固定合成測試集檢驗跨租戶、同租戶 ACL、合法召回、拒答與引用。",
+        "tenant_id 和 principal_id 必須來自可信後端，並在檢索查詢階段執行 server-side 授權過濾。"
+      ],
+      "archive": "docs/cloud-ai-day38-2026-11-10.html"
     }
   ],
   "cloudComparison": {
@@ -6240,13 +6422,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 38,
-    "date": "2026-11-10",
-    "topic": "AI Programming: Python RAG ACL / Tenant Safe Retrieval",
-    "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day38-2026-11-10.html",
-    "score": null,
-    "note": "未作答、不計分；Day 37 成績與全部歷史保持不變。"
-  }
+  "pendingLesson": null
 };
