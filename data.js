@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-10",
+  "updatedAt": "2026-11-11",
   "completedDays": 38,
-  "currentTrack": "Cloud × AI / Day 38 已完成（87/100）· 下個工作日接續 Day 39",
+  "currentTrack": "Cloud × AI / Day 39 待作答（跨雲 Authorized RAG 品質驗收）；已完成 Day 38（87/100）",
   "scores": [
     {
       "day": 1,
@@ -6422,5 +6422,13 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 39,
+    "date": "2026-11-11",
+    "topic": "Cloud × AI: Cross-cloud Authorized RAG Evaluation, Canary and Recovery",
+    "status": "pending",
+    "interactiveUrl": "docs/cloud-ai-day39-2026-11-11.html",
+    "score": null,
+    "note": "僅提供互動課程，未提交、未計分；保留 Day 1–38 全部歷史。"
+  }
 };
