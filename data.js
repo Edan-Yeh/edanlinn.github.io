@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-11",
-  "completedDays": 38,
-  "currentTrack": "Cloud × AI / Day 39 待作答（跨雲 Authorized RAG 品質驗收）；已完成 Day 38（87/100）",
+  "completedDays": 39,
+  "currentTrack": "Cloud × AI / Day 39 已完成（95/100）· 下個工作日接續 Day 40",
   "scores": [
     {
       "day": 1,
@@ -154,6 +154,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 38,
       "score": 87
+    },
+    {
+      "day": 39,
+      "score": 95
     }
   ],
   "roadmap": [
@@ -180,11 +184,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–38"
+        "value": "Day 1–39"
       },
       {
         "label": "目前主題",
-        "value": "Day 38 / Python ACL Tenant Safe Retrieval（已完成）"
+        "value": "Day 39 / Cross-cloud Authorized RAG（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -192,7 +196,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Cloud × AI / Authorized RAG Evaluation and Cross-Cloud Design"
+        "value": "AI Deep Dive / Retrieval Quality and Ranking Metrics"
       }
     ],
     "domains": [
@@ -3408,6 +3412,36 @@ window.CLOUD_SA_DATA = {
       "answer": 3,
       "explanation": "必須用可重現的合成測試集同時檢驗品質與授權隔離。",
       "memory": "安全測試不只測功能成功，也要測越權拒絕。"
+    },
+    {
+      "id": "D39-RECALL-AT5",
+      "category": "Cloud × AI / RAG Evaluation",
+      "difficulty": "基礎",
+      "question": "固定測試集有 4 份相關且授權的文件，Top-5 只找出其中 3 份，Recall@5 為何？",
+      "options": [
+        "20%",
+        "60%",
+        "75%",
+        "100%"
+      ],
+      "answer": 2,
+      "explanation": "Recall@5 = 前五筆找到的相關文件數 3 / 所有相關文件數 4 = 75%。",
+      "memory": "Recall@K 以已標註相關且有權存取的文件為分母。"
+    },
+    {
+      "id": "D39-TOPK-RERANK",
+      "category": "Cloud × AI / RAG Retrieval",
+      "difficulty": "基礎",
+      "question": "Top-K 與 reranking 的正確關係為何？",
+      "options": [
+        "先將所有未授權文件送給 LLM 再過濾",
+        "先以可信 tenant/ACL 篩選，再取得 Top-K 候選，reranker 對候選重新排序",
+        "reranking 會自動授權跨租戶文件",
+        "Top-K 就是資料庫回復"
+      ],
+      "answer": 1,
+      "explanation": "權限過濾在前，Top-K 挑選候選，reranking 再排序；引用前再次驗證授權。",
+      "memory": "ACL → Top-K → reranking → 引用驗證 → LLM。"
     }
   ],
   "days": [
@@ -6407,6 +6441,164 @@ window.CLOUD_SA_DATA = {
         "tenant_id 和 principal_id 必須來自可信後端，並在檢索查詢階段執行 server-side 授權過濾。"
       ],
       "archive": "docs/cloud-ai-day38-2026-11-10.html"
+    },
+    {
+      "day": 39,
+      "date": "2026-11-11",
+      "topic": "Cloud × AI: Cross-cloud Authorized RAG Evaluation, Canary and Recovery",
+      "status": "completed",
+      "score": 95,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue : 呈現問題、引用與拒答；不可當作授權來源。\n2.Spring boot : 權限驗證，RBAC，文件授權範圍，簽發或安全傳遞可信上下文。\n3.FastAPI : 驗證上下文與服務間信任，實作 RAG、Top-K、reranking、拒答與引用驗證。\n4.Retrieval : 在檢索查詢階段強制 tenant_id + ACL，再 Top-K / reranking。；只對授權候選文件排序，以外的都要排除。\n5.判斷tenant_id的值，規則 D1 tenant=A、允許 student-1；D2 tenant=A、只允許 teacher-1；D3 tenant=B、允許 student-2。student-1 \n5.1 student-1  tenant=A=>D1｜Tenant A｜ACL student-1允許。D2 tenant=A、ACL teacher-1拒絕。D3 tenant=B、ACL student-2拒絕。\n\n6.Postgre : 存取最後符合資料，儲存文件 metadata、tenant_id、ACL、版本與 pgvector 索引，配合 DB 層授權與稽核。\n7.Canary : 固定測試集 + 量化品質、安全門檻；未達標停止放量。\n8.Vue : 顯示最後結果。\n\nRollback : 如果系統異常，會先將部分流量切斷，並先回復到上一個正常版本，但以交易無法回復，只能透過交易補償方式分開處理，保留紀錄和log，在可良如何沖正和補救",
+        "additionalQuestions": [
+          "Recall@5 下降 是什麼意思？",
+          "Top-K / reranking 是什麼意思？"
+        ]
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "AI Tutor 要跨雲部署，既有 NAS Docker 已可運行 Spring Boot + FastAPI + Postgres，團隊沒有 K8s 經驗。第一階段哪個方案最符合低成本與可回退要求？",
+          "options": [
+            "A. 先全面重寫為 Kubernetes operator",
+            "B. 保留 NAS Docker 測試；AWS ECS/Fargate 承載無狀態服務，資料庫與索引分開治理，建立品質 Gate 與回退",
+            "C. 讓 Vue 直接存取 pgvector 並控制 tenant",
+            "D. 把已提交交易放在容器本機暫存檔"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "優先以 NAS Docker 演練，再採 ECS/Fargate 承載無狀態服務，資料庫與索引獨立治理。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "對多租戶 RAG 上線驗收，哪些做法合理？",
+          "options": [
+            "A. 以固定合成資料集測合法 Recall@5、引用正確率、越權率與拒答",
+            "B. 在向量查詢前強制 tenant_id + ACL，引用前再次驗證",
+            "C. 跨雲容器平台名稱不同，但授權可以只交由 Vue 處理",
+            "D. Canary 不達品質或安全門檻就停止放量並切回相容服務/索引",
+            "E. 為提高 Recall@5 暫時停用 ACL",
+            "F. 將 Postgres 交易補償與服務回版分開，保留稽核"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "合成測試、檢索前授權、Canary Gate、交易補償分離都是正確措施。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對架構責任（A–D 各用一次）。",
+          "prompts": [
+            "1. AWS ECS on Fargate",
+            "2. Azure Container Apps",
+            "3. GCP Cloud Run",
+            "4. Authorized Retrieval + pgvector"
+          ],
+          "options": [
+            "A. AWS 容器協調與免管理伺服器運算，仍需部署/網路設定",
+            "B. Azure revision 與流量控制，網路與擴縮限制須評估",
+            "C. GCP revision 與流量切換，併發及計費模式需評估",
+            "D. 可信 tenant/ACL 限制候選文件，再執行 Top-K 與引用驗證"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "跨雲服務功能相似但網路、擴縮、成本與授權整合不同；pgvector 授權過濾先於 Top-K。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 40,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "跨雲安全 RAG 流程",
+              "earned": 20,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "跨雲 ECS/Fargate、Azure Container Apps、Cloud Run trade-offs",
+        "可信授權上下文與檢索前 tenant/ACL",
+        "D1/D2/D3 合法與越權判斷",
+        "固定合成測試集與 Canary 品質 Gate",
+        "已提交交易需受控補償而非容器回版"
+      ],
+      "corrections": [
+        [
+          "Recall@5 與 Top-K / reranking 的意義需補強",
+          "Recall@5 是每題所有標註相關且有權存取的文件中，被前五筆檢索結果找到的比例；Top-K 取最相關 K 筆；reranking 再對候選結果重新排序。"
+        ],
+        [
+          "Canary 門檻仍未具體量化",
+          "定義 Recall@5、引用正確率、授權違規率、拒答率與觀測時間，未達門檻停止擴量。"
+        ],
+        [
+          "索引回復與回復後驗收不夠明確",
+          "應用映像、embedding/index、Schema 各自版本管理；回版後重新測試授權、引用、品質與資料相容。"
+        ],
+        [
+          "負面測試需明列執行與預期",
+          "明確測 student-1→D2（同租戶 ACL 拒絕）、student-1→D3（跨租戶拒絕），以及無授權結果時拒答。"
+        ],
+        [
+          "已提交交易補償前需先確認影響",
+          "先調查受影響交易與業務規則，再依核准流程補償／沖正並對帳稽核；非所有已提交交易都需要補償。"
+        ]
+      ],
+      "memory": [
+        "Recall@5 = 前五筆結果涵蓋的相關且有權存取文件數 / 全部相關且有權存取文件數；評估需固定測試集。",
+        "Top-K 先從授權候選中挑 K 筆；reranking 對候選結果重新評分排序。",
+        "RAG 服務回版不代表索引版本切回，也不代表已提交交易撤銷。"
+      ],
+      "archive": "docs/cloud-ai-day39-2026-11-11.html"
     }
   ],
   "cloudComparison": {
@@ -6422,13 +6614,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 39,
-    "date": "2026-11-11",
-    "topic": "Cloud × AI: Cross-cloud Authorized RAG Evaluation, Canary and Recovery",
-    "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day39-2026-11-11.html",
-    "score": null,
-    "note": "僅提供互動課程，未提交、未計分；保留 Day 1–38 全部歷史。"
-  }
+  "pendingLesson": null
 };
