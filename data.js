@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-12",
-  "completedDays": 39,
-  "currentTrack": "Cloud × AI / Day 40 待作答 · Day 39 已完成（95/100）",
+  "completedDays": 40,
+  "currentTrack": "Cloud × AI / Day 40 已完成（92/100）· 下個工作日接續 Day 41",
   "scores": [
     {
       "day": 1,
@@ -158,6 +158,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 39,
       "score": 95
+    },
+    {
+      "day": 40,
+      "score": 92
     }
   ],
   "roadmap": [
@@ -184,11 +188,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–39"
+        "value": "Day 1–40"
       },
       {
         "label": "目前主題",
-        "value": "Day 40 / AI Deep Dive：Embedding、Recall@5、Top-K、Reranking（待作答）"
+        "value": "Day 40 / AI Deep Dive：Embedding、Recall@5、Top-K、Reranking（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -196,7 +200,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Day 40 先作答後批改；不提前計分"
+        "value": "Day 41 / Architecture Review：RAG 品質與安全驗收"
       }
     ],
     "domains": [
@@ -327,6 +331,19 @@ window.CLOUD_SA_DATA = {
           "AWS DMS Full Load + CDC",
           "Cutover / CDC Lag / Validation"
         ]
+      },
+      {
+        "name": "AI / Retrieval Evaluation",
+        "status": "strengthen",
+        "statusLabel": "概念掌握、實作驗收待補強",
+        "items": [
+          "Embedding 模型與向量相容性",
+          "Top-K / Reranking",
+          "Recall@5 固定授權測試集",
+          "Tenant/ACL Authorized Retrieval",
+          "Canary Quality Gate",
+          "索引版本回復與負面測試"
+        ]
       }
     ],
     "mastered": [
@@ -360,7 +377,10 @@ window.CLOUD_SA_DATA = {
       "Replatform = Move + limited platform optimization",
       "Refactor = Architecture / code redesign",
       "DMS Full Load + CDC for low-downtime DB migration",
-      "Cutover = Stop/control writes → Catch up → Validate → Switch → Smoke Test → Open Traffic"
+      "Cutover = Stop/control writes → Catch up → Validate → Switch → Smoke Test → Open Traffic",
+      "Embedding vs Top-K vs Reranking",
+      "Recall@5 固定授權測試集評估",
+      "檢索前 tenant + ACL 過濾"
     ],
     "confused": [
       "Trust Policy vs Permission Policy",
@@ -386,7 +406,10 @@ window.CLOUD_SA_DATA = {
       "RTO Restore Service vs Failback",
       "Rehost DB on EC2 vs later Replatform to managed database",
       "When Replatform is enough vs when Refactor is justified",
-      "CDC exists ≠ zero-lag replication"
+      "CDC exists ≠ zero-lag replication",
+      "Day40 D1/D4 正向與 D2/D3 負面測試須明列",
+      "Canary 品質門檻需量化",
+      "Embedding/index 版本切換與回復後驗收"
     ],
     "upcoming": [
       "Modernization",
@@ -3442,6 +3465,36 @@ window.CLOUD_SA_DATA = {
       "answer": 1,
       "explanation": "權限過濾在前，Top-K 挑選候選，reranking 再排序；引用前再次驗證授權。",
       "memory": "ACL → Top-K → reranking → 引用驗證 → LLM。"
+    },
+    {
+      "id": "D40-RAG-NEGATIVE-TEST",
+      "category": "AI Deep Dive / Retrieval Safety",
+      "difficulty": "基礎",
+      "question": "student-1 tenant=A，可讀 D1/D4；D2 只允許 teacher-1；D3 tenant=B。哪一組負面測試最有價值？",
+      "options": [
+        "只測 student-1 讀 D1 成功",
+        "測 student-1 讀 D2 被拒絕及讀 D3 被拒絕",
+        "關閉 ACL 測試 Recall@5",
+        "只測 HTTP 200"
+      ],
+      "answer": 1,
+      "explanation": "同租戶不同 ACL 與跨租戶拒絕都要覆蓋，並確認拒答與引用不洩漏。",
+      "memory": "D2 ACL 拒絕；D3 tenant 拒絕。"
+    },
+    {
+      "id": "D40-EMBEDDING-INDEX-RECOVERY",
+      "category": "AI Deep Dive / Retrieval Quality",
+      "difficulty": "中等",
+      "question": "新版 embedding 導致 Recall@5 降低，哪個回復方式最安全？",
+      "options": [
+        "關閉授權過濾",
+        "刪除已提交交易",
+        "保留模型/維度/索引版本與相容性，切回可驗證的相容索引並重測品質及權限",
+        "只看 API HTTP 200"
+      ],
+      "answer": 2,
+      "explanation": "服務、embedding/index 與資料交易各自管理版本與回復；切換後重新驗證。",
+      "memory": "模型與索引必須相容，不能只回退服務容器。"
     }
   ],
   "days": [
@@ -6599,6 +6652,156 @@ window.CLOUD_SA_DATA = {
         "RAG 服務回版不代表索引版本切回，也不代表已提交交易撤銷。"
       ],
       "archive": "docs/cloud-ai-day39-2026-11-11.html"
+    },
+    {
+      "day": 40,
+      "date": "2026-11-12",
+      "topic": "AI Deep Dive: Embedding, Recall@5, Top-K and Reranking",
+      "status": "completed",
+      "score": 92,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue : 呈現問題、引用與拒答；不可當作授權來源。\n2.Spring boot : 權限驗證，RBAC，文件授權範圍，簽發或安全傳遞可信上下文。\n3.FastAPI : 驗證上下文與服務間信任，實作 RAG、Top-K、reranking、拒答與引用驗證。\n4.Postgre : 存取最後符合資料，儲存文件 metadata、tenant_id、ACL、版本與 pgvector 索引，配合 DB 層授權與稽核。\n5.Top-K : 從已授權選取相似度較高的K筆。\n6.reranking : 重新評估候選與問題的相關性並調整順序。\n7.Evalution : 固定合成測試集，測 Recall@5、引用、越權、拒答與延遲。\n8. Vue : 呈現最後結果。\n\n如果導入新版 embedding 後 Recall@5 從 100% 降為 50%，使用相同授權固定測試集，比對 embedding、chunking、索引版本及檢索參數。\n\nCanary固定測試集 + 量化品質、安全門檻；未達標停止放量。"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "新版 embedding 後 Recall@5 從 100% 降為 50%，最合理的第一步是？",
+          "options": [
+            "A. 暫停 ACL 讓召回率提高",
+            "B. 使用相同授權固定測試集，比對 embedding、chunking、索引版本及檢索參數",
+            "C. 直接刪除舊資料庫交易",
+            "D. 把所有文件交給 LLM 重新決定權限"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "固定同一套授權資料與標註，比較模型、切塊、索引及查詢設定，才能找出 Recall@5 下降原因。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "哪些敘述正確？",
+          "options": [
+            "A. Recall@5 的評估需固定問題、相關文件標註與授權條件",
+            "B. Reranking 可以改善候選排序，但不能代替 tenant/ACL 授權",
+            "C. 向量相似度越高就可以跳過文件 ACL",
+            "D. Embedding 模型改版要檢查向量維度、索引相容與版本",
+            "E. 只要 HTTP 200 就代表檢索品質良好",
+            "F. 品質 Gate 應同時觀測引用正確率、越權率與延遲"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "授權條件、檢索品質與模型索引相容性都要驗證；向量相似度不授予文件存取權。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對機制與責任（A–D 各用一次）。",
+          "prompts": [
+            "1. Embedding",
+            "2. Top-K",
+            "3. Reranking",
+            "4. Recall@5"
+          ],
+          "options": [
+            "A. 將文字轉成可比較的向量表示",
+            "B. 從已授權候選取相似度較高的 K 筆",
+            "C. 重新評估候選與問題的相關性並調整順序",
+            "D. 衡量前五筆找回多少相關且有權閱讀的文件"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "Embedding 建立向量；Top-K 取候選；reranking 再排序；Recall@5 評估找回相關文件比例。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 37,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "Embedding 檢索品質實驗流程",
+              "earned": 17,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Embedding / Top-K / Reranking / Recall@5 概念與分工",
+        "固定授權測試集比較模型與索引版本",
+        "先 tenant/ACL 過濾後檢索排序",
+        "Canary 失敗停止放量與引用/越權/延遲監控",
+        "跨雲 RAG 服務選型的初步理解"
+      ],
+      "corrections": [
+        [
+          "未明確完成 D1/D4 與 D2/D3 判斷",
+          "student-1 tenant=A 可讀相關 D1、D4；D2 同 tenant 但 ACL 僅 teacher-1，D3 tenant=B，兩者都必須拒絕。"
+        ],
+        [
+          "缺少至少兩個具體負面測試",
+          "測 student-1→D2 同租戶 ACL 拒絕；student-1→D3 跨租戶拒絕；再測無授權結果拒答與引用不洩漏。"
+        ],
+        [
+          "Canary 品質門檻未量化",
+          "定義基準 Recall@5、允許下降幅度、引用正確率、越權率零容忍、p95 延遲與觀測時間；未達標停止放量。"
+        ],
+        [
+          "缺少索引切換/回復與驗收",
+          "記錄 embedding 模型、向量維度、chunking、索引版本與相容性，必要時切回上一個相容索引，重測授權與品質。"
+        ]
+      ],
+      "memory": [
+        "Embedding 生成向量，Top-K 在授權候選中取 K 筆，reranking 重新排序；Recall@5 用固定相關且授權的標註文件衡量前五筆召回。",
+        "Day40 合成資料 student-1 tenant A 可讀 D1/D4，不可讀 D2（ACL）及 D3（tenant）。",
+        "品質測試需明確負面案例與量化門檻；Canary 失敗要分別管理服務與 embedding/index 版本。"
+      ],
+      "archive": "docs/cloud-ai-day40-2026-11-12.html"
     }
   ],
   "cloudComparison": {
@@ -6614,13 +6817,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 40,
-    "date": "2026-11-12",
-    "topic": "AI Deep Dive: Embedding, Recall@5, Top-K and Reranking",
-    "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day40-2026-11-12.html",
-    "score": null,
-    "note": "互動教材已建立；未作答、不計分。Day 1–39 完整紀錄與 76 題挑戰保持不變。"
-  }
+  "pendingLesson": null
 };
