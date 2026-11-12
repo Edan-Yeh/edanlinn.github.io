@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-11",
+  "updatedAt": "2026-11-12",
   "completedDays": 39,
-  "currentTrack": "Cloud × AI / Day 39 已完成（95/100）· 下個工作日接續 Day 40",
+  "currentTrack": "Cloud × AI / Day 40 待作答 · Day 39 已完成（95/100）",
   "scores": [
     {
       "day": 1,
@@ -188,7 +188,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "目前主題",
-        "value": "Day 39 / Cross-cloud Authorized RAG（已完成）"
+        "value": "Day 40 / AI Deep Dive：Embedding、Recall@5、Top-K、Reranking（待作答）"
       },
       {
         "label": "已建立基礎",
@@ -196,7 +196,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "AI Deep Dive / Retrieval Quality and Ranking Metrics"
+        "value": "Day 40 先作答後批改；不提前計分"
       }
     ],
     "domains": [
@@ -6614,5 +6614,13 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 40,
+    "date": "2026-11-12",
+    "topic": "AI Deep Dive: Embedding, Recall@5, Top-K and Reranking",
+    "status": "pending",
+    "interactiveUrl": "docs/cloud-ai-day40-2026-11-12.html",
+    "score": null,
+    "note": "互動教材已建立；未作答、不計分。Day 1–39 完整紀錄與 76 題挑戰保持不變。"
+  }
 };
