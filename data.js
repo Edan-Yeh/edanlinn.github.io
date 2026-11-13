@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-13",
-  "completedDays": 40,
-  "currentTrack": "Cloud × AI / Day 41 Architecture Review（待作答，不計分）",
+  "completedDays": 41,
+  "currentTrack": "Cloud × AI / Day 41 已完成（93/100）· 下個工作日接續 Day 42",
   "scores": [
     {
       "day": 1,
@@ -162,6 +162,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 40,
       "score": 92
+    },
+    {
+      "day": 41,
+      "score": 93
     }
   ],
   "roadmap": [
@@ -188,11 +192,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–40"
+        "value": "Day 1–41"
       },
       {
         "label": "目前主題",
-        "value": "Day 41 / Architecture Review：RAG Quality Gate、Canary、Recovery（待作答）"
+        "value": "Day 41 / Architecture Review：Authorized RAG Gate、Canary、Recovery（已完成）"
       },
       {
         "label": "已建立基礎",
@@ -200,7 +204,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Day 41 先作答後批改，不提前計分"
+        "value": "Day 42 / Cloud Architecture：容器服務、索引回復與可靠性"
       }
     ],
     "domains": [
@@ -380,7 +384,9 @@ window.CLOUD_SA_DATA = {
       "Cutover = Stop/control writes → Catch up → Validate → Switch → Smoke Test → Open Traffic",
       "Embedding vs Top-K vs Reranking",
       "Recall@5 固定授權測試集評估",
-      "檢索前 tenant + ACL 過濾"
+      "檢索前 tenant + ACL 過濾",
+      "Day41 D1/D4 授權允許與 D2/D3 拒絕測試",
+      "Canary Recall@5、引用正確率及越權率量化 Gate"
     ],
     "confused": [
       "Trust Policy vs Permission Policy",
@@ -409,7 +415,10 @@ window.CLOUD_SA_DATA = {
       "CDC exists ≠ zero-lag replication",
       "Day40 D1/D4 正向與 D2/D3 負面測試須明列",
       "Canary 品質門檻需量化",
-      "Embedding/index 版本切換與回復後驗收"
+      "Embedding/index 版本切換與回復後驗收",
+      "Day41 模型/索引相容回版與回版後驗收",
+      "Day41 p95 延遲與 Canary 觀測時間具體化",
+      "Day41 已提交交易影響評估與補償界線"
     ],
     "upcoming": [
       "Modernization",
@@ -3495,6 +3504,36 @@ window.CLOUD_SA_DATA = {
       "answer": 2,
       "explanation": "服務、embedding/index 與資料交易各自管理版本與回復；切換後重新驗證。",
       "memory": "模型與索引必須相容，不能只回退服務容器。"
+    },
+    {
+      "id": "D41-CANARY-RECOVERY-GATE",
+      "category": "Architecture Review / AI Reliability",
+      "difficulty": "中等",
+      "question": "Canary 的 Recall@5 由 90% 降至 65%，越權率仍為 0%，最合理的處置是？",
+      "options": [
+        "安全沒問題就擴量",
+        "先關閉 ACL",
+        "停止擴量並比對固定測試集，切回相容 embedding/index 版本，回復後重新驗收",
+        "只回退 Vue"
+      ],
+      "answer": 2,
+      "explanation": "品質與安全需同時達標；回復要管理模型及索引相容性並重測。",
+      "memory": "Canary 品質下降時停止擴量，回復後要 smoke test。"
+    },
+    {
+      "id": "D41-TRANSACTION-RECOVERY-BOUNDARY",
+      "category": "Architecture Review / Recovery",
+      "difficulty": "中等",
+      "question": "AI Tutor 服務回版後，金融已提交交易應如何處理？",
+      "options": [
+        "所有交易自動撤銷",
+        "先確認是否真的受影響，必要時依核准程序補償/沖正並稽核",
+        "刪除交易表",
+        "只檢查 HTTP 200"
+      ],
+      "answer": 1,
+      "explanation": "容器回版不會撤銷已提交交易；須先評估影響再決定補償與對帳。",
+      "memory": "Service rollback ≠ index rollback ≠ transaction compensation。"
     }
   ],
   "days": [
@@ -6802,6 +6841,156 @@ window.CLOUD_SA_DATA = {
         "品質測試需明確負面案例與量化門檻；Canary 失敗要分別管理服務與 embedding/index 版本。"
       ],
       "archive": "docs/cloud-ai-day40-2026-11-12.html"
+    },
+    {
+      "day": 41,
+      "date": "2026-11-13",
+      "topic": "Architecture Review: Authorized RAG Quality Gate, Canary and Recovery",
+      "status": "completed",
+      "score": 93,
+      "answers": {
+        "Q1": "B",
+        "Q2": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ],
+        "Q3": "1→A、2→B、3→C、4→D",
+        "practiceSelections": [
+          "A",
+          "A",
+          "B",
+          "C"
+        ],
+        "practice": "1.Vue : 呈現問題、引用與拒答；不可當作授權來源。\n2.Spring boot : 權限驗證，RBAC，文件授權範圍，簽發或安全傳遞可信上下文。\n3.FastAPI : 驗證上下文與服務間信任，實作 RAG、Top-K、reranking、拒答與引用驗證。\n4.Postgre : 存取最後符合資料，儲存文件 metadata、tenant_id、ACL、版本與 pgvector 索引，配合 DB 層授權與稽核。\n5.Top-K : 從已授權選取相似度較高的K筆。\n6.reranking : 重新評估候選與問題的相關性並調整順序。\n7.Evalution : 固定合成測試集，測 Recall@5、引用、越權、拒答與延遲。\n8. Vue : 呈現最後結果。\n\n測試案例\t預期結果\nstudent-1 查 D1\t允許\nstudent-1 查 D4\t允許\nstudent-1 查 D2\t拒絕，同租戶但 ACL 不符\nstudent-1 查 D3\t拒絕，跨租戶\n無授權文件可用\t拒答，不洩漏內容\n\n如果導入新版 embedding 後 Recall@5 從 100% 降為 50%，使用相同授權固定測試集，比對 embedding、chunking、索引版本及檢索參數。\n\nCanary 的量化門檻也要具體。可先暫定 Recall@5 不低於舊版 5 個百分點、越權率為 0%、引用正確率至少 95%，並另外設定 p95 延遲與觀測時間。這些只是練習門檻，正式上線仍須依實際基準與風險決定。"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "points": 15,
+          "question": "Canary 新版 AI Tutor 的 Recall@5 從 90% 降到 65%，跨租戶越權率仍為 0%。你應該如何處理？",
+          "options": [
+            "A. 安全指標正常就直接放量至 100%",
+            "B. 停止放量，比對固定測試集與 embedding/index 版本，依 Gate 切回相容版本",
+            "C. 關閉 ACL 以提高召回",
+            "D. 只重啟 Vue"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 15,
+          "explanation": "安全未越權不代表品質達標；Recall@5 下降應停止擴量、定位版本差異並依 Gate 回復。"
+        },
+        {
+          "id": "Q2",
+          "points": 20,
+          "question": "AI Tutor 上線驗收與回復，哪些措施合理？",
+          "options": [
+            "A. 先用可信 tenant/ACL 過濾再做 Top-K 和 reranking",
+            "B. 用合成資料測 D2 同租戶 ACL 拒絕與 D3 跨租戶拒絕",
+            "C. 服務映像回版就代表 pgvector 索引和已提交交易也已回版",
+            "D. 對 Recall@5、引用正確率、越權率、p95 延遲設量化門檻",
+            "E. 為降低延遲讓前端直接傳任意 tenant_id",
+            "F. 索引與模型版本相容性獨立驗證，回版後執行 smoke test"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "correct": [
+            "A",
+            "B",
+            "D",
+            "F"
+          ],
+          "earned": 20,
+          "explanation": "檢索前授權、負面測試、量化 Gate 及索引/模型回復後驗收都是必要治理。"
+        },
+        {
+          "id": "Q3",
+          "points": 20,
+          "question": "配對架構治理責任（A–D 各用一次）。",
+          "prompts": [
+            "1. AWS ECS/Fargate",
+            "2. Azure Container Apps / GCP Cloud Run",
+            "3. Postgres/pgvector + embedding/index",
+            "4. 金融已提交交易"
+          ],
+          "options": [
+            "A. 管理容器服務部署、健康檢查、流量與版本回復",
+            "B. 各有 revision/流量切換能力，但 IAM、網路、計費不等價",
+            "C. 保留向量維度、模型、chunking、索引版本及回復相容性",
+            "D. 先確認實際受影響交易，再依授權流程補償或沖正與稽核"
+          ],
+          "answer": "1→A、2→B、3→C、4→D",
+          "correct": "1→A、2→B、3→C、4→D",
+          "earned": 20,
+          "explanation": "容器部署、跨雲 revision、向量索引治理及已提交交易補償是不同責任。"
+        }
+      ],
+      "grading": {
+        "Q1": {
+          "earned": 15,
+          "max": 15
+        },
+        "Q2": {
+          "earned": 20,
+          "max": 20
+        },
+        "Q3": {
+          "earned": 20,
+          "max": 20
+        },
+        "practice": {
+          "earned": 38,
+          "max": 45,
+          "breakdown": [
+            {
+              "item": "實作選項",
+              "earned": 20,
+              "max": 20
+            },
+            {
+              "item": "Architecture Review 流程",
+              "earned": 18,
+              "max": 25
+            }
+          ]
+        }
+      },
+      "mastered": [
+        "Canary Recall@5 品質下降時停止擴量",
+        "多租戶 RAG 可信上下文、ACL 與引用安全",
+        "D1/D4 合法召回及 D2/D3 越權拒絕",
+        "量化 Recall@5、越權率、引用正確率 Gate",
+        "跨雲容器、索引及交易治理責任配對"
+      ],
+      "corrections": [
+        [
+          "未寫出具體模型/索引相容回版步驟",
+          "停止擴量、切回先前已驗證的相容 embedding 模型與索引版本，確認向量維度與 chunking/metadata 版本一致。"
+        ],
+        [
+          "缺少回版後重新驗收",
+          "執行 smoke test、合法召回、D2/D3 越權拒絕、引用正確率、Recall@5、p95 延遲並核對稽核。"
+        ],
+        [
+          "金融已提交交易未納入流程設計",
+          "服務回版不等於交易沖正；先確認實際受影響範圍，必要時依核准程序補償/沖正、對帳與留痕。"
+        ],
+        [
+          "延遲門檻及觀測時間尚未量化",
+          "補充 p95 延遲上限、Canary 流量比例與觀測時間；依實際 SLO 和風險訂定。"
+        ]
+      ],
+      "memory": [
+        "Day41 合成資料 student-1 tenant A：D1/D4 允許，D2 ACL 拒絕，D3 tenant 拒絕。",
+        "Canary Gate 需同時看 Recall@5、引用正確率、越權率、拒答與 p95 延遲；未達標停止放量。",
+        "服務、embedding/index 及金融已提交交易須獨立治理；回復後重新驗收。"
+      ],
+      "archive": "docs/cloud-ai-day41-2026-11-13.html"
     }
   ],
   "cloudComparison": {
@@ -6817,13 +7006,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 41,
-    "date": "2026-11-13",
-    "topic": "Architecture Review: Authorized RAG Quality Gate, Canary and Recovery",
-    "status": "pending",
-    "interactiveUrl": "docs/cloud-ai-day41-2026-11-13.html",
-    "score": null,
-    "note": "互動課程已建立；待作答、不計分。保留 Day 1–40 成績與 78 題挑戰題庫。"
-  }
+  "pendingLesson": null
 };
