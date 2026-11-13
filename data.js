@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-12",
+  "updatedAt": "2026-11-13",
   "completedDays": 40,
-  "currentTrack": "Cloud × AI / Day 40 已完成（92/100）· 下個工作日接續 Day 41",
+  "currentTrack": "Cloud × AI / Day 41 Architecture Review（待作答，不計分）",
   "scores": [
     {
       "day": 1,
@@ -192,7 +192,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "目前主題",
-        "value": "Day 40 / AI Deep Dive：Embedding、Recall@5、Top-K、Reranking（已完成）"
+        "value": "Day 41 / Architecture Review：RAG Quality Gate、Canary、Recovery（待作答）"
       },
       {
         "label": "已建立基礎",
@@ -200,7 +200,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Day 41 / Architecture Review：RAG 品質與安全驗收"
+        "value": "Day 41 先作答後批改，不提前計分"
       }
     ],
     "domains": [
@@ -6817,5 +6817,13 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 41,
+    "date": "2026-11-13",
+    "topic": "Architecture Review: Authorized RAG Quality Gate, Canary and Recovery",
+    "status": "pending",
+    "interactiveUrl": "docs/cloud-ai-day41-2026-11-13.html",
+    "score": null,
+    "note": "互動課程已建立；待作答、不計分。保留 Day 1–40 成績與 78 題挑戰題庫。"
+  }
 };
