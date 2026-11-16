@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-16",
-  "completedDays": 41,
-  "currentTrack": "Cloud × AI / Day 42 Hands-on：Spring Boot Health API + JUnit（待執行與驗收，不計分）",
+  "completedDays": 42,
+  "currentTrack": "Cloud × AI / Day 42 Hands-on 通過（84/100）；下一個工作日 Day 43：MockMvc HTTP integration tests",
   "scores": [
     {
       "day": 1,
@@ -166,6 +166,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 41,
       "score": 93
+    },
+    {
+      "day": 42,
+      "score": 84
     }
   ],
   "roadmap": [
@@ -192,11 +196,11 @@ window.CLOUD_SA_DATA = {
     "summary": [
       {
         "label": "完成訓練",
-        "value": "Day 1–41"
+        "value": "Day 1–42"
       },
       {
         "label": "目前主題",
-        "value": "Day 42 / Hands-on：Spring Boot REST API + JUnit（待實作驗收）"
+        "value": "Day 42 Hands-on REST API + JUnit 已驗收（84/100）"
       },
       {
         "label": "已建立基礎",
@@ -204,7 +208,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "提交實際程式、測試/API 輸出及 Git commit，先驗收再評分"
+        "value": "Day 43：MockMvc HTTP 層整合測試、Liveness/Readiness 與 404/port Debug"
       }
     ],
     "domains": [
@@ -386,7 +390,8 @@ window.CLOUD_SA_DATA = {
       "Recall@5 固定授權測試集評估",
       "檢索前 tenant + ACL 過濾",
       "Day41 D1/D4 授權允許與 D2/D3 拒絕測試",
-      "Canary Recall@5、引用正確率及越權率量化 Gate"
+      "Canary Recall@5、引用正確率及越權率量化 Gate",
+      "Day42 Spring Boot REST API / JUnit unit assertions / Maven BUILD SUCCESS / local Git commit"
     ],
     "confused": [
       "Trust Policy vs Permission Policy",
@@ -418,7 +423,8 @@ window.CLOUD_SA_DATA = {
       "Embedding/index 版本切換與回復後驗收",
       "Day41 模型/索引相容回版與回版後驗收",
       "Day41 p95 延遲與 Canary 觀測時間具體化",
-      "Day41 已提交交易影響評估與補償界線"
+      "Day41 已提交交易影響評估與補償界線",
+      "Day42 liveness vs readiness; MockMvc HTTP assertions; port conflict diagnosis"
     ],
     "upcoming": [
       "Modernization",
@@ -6991,6 +6997,104 @@ window.CLOUD_SA_DATA = {
         "服務、embedding/index 及金融已提交交易須獨立治理；回復後重新驗收。"
       ],
       "archive": "docs/cloud-ai-day41-2026-11-13.html"
+    },
+    {
+      "day": 42,
+      "date": "2026-11-16",
+      "topic": "Hands-on 01: Spring Boot REST Health API, JUnit and Git evidence",
+      "score": 84,
+      "status": "completed",
+      "handsOnStatus": "passed_with_followups",
+      "assessment": {
+        "codingDeployment": {
+          "earned": 68,
+          "max": 70
+        },
+        "architectureDecision": {
+          "earned": 5,
+          "max": 15
+        },
+        "debugTesting": {
+          "earned": 6,
+          "max": 10
+        },
+        "concept": {
+          "earned": 5,
+          "max": 5
+        }
+      },
+      "answers": {
+        "architecture": "因為要先驗證來源和權限",
+        "debug": "確認 http://localhost:8080/api/health 路徑；查看 VS log；確認是否回 404",
+        "concept": "B"
+      },
+      "questions": [
+        {
+          "id": "architecture",
+          "points": 15,
+          "question": "為何 Health API 不應直接宣稱 PostgreSQL、RAG 與外部模型全部正常？說明 liveness vs readiness 與容器健康檢查設計。",
+          "answer": "因為要先驗證來源和權限",
+          "earned": 5,
+          "explanation": "安全意識正確，但未區分 liveness/readiness；liveness 應輕量，readiness 才依需求檢查關鍵依賴。"
+        },
+        {
+          "id": "debug",
+          "points": 10,
+          "question": "404 或 8080 port 被占用，如何定位 Controller 路由與埠衝突？",
+          "answer": "確認 URL、查看 VS log、確認是否回 404",
+          "earned": 6,
+          "explanation": "有基本排查順序，但缺少 port 占用指令、HTTP 狀態與 Controller mapping 區分。"
+        },
+        {
+          "id": "concept",
+          "points": 5,
+          "question": "@GetMapping(\"/api/health\") 主要用途？",
+          "options": [
+            "A 自動建立 PostgreSQL 資料庫",
+            "B 將 HTTP GET 請求對應到方法",
+            "C 直接部署 AWS Fargate"
+          ],
+          "answer": "B",
+          "correct": "B",
+          "earned": 5,
+          "explanation": "@GetMapping 將 GET 請求映射到 Controller 方法。"
+        }
+      ],
+      "practical": {
+        "evidence": {
+          "commit": "c9ef1a547947e2c456c790801a3767214976c058",
+          "commitScope": "local master; remote push not verified",
+          "java": "21.0.13",
+          "maven": "3.10.0 wrapper",
+          "git": "2.56.0.windows.4",
+          "vscode": "1.146.0",
+          "testOutput": "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0; BUILD SUCCESS (user-provided terminal output)",
+          "apiResponse": {
+            "service": "banking-ai-platform",
+            "status": "UP"
+          },
+          "sourceReview": "HealthController @RestController + @GetMapping('/api/health') returning Map.of status UP and service banking-ai-platform; JUnit direct method assertions for both fields",
+          "sourceFiles": [
+            "src/main/java/dev/edan/bankingai/HealthController.java",
+            "src/test/java/dev/edan/bankingai/HealthControllerTest.java"
+          ],
+          "limitations": "Tests invoke controller directly, not Spring MVC HTTP layer; source/test/output supplied by user, not independently executed by assistant."
+        },
+        "earned": 68,
+        "max": 70
+      },
+      "mastered": [
+        "Spring Boot REST Controller mapping and JSON response",
+        "JUnit assertions on returned Map",
+        "Maven wrapper test and Git commit evidence"
+      ],
+      "gaps": [
+        "HTTP-layer MockMvc integration test not yet implemented",
+        "Liveness vs readiness and dependency boundaries",
+        "Port collision vs 404 diagnosis",
+        "Git remote push not verified"
+      ],
+      "review": "Hands-on core accepted based on submitted source, local commit metadata, Maven output, and API response. No assistant-side execution; external Git remote not confirmed."
     }
   ],
   "cloudComparison": {
@@ -7006,27 +7110,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 42,
-    "date": "2026-11-16",
-    "topic": "Hands-on 01: Spring Boot REST Health API, JUnit and Git evidence",
-    "status": "pending",
-    "handsOnStatus": "awaiting_execution_and_evidence",
-    "interactiveUrl": "docs/cloud-ai-day42-2026-11-16.html",
-    "score": null,
-    "assessmentWeights": {
-      "codingDeployment": 70,
-      "architectureDecision": 15,
-      "debugTesting": 10,
-      "concept": 5
-    },
-    "evidenceRequired": [
-      "Java source code or commit",
-      "mvn test output",
-      "GET /api/health JSON response",
-      "architecture and debug reasoning"
-    ],
-    "deviceDefault": "Windows 11 + VS Code / Java 21 / Maven / Git",
-    "note": "新 12 週 Hands-on Track 首堂；只建立待作答教材。無真實程式與執行證據不可標記實作通過；舊 Day 1–41 與 80 題挑戰原封不動。"
-  }
+  "pendingLesson": null
 };
