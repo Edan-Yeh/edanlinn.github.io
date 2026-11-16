@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-13",
+  "updatedAt": "2026-11-16",
   "completedDays": 41,
-  "currentTrack": "Cloud × AI / Day 41 已完成（93/100）· 下個工作日接續 Day 42",
+  "currentTrack": "Cloud × AI / Day 42 Hands-on：Spring Boot Health API + JUnit（待執行與驗收，不計分）",
   "scores": [
     {
       "day": 1,
@@ -196,7 +196,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "目前主題",
-        "value": "Day 41 / Architecture Review：Authorized RAG Gate、Canary、Recovery（已完成）"
+        "value": "Day 42 / Hands-on：Spring Boot REST API + JUnit（待實作驗收）"
       },
       {
         "label": "已建立基礎",
@@ -204,7 +204,7 @@ window.CLOUD_SA_DATA = {
       },
       {
         "label": "下一階段",
-        "value": "Day 42 / Cloud Architecture：容器服務、索引回復與可靠性"
+        "value": "提交實際程式、測試/API 輸出及 Git commit，先驗收再評分"
       }
     ],
     "domains": [
@@ -7006,5 +7006,27 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 42,
+    "date": "2026-11-16",
+    "topic": "Hands-on 01: Spring Boot REST Health API, JUnit and Git evidence",
+    "status": "pending",
+    "handsOnStatus": "awaiting_execution_and_evidence",
+    "interactiveUrl": "docs/cloud-ai-day42-2026-11-16.html",
+    "score": null,
+    "assessmentWeights": {
+      "codingDeployment": 70,
+      "architectureDecision": 15,
+      "debugTesting": 10,
+      "concept": 5
+    },
+    "evidenceRequired": [
+      "Java source code or commit",
+      "mvn test output",
+      "GET /api/health JSON response",
+      "architecture and debug reasoning"
+    ],
+    "deviceDefault": "Windows 11 + VS Code / Java 21 / Maven / Git",
+    "note": "新 12 週 Hands-on Track 首堂；只建立待作答教材。無真實程式與執行證據不可標記實作通過；舊 Day 1–41 與 80 題挑戰原封不動。"
+  }
 };
