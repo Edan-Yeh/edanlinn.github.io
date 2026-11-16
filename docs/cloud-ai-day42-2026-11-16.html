@@ -1,0 +1,45 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Day 42｜Hands-on Spring Boot Health API</title><style>body{font:16px/1.65 system-ui,sans-serif;background:#f3f6fb;color:#1b3046;margin:0}main{max-width:920px;margin:auto;padding:20px}section{background:white;border:1px solid #dce5ee;border-radius:14px;padding:18px;margin:16px 0}button,textarea,input,select{font:inherit}button{padding:9px 12px;margin:5px;border:1px solid #7191b3;background:#eaf1ff;border-radius:8px;cursor:pointer}button[aria-selected=true]{background:#174e8a;color:white}textarea{width:100%;min-height:120px;box-sizing:border-box}label{display:block;margin:10px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#edf2f8;padding:14px;border-radius:8px}code{background:#edf2f8}small{color:#51657b}fieldset{border:1px solid #dce5ee;border-radius:8px}</style></head><body><main><p><a href="../#ladder">← Cloud × AI 官方學習入口</a></p><h1>Day 42｜Hands-on 01：建立可驗收的 Spring Boot REST API</h1><p>2026/11/16（一）｜Cloud Architecture × Java Coding｜15–25 分鐘｜<strong>待實作、待驗收、未計分</strong></p><p>本課從 Day 41 延續同一學習線。預設 Windows 11 + VS Code；如無電腦可先閱讀，實作保持待驗收。僅在公司政策允許時使用個人 GitHub/工具，禁止公司或客戶程式、憑證、資料進入私人 repo。</p>
+<section><h2>① 白話教學｜切換觀念</h2><div id="tabs"></div><p id="concept"></p></section>
+<section><h2>② 架構元件｜點選探索</h2><div id="nodes"></div><p id="nodeInfo">點選元件看責任</p><p>今天只做本機可執行的 API 與測試，後續 Day 才加入 PostgreSQL、JWT、Docker、CI/CD、NAS、AWS。AWS ECS/Fargate 主線；Azure Container Apps、GCP Cloud Run 的部署與計費模型並非完全等價。今天不建立任何付費雲端資源。</p></section>
+<section><h2>③ Windows 11 環境檢查（實際執行）</h2><p>在 VS Code Terminal / PowerShell 執行，若缺工具只安裝本次必要項目，不要求一次裝 Docker。</p><pre>java -version
+mvn -version
+git --version
+code --version</pre><p>若已有 Spring Boot 專案，先在個人分支開發，不覆寫既有程式。若沒有，至 <a href="https://start.spring.io/">Spring Initializr</a> 建立 Java 21 / Maven / Spring Boot / Spring Web + Spring Boot Starter Test，Group: dev.edan，Artifact: banking-ai-platform，下載解壓後以 VS Code 開啟。若未安裝全域 Maven，使用專案 mvnw.cmd。</p><label>環境檢查輸出（可遮蔽個人路徑）<textarea id="env" placeholder="貼上 java/mvn/git 版本與專案路徑概況；未執行請填未執行"></textarea></label></section>
+<section><h2>④ 親自 Coding｜Health API + 自動測試（70%）</h2><p>在專案 src/main/java 對應 package 下建立 HealthController.java（package 需與專案相符）。這是教學範例，請親自輸入、執行與測試，勿只複製文字當完成證據。</p><pre>package dev.edan.banking_ai_platform;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
+
+@RestController
+public class HealthController {
+    @GetMapping("/api/health")
+    public Map&lt;String, String&gt; health() {
+        return Map.of("status", "UP", "service", "banking-ai-platform");
+    }
+}</pre><p>注意 package 名稱需對齊 Spring Initializr 產生的主程式 package（可將 artifact 改為 banking-ai-platform，其 Java package 通常為 banking_ai_platform）。</p><p>執行：</p><pre>.\mvnw.cmd test
+.\mvnw.cmd spring-boot:run
+# 另開 PowerShell
+Invoke-RestMethod http://localhost:8080/api/health</pre><p>再新增 src/test/java 同 package 的 HealthControllerTest.java：</p><pre>package dev.edan.banking_ai_platform;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+class HealthControllerTest {
+    @Test
+    void healthShouldReturnUp() {
+        var result = new HealthController().health();
+        assertEquals("UP", result.get("status"));
+        assertEquals("banking-ai-platform", result.get("service"));
+    }
+}</pre><p>提交個人專案 Git commit（若公司政策允許）：</p><pre>git status
+git add src/main src/test
+git commit -m "feat: add banking AI platform health endpoint and test"
+git log -1 --oneline</pre><label>程式碼或 commit URL / commit SHA<textarea id="codeEvidence" placeholder="貼上實際修改檔案、commit SHA 或私人可分享的程式碼片段"></textarea></label><label>測試與 API 執行輸出<textarea id="runEvidence" placeholder="貼上 mvnw.cmd test 結果、HTTP JSON、失敗 log；未執行請寫未執行"></textarea></label></section>
+<section><h2>⑤ 架構決策（15%）</h2><p>為何 Health API 不應直接宣稱 PostgreSQL、RAG 與外部模型全部正常？請說明 liveness vs readiness 與後續容器健康檢查設計。</p><textarea id="architecture" placeholder="你的架構取捨與理由"></textarea></section>
+<section><h2>⑥ Debug（10%）</h2><p>假設 localhost:8080 回 404 或 8080 port 被占用，你會用什麼指令、檔案或 log 定位？如何區分 Controller package/路由問題與埠衝突？</p><textarea id="debug" placeholder="請填實際錯誤及處置，或模擬排查步驟（標明模擬）"></textarea></section>
+<section><h2>⑦ 觀念檢查（5%）</h2><fieldset><legend>Spring Boot 的 @GetMapping("/api/health") 主要用途？</legend><label><input type="radio" name="q" value="A"> A. 自動建立 PostgreSQL 資料庫</label><label><input type="radio" name="q" value="B"> B. 將 HTTP GET 請求對應到方法</label><label><input type="radio" name="q" value="C"> C. 直接部署 AWS Fargate</label></fieldset></section>
+<section><h2>⑧ 提交前檢查</h2><p>本頁不自動批改或更新正式成績。若只有閱讀、尚未執行，請保留 Day 42 待實作狀態。提交真實程式碼、指令輸出、測試及 commit 證據後，才可評估 Hands-on 通過。</p><button id="submit" type="button">檢查並複製提交內容</button><p id="status">尚未提交，尚未驗收。</p><pre id="result" hidden></pre></section><small>禁止貼上 token、密碼、公司機密或客戶資料。Codespaces 僅作允許情況下的備援，注意配額與停止閒置機器；NAS 後續可透過 DSM Container Manager，不要求 SSH。</small></main><script>
+const concepts=[["API 是什麼","REST API 是讓其他程式以 HTTP 呼叫功能的入口。今天用 GET /api/health 建立最小可驗收的服務。"],["可執行證據","看過範例不等於親自做過；要有程式碼、測試結果、API JSON 與 Git commit 才能證明 hands-on。"],["健康檢查","Liveness 代表程式是否活著；Readiness 代表是否適合接流量。單純回 UP 不代表資料庫與 RAG 都正常。"],["實戰路線","今天 Health API，後續依序資料庫、JWT、測試、Docker、CI/CD、ECS/Fargate、AI/RAG，逐步累積同一專案。"]];
+const nodes={Vue:"未來呼叫後端 API，不能當作授權來源。",SpringBoot:"今天實作 GET /api/health；後續加入驗證、業務 API、JWT。",PostgreSQL:"後續保存合成銀行資料，今天不需要安裝。",JUnit:"今天建立可重跑的 Java 單元測試。",Git:"保存可追溯的程式碼與 commit。",Docker:"後續把服務容器化，本次不強制安裝。",ECS_Fargate:"AWS 後續受控部署，先確認費用才建立資源。"};
+document.querySelector("#tabs").innerHTML=concepts.map((x,i)=>'<button type="button" data-tab="'+i+'" aria-selected="'+(i===0)+'">'+x[0]+'</button>').join("");document.querySelector("#concept").textContent=concepts[0][1];document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-selected",String(x===b)));document.querySelector("#concept").textContent=concepts[Number(b.dataset.tab)][1]});document.querySelector("#nodes").innerHTML=Object.keys(nodes).map(x=>'<button type="button" data-node="'+x+'">'+x+'</button>').join("");document.querySelectorAll("[data-node]").forEach(b=>b.onclick=()=>document.querySelector("#nodeInfo").textContent=nodes[b.dataset.node]);
+document.querySelector("#submit").onclick=async()=>{const ids=["env","codeEvidence","runEvidence","architecture","debug"],vals=ids.map(id=>document.getElementById(id).value.trim()),q=document.querySelector('input[name="q"]:checked')?.value;const missing=ids.filter((id,i)=>!vals[i]);if(!q)missing.push("觀念題");if(missing.length){document.querySelector("#status").textContent="請補齊："+missing.join("、");return}const t="Cloud × AI Day 42 Hands-on 正式提交（2026-11-16；請先檢查官方 pending，不重複計分）\n環境：\n"+vals[0]+"\n程式碼/Commit：\n"+vals[1]+"\n執行測試/API：\n"+vals[2]+"\n架構決策：\n"+vals[3]+"\nDebug：\n"+vals[4]+"\n觀念題："+q+"\n請依真實執行證據判定 Hands-on 驗收，未執行不得標示通過。";document.querySelector("#result").hidden=false;document.querySelector("#result").textContent=t;try{await navigator.clipboard.writeText(t);document.querySelector("#status").textContent="已複製，請貼回 ChatGPT；尚未計分。"}catch(e){document.querySelector("#status").textContent="請手動複製下方文字；尚未計分。"}};</script></body></html>
