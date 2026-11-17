@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-16",
+  "updatedAt": "2026-11-17",
   "completedDays": 42,
-  "currentTrack": "Cloud × AI / Day 42 Hands-on 通過（84/100）；下一個工作日 Day 43：MockMvc HTTP integration tests",
+  "currentTrack": "Cloud × AI / Day 43 Hands-on 02 待作答：MockMvc HTTP 整合測試、Liveness/Readiness 與 Debug",
   "scores": [
     {
       "day": 1,
@@ -7110,5 +7110,28 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 43,
+    "date": "2026-11-17",
+    "topic": "Hands-on 02: MockMvc HTTP integration test, liveness/readiness and 404 vs port debugging",
+    "status": "pending",
+    "handsOnStatus": "awaiting_execution_and_evidence",
+    "interactiveUrl": "docs/cloud-ai-day43-2026-11-17.html",
+    "score": null,
+    "assessmentWeights": {
+      "codingDeployment": 70,
+      "architectureDecision": 15,
+      "debugTesting": 10,
+      "concept": 5
+    },
+    "evidenceRequired": [
+      "HealthControllerHttpTest.java source",
+      "Maven test command output",
+      "HTTP status and JSON assertions",
+      "architecture and debug answers",
+      "Git commit SHA if available"
+    ],
+    "deviceDefault": "Windows 11 VS Code JDK21 Maven Wrapper Git",
+    "note": "Day42 graded 84/100. Day43 pending until real evidence; NET, answer comparison, weakness review. No grading before submission."
+  }
 };
