@@ -1,0 +1,38 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Day 43｜MockMvc HTTP 整合測試與 Debug</title><style>body{font:16px/1.75 system-ui,sans-serif;margin:0;background:#f4f7fb;color:#182b41}main{max-width:900px;margin:auto;padding:20px}section{background:#fff;border:1px solid #d8e3ee;border-radius:16px;padding:20px;margin:16px 0}h1{line-height:1.3}pre{background:#14283f;color:#eaf5ff;padding:18px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere}code{background:#e8f0f7;padding:2px 4px}pre code{background:none}textarea{box-sizing:border-box;width:100%;min-height:105px;padding:10px;font:inherit;border:1px solid #a4b5c6;border-radius:8px}button{font:inherit;padding:10px 16px;border:0;border-radius:9px;background:#185b9c;color:white;cursor:pointer}button:disabled{opacity:.5}label{display:block;margin:12px 0}small,.muted{color:#50677d}table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px solid #e3e9f0;text-align:left}</style></head><body><main><p><a href="../#ladder">← 返回 Cloud × AI 天梯</a></p><h1>Day 43｜Hands-on 02：讓 Health API 通過 HTTP 整合測試</h1><p>2026/11/17（二）｜15–25 分鐘｜<strong>待作答、未驗收、未計分</strong></p><p>延續 Day 42（84/100）的同一個 <code>banking-ai-platform</code>。預設 Windows 11 + VS Code + JDK 21 + Maven Wrapper。無法使用電腦時可先理解，但不視為實作通過。</p>
+<section><h2>① Day 42 原答與標準答案比對</h2><table><tr><th>面向</th><th>你的答案</th><th>架構師需要補上的重點</th></tr><tr><td>架構 5/15</td><td>先驗證來源和權限</td><td>Liveness 判斷進程存活；Readiness 判斷是否能接流量；外部 PostgreSQL/LLM 故障不可全部混成一個 UP</td></tr><tr><td>Debug 6/10</td><td>確認 URL、看 VS Code log、確認 404</td><td>區分 404 路由不存在、連線拒絕與 8080 被占用；查 mapping、port 與啟動日誌</td></tr><tr><td>程式 68/70</td><td>直接呼叫 <code>new HealthController().health()</code></td><td>JUnit 方法測試有效，但尚未驗證 Spring MVC HTTP routing、HTTP 200 與 JSON 序列化</td></tr><tr><td>觀念 5/5</td><td>B</td><td><code>@GetMapping</code> 映射 HTTP GET，答對</td></tr></table></section>
+<section><h2>② NET｜Next → Example → Try</h2><p><strong>Next：</strong>保留原本的單元測試，新增一支 MockMvc HTTP 層測試，驗證 GET /api/health 真正走 Spring MVC。</p><p><strong>Example：</strong>在 <code>src/test/java/dev/edan/bankingai/HealthControllerHttpTest.java</code> 建立新檔。此範例以 Spring Boot 3.x / 4.x 對應的測試依賴與 import 為前提；若 IDE 無法解析 <code>@AutoConfigureMockMvc</code>，先確認 Spring Boot 版本及依賴，不要直接照抄錯誤 import。</p><pre>package dev.edan.bankingai;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class HealthControllerHttpTest {
+    @Autowired MockMvc mockMvc;
+
+    @Test
+    void healthEndpointShouldReturn200AndJson() throws Exception {
+        mockMvc.perform(get("/api/health"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("UP"))
+            .andExpect(jsonPath("$.service").value("banking-ai-platform"));
+    }
+}</pre><p class="muted">Spring Boot 4 的 MockMvc 自動設定註解可能使用 <code>org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc</code>；以實際 pom.xml 與 IDE 可解析的套件為準。請先確認 <code>spring-boot-starter-test</code>，必要時檢查 Web MVC 測試依賴。</p><p><strong>Try：</strong>自己建立或調整測試，實際執行以下指令，提交完整輸出與程式碼，不要只貼預期結果。</p><pre>java -version
+.\mvnw.cmd -version
+.\mvnw.cmd test
+git status --short
+git diff -- src/test/java/dev/edan/bankingai/HealthControllerHttpTest.java</pre><p>如果新檔尚未被 Git 追蹤，<code>git diff</code> 不會顯示內容；改用 <code>Get-Content .\src\test\java\dev\edan\bankingai\HealthControllerHttpTest.java</code> 貼出檔案。</p><p>完成測試後，再自行建立 Git commit；尚未確認公司政策允許時，不要求 push 到私人 GitHub。</p></section>
+<section><h2>③ Debug｜Windows 11 真正排查</h2><pre>curl.exe -i http://localhost:8080/api/health
+Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue
+# 查到 OwningProcess 後：
+Get-Process -Id 12345</pre><p><strong>區分：</strong>404 代表有 HTTP 回應但路由不符；Connection refused 通常代表該位址/埠沒有服務接收；Port already in use 是應用啟動階段的埠衝突。<code>MockMvc</code> 不需真的開啟 8080 埠，故它與 curl.exe 測試的故障模式不同。</p></section>
+<section><h2>④ 架構題｜先作答後批改（15%）</h2><p>若 PostgreSQL 故障但 Spring Boot 仍可回應，Liveness 和 Readiness 應如何設計？若只有部分功能依賴 DB，你會如何取捨？</p><textarea id="architecture" placeholder="用自己的話說明判斷依據與取捨"></textarea></section>
+<section><h2>⑤ Debug 題｜先作答後批改（10%）</h2><p>你遇到 A. HTTP 404；B. Port 8080 already in use。各自先檢查什麼？至少寫出一個 Windows 指令。</p><textarea id="debug" placeholder="A. ... B. ..."></textarea></section>
+<section><h2>⑥ 觀念題｜先作答後批改（5%）</h2><p>MockMvc 相較於直接 new Controller，主要額外驗證什麼？</p><label><input type="radio" name="concept" value="A"> A. AWS 已成功部署</label><label><input type="radio" name="concept" value="B"> B. Spring MVC HTTP mapping、狀態碼與 JSON 回應</label><label><input type="radio" name="concept" value="C"> C. PostgreSQL 已自動建立</label></section>
+<section><h2>⑦ 提交 Day 43 實作證據（70%）</h2><p>請貼上新增測試程式、<code>mvnw test</code> 實際輸出、測試失敗時的修正紀錄，以及 commit SHA（若已提交）。不含機密、金鑰或公司客戶資料。</p><textarea id="evidence" placeholder="貼上程式碼／測試輸出／commit／Debug 記錄；沒有電腦可留空，之後續做"></textarea><p><button id="submit" type="button">整理本次作答（複製後貼回 ChatGPT）</button></p><p id="feedback" role="status" class="muted">本頁只整理你的答案，不會自行評分或修改正式成績。實作必須經證據驗收才算通過。</p></section>
+</main><script>document.getElementById('submit').addEventListener('click',async()=>{const v=id=>document.getElementById(id).value.trim();const c=document.querySelector('input[name="concept"]:checked')?.value||'未作答';const output='Cloud × AI Day 43 正式提交（請先查官方 pending，勿重複計分）\n架構：'+v('architecture')+'\nDebug：'+v('debug')+'\n觀念：'+c+'\n實作證據：\n'+v('evidence')+'\n請先審查真實證據、逐項比對我的答案與標準答案，弱點補強；沒有足夠執行證據則保持待驗收。';try{await navigator.clipboard.writeText(output);document.getElementById('feedback').textContent='已複製作答內容，請貼回 ChatGPT 進行正式驗收；本頁沒有自動計分。'}catch(e){document.getElementById('feedback').textContent='瀏覽器無法自動複製，請手動複製下方文字。';const t=document.createElement('textarea');t.value=output;document.getElementById('feedback').after(t)}});</script></body></html>
