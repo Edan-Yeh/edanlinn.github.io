@@ -1,7 +1,7 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-17",
-  "completedDays": 42,
-  "currentTrack": "Cloud × AI / Day 43 Hands-on 02 待作答：MockMvc HTTP 整合測試、Liveness/Readiness 與 Debug",
+  "completedDays": 43,
+  "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
     {
       "day": 1,
@@ -170,6 +170,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 42,
       "score": 84
+    },
+    {
+      "day": 43,
+      "score": 96
     }
   ],
   "roadmap": [
@@ -391,7 +395,8 @@ window.CLOUD_SA_DATA = {
       "檢索前 tenant + ACL 過濾",
       "Day41 D1/D4 授權允許與 D2/D3 拒絕測試",
       "Canary Recall@5、引用正確率及越權率量化 Gate",
-      "Day42 Spring Boot REST API / JUnit unit assertions / Maven BUILD SUCCESS / local Git commit"
+      "Day42 Spring Boot REST API / JUnit unit assertions / Maven BUILD SUCCESS / local Git commit",
+      "Day43 MockMvc HTTP routing/status/JSON integration test; Maven clean test 3/3 success"
     ],
     "confused": [
       "Trust Policy vs Permission Policy",
@@ -424,7 +429,8 @@ window.CLOUD_SA_DATA = {
       "Day41 模型/索引相容回版與回版後驗收",
       "Day41 p95 延遲與 Canary 觀測時間具體化",
       "Day41 已提交交易影響評估與補償界線",
-      "Day42 liveness vs readiness; MockMvc HTTP assertions; port conflict diagnosis"
+      "Day42 liveness vs readiness; MockMvc HTTP assertions; port conflict diagnosis",
+      "Day43 improve degraded-mode boundaries for financial transactions and 404 component-scan diagnosis"
     ],
     "upcoming": [
       "Modernization",
@@ -7095,6 +7101,93 @@ window.CLOUD_SA_DATA = {
         "Git remote push not verified"
       ],
       "review": "Hands-on core accepted based on submitted source, local commit metadata, Maven output, and API response. No assistant-side execution; external Git remote not confirmed."
+    },
+    {
+      "day": 43,
+      "date": "2026-11-17",
+      "topic": "Hands-on 02: MockMvc HTTP integration test, liveness/readiness and 404 vs port debugging",
+      "status": "completed",
+      "handsOnStatus": "passed_with_followups",
+      "score": 96,
+      "assessment": {
+        "codingDeployment": {
+          "earned": 70,
+          "max": 70
+        },
+        "architectureDecision": {
+          "earned": 12,
+          "max": 15
+        },
+        "debugTesting": {
+          "earned": 9,
+          "max": 10
+        },
+        "concept": {
+          "earned": 5,
+          "max": 5
+        }
+      },
+      "answers": {
+        "architecture": "Liveness 判斷應用程式是否正常運作，不應因非必要外部服務故障而重啟；Readiness 判斷是否能接流量，依必要依賴檢查 PostgreSQL；部分功能依賴 DB 時評估影響程度後停止或降級。",
+        "debug": "實際驗證 HTTP 200、404、connection refused、Port 8080 already in use，並用 PowerShell 找到 Java 占用程序；需補 Controller scanning 排查。",
+        "concept": "B"
+      },
+      "practical": {
+        "repository": "Edan-Yeh/banking-ai-platform",
+        "branch": "main",
+        "commit": "6d4b4d48cc257a4c84617033e680caf58332eae5",
+        "source": "src/test/java/dev/edan/bankingai/HealthControllerHttpTest.java",
+        "implementation": "@SpringBootTest + WebApplicationContext + MockMvcBuilders.webAppContextSetup; assert HTTP 200 and $.status UP / $.service banking-ai-platform",
+        "command": ".\\mvnw.cmd clean test",
+        "executionEvidence": "User-submitted Windows PowerShell Maven output 2026-11-17 16:52 +08:00; 3 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS, total 9.125s",
+        "executionScope": "User executed locally; assistant verified submitted log and remote source, not independently executed Maven",
+        "warnings": "Mockito dynamically loaded Java agent warning; non-blocking"
+      },
+      "questions": [
+        {
+          "id": "architecture",
+          "points": 15,
+          "answer": "Liveness 與 Readiness 分離；DB 必要依賴失效則 Readiness 不就緒，部分依賴可評估降級。",
+          "earned": 12,
+          "explanation": "核心正確；需具體定義降級功能邊界與交易一致性。"
+        },
+        {
+          "id": "debug",
+          "points": 10,
+          "answer": "實測 HTTP 200/404、connection refused、8080 occupied，查出 java PID。",
+          "earned": 9,
+          "explanation": "有實際故障注入和定位證據；可補 Controller package scanning、mapping 排查。"
+        },
+        {
+          "id": "concept",
+          "points": 5,
+          "answer": "B",
+          "correct": "B",
+          "earned": 5,
+          "explanation": "MockMvc 驗證 Spring MVC HTTP routing、status 與 JSON 回應。"
+        }
+      ],
+      "mastered": [
+        "Spring Boot 4.1.2 MockMvc integration test",
+        "Maven clean test three tests passed",
+        "Differentiate HTTP 404, connection refused, port in use",
+        "Liveness and readiness separation"
+      ],
+      "corrections": [
+        [
+          "降級策略尚不夠具體",
+          "區分可降級 AI 摘要與不可繞過資料一致性驗證的核心交易。"
+        ],
+        [
+          "Controller 404 排查待補",
+          "確認 component scan、package、@GetMapping 與應用 context path。"
+        ],
+        [
+          "Mockito Java Agent warning",
+          "目前不阻斷測試；後續 CI/CD 時評估官方建議的 agent 設定。"
+        ]
+      ],
+      "archive": "docs/cloud-ai-day43-2026-11-17.html"
     }
   ],
   "cloudComparison": {
@@ -7110,28 +7203,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 43,
-    "date": "2026-11-17",
-    "topic": "Hands-on 02: MockMvc HTTP integration test, liveness/readiness and 404 vs port debugging",
-    "status": "pending",
-    "handsOnStatus": "awaiting_execution_and_evidence",
-    "interactiveUrl": "docs/cloud-ai-day43-2026-11-17.html",
-    "score": null,
-    "assessmentWeights": {
-      "codingDeployment": 70,
-      "architectureDecision": 15,
-      "debugTesting": 10,
-      "concept": 5
-    },
-    "evidenceRequired": [
-      "HealthControllerHttpTest.java source",
-      "Maven test command output",
-      "HTTP status and JSON assertions",
-      "architecture and debug answers",
-      "Git commit SHA if available"
-    ],
-    "deviceDefault": "Windows 11 VS Code JDK21 Maven Wrapper Git",
-    "note": "Day42 graded 84/100. Day43 pending until real evidence; NET, answer comparison, weakness review. No grading before submission."
-  }
+  "pendingLesson": null
 };
