@@ -7187,7 +7187,27 @@ window.CLOUD_SA_DATA = {
           "目前不阻斷測試；後續 CI/CD 時評估官方建議的 agent 設定。"
         ]
       ],
-      "archive": "docs/cloud-ai-day43-2026-11-17.html"
+      "archive": "docs/cloud-ai-day43-2026-11-17.html",
+      "reviewUrl": "docs/cloud-ai-day43-review-2026-11-17.html",
+      "reviewPublishedAt": "2026-11-17",
+      "reviewStatus": "published",
+      "weaknesses": [
+        {
+          "topic": "金融系統降級安全邊界",
+          "priority": "high",
+          "status": "awaiting_understanding_check"
+        },
+        {
+          "topic": "404 Controller 掃描與路由",
+          "priority": "medium",
+          "status": "awaiting_practice"
+        },
+        {
+          "topic": "Mockito agent warning",
+          "priority": "low",
+          "status": "monitor"
+        }
+      ]
     }
   ],
   "cloudComparison": {
