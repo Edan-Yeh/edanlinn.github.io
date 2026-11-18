@@ -1,5 +1,5 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-17",
+  "updatedAt": "2026-11-18",
   "completedDays": 43,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
@@ -7223,5 +7223,27 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 44,
+    "date": "2026-11-18",
+    "topic": "Hands-on 03: REST API unknown endpoint 404 test and error status design",
+    "status": "pending",
+    "handsOnStatus": "awaiting_execution_and_evidence",
+    "interactiveUrl": "docs/cloud-ai-day44-2026-11-18.html",
+    "score": null,
+    "assessmentWeights": {
+      "codingDeployment": 70,
+      "architectureDecision": 15,
+      "debugTesting": 10,
+      "concept": 5
+    },
+    "evidenceRequired": [
+      "New MockMvc 404 test source",
+      "Maven clean test real output",
+      "Git commit SHA if changed",
+      "Architecture and Debug answers"
+    ],
+    "deviceDefault": "Windows 11 VS Code JDK21 Maven Wrapper Git",
+    "reviewPriorDay": "docs/cloud-ai-day43-review-2026-11-17.html"
+  }
 };
