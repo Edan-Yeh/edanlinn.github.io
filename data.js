@@ -7244,6 +7244,31 @@ window.CLOUD_SA_DATA = {
       "Architecture and Debug answers"
     ],
     "deviceDefault": "Windows 11 VS Code JDK21 Maven Wrapper Git",
-    "reviewPriorDay": "docs/cloud-ai-day43-review-2026-11-17.html"
+    "reviewPriorDay": "docs/cloud-ai-day43-review-2026-11-17.html",
+    "mobileConceptPractice": {
+      "date": "2026-11-18",
+      "status": "concept_reviewed_hands_on_pending",
+      "officialScore": null,
+      "diagnostic": "4/5 informal feedback only",
+      "question": "PostgreSQL unavailable while Spring Boot is running and loan query API depends on DB: choose HTTP status and explain.",
+      "originalAnswer": "選項 D。理由：因為400是規格不符\n404是位置不對或是不存在\n500是程式發生未預期例外\n503就是服務有，但不能查詢功能。",
+      "recommendedAnswer": "503 Service Unavailable when required PostgreSQL dependency is temporarily unavailable for the loan query. Do not confuse a failed query with a successful query returning no matching loan (404). Keep liveness separate; readiness depends on whether DB is essential for all incoming requests.",
+      "feedback": "Correct D; refine 503 as temporary inability to serve a request, not limited to query. 400 invalid request, 404 missing route/resource, 500 unexpected internal failure. Database failure does not automatically make every endpoint return 503.",
+      "weaknesses": [
+        {
+          "topic": "503 is temporary service unavailability, not query-only",
+          "status": "reviewed_needs_application"
+        },
+        {
+          "topic": "DB failure vs no matching loan record",
+          "status": "reviewed_needs_application"
+        },
+        {
+          "topic": "Liveness/Readiness and partial-dependency degradation",
+          "status": "awaiting_hands_on"
+        }
+      ],
+      "nextHandsOn": "Add MockMvc unknown endpoint 404 test, run .\\mvnw.cmd clean test, submit actual output and architecture/debug answers. No grading until evidence."
+    }
   }
 };
