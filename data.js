@@ -1,5 +1,5 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-18",
+  "updatedAt": "2026-11-19",
   "completedDays": 43,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
@@ -7265,10 +7265,58 @@ window.CLOUD_SA_DATA = {
         },
         {
           "topic": "Liveness/Readiness and partial-dependency degradation",
-          "status": "awaiting_hands_on"
+          "status": "concept_reviewed_hands_on_pending"
         }
       ],
-      "nextHandsOn": "Add MockMvc unknown endpoint 404 test, run .\\mvnw.cmd clean test, submit actual output and architecture/debug answers. No grading until evidence."
+      "nextHandsOn": "Add MockMvc unknown endpoint 404 test, run .\\mvnw.cmd clean test, submit actual output and architecture/debug answers. No grading until evidence.",
+      "sessions": [
+        {
+          "date": "2026-11-19",
+          "mode": "mobile_concept_only",
+          "status": "completed_non_formal",
+          "rounds": [
+            {
+              "round": 1,
+              "correct": 3,
+              "total": 5,
+              "score": 60
+            },
+            {
+              "round": 2,
+              "correct": 5,
+              "total": 5,
+              "score": 100
+            },
+            {
+              "round": 3,
+              "correct": 5,
+              "total": 5,
+              "score": 100
+            }
+          ],
+          "correct": 13,
+          "total": 15,
+          "scorePercent": 86.7,
+          "officialScore": null,
+          "reviewedTopics": [
+            "REST API HTTP error handling",
+            "MockMvc no actual listening port",
+            "Liveness vs Readiness",
+            "PostgreSQL partial dependency degradation",
+            "Idempotency-Key and retry after timeout",
+            "@RestControllerAdvice safe error mapping"
+          ],
+          "initialWeaknesses": [
+            "Liveness remains healthy during external DB failure",
+            "MockMvc need not bind localhost:8080"
+          ],
+          "subsequentEvidence": "Rounds 2 and 3 both 5/5; conceptual correction demonstrated, coding evidence not submitted",
+          "nextAction": "Resume Day44 MockMvc 404 test on Windows11, execute Maven clean test and submit logs plus Git commit; do not advance to Day45",
+          "source": "Saved ChatGPT learning quiz results from current conversation"
+        }
+      ],
+      "latestDate": "2026-11-19",
+      "latestStatus": "concept_training_completed_hands_on_pending"
     }
   }
 };
