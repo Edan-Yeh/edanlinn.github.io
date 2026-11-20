@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-19",
-  "completedDays": 43,
+  "updatedAt": "2026-11-20",
+  "completedDays": 44,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
     {
@@ -174,6 +174,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 43,
       "score": 96
+    },
+    {
+      "day": 44,
+      "score": 94
     }
   ],
   "roadmap": [
@@ -7208,6 +7212,163 @@ window.CLOUD_SA_DATA = {
           "status": "monitor"
         }
       ]
+    },
+    {
+      "day": 44,
+      "date": "2026-11-20",
+      "topic": "Hands-on 03: REST API unknown endpoint 404 test and error status design",
+      "status": "completed",
+      "handsOnStatus": "passed_with_followups",
+      "score": 94,
+      "assessment": {
+        "codingDeployment": {
+          "earned": 70,
+          "max": 70
+        },
+        "architectureDecision": {
+          "earned": 11,
+          "max": 15
+        },
+        "debugTesting": {
+          "earned": 8,
+          "max": 10
+        },
+        "concept": {
+          "earned": 5,
+          "max": 5
+        }
+      },
+      "answers": {
+        "architecture": "PostgreSQL異常，但 Spring Boot 仍存活，應回應503 服務暫時無法處理請求。\nReadiness 可回報不就緒，需要DOWN",
+        "debug": "1.確認URL是否存在\n2.Controller mapping\n3.component scanning 或 context path",
+        "concept": "B"
+      },
+      "practical": {
+        "repository": "Edan-Yeh/banking-ai-platform",
+        "branch": "main",
+        "commit": "8c2d6ad12dd06f8f4d3045224f662f48d1a7b38b",
+        "source": "src/test/java/dev/edan/bankingai/HealthControllerHttpTest.java",
+        "implementation": "@SpringBootTest, WebApplicationContext, MockMvc GET /api/health-typo asserts 404",
+        "command": ".\\mvnw.cmd clean test",
+        "executionEvidence": "User submitted 2026-11-20 15:03 +08:00 PowerShell Maven output: 4 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS, 9.291 seconds; git push main and rev-parse HEAD",
+        "executionScope": "User executed locally; assistant verified submitted logs, remote commit and source, not independently executed Maven",
+        "warnings": "Mockito/Byte Buddy dynamic agent warnings nonblocking"
+      },
+      "questions": [
+        {
+          "id": "architecture",
+          "points": 15,
+          "earned": 11,
+          "explanation": "Correct 503 and possible Readiness DOWN; omitted conditional DB criticality and partial-service degradation."
+        },
+        {
+          "id": "debug",
+          "points": 10,
+          "earned": 8,
+          "explanation": "Correct URL, mapping, scanning/context path; add catch-all handler and MockMvc print."
+        },
+        {
+          "id": "concept",
+          "points": 5,
+          "earned": 5,
+          "correct": "B",
+          "explanation": "404 Not Found for nonexistent route."
+        }
+      ],
+      "archive": "docs/cloud-ai-day44-2026-11-18.html",
+      "reviewUrl": "docs/cloud-ai-day44-review-2026-11-20.html",
+      "reviewPublishedAt": "2026-11-20",
+      "reviewStatus": "published",
+      "weaknesses": [
+        {
+          "topic": "DB dependency criticality and readiness / safe degradation",
+          "priority": "high",
+          "status": "awaiting_understanding_check"
+        },
+        {
+          "topic": "MockMvc 404 catch-all mapping and print diagnosis",
+          "priority": "medium",
+          "status": "awaiting_practice"
+        },
+        {
+          "topic": "Mockito agent warning",
+          "priority": "low",
+          "status": "monitor"
+        }
+      ],
+      "mobileConceptPractice": {
+        "date": "2026-11-18",
+        "status": "concept_reviewed_hands_on_pending",
+        "officialScore": null,
+        "diagnostic": "4/5 informal feedback only",
+        "question": "PostgreSQL unavailable while Spring Boot is running and loan query API depends on DB: choose HTTP status and explain.",
+        "originalAnswer": "選項 D。理由：因為400是規格不符\n404是位置不對或是不存在\n500是程式發生未預期例外\n503就是服務有，但不能查詢功能。",
+        "recommendedAnswer": "503 Service Unavailable when required PostgreSQL dependency is temporarily unavailable for the loan query. Do not confuse a failed query with a successful query returning no matching loan (404). Keep liveness separate; readiness depends on whether DB is essential for all incoming requests.",
+        "feedback": "Correct D; refine 503 as temporary inability to serve a request, not limited to query. 400 invalid request, 404 missing route/resource, 500 unexpected internal failure. Database failure does not automatically make every endpoint return 503.",
+        "weaknesses": [
+          {
+            "topic": "503 is temporary service unavailability, not query-only",
+            "status": "reviewed_needs_application"
+          },
+          {
+            "topic": "DB failure vs no matching loan record",
+            "status": "reviewed_needs_application"
+          },
+          {
+            "topic": "Liveness/Readiness and partial-dependency degradation",
+            "status": "concept_reviewed_hands_on_pending"
+          }
+        ],
+        "nextHandsOn": "Add MockMvc unknown endpoint 404 test, run .\\mvnw.cmd clean test, submit actual output and architecture/debug answers. No grading until evidence.",
+        "sessions": [
+          {
+            "date": "2026-11-19",
+            "mode": "mobile_concept_only",
+            "status": "completed_non_formal",
+            "rounds": [
+              {
+                "round": 1,
+                "correct": 3,
+                "total": 5,
+                "score": 60
+              },
+              {
+                "round": 2,
+                "correct": 5,
+                "total": 5,
+                "score": 100
+              },
+              {
+                "round": 3,
+                "correct": 5,
+                "total": 5,
+                "score": 100
+              }
+            ],
+            "correct": 13,
+            "total": 15,
+            "scorePercent": 86.7,
+            "officialScore": null,
+            "reviewedTopics": [
+              "REST API HTTP error handling",
+              "MockMvc no actual listening port",
+              "Liveness vs Readiness",
+              "PostgreSQL partial dependency degradation",
+              "Idempotency-Key and retry after timeout",
+              "@RestControllerAdvice safe error mapping"
+            ],
+            "initialWeaknesses": [
+              "Liveness remains healthy during external DB failure",
+              "MockMvc need not bind localhost:8080"
+            ],
+            "subsequentEvidence": "Rounds 2 and 3 both 5/5; conceptual correction demonstrated, coding evidence not submitted",
+            "nextAction": "Resume Day44 MockMvc 404 test on Windows11, execute Maven clean test and submit logs plus Git commit; do not advance to Day45",
+            "source": "Saved ChatGPT learning quiz results from current conversation"
+          }
+        ],
+        "latestDate": "2026-11-19",
+        "latestStatus": "concept_training_completed_hands_on_pending"
+      }
     }
   ],
   "cloudComparison": {
@@ -7223,100 +7384,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 44,
-    "date": "2026-11-18",
-    "topic": "Hands-on 03: REST API unknown endpoint 404 test and error status design",
-    "status": "pending",
-    "handsOnStatus": "awaiting_execution_and_evidence",
-    "interactiveUrl": "docs/cloud-ai-day44-2026-11-18.html",
-    "score": null,
-    "assessmentWeights": {
-      "codingDeployment": 70,
-      "architectureDecision": 15,
-      "debugTesting": 10,
-      "concept": 5
-    },
-    "evidenceRequired": [
-      "New MockMvc 404 test source",
-      "Maven clean test real output",
-      "Git commit SHA if changed",
-      "Architecture and Debug answers"
-    ],
-    "deviceDefault": "Windows 11 VS Code JDK21 Maven Wrapper Git",
-    "reviewPriorDay": "docs/cloud-ai-day43-review-2026-11-17.html",
-    "mobileConceptPractice": {
-      "date": "2026-11-18",
-      "status": "concept_reviewed_hands_on_pending",
-      "officialScore": null,
-      "diagnostic": "4/5 informal feedback only",
-      "question": "PostgreSQL unavailable while Spring Boot is running and loan query API depends on DB: choose HTTP status and explain.",
-      "originalAnswer": "選項 D。理由：因為400是規格不符\n404是位置不對或是不存在\n500是程式發生未預期例外\n503就是服務有，但不能查詢功能。",
-      "recommendedAnswer": "503 Service Unavailable when required PostgreSQL dependency is temporarily unavailable for the loan query. Do not confuse a failed query with a successful query returning no matching loan (404). Keep liveness separate; readiness depends on whether DB is essential for all incoming requests.",
-      "feedback": "Correct D; refine 503 as temporary inability to serve a request, not limited to query. 400 invalid request, 404 missing route/resource, 500 unexpected internal failure. Database failure does not automatically make every endpoint return 503.",
-      "weaknesses": [
-        {
-          "topic": "503 is temporary service unavailability, not query-only",
-          "status": "reviewed_needs_application"
-        },
-        {
-          "topic": "DB failure vs no matching loan record",
-          "status": "reviewed_needs_application"
-        },
-        {
-          "topic": "Liveness/Readiness and partial-dependency degradation",
-          "status": "concept_reviewed_hands_on_pending"
-        }
-      ],
-      "nextHandsOn": "Add MockMvc unknown endpoint 404 test, run .\\mvnw.cmd clean test, submit actual output and architecture/debug answers. No grading until evidence.",
-      "sessions": [
-        {
-          "date": "2026-11-19",
-          "mode": "mobile_concept_only",
-          "status": "completed_non_formal",
-          "rounds": [
-            {
-              "round": 1,
-              "correct": 3,
-              "total": 5,
-              "score": 60
-            },
-            {
-              "round": 2,
-              "correct": 5,
-              "total": 5,
-              "score": 100
-            },
-            {
-              "round": 3,
-              "correct": 5,
-              "total": 5,
-              "score": 100
-            }
-          ],
-          "correct": 13,
-          "total": 15,
-          "scorePercent": 86.7,
-          "officialScore": null,
-          "reviewedTopics": [
-            "REST API HTTP error handling",
-            "MockMvc no actual listening port",
-            "Liveness vs Readiness",
-            "PostgreSQL partial dependency degradation",
-            "Idempotency-Key and retry after timeout",
-            "@RestControllerAdvice safe error mapping"
-          ],
-          "initialWeaknesses": [
-            "Liveness remains healthy during external DB failure",
-            "MockMvc need not bind localhost:8080"
-          ],
-          "subsequentEvidence": "Rounds 2 and 3 both 5/5; conceptual correction demonstrated, coding evidence not submitted",
-          "nextAction": "Resume Day44 MockMvc 404 test on Windows11, execute Maven clean test and submit logs plus Git commit; do not advance to Day45",
-          "source": "Saved ChatGPT learning quiz results from current conversation"
-        }
-      ],
-      "latestDate": "2026-11-19",
-      "latestStatus": "concept_training_completed_hands_on_pending"
-    }
-  }
+  "pendingLesson": null
 };
