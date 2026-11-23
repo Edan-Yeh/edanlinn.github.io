@@ -1,0 +1,56 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cloud × AI Day 45｜Loan REST API 200/404</title><style>body{font:16px/1.7 system-ui;background:#f5f8fc;color:#182c42;margin:0}main{max-width:850px;margin:auto;padding:24px}section{background:white;border:1px solid #dbe5ef;border-radius:14px;padding:20px;margin:16px 0}pre{background:#152b43;color:white;overflow:auto;padding:16px;border-radius:10px}textarea{width:100%;min-height:100px;box-sizing:border-box}button{padding:12px;background:#175c99;color:white;border:0;border-radius:8px}a{color:#135d9b}</style></head><body><main><p><a href="../#ladder">返回學習天梯</a></p><h1>Day 45｜親手建立貸款查詢 REST API：200 / 404</h1><p><strong>2026-11-23｜Windows 11｜15–25 分鐘｜Hands-on Pending｜正式分數待驗收</strong></p><section><h2>先複習 Day 44</h2><p><a href="cloud-ai-day44-review-2026-11-20.html">原始答案 vs 改善答案與弱點</a>。DB 壞掉時：受影響貸款查詢可回 503；查無貸款才回 404；Liveness 與 Readiness 分開判斷。若 MockMvc 回傳意外狀態，先檢查 mapping、component scanning 與 handler。</p></section><section><h2>白話教學</h2><p>Controller 接收 HTTP 請求；Service/Repository 後續負責商業邏輯與資料。今天先用合成的記憶體資料，避免一次引入 PostgreSQL；下一步再替換為資料庫存取。GET /api/loans/L001 有資料時回 200 + JSON；GET /api/loans/UNKNOWN 查無資料時回 404。</p></section><section><h2>NET：Next → Example → Try</h2><p><strong>Next：</strong>在 banking-ai-platform 專案 PowerShell 執行 <code>java -version</code>、<code>git status</code>、<code>.\mvnw.cmd test</code>；確認 Java 21 與既有測試。公司設備使用須符合政策；只用合成資料。</p><p><strong>Example：</strong>在 <code>src/main/java/dev/edan/bankingai/LoanController.java</code> 新增：</p><pre><code>package dev.edan.bankingai;
+
+import java.util.Map;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/loans")
+public class LoanController {
+    @GetMapping("/{id}")
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; findById(@PathVariable String id) {
+        if (!"L001".equals(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(Map.of("id", "L001", "status", "ACTIVE"));
+    }
+}</code></pre><p>合成資料 L001，不包含任何客戶個資或真實銀行資料。</p><p><strong>Try：</strong>在 <code>src/test/java/dev/edan/bankingai/LoanControllerHttpTest.java</code> 新增：</p><pre><code>package dev.edan.bankingai;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+class LoanControllerHttpTest {
+    @Autowired WebApplicationContext context;
+
+    @Test
+    void existingLoanShouldReturn200() throws Exception {
+        MockMvc mvc = MockMvcBuilders.webAppContextSetup(context).build();
+        mvc.perform(get("/api/loans/L001"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value("L001"))
+            .andExpect(jsonPath("$.status").value("ACTIVE"));
+    }
+
+    @Test
+    void missingLoanShouldReturn404() throws Exception {
+        MockMvc mvc = MockMvcBuilders.webAppContextSetup(context).build();
+        mvc.perform(get("/api/loans/UNKNOWN"))
+            .andExpect(status().isNotFound());
+    }
+}</code></pre><pre><code>.\mvnw.cmd clean test
+git diff --check
+git status
+git add src/main/java/dev/edan/bankingai/LoanController.java src/test/java/dev/edan/bankingai/LoanControllerHttpTest.java
+git commit -m "feat: add synthetic loan lookup API and HTTP tests"
+git push origin main
+git rev-parse HEAD</code></pre><p>不要只貼預期結果：請提交真實 Maven Tests run / Failures / Errors / BUILD SUCCESS、Git SHA 與程式碼；測試失敗先提供錯誤。</p></section><section><h2>架構決策（15%）</h2><p>為什麼本堂先用合成記憶體資料，而不是直接連正式 PostgreSQL？下一階段換成 DB 時，Controller、Service、Repository 如何分工？</p><textarea id="architecture"></textarea></section><section><h2>Debug（10%）</h2><p>若 /api/loans/L001 意外回 404，請說明至少三個定位步驟，以及如何從 MockMvc 查看 handler 與 response。</p><textarea id="debug"></textarea></section><section><h2>觀念（5%）</h2><p>GET /api/loans/UNKNOWN 已成功連到 API，但資料不存在，應回哪個狀態？</p><label><input type="radio" name="concept" value="A"> A. 400</label>　<label><input type="radio" name="concept" value="B"> B. 404</label>　<label><input type="radio" name="concept" value="C"> C. 503</label></section><section><h2>提交實作證據</h2><textarea id="evidence" placeholder="貼程式碼、Maven 測試輸出、Git SHA"></textarea><p><button id="copy" type="button">複製作答與證據（貼回 ChatGPT）</button></p><p id="result"></p></section></main><script>document.getElementById('copy').onclick=async()=>{const v=id=>document.getElementById(id).value;const c=document.querySelector('input[name="concept"]:checked')?.value||'未答';const t='Cloud × AI Day 45 正式提交（先核對 pending，不重複計分）\n架構：'+v('architecture')+'\nDebug：'+v('debug')+'\n觀念：'+c+'\n實作證據：\n'+v('evidence')+'\n請依真實證據批改並發布原始答案 vs 改善答案、完整複習頁。';try{await navigator.clipboard.writeText(t);document.getElementById('result').textContent='已複製，請貼回 ChatGPT';}catch(e){document.getElementById('result').textContent=t;}};</script></body></html>
