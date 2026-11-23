@@ -1,5 +1,5 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-20",
+  "updatedAt": "2026-11-23",
   "completedDays": 44,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
@@ -7384,5 +7384,33 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 45,
+    "date": "2026-11-23",
+    "topic": "Hands-on 04: Synthetic Loan GET REST API and MockMvc 200/404",
+    "status": "pending",
+    "handsOnStatus": "awaiting_execution_and_evidence",
+    "interactiveUrl": "docs/cloud-ai-day45-2026-11-23.html",
+    "score": null,
+    "assessmentWeights": {
+      "codingDeployment": 70,
+      "architectureDecision": 15,
+      "debugTesting": 10,
+      "concept": 5
+    },
+    "evidenceRequired": [
+      "LoanController.java synthetic lookup source",
+      "LoanControllerHttpTest.java 200 and 404 tests",
+      "Windows Maven clean test actual output",
+      "Git commit SHA",
+      "Architecture/Debug/concept answers"
+    ],
+    "reviewPriorDay": "docs/cloud-ai-day44-review-2026-11-20.html",
+    "deviceDefault": "Windows11 VS Code JDK21 Maven Wrapper Git",
+    "nextReviewWeaknesses": [
+      "DB readiness dependency boundaries",
+      "MockMvc handler diagnostics and catch-all routing"
+    ],
+    "safety": "Synthetic data only; no IBM/CTBC secrets; no paid cloud resources"
+  }
 };
