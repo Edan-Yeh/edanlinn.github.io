@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
   "updatedAt": "2026-11-23",
-  "completedDays": 44,
+  "completedDays": 45,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
     {
@@ -178,6 +178,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 44,
       "score": 94
+    },
+    {
+      "day": 45,
+      "score": 90
     }
   ],
   "roadmap": [
@@ -7369,6 +7373,94 @@ window.CLOUD_SA_DATA = {
         "latestDate": "2026-11-19",
         "latestStatus": "concept_training_completed_hands_on_pending"
       }
+    },
+    {
+      "day": 45,
+      "date": "2026-11-23",
+      "topic": "Hands-on 04: Synthetic Loan GET REST API and MockMvc 200/404",
+      "status": "completed",
+      "handsOnStatus": "passed_with_followups",
+      "score": 90,
+      "assessment": {
+        "codingDeployment": {
+          "earned": 70,
+          "max": 70
+        },
+        "architectureDecision": {
+          "earned": 11,
+          "max": 15
+        },
+        "debugTesting": {
+          "earned": 9,
+          "max": 10
+        },
+        "concept": {
+          "earned": 0,
+          "max": 5
+        }
+      },
+      "answers": {
+        "architecture": "避免一次引入 PostgreSQL\nController 接收 HTTP 請求\nService商業邏輯\nRepository 資料異動。",
+        "debug": "1.先檢查 URI 與 HTTP method、@GetMapping 與類別路徑、Component Scan 與 context path。\n2.再排除 catch-all handler。\n3.若測試不如預期，可用 MockMvc print 觀察 Handler 與 Response。",
+        "concept": "C"
+      },
+      "practical": {
+        "repository": "Edan-Yeh/banking-ai-platform",
+        "branch": "main",
+        "commit": "cf6ca7c4d2a643f2d5b8ac74db772aab8a940627",
+        "source": [
+          "src/main/java/dev/edan/bankingai/LoanController.java",
+          "src/test/java/dev/edan/bankingai/LoanControllerHttpTest.java"
+        ],
+        "implementation": "Synthetic loan L001 GET 200 JSON and UNKNOWN GET 404; MockMvc 2 cases",
+        "command": ".\\mvnw.cmd clean test",
+        "executionEvidence": "User-submitted Windows11 PowerShell 2026-11-23 17:09 +08:00: 6 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS, 10.869 seconds; git push origin main successful",
+        "executionScope": "User ran Maven locally; assistant inspected submitted log, remote source and GitHub commit; assistant did not execute Maven",
+        "warnings": "Mockito dynamic agent warnings nonblocking"
+      },
+      "questions": [
+        {
+          "id": "architecture",
+          "points": 15,
+          "earned": 11,
+          "explanation": "Separation broadly correct; Repository also handles reads, explain isolation and API contract."
+        },
+        {
+          "id": "debug",
+          "points": 10,
+          "earned": 9,
+          "explanation": "Good routing and MockMvc print; add lookup branch and actual handler evidence."
+        },
+        {
+          "id": "concept",
+          "points": 5,
+          "earned": 0,
+          "answer": "C",
+          "correct": "B",
+          "explanation": "UNKNOWN with functioning API is 404 Not Found; 503 is temporary service unavailability."
+        }
+      ],
+      "archive": "docs/cloud-ai-day45-2026-11-23.html",
+      "reviewUrl": "docs/cloud-ai-day45-review-2026-11-23.html",
+      "reviewPublishedAt": "2026-11-23",
+      "reviewStatus": "published",
+      "weaknesses": [
+        {
+          "topic": "HTTP 404 no resource vs 503 service unavailable",
+          "priority": "high",
+          "status": "awaiting_understanding_check"
+        },
+        {
+          "topic": "Repository query and persistence responsibilities",
+          "priority": "medium",
+          "status": "awaiting_service_repository_practice"
+        },
+        {
+          "topic": "MockMvc print handler and response",
+          "priority": "medium",
+          "status": "awaiting_practice"
+        }
+      ]
     }
   ],
   "cloudComparison": {
@@ -7384,33 +7476,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 45,
-    "date": "2026-11-23",
-    "topic": "Hands-on 04: Synthetic Loan GET REST API and MockMvc 200/404",
-    "status": "pending",
-    "handsOnStatus": "awaiting_execution_and_evidence",
-    "interactiveUrl": "docs/cloud-ai-day45-2026-11-23.html",
-    "score": null,
-    "assessmentWeights": {
-      "codingDeployment": 70,
-      "architectureDecision": 15,
-      "debugTesting": 10,
-      "concept": 5
-    },
-    "evidenceRequired": [
-      "LoanController.java synthetic lookup source",
-      "LoanControllerHttpTest.java 200 and 404 tests",
-      "Windows Maven clean test actual output",
-      "Git commit SHA",
-      "Architecture/Debug/concept answers"
-    ],
-    "reviewPriorDay": "docs/cloud-ai-day44-review-2026-11-20.html",
-    "deviceDefault": "Windows11 VS Code JDK21 Maven Wrapper Git",
-    "nextReviewWeaknesses": [
-      "DB readiness dependency boundaries",
-      "MockMvc handler diagnostics and catch-all routing"
-    ],
-    "safety": "Synthetic data only; no IBM/CTBC secrets; no paid cloud resources"
-  }
+  "pendingLesson": null
 };
