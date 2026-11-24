@@ -1,5 +1,5 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-23",
+  "updatedAt": "2026-11-24",
   "completedDays": 45,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
@@ -7476,5 +7476,28 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": null
+  "pendingLesson": {
+    "day": 46,
+    "date": "2026-11-24",
+    "topic": "Hands-on 05: Loan Service extraction and unit tests",
+    "status": "pending",
+    "handsOnStatus": "awaiting_execution_and_evidence",
+    "interactiveUrl": "docs/cloud-ai-day46-2026-11-24.html",
+    "score": null,
+    "assessmentWeights": {
+      "codingDeployment": 70,
+      "architectureDecision": 15,
+      "debugTesting": 10,
+      "concept": 5
+    },
+    "reviewPriorDay": "docs/cloud-ai-day45-review-2026-11-23.html",
+    "evidenceRequired": [
+      "LoanController.java",
+      "LoanService.java",
+      "LoanServiceTest.java",
+      "Maven clean test output",
+      "Git SHA",
+      "architecture/debug/concept answers"
+    ]
+  }
 };
