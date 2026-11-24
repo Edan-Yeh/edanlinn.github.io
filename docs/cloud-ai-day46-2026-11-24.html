@@ -1,0 +1,20 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Day46｜Service 分層</title><style>body{font:16px/1.7 system-ui;max-width:850px;margin:auto;padding:24px;color:#183047}pre{background:#edf2f7;padding:16px;overflow:auto}textarea{width:100%;min-height:90px}</style><main><a href="../#ladder">學習天梯</a><h1>Day46｜Controller 與 Service 分層</h1><p>2026-11-24｜20–25 分鐘｜Pending｜Windows 11</p><h2>先複習</h2><p><a href="cloud-ai-day45-review-2026-11-23.html">Day45 90分完整解答</a>。查無資料是404，必要依賴暫時故障是503。Repository 負責讀取及持久化。</p><h2>NET：Next → Example → Try</h2><p>Next：在 banking-ai-platform 執行 java -version、git status、.\mvnw.cmd test。只使用合成資料。</p><p>Example：Controller 像櫃台，Service 像業務處理人員。把查詢邏輯移出 Controller，HTTP 狀態仍由 Controller 決定。新增 src/main/java/dev/edan/bankingai/LoanService.java：</p><pre>package dev.edan.bankingai;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
+
+@Service
+public class LoanService {
+    public Optional&lt;Map&lt;String,String&gt;&gt; findById(String id) {
+        if ("L001".equals(id)) {
+            return Optional.of(Map.of("id", id, "status", "ACTIVE"));
+        }
+        return Optional.empty();
+    }
+}</pre><p>Try：在 LoanController 加入 final LoanService 欄位及建構子注入，將 findById 方法改成呼叫 service，使用 ResponseEntity.of(service.findById(id))。保留原有 mapping 與兩個 HTTP 測試。另新增 LoanServiceTest，使用 JUnit @Test 與 Assertions，直接 new LoanService() 驗證 L001 存在、UNKNOWN 為 empty。兩個新測試預期使總數由6增至8。不要把預期當實際結果。</p><pre>.\mvnw.cmd clean test
+git status
+git add src/main/java/dev/edan/bankingai/LoanController.java src/main/java/dev/edan/bankingai/LoanService.java src/test/java/dev/edan/bankingai/LoanServiceTest.java
+git diff --cached --check
+git commit -m "refactor: extract loan lookup service and unit tests"
+git push origin main
+git rev-parse HEAD</pre><h2>Debug 指引</h2><p>若啟動失敗，檢查 @Service、package 與建構子注入；若404意外發生，在 Controller 與 Service 設 breakpoint，觀察 id 和 Optional；MockMvc 可加入 andDo(print())，需 static import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print。</p><h2>提交（先作答後批改）</h2><p>架構15分：為何將業務邏輯移到 Service？日後 Repository 接 PostgreSQL 時三層如何分工？</p><textarea id="a"></textarea><p>Debug 10分：L001 意外404，如何用 breakpoint 與 MockMvc 判斷是路由還是查詢結果？</p><textarea id="b"></textarea><p>觀念5分：A 查無資料、B 必要資料庫暫時故障，各應回何 HTTP status？</p><textarea id="c"></textarea><p>實作70分：貼三個檔案、clean test 日誌、Git SHA 與 Debug 觀察。</p><textarea id="e"></textarea><button id="copy">複製提交</button><p id="out"></p></main><script>document.getElementById('copy').onclick=async()=>{const t='Day46 正式提交\n'+['a','b','c','e'].map(x=>document.getElementById(x).value).join('\n---\n');try{await navigator.clipboard.writeText(t);document.getElementById('out').textContent='已複製'}catch(e){document.getElementById('out').textContent=t}};</script></html>
