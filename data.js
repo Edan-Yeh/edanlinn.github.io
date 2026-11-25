@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-24",
-  "completedDays": 45,
+  "updatedAt": "2026-11-25",
+  "completedDays": 46,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
     {
@@ -182,6 +182,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 45,
       "score": 90
+    },
+    {
+      "day": 46,
+      "score": 95
     }
   ],
   "roadmap": [
@@ -7461,6 +7465,77 @@ window.CLOUD_SA_DATA = {
           "status": "awaiting_practice"
         }
       ]
+    },
+    {
+      "day": 46,
+      "date": "2026-11-24",
+      "gradedAt": "2026-11-25",
+      "topic": "Hands-on 05: Loan Service extraction and unit tests",
+      "status": "completed",
+      "handsOnStatus": "passed_with_followups",
+      "score": 95,
+      "assessment": {
+        "codingDeployment": {
+          "earned": 70,
+          "max": 70
+        },
+        "architectureDecision": {
+          "earned": 13,
+          "max": 15
+        },
+        "debugTesting": {
+          "earned": 8,
+          "max": 10
+        },
+        "concept": {
+          "earned": 4,
+          "max": 5
+        }
+      },
+      "answers": {
+        "architecture": "Service負責業務判斷，Repository資料存取層，PostgreSQL / DB2Database。\n這樣可以更容易找到問題，讓系統更容易維護、測試、擴充，以及降低修改程式時的影響範圍。",
+        "debug": "1.可以先查詢Controller設定路徑是否正確\n2.依據接收 HTTP GET 請求，找到真的呼叫Service\n3.確認什麼時候會傳404\nMockMvc \n驗證 HTTP Status，也可以驗證實際執行的是哪一個 Controller 和 Method。",
+        "concept": "A 404; B 503 (summary from prior grading, not verbatim)"
+      },
+      "corrections": {
+        "architecture": "Add Controller HTTP responsibility",
+        "debug": "Specify breakpoints and actual variable observations",
+        "concept": "Explain resource absent versus temporary dependency failure"
+      },
+      "practical": {
+        "repository": "Edan-Yeh/banking-ai-platform",
+        "commit": "60ed115a1f6768367ed979eadc7aefe71655b2e7",
+        "command": ".\\mvnw.cmd clean test",
+        "executionEvidence": "User local log 2026-11-25 15:36:59 +08:00, 9 tests, 0 failures/errors/skipped, BUILD SUCCESS, 10.161s; commit and push after test; four source files inspected at specified SHA; no independent Maven execution",
+        "tests": {
+          "application": 1,
+          "healthHttp": 2,
+          "health": 1,
+          "loanHttp": 3,
+          "loanService": 2
+        }
+      },
+      "archive": "docs/cloud-ai-day46-2026-11-24.html",
+      "reviewUrl": "docs/cloud-ai-day46-review-2026-11-25.html",
+      "reviewPublishedAt": "2026-11-25",
+      "reviewStatus": "published",
+      "weaknesses": [
+        {
+          "topic": "Controller responsibility",
+          "priority": "high",
+          "status": "awaiting_review"
+        },
+        {
+          "topic": "Breakpoint variable observation",
+          "priority": "high",
+          "status": "awaiting_practice"
+        },
+        {
+          "topic": "404/503 rationale",
+          "priority": "medium",
+          "status": "status_codes_correct_reason_pending"
+        }
+      ]
     }
   ],
   "cloudComparison": {
@@ -7476,28 +7551,5 @@ window.CLOUD_SA_DATA = {
     "fullArchiveFrom": "Day 22",
     "rule": "保留每日完整原題、選項、使用者答案、正解、解析、實作、錯題；缺漏明示"
   },
-  "pendingLesson": {
-    "day": 46,
-    "date": "2026-11-24",
-    "topic": "Hands-on 05: Loan Service extraction and unit tests",
-    "status": "pending",
-    "handsOnStatus": "awaiting_execution_and_evidence",
-    "interactiveUrl": "docs/cloud-ai-day46-2026-11-24.html",
-    "score": null,
-    "assessmentWeights": {
-      "codingDeployment": 70,
-      "architectureDecision": 15,
-      "debugTesting": 10,
-      "concept": 5
-    },
-    "reviewPriorDay": "docs/cloud-ai-day45-review-2026-11-23.html",
-    "evidenceRequired": [
-      "LoanController.java",
-      "LoanService.java",
-      "LoanServiceTest.java",
-      "Maven clean test output",
-      "Git SHA",
-      "architecture/debug/concept answers"
-    ]
-  }
+  "pendingLesson": null
 };
