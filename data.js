@@ -1,6 +1,6 @@
 window.CLOUD_SA_DATA = {
-  "updatedAt": "2026-11-25",
-  "completedDays": 46,
+  "updatedAt": "2026-11-27",
+  "completedDays": 47,
   "currentTrack": "Cloud × AI / Day 43 Hands-on 已驗收（96/100）；下一個工作日待發布 Day 44",
   "scores": [
     {
@@ -186,6 +186,10 @@ window.CLOUD_SA_DATA = {
     {
       "day": 46,
       "score": 95
+    },
+    {
+      "day": 47,
+      "score": 94
     }
   ],
   "roadmap": [
@@ -7534,6 +7538,86 @@ window.CLOUD_SA_DATA = {
           "topic": "404/503 rationale",
           "priority": "medium",
           "status": "status_codes_correct_reason_pending"
+        }
+      ]
+    },
+    {
+      "day": 47,
+      "date": "2026-11-26",
+      "gradedAt": "2026-11-27",
+      "topic": "Hands-on 06: Repository abstraction and Mockito",
+      "status": "completed",
+      "handsOnStatus": "passed_with_followups",
+      "score": 94,
+      "assessment": {
+        "codingDeployment": {
+          "earned": 70,
+          "max": 70
+        },
+        "architectureDecision": {
+          "earned": 12,
+          "max": 15
+        },
+        "debugTesting": {
+          "earned": 7,
+          "max": 10
+        },
+        "concept": {
+          "earned": 5,
+          "max": 5
+        }
+      },
+      "answers": {
+        "architecture": "Controller 負責 HTTP 請求、參數及回應。\nService 負責業務規則與交易邊界。\nRepository 負責查詢及持久化。",
+        "debug": "1.先驗證 handlerType/methodName，確認路徑跟狀態是正確。\n2.再於 Controller 呼叫 Service 前、Service 判斷 id、Controller 判斷 Optional 處設斷點\n3.觀察 id、Optional 及回應。",
+        "concept": "C / A / D"
+      },
+      "corrections": {
+        "architecture": "Specify retained layers, JDBC dependency, DataSource, bean selection and integration tests",
+        "debug": "Observe actual repository type and variables",
+        "concept": "Original option wording unavailable; prior grading retained"
+      },
+      "practical": {
+        "repository": "Edan-Yeh/banking-ai-platform",
+        "commit": "a06dd4811c3a58afc5fa77fe3c481eec0c661c1b",
+        "command": ".\\mvnw.cmd clean test",
+        "executionEvidence": "User log 2026-11-26 21:35:15 +08:00: 11 tests, zero failures/errors/skipped, BUILD SUCCESS, 14.097s; six source files reviewed; no independent execution",
+        "tests": {
+          "application": 1,
+          "healthHttp": 2,
+          "health": 1,
+          "loanRepository": 2,
+          "loanHttp": 3,
+          "loanService": 2
+        }
+      },
+      "archive": "docs/cloud-ai-day47-2026-11-26.html",
+      "reviewUrl": "docs/cloud-ai-day47-review-2026-11-27.html",
+      "reviewPublishedAt": "2026-11-27",
+      "reviewStatus": "published",
+      "sourceStatus": "Reconstructed from prior teaching record; exact original question wording unavailable",
+      "followup": {
+        "date": "2026-11-27",
+        "concept": "C/A/D all correct",
+        "architecture": "1.PostgreSQL是真的會透過JDBC 連接 PostgreSQL 資料庫並執行 SQL\n2.未來如果調整的話，替換 Repository 實作及注入設定即可\n3.新增PostgreSQLLoanRepository",
+        "evidence": "HTTP 200 L001, 404 UNKNOWN; 7 existing targeted tests passed; JDWP startup confirmed; breakpoint variables pending",
+        "scoreAdded": false
+      },
+      "weaknesses": [
+        {
+          "topic": "Breakpoint variable observation",
+          "priority": "high",
+          "status": "awaiting_practice"
+        },
+        {
+          "topic": "Repository replacement impact",
+          "priority": "high",
+          "status": "partially_reviewed"
+        },
+        {
+          "topic": "Mock boundary and 404/503",
+          "priority": "medium",
+          "status": "reviewed"
         }
       ]
     }
